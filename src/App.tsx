@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
 import './App.css';
 
-function App() {
+import MainLayout from './layouts/MainLayout';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { HO_PATH, JO_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, ST_PATH, SU_PATH } from './constants';
+
+// component: root path 컴포넌트 //
+function Index() {
+
+  // function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  useEffect(() => {
+    navigator(ROOT_ABSOLUTE_PATH);
+  }, []);
+
+  // render: root path 컴포넌트 렌더링 //
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <></>
   );
 }
 
-export default App;
+// component: TheMemorialDay 컴포넌트 //
+export default function TheMemorialDay() {
+
+  
+  //function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  return (
+    <Routes>
+      <Route element={<MainLayout />}>
+        <Route index element={<Index />} />
+        {/* <Route path={ROOT_ABSOLUTE_PATH} element={<MainLayout />} /> */}
+      </Route>
+      <Route path={ST_PATH} element={<MainLayout />} />
+      <Route path={HO_PATH} element={<MainLayout />} />
+      <Route path={SU_PATH} element={<MainLayout />} />
+      <Route path={JO_PATH} element={<MainLayout />} />
+      <Route path={OTHERS_PATH} element={<Index />} />
+    </Routes>
+  );
+}
+
