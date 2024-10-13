@@ -1,0 +1,40 @@
+#notice-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#notice-wrapper .title {
+    text-align: center;
+    font-size: 30px;
+}
+
+#notice-wrapper .navigation {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#notice-wrapper .table {
+    display: flex;
+    flex-direction: column;
+}
+
+#notice-wrapper .table .th {
+    display: flex;
+}
+
+#notice-wrapper .table .tr {
+    display: flex;
+}
+
+#notice-wrapper .bottom {
+    display: flex;
+}
+
+#notice-wrapper .search-box {
+    display: flex;
+}

@@ -7,7 +7,8 @@ export const ST_PATH = '/stores';
 
 export const HO_PATH = '/how';
 
-export const SU_PATH = '/support';
+export const SU_PATH = '/support/notice';
+export const SU_QA_PATH = 'support/qa';
 
 export const JO_PATH = '/join';
 
@@ -23,6 +24,7 @@ export const ST_ABSOLUTE_PATH = ST_PATH;
 export const HO_ABSOLUTE_PATH = HO_PATH;
 
 export const SU_ABSOLUTE_PATH = SU_PATH;
+export const SU_ABSOLUTE_QA_PATH = SU_QA_PATH;
 
 export const JO_ABSOLUTE_PATH = JO_PATH;
 
