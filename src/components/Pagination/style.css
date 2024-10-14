@@ -4,21 +4,21 @@
     gap: 24px;
 }
 
-.round-left-button {
+.left-button {
     width: 40px;
     height: 40px;
 
-    background-image: url(/public//images/round-left.png);
+    /* background-image: url(/public//images/round-left.png); */
     background-size: 100% 100%;
 
     cursor: pointer;
 }
 
-.round-right-button {
+.right-button {
     width: 40px;
     height: 40px;
 
-    background-image: url(/public//images/round-right.png);
+    /* background-image: url(/public//images/round-right.png); */
     background-size: 100% 100%;
 
     cursor: pointer;
