@@ -9,44 +9,44 @@ import Support from './view/Support';
 // component: root path 컴포넌트 //
 function Index() {
 
-  // function: 네비게이터 함수 //
-  const navigator = useNavigate();
+    // function: 네비게이터 함수 //
+    const navigator = useNavigate();
 
-  useEffect(() => {
-    navigator(ROOT_ABSOLUTE_PATH);
-  }, []);
+    useEffect(() => {
+        navigator(ROOT_ABSOLUTE_PATH);
+    }, []);
 
-  // render: root path 컴포넌트 렌더링 //
+    // render: root path 컴포넌트 렌더링 //
 
-  return (
-    <></>
-  );
+    return (
+        <></>
+    );
 }
 
 // component: TheMemorialDay 컴포넌트 //
 export default function TheMemorialDay() {
 
-  
-  //function: 네비게이터 함수 //
-  const navigator = useNavigate();
 
-  return (
-    <Routes>
-      <Route element={<MainLayout />}>
-        <Route index element={<Index />} />
-        {/* <Route path={ROOT_ABSOLUTE_PATH} element={<MainLayout />} /> */}
-      </Route>
-      <Route path={ST_PATH} element={<MainLayout />} />
-      <Route path={HO_PATH} element={<MainLayout />} />
-      <Route path={SU_PATH} element={<MainLayout />} >
-        <Route path={SU_PATH} element={<Support />} />
-      </Route>
-      
+    //function: 네비게이터 함수 //
+    const navigator = useNavigate();
+
+    return (
+        <Routes>
+            <Route element={<MainLayout />}>
+                <Route index element={<Index />} />
+                {/* <Route path={ROOT_ABSOLUTE_PATH} element={<MainLayout />} /> */}
+            </Route>
+            <Route path={ST_PATH} element={<MainLayout />} />
+            <Route path={HO_PATH} element={<MainLayout />} />
+            <Route path={SU_PATH} element={<MainLayout />} >
+                <Route path={SU_PATH} element={<Support />} />
+            </Route>
 
 
-      <Route path={JO_PATH} element={<MainLayout />} />
-      <Route path={OTHERS_PATH} element={<Index />} />
-    </Routes>
-  );
+
+            <Route path={JO_PATH} element={<MainLayout />} />
+            <Route path={OTHERS_PATH} element={<Index />} />
+        </Routes>
+    );
 }
 
