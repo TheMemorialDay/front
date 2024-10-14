@@ -1,0 +1,167 @@
+#sign-up {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#sign-up .auth-title {
+    margin-top: 100px;
+    display: flex;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 35px;
+}
+
+#sign-up .login-box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+    overflow: auto;
+    max-height: 480px;
+}
+
+#sign-up .login-box::-webkit-scrollbar {
+    width: 5px;
+    height: 12px;
+}
+
+/* 스크롤바 트랙 (배경) */
+#sign-up .login-box::-webkit-scrollbar-track {
+    border-radius: 6px; /* 트랙의 둥근 모서리 */
+}
+
+/* 스크롤바 핸들 (움직이는 부분) */
+#sign-up .login-box::-webkit-scrollbar-thumb {
+    background: #888; /* 핸들 색상 */
+    border-radius: 6px; /* 핸들의 둥근 모서리 */
+}
+
+#sign-up .sns-container {
+    display: flex;
+    margin-top: 15px;
+}
+
+#sign-up .sub-title {
+    color: darkgray;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+#sign-up .kakao {
+    background-image: url('/public/images/kakao-button.png');
+    cursor: pointer;
+    background-size: 100% 100%;
+    height: 35px;
+    width: 35px;
+    
+}
+
+#sign-up .naver {
+    background-image: url('/public/images/naver-button.png');
+    cursor: pointer;
+    background-size: 100% 100%;
+    height: 35px;
+    width: 35px;
+    margin-left: 20px;
+}
+
+#sign-up .google {
+    background-image: url('/public/images/google.png');
+    cursor: pointer;
+    background-size: 100% 100%;
+    height: 35px;
+    width: 35px;
+    margin-left: 20px;
+}
+
+#sign-up .hr-custom-two {
+    width: 25%;
+    height: 1.5px; 
+    background-color: lightgray; 
+    border: none; 
+    margin-top: 20px;
+    margin-bottom: 20px; 
+    align-items: center;
+}
+
+#sign-up .box-test {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#sign-up .send-button {
+    width: 120px;
+    height: 45px;
+    border-radius: 6px;
+    background-color: black;
+
+    display: flex;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer;
+}
+
+#sign-up .message {
+    font-size: 12px;
+    font-weight: 200;
+    color: red;
+    margin-bottom: 20px;
+}
+
+#sign-up .inputs {
+    width: 250px;
+    height: 25px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    margin-bottom: 7px;
+    padding: 10px;
+}
+
+#sign-up .inputs1 {
+    width: 380px;
+    height: 25px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    margin-bottom: 7px;
+    padding: 10px;
+}
+
+#sign-up .gender-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#sign-up .gender-box .woman {
+    display: flex;
+    width: 193px;
+    height: 45px;
+    border: 1px solid darkgray;
+    background-color: white;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 600;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#sign-up .gender-box .woman:hover {
+    display: flex;
+    width: 193px;
+    height: 45px;
+    border: 1px solid black;
+    background-color: black;
+    border-radius: 6px;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}

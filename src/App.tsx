@@ -3,10 +3,12 @@ import './App.css';
 
 import MainLayout from './layouts/MainLayout';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { HO_PATH, JO_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, ST_PATH, SU_PATH } from './constants';
+import { HO_PATH, JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_PATH, SU_PATH } from './constants';
 import Stores from './view/Stores';
 import Support from './view/Support';
 import Join from './view/Join';
+import Auth from './view/Auth';
+import SignUp from './view/Auth/signUp';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -52,7 +54,13 @@ export default function TheMemorialDay() {
       <Route path={JO_PATH} element={<MainLayout />}  >
         <Route path={JO_PATH} element={<Join />} />
       </Route>
+      
       <Route path={OTHERS_PATH} element={<Index />} />
+      
+      <Route path={LOGIN_PATH} element={<MainLayout/>} >
+          <Route path={LOGIN_PATH} element={<Auth/>} />
+          <Route path={SIGN_UP_PATH} element={<SignUp/>} />
+      </Route>
     </Routes>
   );
 }

@@ -1,0 +1,412 @@
+#signIn {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    align-items: center;
+}
+
+#signIn .auth-title {
+    margin-top: 100px;
+    display: flex;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 50px;
+}
+
+#signIn .login-box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+}
+
+#signIn .input-id {
+    width: 280px;
+    height: 25px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    margin-bottom: 7px;
+    padding: 10px;
+}
+
+#signIn .message {
+    font-size: 12px;
+    font-weight: 200;
+    color: red;
+}
+
+#signIn .login-button {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: black;
+    color: white;
+    margin-top: 50px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#signIn .hr-custom {
+    width: 100%;
+    height: 1.5px; 
+    background-color: lightgray; 
+    border: none; 
+    margin: 30px auto; 
+    display: flex;
+    align-items: center;
+}
+
+#signIn .etc-function {
+    display: flex;
+    font-size: 16px;
+    color: darkgray;
+    margin-bottom: 10px;
+}
+
+#signIn .find {
+    margin: 0 10px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#signIn .find:hover {
+    text-decoration: underline; 
+}
+
+#signIn .sns-container {
+    display: flex;
+    margin-top: 10px;
+}
+
+#signIn .kakao {
+    background-image: url('/public/images/kakao-button.png');
+    cursor: pointer;
+    background-size: 100% 100%;
+    height: 45px;
+    width: 45px;
+    margin-left: 20px;
+}
+
+#signIn .naver {
+    background-image: url('/public/images/naver-button.png');
+    cursor: pointer;
+    background-size: 100% 100%;
+    height: 45px;
+    width: 45px;
+    margin-left: 20px;
+}
+
+#signIn .google {
+    background-image: url('/public/images/google.png');
+    cursor: pointer;
+    background-size: 100% 100%;
+    height: 45px;
+    width: 45px;
+    margin-left: 20px;
+}
+
+/**************************************************************************************************************/
+
+#find-id {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    align-items: center;
+}
+
+#find-id .auth-title {
+    margin-top: 100px;
+    display: flex;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 50px;
+}
+
+#find-id .login-box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+}
+
+#find-id .input-id {
+    width: 280px;
+    height: 25px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+#find-id .tel {
+    display: flex;
+    gap: 10px;
+}
+
+#find-id .tel-number {
+    width: 200px;
+    height: 25px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    margin-bottom: 7px;
+    padding: 10px;
+}
+
+#find-id .send-button {
+    width: 70px;
+    height: 47px;
+    border-radius: 6px;
+    background-color: black;
+
+    display: flex;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer;
+}
+
+#find-id .message {
+    font-size: 12px;
+    font-weight: 200;
+    color: red;
+}
+
+#find-id .login-button {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: black;
+    color: white;
+    margin-top: 50px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/************************************************************************************************************/
+
+#find-password {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    align-items: center;
+}
+
+#find-password .auth-title {
+    margin-top: 100px;
+    display: flex;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 50px;
+}
+
+#find-password .login-box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+}
+
+#find-password .input-id {
+    width: 280px;
+    height: 25px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+#find-password .tel {
+    display: flex;
+    gap: 10px;
+}
+
+#find-password .tel-number {
+    width: 200px;
+    height: 25px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    margin-bottom: 7px;
+    padding: 10px;
+}
+
+#find-password .send-button {
+    width: 70px;
+    height: 47px;
+    border-radius: 6px;
+    background-color: black;
+
+    display: flex;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer;
+}
+
+#find-password .message {
+    font-size: 12px;
+    font-weight: 200;
+    color: red;
+}
+
+#find-password .login-button {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: black;
+    color: white;
+    margin-top: 50px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/****************************************************************************************************************/
+
+#find-id-result {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    align-items: center;
+}
+
+#find-id-result .auth-title {
+    margin-top: 100px;
+    display: flex;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 50px;
+}
+
+#find-id-result .login-box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+}
+
+#find-id-result .one-line {
+    display: flex;
+    margin-bottom: 25px;
+}
+
+#find-id-result .one-line .name,
+#find-id-result .one-line .telNumber,
+#find-id-result .one-line .id {
+    width: 150px;
+    font-size: 17px;
+    color: darkgray;
+    font-weight: 500;
+    text-align: right;
+    margin-right: 30px;
+}
+
+#find-id-result .one-line .name-result,
+#find-id-result .one-line .telNumber-result,
+#find-id-result .one-line .id-result {
+    width: 250px;
+    font-size: 20px;
+    color: black;
+    font-weight: 600;
+    text-align: left;
+}
+
+#find-id-result .login-button {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: black;
+    color: white;
+    margin-top: 35px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#find-id-result .login-button-2 {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: black;
+    color: white;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/**********************************************************************************************************/
+
+#change-password {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    align-items: center;
+}
+
+#change-password .auth-title {
+    margin-top: 100px;
+    display: flex;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 50px;
+}
+
+#change-password .login-box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+}
+
+#change-password .input-id {
+    width: 280px;
+    height: 25px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    margin-bottom: 7px;
+    padding: 10px;
+}
+
+#change-password .message {
+    font-size: 12px;
+    font-weight: 200;
+    color: red;
+    padding-left: 2px;
+    margin-bottom: 20px;
+}
+
+#change-password .login-button {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: black;
+    color: white;
+    margin-top: 35px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
