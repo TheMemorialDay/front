@@ -17,3 +17,8 @@
     font-size: 20px;
     cursor: pointer;
 }
+
+#supportnavi-wrapper .navigation-notice.active,
+#supportnavi-wrapper .navigation-qa.active {
+    font-weight: 800;
+}
