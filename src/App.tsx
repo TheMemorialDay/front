@@ -5,6 +5,7 @@ import MainLayout from './layouts/MainLayout';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { HO_PATH, JO_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, ST_PATH, SU_ABSOLUTE_PATH, SU_PATH, SU_QA_PATH } from './constants';
 import Support from './view/Support';
+import Qa from './view/Support/qa';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -40,7 +41,7 @@ export default function TheMemorialDay() {
             <Route path={HO_PATH} element={<MainLayout />} />
             <Route path={SU_PATH} element={<MainLayout />} >
                 <Route path={SU_PATH} element={<Support />} />
-                <Route path={SU_QA_PATH} element={<Support />} />
+                <Route path={SU_QA_PATH} element={<Qa />} />
             </Route>
 
 

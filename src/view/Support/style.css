@@ -1,3 +1,101 @@
-#support-wrapper {
+#support-wrapper,
+#qa-wrapper {
     width: 1745px;
+}
+
+#notice-wrapper,
+#qa-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#notice-wrapper .top-text,
+#qa-wrapper .top-text {
+    font-size: 18px;
+}
+
+#notice-wrapper .table,
+#qa-wrapper .table {
+    display: flex;
+    flex-direction: column;
+
+    border-top: 2px solid rgba(0, 0, 0, 1);
+    border-bottom: 2px solid rgba(0, 0, 0, 1);
+}
+
+#notice-wrapper .table .th,
+#qa-wrapper .table .th {
+    display: flex;
+    justify-content: space-between;
+
+    border-bottom: 2px solid rgba(0, 0, 0, 1);
+
+    font-size: 18px;
+    font-weight: 700;
+
+    padding: 8px 50px;
+}
+
+#notice-wrapper .table .tr,
+#qa-wrapper .table .tr {
+    display: flex;
+    gap: 40px;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 1);
+    padding: 8px 25px;
+}
+
+#notice-wrapper .table .tr .td-no,
+#qa-wrapper .table .tr .td-no {
+    width: 70px;
+    text-align: center;
+}
+
+#notice-wrapper .table .tr .td-title,
+#qa-wrapper .table .tr .td-title {
+    flex: 1;
+}
+
+#notice-wrapper .table .tr .td-date,
+#qa-wrapper .table .tr .td-date {
+    width: 130px;
+    text-align: center;
+}
+
+#notice-wrapper .bottom,
+#qa-wrapper .bottom {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+#notice-wrapper .search-box,
+#qa-wrapper .search-box {
+    position: absolute;
+    right: 0;
+
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 8px;
+}
+
+#notice-wrapper input,
+#qa-wrapper input {
+    padding: 7px 0px 7px 8px;
+    width: 145px;
+    border-radius: 5px;
+
+    outline: none;
+    border: 2px solid rgb(161, 161, 161);
+}
+
+#notice-wrapper .button,
+#qa-wrapper .button {
+    padding: 7px 20px;
+    border-radius: 5px;
+
+    background-color: rgba(0, 0, 0, 1);
+    color: rgba(255, 255, 255, 1);
 }
