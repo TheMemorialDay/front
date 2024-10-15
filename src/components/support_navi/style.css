@@ -1,0 +1,19 @@
+#supportnavi-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#supportnavi-wrapper .title {
+    text-align: center;
+    font-size: 30px;
+}
+
+#supportnavi-wrapper .navigation {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+
+    font-size: 20px;
+    cursor: pointer;
+}
