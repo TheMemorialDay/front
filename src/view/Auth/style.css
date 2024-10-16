@@ -29,10 +29,18 @@
     padding: 10px;
 }
 
-#signIn .message {
+#signIn .message-false {
     font-size: 12px;
     font-weight: 200;
     color: red;
+    align-self: stretch;
+}
+
+#signIn .message-true {
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(0, 128, 0, 0.7);
+    align-self: stretch;
 }
 
 #signIn .login-button {
@@ -42,6 +50,21 @@
     width: 302px;
     height: 42px;
     background-color: black;
+    color: white;
+    margin-top: 50px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#signIn .login-button:hover {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: rgba(0, 0, 0, 0.7);
     color: white;
     margin-top: 50px;
     border-radius: 6px;
@@ -171,9 +194,32 @@
     cursor: pointer;
 }
 
-#find-id .message {
+#find-id .send-button:hover {
+    width: 70px;
+    height: 47px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.7);
+
+    display: flex;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer;
+}
+
+#find-id .message-true {
     font-size: 12px;
     font-weight: 200;
+    align-self: stretch;
+    color: rgba(0, 128, 0, 0.7);
+}
+
+#find-id .message-false {
+    font-size: 12px;
+    font-weight: 200;
+    align-self: stretch;
     color: red;
 }
 
@@ -184,6 +230,21 @@
     width: 302px;
     height: 42px;
     background-color: black;
+    color: white;
+    margin-top: 50px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#find-id .login-button:hover {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: rgba(0, 0, 0, 0.7);
     color: white;
     margin-top: 50px;
     border-radius: 6px;
@@ -254,9 +315,32 @@
     cursor: pointer;
 }
 
-#find-password .message {
+#find-password .send-button:hover {
+    width: 70px;
+    height: 47px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.7);
+
+    display: flex;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer;
+}
+
+#find-password .message-true {
     font-size: 12px;
     font-weight: 200;
+    align-self: stretch;
+    color: rgba(0, 128, 0, 0.7);
+}
+
+#find-password .message-false {
+    font-size: 12px;
+    font-weight: 200;
+    align-self: stretch;
     color: red;
 }
 
@@ -267,6 +351,21 @@
     width: 302px;
     height: 42px;
     background-color: black;
+    color: white;
+    margin-top: 50px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#find-password .login-button:hover {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: rgba(0, 0, 0, 0.7);
     color: white;
     margin-top: 50px;
     border-radius: 6px;
@@ -319,7 +418,7 @@
 #find-id-result .one-line .telNumber-result,
 #find-id-result .one-line .id-result {
     width: 250px;
-    font-size: 20px;
+    font-size: 19px;
     color: black;
     font-weight: 600;
     text-align: left;
@@ -347,6 +446,36 @@
     width: 302px;
     height: 42px;
     background-color: black;
+    color: white;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#find-id-result .login-button:hover {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    margin-top: 35px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#find-id-result .login-button-2:hover {
+    display: flex;
+    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
+    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    width: 302px;
+    height: 42px;
+    background-color: rgba(0, 0, 0, 0.7);
     color: white;
     margin-top: 10px;
     border-radius: 6px;
@@ -388,21 +517,46 @@
     padding: 10px;
 }
 
-#change-password .message {
+#change-password .message-true {
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(0, 128, 0, 0.7);
+    padding-left: 2px;
+    margin-bottom: 20px;
+    align-self: stretch;
+}
+
+#change-password .message-false {
     font-size: 12px;
     font-weight: 200;
     color: red;
     padding-left: 2px;
     margin-bottom: 20px;
+    align-self: stretch;
 }
 
 #change-password .login-button {
     display: flex;
-    justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
-    align-items: center; /* 버튼 안의 텍스트 수직 중앙 정렬 */
+    justify-content: center; 
+    align-items: center; 
     width: 302px;
     height: 42px;
     background-color: black;
+    color: white;
+    margin-top: 35px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#change-password .login-button:hover {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 302px;
+    height: 42px;
+    background-color: rgba(0, 0, 0, 0.7);
     color: white;
     margin-top: 35px;
     border-radius: 6px;

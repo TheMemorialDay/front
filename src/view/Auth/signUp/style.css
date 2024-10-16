@@ -19,21 +19,21 @@
     margin: 10px;
     overflow: auto;
     max-height: 480px;
+    padding-right: 40px;
 }
 
 #sign-up .login-box::-webkit-scrollbar {
-    width: 5px;
-    height: 12px;
-}
-
-/* 스크롤바 트랙 (배경) */
-#sign-up .login-box::-webkit-scrollbar-track {
-    border-radius: 6px; /* 트랙의 둥근 모서리 */
+    width: 4px;
 }
 
 /* 스크롤바 핸들 (움직이는 부분) */
 #sign-up .login-box::-webkit-scrollbar-thumb {
-    background: #888; /* 핸들 색상 */
+    background: lightgray; 
+    border-radius: 6px; /* 핸들의 둥근 모서리 */
+}
+
+#sign-up .login-box::-webkit-scrollbar-thumb:hover {
+    background: darkgray; 
     border-radius: 6px; /* 핸들의 둥근 모서리 */
 }
 
@@ -106,11 +106,35 @@
     cursor: pointer;
 }
 
-#sign-up .message {
+#sign-up .send-button:hover {
+    width: 120px;
+    height: 45px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.7);
+
+    display: flex;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer;
+}
+
+#sign-up .message-false {
     font-size: 12px;
     font-weight: 200;
     color: red;
     margin-bottom: 20px;
+    align-self: stretch;
+}
+
+#sign-up .message-true {
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(0, 128, 0, 0.7);
+    margin-bottom: 20px;
+    align-self: stretch;
 }
 
 #sign-up .inputs {
@@ -128,7 +152,7 @@
     border-radius: 6px;
     border: 1px solid darkgray;
     margin-bottom: 7px;
-    padding: 10px;
+    padding: 15px 10px;
 }
 
 #sign-up .gender-box {
@@ -137,7 +161,7 @@
     margin-bottom: 10px;
 }
 
-#sign-up .gender-box .woman {
+#sign-up .gender-box .unselected {
     display: flex;
     width: 193px;
     height: 45px;
@@ -151,12 +175,28 @@
     cursor: pointer;
 }
 
-#sign-up .gender-box .woman:hover {
+#sign-up .gender-box .selected {
     display: flex;
     width: 193px;
     height: 45px;
     border: 1px solid black;
     background-color: black;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 600;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+  }
+
+
+#sign-up .gender-box :hover {
+    display: flex;
+    width: 193px;
+    height: 45px;
+    border: 1px solid black;
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 6px;
     color: white;
     font-size: 18px;
@@ -164,4 +204,36 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+}
+
+#sign-up .signup-button {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 400px;
+    height: 42px;
+    background-color: black;
+    color: white;
+    margin-top: 30px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    padding : 13px 0;
+}
+
+#sign-up .signup-button:hover {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 400px;
+    height: 42px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    margin-top: 30px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    padding : 13px 0;
 }
