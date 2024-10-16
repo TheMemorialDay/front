@@ -7,7 +7,12 @@
 #qa-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 10px;
+}
+
+#qa-wrapper .top {
+    display: flex;
+    justify-content: space-between;
 }
 
 #notice-wrapper .top-text,
@@ -27,7 +32,6 @@
 #notice-wrapper .table .th,
 #qa-wrapper .table .th {
     display: flex;
-    justify-content: space-between;
 
     border-bottom: 2px solid rgba(0, 0, 0, 1);
 
@@ -40,7 +44,7 @@
 #notice-wrapper .table .tr,
 #qa-wrapper .table .tr {
     display: flex;
-    gap: 40px;
+    gap: 44px;
 
     border-bottom: 1px solid rgba(0, 0, 0, 1);
     padding: 8px 25px;
@@ -98,4 +102,6 @@
 
     background-color: rgba(0, 0, 0, 1);
     color: rgba(255, 255, 255, 1);
+
+    cursor: pointer;
 }

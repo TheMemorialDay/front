@@ -1,0 +1,21 @@
+#qa-wrapper .table .th .td-box {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+}
+
+#qa-wrapper .table .th .td-no,
+#qa-wrapper .table .th .td-title {
+    width: 680px;
+}
+
+#qa-wrapper .table .th .td-writer,
+#qa-wrapper .table .th .td-date,
+#qa-wrapper .table .th .td-status {
+    width: 38px;
+    text-align: center;
+}
+
+#qa-wrapper .table .tr .td-status {
+    width: 50px;
+}

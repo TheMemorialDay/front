@@ -5,7 +5,10 @@ import { QaList } from '../../../types';
 import { usePagination } from '../../../hooks';
 import './style.css';
 
+//! td 감싸기
+//! TableRowProps 
 
+// component: support qa 컴포넌트 //
 export default function Qa() {
 
     //* 커스텀 훅 가져오기
@@ -22,6 +25,7 @@ export default function Qa() {
         onNextSectionClickHandler,
     } = usePagination<QaList>();
 
+    // render: support qa 컴포넌트 렌더링 //
     return (
         <div id="qa-wrapper">
             <SupportNavi />
@@ -29,6 +33,7 @@ export default function Qa() {
             {/* 이 부분 따로 가져가서 렌더링 */}
             <div className="top">
                 <div className="top-text">전체 12건</div>
+                <div className="button write-button">작성</div>
             </div>
 
             {/* 이 부분도 따로 컴포넌트에 가져가서 렌더링 */}
@@ -37,19 +42,27 @@ export default function Qa() {
                     <div className="th">
                         <div className="td-no">No.</div>
                         <div className="td-title">Title</div>
-                        <div className="td-date">Date</div>
+                        <div className='td-box'>
+                            <div className="td-writer">Writer</div>
+                            <div className="td-date">Date</div>
+                            <div className="td-status">Status</div>
+                        </div>
                     </div>
 
                     <div className="tr">
                         <div className="td-no">10</div>
-                        <div className="td-title">제 2차 서버 점검이 있습니다.</div>
+                        <div className="td-title">케이크가 주문대로 제작되지 않았습니다.</div>
+                        <div className="td-writer">홍*동</div>
                         <div className="td-date">2024-10-04</div>
+                        <div className="td-status">대기</div>
                     </div>
                     {/* 확인용 */}
                     <div className="tr">
                         <div className="td-no">10</div>
-                        <div className="td-title">제 2차 서버 점검이 있습니다.</div>
+                        <div className="td-title">사장님이 주문 수락을 해주지 않아요.</div>
+                        <div className="td-writer">남*현</div>
                         <div className="td-date">2024-10-04</div>
+                        <div className="td-status">완료</div>
                     </div>
                 </div>
             </div>

@@ -6,16 +6,11 @@ import Pagination from "../../../components/Pagination";
 import './style.css';
 import SupportNavi from "../../../components/support_navi";
 
+//! td 감싸기
+//! TableRowProps 
+
 // component: Support Notice 컴포넌트 //
 export default function Notice() {
-
-	// // function: 네비게이터 함수 //
-	// const navigator = useNavigate();
-
-	// // event handler: 클릭 시 메뉴 이동 //
-	// const onItemClickHandler = (path: string) => {
-	// 	navigator(path);
-	// };
 
     //* 커스텀 훅 가져오기
     const {
