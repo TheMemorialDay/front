@@ -4,6 +4,10 @@ export const ROOT_PATH = '/';
 export const AUTH_PATH = '/auth';
 
 export const ST_PATH = '/stores';
+export const ST_ORDER_DETAIL_PATH = '1/order';
+export const ST_INFORMATION_DETAIL_PATH = '1/information';
+export const ST_CONTACT_DETAIL_PATH = '1/contact';
+export const ST_REVIEW_DETAIL_PATH = '1/reivew';
 
 export const HO_PATH = '/how';
 
@@ -25,6 +29,10 @@ export const ROOT_ABSOLUTE_PATH = ROOT_PATH;
 export const AUTH_ABSOLUTE_PATH = AUTH_PATH;
 
 export const ST_ABSOLUTE_PATH = ST_PATH;
+export const ST_ABSOLUTE_ORDER_DETAIL_PATH = `${ST_PATH}/${ST_ORDER_DETAIL_PATH}`;
+export const ST_ABSOLUTE_INFORMATION_DETAIL_PATH = `${ST_PATH}/${ST_INFORMATION_DETAIL_PATH}`;
+export const ST_ABSOLUTE_CONTACT_DETAIL_PATH = `${ST_PATH}/${ST_CONTACT_DETAIL_PATH}`;
+export const ST_ABSOLUTE_REVIEW_DETAIL_PATH = `${ST_PATH}/${ST_REVIEW_DETAIL_PATH}`;
 
 export const HO_ABSOLUTE_PATH = HO_PATH;
 
