@@ -6,8 +6,31 @@ import Pagination from "../../../components/Pagination";
 import './style.css';
 import SupportNavi from "../../../components/support_navi";
 
-//! td 감싸기
-//! TableRowProps 
+interface TableRowProps {
+    notices: NoticeList;
+};
+
+// { notices }: TableRowProps
+export function NoticeRow() {
+    // 데이터 넣은 후 요소 자리에 맞게 넣어주기
+
+    return (
+        <>
+            <div className="tr">
+                <div className="td-no">10</div>
+                <div className="td-title">제 2차 서버 점검이 있습니다.</div>
+                <div className="td-date">2024-10-04</div>
+            </div>
+            {/* 확인용 */}
+            <div className="tr">
+                <div className="td-no">10</div>
+                <div className="td-title">제 2차 서버 점검이 있습니다.</div>
+                <div className="td-date">2024-10-04</div>
+            </div>
+        </>
+    )
+
+}
 
 // component: Support Notice 컴포넌트 //
 export default function Notice() {
@@ -38,24 +61,16 @@ export default function Notice() {
 
             {/* 이 부분도 따로 컴포넌트에 가져가서 렌더링 */}
             <div className="main">
+
                 <div className="table">
                     <div className="th">
                         <div className="td-no">No.</div>
                         <div className="td-title">Title</div>
                         <div className="td-date">Date</div>
                     </div>
+                
+                    <NoticeRow />
 
-                    <div className="tr">
-                        <div className="td-no">10</div>
-                        <div className="td-title">제 2차 서버 점검이 있습니다.</div>
-                        <div className="td-date">2024-10-04</div>
-                    </div>
-                    {/* 확인용 */}
-                    <div className="tr">
-                        <div className="td-no">10</div>
-                        <div className="td-title">제 2차 서버 점검이 있습니다.</div>
-                        <div className="td-date">2024-10-04</div>
-                    </div>
                 </div>
             </div>
 

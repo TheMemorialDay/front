@@ -4,9 +4,35 @@ import Pagination from '../../../components/Pagination'
 import { QaList } from '../../../types';
 import { usePagination } from '../../../hooks';
 import './style.css';
+interface TableRowProps {
+    qas: QaList;
+};
 
-//! td 감싸기
-//! TableRowProps 
+// { qas }: TableRowProps
+function QaRow() {
+    // 데이터 넣은 후 요소 자리에 맞게 넣어주기
+
+    return (
+        <>
+            <div className="tr">
+                <div className="td-no">10</div>
+                <div className="td-title">케이크가 주문대로 제작되지 않았습니다.</div>
+                <div className="td-writer">홍*동</div>
+                <div className="td-date">2024-10-04</div>
+                <div className="td-status">대기</div>
+            </div>
+            {/* 확인용 */}
+            <div className="tr">
+                <div className="td-no">10</div>
+                <div className="td-title">사장님이 주문 수락을 해주지 않아요.</div>
+                <div className="td-writer">남*현</div>
+                <div className="td-date">2024-10-04</div>
+                <div className="td-status">완료</div>
+            </div>
+        </>
+    )
+
+}
 
 // component: support qa 컴포넌트 //
 export default function Qa() {
@@ -38,6 +64,7 @@ export default function Qa() {
 
             {/* 이 부분도 따로 컴포넌트에 가져가서 렌더링 */}
             <div className="main">
+
                 <div className="table">
                     <div className="th">
                         <div className="td-no">No.</div>
@@ -49,21 +76,8 @@ export default function Qa() {
                         </div>
                     </div>
 
-                    <div className="tr">
-                        <div className="td-no">10</div>
-                        <div className="td-title">케이크가 주문대로 제작되지 않았습니다.</div>
-                        <div className="td-writer">홍*동</div>
-                        <div className="td-date">2024-10-04</div>
-                        <div className="td-status">대기</div>
-                    </div>
-                    {/* 확인용 */}
-                    <div className="tr">
-                        <div className="td-no">10</div>
-                        <div className="td-title">사장님이 주문 수락을 해주지 않아요.</div>
-                        <div className="td-writer">남*현</div>
-                        <div className="td-date">2024-10-04</div>
-                        <div className="td-status">완료</div>
-                    </div>
+                    <QaRow />
+
                 </div>
             </div>
 
