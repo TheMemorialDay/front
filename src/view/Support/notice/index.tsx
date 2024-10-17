@@ -1,19 +1,28 @@
 import { useNavigate } from "react-router-dom";
 import { usePagination } from "../../../hooks";
 import { NoticeList } from "../../../types";
-import { SU_ABSOLUTE_PATH, SU_ABSOLUTE_QA_PATH } from "../../../constants";
 import Pagination from "../../../components/Pagination";
 import './style.css';
 import SupportNavi from "../../../components/support_navi";
+import { ChangeEvent, useState } from "react";
 
+// interface: 공지사항 리스트 아이템 //
 interface TableRowProps {
     notices: NoticeList;
 };
 
+// component: NoticeRow 컴포넌트 //
 // { notices }: TableRowProps
 export function NoticeRow() {
     // 데이터 넣은 후 요소 자리에 맞게 넣어주기
 
+    const navigator = useNavigate();
+
+    // const onDetailButtonHandler = () => {
+    //     navigator();
+    // };
+
+    // render: NoticeRow 컴포넌트 렌더링 //
     return (
         <>
             <div className="tr">
@@ -34,6 +43,24 @@ export function NoticeRow() {
 
 // component: Support Notice 컴포넌트 //
 export default function Notice() {
+
+    // state: 검색 입력 창 상태 //
+    const [searchWords, setSearchWords] = useState<string>('');
+    // state: 원본 리스트 상태 //
+    const [originalList, setOriginalList] = useState<NoticeList[]>([]);
+
+    // event handler: 검색 입력 창 내용 변경 감지 //
+    const onSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setSearchWords(value);
+    };
+
+    // event handler: 공지사항 검색 버튼 //
+    const onSearchButtonHandler = () => {
+        const searchedList = originalList.filter(notice => notice.noticeTitle.includes(searchWords));
+        setTotalList(searchedList);
+        initViewList(searchedList);
+    };
 
     //* 커스텀 훅 가져오기
     const {
@@ -83,8 +110,8 @@ export default function Notice() {
                     onNextSectionClickHandler={onNextSectionClickHandler}
                 />
                 <div className="search-box">
-                    <input placeholder="제목을 입력하세요" />
-                    <div className="button search-button">검색</div>
+                    <input value={searchWords} placeholder="제목을 입력하세요" onChange={onSearchChangeHandler} />
+                    <div className="button search-button" onClick={onSearchButtonHandler}>검색</div>
                 </div>
             </div>
         </div>

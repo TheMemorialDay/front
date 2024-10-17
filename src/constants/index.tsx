@@ -8,6 +8,7 @@ export const ST_PATH = '/stores';
 export const HO_PATH = '/how';
 
 export const SU_PATH = '/support/notice';
+export const SU_NOTICE_DETAIL_PATH = `${SU_PATH}/detail`;
 export const SU_QA_PATH = `${SU_PATH}/qa`;
 
 export const JO_PATH = '/join';

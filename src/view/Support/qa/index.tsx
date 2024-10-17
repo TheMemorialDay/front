@@ -1,17 +1,21 @@
-import React from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import SupportNavi from '../../../components/support_navi'
 import Pagination from '../../../components/Pagination'
 import { QaList } from '../../../types';
 import { usePagination } from '../../../hooks';
 import './style.css';
+
+// interface: 큐엔에이 리스트 아이템 //
 interface TableRowProps {
     qas: QaList;
 };
 
+// component: QARow 컴포넌트 //
 // { qas }: TableRowProps
 function QaRow() {
     // 데이터 넣은 후 요소 자리에 맞게 넣어주기
 
+    // render: QARow 컴포넌트 렌더링 //
     return (
         <>
             <div className="tr">
@@ -36,6 +40,24 @@ function QaRow() {
 
 // component: support qa 컴포넌트 //
 export default function Qa() {
+
+    // state: 검색 입력 창 상태 //
+    const [searchWords, setSearchWords] = useState<string>('');
+    // state: 원본 리스트 상태 //
+    const [originalList, setOriginalList] = useState<QaList[]>([]);
+
+    // event handler: 검색 입력 창 내용 변경 감지 //
+    const onSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setSearchWords(value);
+    };
+
+    // event handler: 큐엔에이 검색 버튼 //
+    const onSearchButtonHandler = () => {
+        const searchedList = originalList.filter(qa => (qa.qaTitle, qa.qaWriter).includes(searchWords));
+        setTotalList(searchedList);
+        initViewList(searchedList);
+    }; 
 
     //* 커스텀 훅 가져오기
     const {
@@ -90,8 +112,8 @@ export default function Qa() {
                     onNextSectionClickHandler={onNextSectionClickHandler}
                 />
                 <div className="search-box">
-                    <input placeholder="제목을 입력하세요" />
-                    <div className="button search-button">검색</div>
+                    <input value={searchWords} placeholder="제목을 입력하세요" onChange={onSearchChangeHandler} />
+                    <div className="button search-button" onClick={onSearchButtonHandler}>검색</div>
                 </div>
             </div>
         </div>
