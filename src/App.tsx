@@ -3,10 +3,11 @@ import './App.css';
 
 import MainLayout from './layouts/MainLayout';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { HO_PATH, JO_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, ST_PATH, SU_PATH } from './constants';
+import { JO_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, ST_PATH, SU_PATH } from './constants';
 import Stores from './view/Stores';
 import Support from './view/Support';
 import Join from './view/Join';
+import Home from './view/Home';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -21,7 +22,9 @@ function Index() {
   // render: root path 컴포넌트 렌더링 //
 
   return (
-    <></>
+    <>
+    <Home />
+    </>
   );
 }
 
@@ -36,20 +39,10 @@ export default function TheMemorialDay() {
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Index />} />
-        {/* <Route path={ROOT_ABSOLUTE_PATH} element={<MainLayout />} /> */}
       </Route>
-      <Route path={ST_PATH} element={<MainLayout />} >
+      <Route element={<MainLayout />}>
         <Route path={ST_PATH} element={<Stores />} />
-      </Route>
-      <Route path={HO_PATH} element={<MainLayout />}  >
-        {/* <Route path={HO_PATH} element={<How />} /> 
-        HOW는 제(도연) 부분인데 아직 안 만들어서 주석 처리 했습니다!
-        */}
-      </Route>
-      <Route path={SU_PATH} element={<MainLayout />}  >
         <Route path={SU_PATH} element={<Support />} />
-      </Route>
-      <Route path={JO_PATH} element={<MainLayout />}  >
         <Route path={JO_PATH} element={<Join />} />
       </Route>
       <Route path={OTHERS_PATH} element={<Index />} />

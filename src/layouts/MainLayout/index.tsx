@@ -2,17 +2,31 @@ import React from 'react'
 import './style.css';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN, HO_ABSOLUTE_PATH, HO_PATH, JO_ABSOLUTE_PATH, JO_PATH, ROOT_ABSOLUTE_PATH, ST_ABSOLUTE_PATH, ST_PATH, SU_ABSOLUTE_PATH, SU_PATH } from '../../constants';
+import { ACCESS_TOKEN, HO_ABSOLUTE_PATH, HO_PATH, JO_ABSOLUTE_PATH, JO_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH, ST_ABSOLUTE_PATH, ST_PATH, SU_ABSOLUTE_PATH, SU_PATH } from '../../constants';
 
 // component: 로고 컴포넌트 //
 function Logo() {
+
+    // state: path 상태 //
+    const { pathname } = useLocation();
+
+    // variable: 특정 경로 여부 변수 //
+    const isHome = pathname.startsWith(ROOT_PATH);
+    
+    // function: 네비게이터 함수 //
+    const navigator = useNavigate();
+
+    // event handler: 네비케이션 아이템 클릭 이벤트 //
+    const onItemClickHandler = (path: string) => {
+        navigator(path);
+    };
+    
 
     // render: 로고 컴포넌트 렌더링 //
     return (
         <div id='layout-logo'>
             <div className='box'>
-                <div className='title'>The Memorial Day</div>
-                <div className='icon'></div>
+                <div className={`title ${isHome ? 'active' : ''}`} onClick={() => onItemClickHandler(ROOT_ABSOLUTE_PATH)}>The Memorial Day</div>
             </div>
         </div>
     );
@@ -45,9 +59,9 @@ function TopNavigation() {
                 <div className={`navigation-item ${isSt ? 'active' : ''}`} onClick={() => onItemClickHandler(ST_ABSOLUTE_PATH)}>
                     <div className='item-text'>STORES</div>
                 </div>
-                <div className={`navigation-item ${isHo ? 'active' : ''}`} onClick={() => onItemClickHandler(HO_ABSOLUTE_PATH)}>
+                <a className={`navigation-item ${isHo ? 'active' : ''}`} aria-hidden="true" href="#read"  onClick={() => onItemClickHandler(HO_ABSOLUTE_PATH)}>
                     <div className='item-text'>HOW</div>
-                </div>
+                </a>
                 <div className={`navigation-item ${isSu ? 'active' : ''}`} onClick={() => onItemClickHandler(SU_ABSOLUTE_PATH)}>
                     <div className='item-text'>SUPPORT</div>
                 </div>
@@ -74,8 +88,8 @@ function TopPersonalNavigation() {
     // render: 상단 컴포넌트 //
     return (
         <div id='layout-my'>
-            <div className='layout-my-icon'>사람<br />아이콘</div>
-            <div className='layout-my-cart'>카트<br />아이콘</div>
+            <div className='layout-my-icon'></div>
+            <div className='layout-my-cart'></div>
         </div>
     );
 }
