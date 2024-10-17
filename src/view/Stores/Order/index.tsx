@@ -59,10 +59,10 @@ export default function ShopOrder() {
         <div className='shop-review' onClick={onReviewButtonClickHandler}>리뷰</div>
       </div>
       <div className='product'>
-        <ShopComponent imageUrl="/그림1.png" title="케이크1" price="35000" hashtags='#깔끔함 #달달함 #꽃케잌' />
-        <ShopComponent imageUrl="/그림2.png" title="케이크2" price="45000" hashtags='#깔끔함 #청량함' />
-        <ShopComponent imageUrl="/그림3.png" title="케이크3" price="32000" hashtags='#귀여움 #핑크' />
-        <ShopComponent imageUrl="/그림4.png" title="케이크4" price="30000" hashtags='#로또당첨' />
+        <ShopComponent imageUrl="/picture1.png" title="케이크1" price="35000" hashtags='#깔끔함 #달달함 #꽃케잌' />
+        <ShopComponent imageUrl="/picture12.png" title="케이크2" price="45000" hashtags='#깔끔함 #청량함' />
+        <ShopComponent imageUrl="/picture13.png" title="케이크3" price="32000" hashtags='#귀여움 #핑크' />
+        <ShopComponent imageUrl="/picture14.png" title="케이크4" price="30000" hashtags='#로또당첨' />
       </div>
     </div>
   )

@@ -74,24 +74,24 @@ export default function ShopReview() {
               date="2024 01 01"
               review="모양도 예쁘고 맛도 있었어요!"
               product="딸기케이크"
-              image="/그림1.png"
+              image="/picture1.png"
               imageCount="3" />
             <ReviewComponent rating="4.0"
               date="2024 01 03"
               review="저희 딸이 먹어보더니 너무 맛있다고 하네요 ~ 재방문 의사 있어요."
               product="초코케이크"
-              image="/그림2.png" />
+              image="/picture12.png" />
             <ReviewComponent rating="1.0"
               date="2024 02 01"
               review="너무 달아서 별로에요. 멜론도 고작 2조각 들어있어요"
               product="멜론케이크"
-              image="/그림3.png"
+              image="/picture13.png"
               imageCount="2" />
             <ReviewComponent rating="5.0"
               date="2024 02 03"
               review="색감이 여긴 완전 예술.."
               product="포토케이크"
-              image="/그림4.png"
+              image="/picture14.png"
             />
           </div>
           <div className='filter-right'></div>

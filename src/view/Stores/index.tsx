@@ -152,10 +152,10 @@ export default function Stores() {
         </div>
         <FilterMenu />
         <div className='shop-list'>
-          <StoreComponent imageUrl="/그림1.png" name="이도씨 베이킹" location="금정구 부곡동" rating={4.5} reviews={127} />
-          <StoreComponent imageUrl="/그림2.png" name="어스 베이킹" location="금정구 장전동" rating={4.3} reviews={291} />
-          <StoreComponent imageUrl="/그림3.png" name="바닐바닐" location="금정구 장전동" rating={3.8} reviews={83} />
-          <StoreComponent imageUrl="/그림4.png" name="온도 케이크" location="동래구 명륜동" rating={4.0} reviews={333} />
+          <StoreComponent imageUrl="/picture1.png" name="이도씨 베이킹" location="금정구 부곡동" rating={4.5} reviews={127} />
+          <StoreComponent imageUrl="/picture12.png" name="어스 베이킹" location="금정구 장전동" rating={4.3} reviews={291} />
+          <StoreComponent imageUrl="/picture13.png" name="바닐바닐" location="금정구 장전동" rating={3.8} reviews={83} />
+          <StoreComponent imageUrl="/picture14.png" name="온도 케이크" location="동래구 명륜동" rating={4.0} reviews={333} />
         </div>
       </div>
     </div >
