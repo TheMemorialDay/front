@@ -5,6 +5,7 @@ import Pagination from "../../../components/Pagination";
 import './style.css';
 import SupportNavi from "../../../components/support_navi";
 import { ChangeEvent, useState } from "react";
+import { SU_ABSOLUTE_NOTICE_DETAIL_PATH } from "../../../constants";
 
 // interface: 공지사항 리스트 아이템 //
 interface TableRowProps {
@@ -18,14 +19,14 @@ export function NoticeRow() {
 
     const navigator = useNavigate();
 
-    // const onDetailButtonHandler = () => {
-    //     navigator();
-    // };
+    const onDetailButtonHandler = () => {
+        navigator(SU_ABSOLUTE_NOTICE_DETAIL_PATH);
+    };
 
     // render: NoticeRow 컴포넌트 렌더링 //
     return (
         <>
-            <div className="tr">
+            <div className="tr" onClick={onDetailButtonHandler}>
                 <div className="td-no">10</div>
                 <div className="td-title">제 2차 서버 점검이 있습니다.</div>
                 <div className="td-date">2024-10-04</div>

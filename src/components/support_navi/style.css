@@ -4,7 +4,8 @@
     gap: 30px;
 }
 
-#supportnavi-wrapper .title {
+#supportnavi-wrapper .title,
+#notice-detail-wrapper .title {
     text-align: center;
     font-size: 30px;
 }

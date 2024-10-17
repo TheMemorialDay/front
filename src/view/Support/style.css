@@ -1,10 +1,13 @@
 #support-wrapper,
-#qa-wrapper {
+#qa-wrapper,
+#notice-detail-wrapper {
     width: 1745px;
+    margin-top: 50px;
 }
 
 #notice-wrapper,
-#qa-wrapper {
+#qa-wrapper,
+#notice-detail-wrapper {
     display: flex;
     flex-direction: column;
     gap: 10px;
