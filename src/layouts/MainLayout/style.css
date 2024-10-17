@@ -1,0 +1,101 @@
+#main-layout  {
+    flex-direction: column;
+}
+
+#main-layout .category {
+    display: flex;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 80px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10%;
+}
+
+#main-wrapper {
+    flex-grow: 1; 
+    margin-top: 80px;
+}
+
+#layout-logo {
+    width: 200px;
+    font-size: 24px;
+
+    margin-left: 30px;
+
+    cursor: pointer;
+
+    user-select: none;
+    -webkit-user-select:none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+#layout-top-navigation {
+    justify-content: center;
+}
+
+#layout-top-navigation .item-text {
+    cursor: pointer;
+}
+
+#layout-top-navigation .navigation {
+    display: flex;
+    gap: 100px;
+}
+
+#layout-top-navigation .navigation :hover {
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+    text-decoration-thickness: 1.5px;
+}
+
+#layout-my {
+    display: flex;
+    justify-content: right;
+    width: 200px;
+    gap: 30px;
+    position: relative;
+    margin-right: 30px;
+}
+
+#layout-my .layout-my-icon {
+    cursor: pointer;
+    position: relative;
+    background-image: url('/public/images/login-icon.png');
+    background-size: 100% 100%;
+    height: 35px;
+    width: 35px;
+}
+
+#layout-my .layout-my-cart {
+    text-align: center;
+    cursor: pointer;
+}
+
+#layout-my .menu-box {
+    position: absolute;
+    top: 45px; /* Adjust this value to place the menu just below the icon */
+    left: 50%; /* Center the menu horizontally relative to the parent */
+    transform: translateX(-50%); /* Shift the menu left by 50% of its width to center it under the icon */
+    width: 100px;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    z-index: 1000;
+    font-size: 15px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#layout-my .menu {
+    margin-bottom: 2px;
+}
+
+#layout-my .menu:hover {
+    text-decoration: underline; 
+}
