@@ -44,7 +44,6 @@ export default function TheMemorialDay() {
       <Route element={<MainLayout />}>
         <Route index element={<Index />} />
       </Route>
-
       <Route path={ST_PATH} element={<MainLayout />}>
         <Route index element={<Stores />} />
         <Route path={ST_PATH} element={<Stores />} />
@@ -53,24 +52,21 @@ export default function TheMemorialDay() {
         <Route path={ST_CONTACT_DETAIL_PATH} element={<ShopContact />} />
         <Route path={ST_REVIEW_DETAIL_PATH} element={<ShopReview />} />
       </Route>
-
       <Route path={OTHERS_PATH} element={<Index />} />
-      
       <Route path={LOGIN_PATH} element={<MainLayout />} >
         <Route path={LOGIN_PATH} element={<Auth />} />
         <Route path={SIGN_UP_PATH} element={<SignUp />} />
       </Route>
-
       <Route path={JO_PATH} element={<MainLayout />}  >
         <Route path={JO_PATH} element={<Join />} />
       </Route>
-
+      <Route path={SU_PATH} element={<MainLayout />}  >
         <Route path={SU_PATH} element={<Support />} />
         <Route path={SU_NOTICE_DETAIL_PATH} element={<NoticeDetail />} />
         <Route path={SU_QA_PATH} element={<Qa />} />
-
-        <Route path={JO_PATH} element={<Join />} />
+      </Route>
     </Routes>
   );
+
 }
 
