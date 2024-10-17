@@ -1,0 +1,19 @@
+#notice-detail-wrapper .top {
+    display: flex;
+}
+
+#notice-detail-wrapper .detail-title,
+#notice-detail-wrapper .detail-date {
+    display: flex;
+    gap: 15px;
+}
+
+#notice-detail-wrapper .detail-title {
+    flex: 1;
+}
+
+#notice-detail-wrapper .detail-date {
+    width: 155px;
+    padding: 10px 15px;
+    align-items: center;
+}
