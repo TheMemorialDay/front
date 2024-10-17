@@ -108,10 +108,10 @@
 }
 
 #layout-my .layout-my-cart {
-    width: 28px;
-    height: 28px;
+    width: 35px;
+    height: 35px;
     
-    background-image: url(/public/images/shopping-cart.png);
+    background-image: url('/public/images/shopping-cart.png');
     background-size: cover;
 
     cursor: pointer;

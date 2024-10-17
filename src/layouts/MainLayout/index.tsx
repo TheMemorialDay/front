@@ -112,7 +112,7 @@ function TopPersonalNavigation() {
             <div 
                 className='layout-my-icon' 
                 onMouseEnter={() => setIsHovered(true)}></div>
-            <div className='layout-my-cart'>카트<br />아이콘</div>
+            <div className='layout-my-cart'></div>
         
             {isHovered && (
                 <div className='menu-box'

@@ -45,10 +45,10 @@ export default function TheMemorialDay() {
       </Route>
       <Route element={<MainLayout />}>
         <Route path={ST_PATH} element={<Stores />} />
-        <Route path={SU_PATH} element={<MainLayout />} >
+       
                 <Route path={SU_PATH} element={<Support />} />
                 <Route path={SU_QA_PATH} element={<Qa />} />
-            </Route>
+            
         <Route path={JO_PATH} element={<Join />} />
       </Route>
       
