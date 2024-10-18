@@ -2,5 +2,6 @@
 export default interface NoticeList {
     noticeNumber: number;
     noticeTitle: string;
+    noticeContent: string;
     noticeDate: string;
 }

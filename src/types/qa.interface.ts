@@ -3,7 +3,9 @@
 export default interface QaList {
     qaNumber: number;
     qaTitle: string;
-    qaWriter: string;
+    qaScript: string;
     qaDate: string;
+    qaWriter: string;
     qaStatus: '대기' | '완료';
+    qaAnswer: string;
 }
