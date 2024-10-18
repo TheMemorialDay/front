@@ -3,7 +3,7 @@ import './App.css';
 
 import MainLayout from './layouts/MainLayout';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { HO_PATH, JO_PATH, LOGIN_PATH, MY_INFO_PATH, MY_LIKE_PATH, MY_ORDER_DETAIL_PATH, MY_ORDER_MANAGE_PATH, MY_PATH, MY_PRODUCT_PATH, MY_REVIEW_PATH, MY_SALES_PATH, MY_STORE_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH, ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH, SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH } from './constants';
+import { JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH, ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH, SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, SHOPPING_CART_PATH, MY_PATH, MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_LIKE_PATH, MY_STORE_PATH, MY_PRODUCT_PATH, MY_ORDER_MANAGE_PATH, MY_SALES_PATH } from './constants';
 import Stores from './view/Stores';
 import Support from './view/Support';
 import Join from './view/Join';
@@ -28,6 +28,7 @@ import NoticeDetail from './view/Support/notice_detail';
 import QaWrite from './view/Support/qa_write';
 import QaDetail from './view/Support/qa_detail';
 import OkayScreen from './view/Join/okScreen';
+import ShoppingCart from './view/shopping_cart';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -79,6 +80,9 @@ export default function TheMemorialDay() {
         <Route path={SU_QA_PATH} element={<Qa />} />
         <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
         <Route path={SU_QA_DETAIL_PATH} element={<QaDetail />} />
+      </Route>
+      <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
+        <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />
       </Route>
       <Route path={MY_PATH} element={<MainLayout />}  >
         <Route path={MY_PATH} element={<MyPage />} />
