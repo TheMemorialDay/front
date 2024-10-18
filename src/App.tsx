@@ -3,7 +3,7 @@ import './App.css';
 
 import MainLayout from './layouts/MainLayout';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH, ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH } from './constants';
+import { JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH, ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH, SU_NOTICE_DETAIL_PATH } from './constants';
 import Stores from './view/Stores';
 import Support from './view/Support';
 import Join from './view/Join';
@@ -15,6 +15,7 @@ import ShopOrder from './view/Stores/Order';
 import ShopInformation from './view/Stores/Information';
 import ShopContact from './view/Stores/Contact';
 import ShopReview from './view/Stores/Review';
+import NoticeDetail from './view/Support/notice_detail';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -37,10 +38,6 @@ function Index() {
 
 // component: TheMemorialDay 컴포넌트 //
 export default function TheMemorialDay() {
-
-
-  //function: 네비게이터 함수 //
-  const navigator = useNavigate();
 
   return (
     <Routes>
@@ -65,9 +62,11 @@ export default function TheMemorialDay() {
       </Route>
       <Route path={SU_PATH} element={<MainLayout />}  >
         <Route path={SU_PATH} element={<Support />} />
+        <Route path={SU_NOTICE_DETAIL_PATH} element={<NoticeDetail />} />
         <Route path={SU_QA_PATH} element={<Qa />} />
       </Route>
     </Routes>
   );
+
 }
 
