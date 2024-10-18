@@ -81,8 +81,9 @@ export default function TheMemorialDay() {
         <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
         <Route path={SU_QA_DETAIL_PATH} element={<QaDetail />} />
       </Route>
-      <Route path={SHOPPING_CART_PATH} element={<MainLayout />} />
+      <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
         <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />
+      </Route>
       <Route path={MY_PATH} element={<MainLayout />}  >
         <Route path={MY_PATH} element={<MyPage />} />
         <Route path={MY_INFO_PATH} element={<MyInfo />} />
