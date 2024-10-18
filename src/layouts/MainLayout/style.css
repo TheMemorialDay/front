@@ -2,11 +2,12 @@
     font-family: 'LogoFont';
     src: url('/public/fonts/font8.otf') format('truetype');
 }
+
 /* 4, 5, 6, 8, 10, 11은 otf */
 
-#main-layout  {
+#main-layout {
     flex-direction: column;
-    
+
 }
 
 #main-layout .category {
@@ -23,8 +24,16 @@
 }
 
 #main-wrapper {
-    flex-grow: 1; 
+    flex-grow: 1;
     margin-top: 60px;
+}
+
+#store-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 40px;
 }
 
 #layout-logo {
@@ -39,7 +48,7 @@
     cursor: pointer;
 
     user-select: none;
-    -webkit-user-select:none;
+    -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
 }
@@ -110,7 +119,7 @@
 #layout-my .layout-my-cart {
     width: 35px;
     height: 35px;
-    
+
     background-image: url('/public/images/shopping-cart.png');
     background-size: cover;
 
@@ -119,9 +128,12 @@
 
 #layout-my .menu-box {
     position: absolute;
-    top: 45px; /* Adjust this value to place the menu just below the icon */
-    left: 50%; /* Center the menu horizontally relative to the parent */
-    transform: translateX(-50%); /* Shift the menu left by 50% of its width to center it under the icon */
+    top: 45px;
+    /* Adjust this value to place the menu just below the icon */
+    left: 50%;
+    /* Center the menu horizontally relative to the parent */
+    transform: translateX(-50%);
+    /* Shift the menu left by 50% of its width to center it under the icon */
     width: 100px;
     border-radius: 6px;
     background-color: white;
@@ -140,5 +152,5 @@
 }
 
 #layout-my .menu:hover {
-    text-decoration: underline; 
+    text-decoration: underline;
 }

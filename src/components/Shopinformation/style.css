@@ -1,0 +1,44 @@
+#store-detail-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 30px;
+  width: 100%
+}
+
+#store-detail-wrapper .shop-ment {
+  font-size: 24px;
+}
+
+#store-detail-wrapper .shop-infor {
+  width: 80%;
+  height: 100%;
+  margin-top: 30px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+
+  gap: 50px;
+}
+
+#store-detail-wrapper .shop-image {
+  border-radius: 6px;
+  width: 210px;
+  height: 210px;
+
+  background-image: url(/public/picture1.png);
+  background-position: 50% 50%;
+  background-size: cover;
+
+  cursor: pointer;
+}
+
+#store-detail-wrapper .hr {
+  border: 0;
+  width: 80%;
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.7);
+}
