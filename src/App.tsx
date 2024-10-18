@@ -3,7 +3,7 @@ import './App.css';
 
 import MainLayout from './layouts/MainLayout';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { HO_PATH, JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH, ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH } from './constants';
+import { HO_PATH, JO_PATH, JOIN_OKAY_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH, ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH } from './constants';
 import Stores from './view/Stores';
 import Support from './view/Support';
 import Join from './view/Join';
@@ -15,6 +15,9 @@ import ShopOrder from './view/Stores/Order';
 import ShopInformation from './view/Stores/Information';
 import ShopContact from './view/Stores/Contact';
 import ShopReview from './view/Stores/Review';
+import OkayScreen from './view/Join/okScreen';
+
+
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -62,6 +65,7 @@ export default function TheMemorialDay() {
       </Route>
       <Route path={JO_PATH} element={<MainLayout />}  >
         <Route path={JO_PATH} element={<Join />} />
+        <Route path={JOIN_OKAY_PATH} element={<OkayScreen />} />
       </Route>
       <Route path={SU_PATH} element={<MainLayout />}  >
         <Route path={SU_PATH} element={<Support />} />
