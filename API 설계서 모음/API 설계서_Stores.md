@@ -275,6 +275,8 @@ Content-Type: application/json;charset=UTF-8
 | code | String | 결과 코드 | O |
 | message | String | 결과 코드에 대한 설명 | O |
 | storeName | String | 가게명 | O |
+| storeRating | Float | 가게 별점 | O |
+| reviewCount | Integer | 리뷰 개수 | O |
 | storeAddress | String | 가게 주소 | O |
 | storeUrl | String | 가게 이미지 URL | O |
 | sundayOpen          | Integer    | 일요일 오픈시간   | O |
@@ -305,9 +307,128 @@ Content-Type: application/json;charset=UTF-8
   "stores":  [
     {
       "storeName": "가게명임의값",
-      "storeTel": "010-1234-5678",
       "storeAddress": "금정구 부곡동",
+      "storeRating": "4.5",
+      "reviewCount": "127",
       "storeUrl": "http://localhost:4000/file/store_image.jpg"
+    }
+  ]
+}
+```
+
+**응답 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "DBE",
+  "message": "Database error."
+}
+```
+***
+
+#### - 가게 상세 조회 -  주문하기  
+  
+##### 설명
+
+클라이언트는 가게 상세 조회를 요청하고 조회가 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.
+
+- method : **GET**  
+- URL : **/stores/{storesNumber}/order**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+
+
+###### Example
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+| storeName | String | 가게명 | O |
+| storeRating | Float | 가게 별점 | O |
+| storeAddress | String | 가게 주소 | O |
+| storeIntroduce | String | 가게 소개  | O |
+| storeUrl | String | 가게 이미지 URL | O |
+| productName | String | 상품 이름 | O |
+| productTag | String | 태그 내용 | O |
+| productPrice | int | 상품 가격 | O |
+| productOptionUrl | String | 상품 이미지 URL | X |
+| sundayOpen          | Integer    | 일요일 오픈시간   | O |
+| sundayLast          | Integer    | 일요일 마감시간   | O |
+| mondayOpen          | Integer    | 월요일 오픈시간   | O |
+| mondayLast          | Integer    | 월요일 마감시간   | O |
+| tuesdayOpen         | Integer    | 화요일 오픈시간   | O |
+| tuesdayLast         | Integer    | 화요일 마감시간   | O |
+| wednesdayOpen       | Integer    | 수요일 오픈시간   | O |
+| wednesdayLast       | Integer    | 수요일 마감시간   | O |
+| thursdayOpen        | Integer    | 목요일 오픈시간   | O |
+| thursdayLast        | Integer    | 목요일 마감시간   | O |
+| fridayOpen          | Integer    | 금요일 오픈시간   | O |
+| fridayLast          | Integer    | 금요일 마감시간   | O |
+| saturdayOpen        | Integer    | 토요일 오픈시간   | O |
+| saturdayLast        | Integer    | 토요일 마감시간   | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "SU",
+  "message": "Success."
+  "stores":  [
+    {
+      "productName": "가게명임의값",
+      "storeRating": "4.5",
+      "storeAddress": "금정구 동부곡로 9번길 53 1층",
+      "sundayOpen": "11",
+      "sundayLast": "20",
+      "mondayOpen": "11",
+      "mondayLast": "20",
+      "tuesdayOpen": "11",
+      "tuesdayLast": "20",
+      "wednesdayOpen": "11",
+      "wednesdayLast": "20",
+      "thursdayOpen": "11",
+      "thursdayLast": "20",
+      "fridayOpen": "11",
+      "fridayLast": "20",
+      "saturdayOpen": "11",
+      "saturdayLast": "20",
+      "storeIntroduce": "생화 케이크 제작 전문점입니다.",
+      "storeUrl": "http://localhost:4000/file/store_image.jpg"
+    }
+  ]
+  "products":  [
+    {
+      "productName": "케이크1",
+      "productTag": "귀여움",
+      "productPrice": "35000",
+      "productOptionUrl": "http://localhost:4000/file/store_image.jpg"
     }
   ]
 }
@@ -470,8 +591,6 @@ Content-Type: application/json;charset=UTF-8
 - method : **GET**  
 - URL : **/stores/{storesNumber}/particular**  
 
-<strong>여기 다 안씀</strong>
-
 ##### Request
 
 ###### Header
@@ -489,8 +608,6 @@ Content-Type: application/json;charset=UTF-8
 
 
 ###### Example
-
-<strong>여기 다 안씀</strong>
 
 ```bash
 curl -v -X GET "http://localhost:4000/stroes/join" \
@@ -646,7 +763,7 @@ Content-Type: application/json;charset=UTF-8
 클라이언트는 문의하기 버튼을 선택하면, 해당 가게의 문의하기 값 조회를 요청합니다. 이 동작이 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 네트워크 에러, 데이터베이스 에러가 발생할 수 있습니다.
 
 - method : **GET**  
-- URL : **/stores/{storesNumber}/inquiry**  
+- URL : **/stores/{storesNumber}/contact**  
 
 ##### Request
 
@@ -690,6 +807,84 @@ Content-Type: application/json;charset=UTF-8
   "code": "SU",
   "message": "Success.",
   "storeContact": "인스타그램: @abc_cake"
+}
+```
+
+**응답 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "DBE",
+  "message": "Database error."
+}
+```
+***
+
+#### - 가게 상세 조회 - 리뷰  
+  
+##### 설명
+
+클라이언트는 리뷰 버튼을 선택하면, 해당 가게의 리뷰 값 조회를 요청합니다. 이 동작이 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 네트워크 에러, 데이터베이스 에러가 발생할 수 있습니다.
+
+- method : **GET**  
+- URL : **/stores/{storesNumber}/reivew**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+
+
+###### Example
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+| reviewRating | 별점 | Float | O |
+| reviewDay | 작성일 | Date | O |
+| reviewContents | 리뷰 내용 | String | O |
+| productName | 상품 이름 | String | O |
+| reviewUrl | 리뷰 사진 url | String | X |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "SU",
+  "message": "Success."
+  "review":  [
+    {
+      "reviewRating": "4.5",
+      "reviewDay": "2024.01.03",
+      "reviewContents": "모양도 예쁘고 맛도 있었어요!",
+      "productName": "케이크1",
+      "reviewUrl": "http://localhost:4000/file/review_image.jpg"
+    }
+  ]
 }
 ```
 
