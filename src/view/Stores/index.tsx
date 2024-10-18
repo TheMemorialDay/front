@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, MouseEvent, useState } from 'react'
 import './style.css';
 import { useNavigate } from 'react-router';
 import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
@@ -75,12 +75,7 @@ function FilterMenu() {
 
 export default function Stores() {
 
-  const [checked, setChecked] = useState<boolean>(false);
-
-  const onHeartClickHandler = () => {
-    // event.stopPropagation();
-    checked ? setChecked(false) : setChecked(true);
-  };
+  
 
 
   interface StoreComponentProps {
@@ -92,11 +87,24 @@ export default function Stores() {
   }
 
   function StoreComponent({ imageUrl, name, location, rating, reviews }: StoreComponentProps) {
+    
+    const [checked, setChecked] = useState<boolean>(false);
+
+    const onHeartClickHandler = (event: MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+      checked ? setChecked(false) : setChecked(true);
+    };
+    
     return (
       <div className='store-card' onClick={onPostButtonClickHandler}>
         <div className='shop-image' style={{ backgroundImage: `url(${imageUrl})` }}></div>
         <div className='shop-info'>
-          <h2 className="shop-name">{name}    {checked ? <HeartFilled onClick={onHeartClickHandler} /> : <HeartOutlined onClick={onHeartClickHandler} />}</h2>
+          <div className='liked'>
+            <h2 className="shop-name">{name}</h2>
+            <div onClick={onHeartClickHandler} className={checked ? 'red-heart' : 'white-heart'}></div>
+          </div>
+            
+          
           <p className="shop-location">{location}</p>
           <p className="shop-rating">별점 {rating}</p>
           <p className="shop-reviews">리뷰 {reviews}</p>
