@@ -3,40 +3,10 @@ import { useNavigate } from 'react-router';
 import { ST_ABSOLUTE_CONTACT_DETAIL_PATH, ST_ABSOLUTE_INFORMATION_DETAIL_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH, ST_ABSOLUTE_REVIEW_DETAIL_PATH } from '../../../constants';
 import './style.css';
 import ShopMain from '../../../components/Shopinformation';
+import ReviewComponent from '../../../components/review';
 
 
 export default function ShopReview() {
-
-  interface ReviewComponentPros {
-    rating: string;
-    date: string;
-    review: string;
-    product: string;
-    image: string;
-    imageCount?: string;
-  }
-
-  function ReviewComponent({ rating, date, review, product, image, imageCount }: ReviewComponentPros) {
-    return (
-      <div className="review-card">
-        <div className="review-rating">
-          <span className="star">⭐</span>
-          <span className="rating-value">{rating}</span>
-        </div>
-        <div className="review-details">
-          <p className="review-date">{date}</p>
-          <p className="review-text">{review}</p>
-          <p className="review-product">상품 - {product}</p>
-        </div>
-        <div className="review-image">
-          <div className='review-image-list' style={{ backgroundImage: `url(${image})` }}></div>
-          {imageCount &&
-            <div className="image-count">{imageCount}</div>
-          }
-        </div>
-      </div>
-    );
-  };
 
   const navigator = useNavigate();
 
