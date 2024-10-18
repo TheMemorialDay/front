@@ -40,16 +40,16 @@ export default function Home() {
             <section ref={readerRef} className="reader" id="read">
                 <div className="content">
                     <div data-split aria-hidden="true">
-                        <h1 className='reader-content-comment'>
+                        <h1  style={{fontSize: '54px'}} className='reader-content-comment'>
                             당신의 특별한 일상이 더욱 특별해지길
                         </h1>
                     </div>
-                    <div>생일, 연인 기념일, 브라이덜 샤워, 팔순 잔치 등
+                    <div style={{fontSize: '18px'}}>생일, 연인 기념일, 브라이덜 샤워, 팔순 잔치 등
                         소중한 사람들과 보내는 시간을 더욱 특별하게 만들어 보세요 :)</div>
                     <div className='how-question'>
                         <div className='how-question-a'>
                             <div className='question-answer'>
-                                🤍 케이크 주문은 어떻게 하나요?
+                                ❤️ 케이크 주문은 어떻게 하나요?
                                 <div className='how-answer-button' onClick={() => onAnswerButtonClickHandler(0)} />
                             </div>
                             {visibleSections[0] && (
@@ -63,7 +63,7 @@ export default function Home() {
                         </div>
                         <div className='how-question-b'>
                             <div className='question-answer'>
-                                🤍 가게 등록은 어떻게 하나요?
+                                ❤️ 가게 등록은 어떻게 하나요?
                                 <div className='how-answer-button' onClick={() => onAnswerButtonClickHandler(1)} />
                             </div>
                             {visibleSections[1] && (
@@ -77,7 +77,7 @@ export default function Home() {
                         </div>
                         <div className='how-question-c'>
                             <div className='question-answer'>
-                                🤍 서비스에 관한 추가 질문은 어떻게 하나요?
+                                ❤️ 서비스에 관한 추가 질문은 어떻게 하나요?
                                 <div className='how-answer-button' onClick={() => onAnswerButtonClickHandler(2)} />
                             </div>
                             {visibleSections[2] && (
