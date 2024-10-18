@@ -18,6 +18,7 @@ export const SU_QA_WRITE_PATH = `${SU_QA_PATH}/write`;
 export const SU_QA_DETAIL_PATH = `${SU_QA_PATH}/detail`;
 
 export const JO_PATH = '/join';
+export const JOIN_OKAY_PATH = 'okay';
 
 export const OTHERS_PATH = '*';
 
@@ -45,6 +46,7 @@ export const SU_ABSOLUTE_QA_WRITE_PATH = SU_QA_WRITE_PATH;
 export const SU_ABSOLUTE_QA_DETAIL_PATH = SU_QA_DETAIL_PATH;
 
 export const JO_ABSOLUTE_PATH = JO_PATH;
+export const JO_OKAY_ABSOLUTE_PATH = `${JO_PATH}/${JOIN_OKAY_PATH}`;
 
 export const SIGN_IN_ABSOLUTE_PATH = LOGIN_PATH;
 export const SIGN_UP_ABSOLUTE_PATH = SIGN_UP_PATH;
