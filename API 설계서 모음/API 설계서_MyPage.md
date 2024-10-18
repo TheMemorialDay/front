@@ -1,0 +1,786 @@
+<h1 style='background-color: rgba(55, 55, 55, 0.4); text-align: center'>API 설계(명세)서_회원정보 수정 </h1>
+
+해당 API 명세서는 '더 메모리얼 데이 - The Memorial Day'의 REST API를 명세하고 있습니다.  
+
+- Domain : <http://localhost:4000>    
+
+***
+  
+<h2 style='background-color: rgba(55, 55, 55, 0.2); text-align: center'>회원 정보 수정 모듈</h2>
+
+The Memorial Day 서비스의 회원 정보 수정과 관련된 REST API 모듈입니다.  
+회원 정보 수정 모듈은 비밀번호 확인 후 수행할 수 있습니다.
+  
+- url : /mypage/userInfo
+
+***
+
+#### - 비밀번호 확인
+  
+##### 설명
+
+클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
+사용자는 본인의 비밀번호를 입력하고 본인임을 인증해야 합니다.
+만약 비밀번호가 데이터베이스에 입력된 값과 다른 경우 원래 입력된 값과 다름에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.  
+
+- method : **POST**  
+- URL : **/password-check**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Authorization | Bearer 토큰 인증 헤더 | O |
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
+
+###### Example
+
+```bash
+curl -v -X POST "http://localhost:4000/api/v1/mypage/userInfo/password-check" \
+ -h "Authorization=Bearer XXXX" \
+ -d "password=qwer1234"
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success"
+}
+```
+
+**응답 실패 (비밀번호 불일치)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "AF",
+  "message": "Authentication fail."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase error."
+}
+```
+
+<hr>
+
+#### - 개인 정보 불러오기
+
+#### 설명
+
+비밀번호로 본인 확인을 마친 클라이언트의 개인 정보를 불러옵니다. 요청 헤더에 Bearer 인증 토큰을 포함하고 url에 userId를 포함하여 요청합니다. 조회가 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 만약 존재하지 않는 회원일 경우 존재하지 않는 고객에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.
+
+- method : **GET**  
+- URL : **/{userId}**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Authorization | Bearer 토큰 인증 헤더 | O |
+
+###### Example
+
+```bash
+curl -X GET "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
+ -h "Authorization=Bearer XXXX"
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
+| name | string | 사용자 이름 | O |
+| birth | String | 사용자의 생년월일(yyyymmdd) | O |
+| gender | String | 사용자의 성별(남/녀) | O |
+| telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
+| authNumber | String | 전화번호 인증번호 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success",
+  "password": "qwer1234",
+  "name": "홍길동",
+  "birth": "010425",
+  "gender": "여",
+  "telNumber": "01011112222",
+  "authNumber": "1234"
+}
+```
+
+**응답 : 실패 (존재하지 않는 회원)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "NU",
+  "message": "No exist user."
+}
+```
+
+**응답 : 실패 (인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "AF",
+  "message": "Authentication fail."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase error."
+}
+```
+
+<hr>
+
+#### - 전화번호 인증  
+  
+##### 설명
+
+클라이언트는 숫자로만 이루어진 11자리 전화번호를 입력하여 요청하고 이미 사용중인 전화번호인지 확인 후 4자리의 인증번호를 해당 전화번호에 문자를 전송합니다. 인증번호가 정상적으로 전송이 된다면 성공 응답을 받습니다. 만약 중복된 전화번호를 입력한다면 중복된 전화번호에 해당하는 응답을 받게됩니다. 네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
+
+- method : **POST**  
+- URL : **/tel-auth**  
+
+##### Request
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| telNumber | String | 인증 번호를 전송할 사용자의 전화번호 (11자리 숫자) | O |
+
+###### Example
+
+```bash
+curl -v -X POST "http://localhost:4000/api/v1/mypage/userInfo/tel-auth" \
+ -d "telNumber=01011112222"
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success."
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (중복된 전화번호)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DT",
+  "message": "Duplicated user tel number."
+}
+```
+
+**응답 실패 (인증번호 전송 실패)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "TF",
+  "message": "Auth number send failed."
+}
+```
+
+**응답 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "Database error."
+}
+```
+
+***
+
+#### - 인증번호 확인  
+  
+##### 설명
+
+클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다. 일치한다면 성공에 대한 응답을 받습니다. 만약 일치하지 않는 다면 전화번호 인증 실패에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
+
+- method : **POST**  
+- end point : **/tel-auth-check**  
+
+##### Request
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| telNumber | String | 인증 번호를 확인할 사용자 전화번호 | O |
+| authNumber | String | 인증 확인에 사용할 인증 번호 | O |
+
+###### Example
+
+```bash
+curl -v -X POST "http://localhost:4000/api/v1/mypage/userInfo/tel-auth-check" \
+ -d "telNumber=01011112222" \
+ -d "authNumber=1234"
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success."
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (전화번호 인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "TAF",
+  "message": "Tel number authentication failed."
+}
+```
+
+**응답 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "Database error."
+}
+```
+<hr>
+
+#### - 개인 정보 수정
+  
+##### 설명
+
+클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다. 이름, 생년월일, 비밀번호, 성별, 전화번호, 전화번호 인증번호를 입력하여 요청하고 개인정보 수정이 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 만약 존재하지 않는 회원일 경우 존재하지 않는 고객에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.   
+
+- method : **PATCH**  
+- URL : **/{userId}**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Authorization | Bearer 토큰 인증 헤더 | O |
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
+| name | string | 사용자 이름 | O |
+| birth | String | 사용자의 생년월일(yyyymmdd) | O |
+| gender | String | 사용자의 성별(남/녀) | O |
+| telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
+| authNumber | String | 전화번호 인증번호 | O |
+
+
+###### Example
+
+```bash
+curl -v -X PATCH "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
+ -h "Authorization=Bearer XXXX" \
+ -d "password=qwer1234" \
+ -d "name=홍길동" \
+ -d "birth=010101" \
+ -d "gender=남" \
+ -d "telNumber=01012123456" \
+ -d "authNumber=5678"
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success"
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (존재하지 않는 고객)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "NU",
+  "message": "No exist user."
+}
+```
+
+**응답 : 실패 (인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "AF",
+  "message": "Authentication fail."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase error."
+}
+```
+
+<hr>
+
+#### - 회원 탈퇴
+  
+##### 설명
+클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다. URL에 유저 아이디를 포함하여 요청하고 회원 삭제가 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 만약 존재하지 않는 회원일 경우 존재하지 않는 고객에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.   
+
+- method : **DELETE**  
+- URL : **/{userId}**  
+
+##### Request
+
+###### Example
+
+```bash
+curl -v -X DELETE "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success"
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (존재하지 않는 고객)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "NU",
+  "message": "No exist user."
+}
+```
+
+**응답 : 실패 (인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "AF",
+  "message": "Authentication fail."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase error."
+}
+```
+
+***
+  
+<h2 style='background-color: rgba(55, 55, 55, 0.2); text-align: center'>주문 내역 모듈</h2>
+
+The Memorial Day 서비스의 주문 내역과 관련된 REST API 모듈입니다.  
+  
+- url : /mypage/orderdetail
+
+<hr>
+
+***
+
+#### - 주문내역 리스트 불러오기
+
+#### 설명
+
+요청 헤더에 Bearer 인증 토큰을 포함하여 요청하고 조회가 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 만약 존재하지 않는 주문일 경우 존재하지 않는 주문에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.
+
+- method : **GET**  
+- URL : **/**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Authorization | Bearer 토큰 인증 헤더 | O |
+
+###### Example
+
+```bash
+curl -X GET "http://localhost:4000/api/v1/mypage/orderdetail" \
+ -h "Authorization=Bearer XXXX"
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+| orders | Order[] | 주문 리스트 | O |
+
+**Order**
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| orderCode | String | 주문코드 | O |
+| productNumber | Integer | 상품번호 | O |
+| userId | String | 유저아이디 | O |
+| productContent | String | 요청사항 | O |
+| pickupTime | String | 픽업시간 | O |
+| orderStatus | String | 주문상태 | O |
+| productCount | Integer | 수량 | O |
+| totalPrice | Integer | 총금액 | O |
+| orderTime | String | 주문시간 | O |
+| cancelCode | String | 거부코드 | X |
+| cancelReason | String | 거부기타사유 | X |
+| optionSelect | String | 선택된 옵션 | O |
+
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success",
+  "orders": [
+    "orderCode": "20241018023921",
+    "productNumber": "32",
+    "userId": "qwer1234",
+    "productContent": "최대한 맛있게 기깔나게 부탁드립니다.",
+    "pickupIime": "2024-10-11 22:30",
+    "orderStatus": "승인대기중",
+    "productCount": "1",
+    "totalPrice": "35000",
+    "orderTime": "2024-10-18 11:00",
+    "cancel_code": "X",
+    "cancel_reason": "X",
+    "optionSelect": "1호, 빨강, 초코"
+  ]
+}
+```
+
+**응답 : 실패 (인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "AF",
+  "message": "Authentication fail."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase error."
+}
+```
+
+<hr>
+
+***
+
+#### - 주문 취소
+
+#### 설명
+
+요청 헤더에 Bearer 인증 토큰을 포함하고 URL에 주문코드를 포함하여 요청하고 용품삭제가 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 만약 존재하지 않는 주문일 경우 존재하지 않는 주문에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.
+
+- method : **DELETE**  
+- URL : **/{orderCode}**  
+
+##### Request
+
+###### Example
+
+```bash
+curl -X DELETE "http://localhost:4000/api/v1/mypage/orderdetail/20241018023921" \
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "SU",
+  "message": "Success."
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (존재하지 않는 주문코드)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "NT",
+  "message": "No exist ordercode."
+}
+```
+
+**응답 : 실패 (인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "AF",
+  "message": "Authentication fail."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase error."
+}
+```
