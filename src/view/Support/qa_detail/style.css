@@ -1,0 +1,48 @@
+#qa-detail-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 1400px;
+
+    gap: 30px;
+}
+
+#qa-detail-wrapper .write-info-box {
+    margin-top: 40px;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+#qa-detail-wrapper .writer-box,
+#qa-detail-wrapper .write-date-box {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* wrtie-info-box ============================================================== */
+
+#qa-detail-wrapper .subject-box,
+#qa-detail-wrapper .script-box,
+#qa-detail-wrapper .answer-box {
+    display: flex;
+    gap: 45px;
+}
+
+#qa-detail-wrapper .subject-title,
+#qa-detail-wrapper .script-title,
+#qa-detail-wrapper .answer-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+#qa-detail-wrapper .line {
+    border-top: 1px solid var(--black-color);
+}
+
+#qa-detail-wrapper .button-box {
+    display: flex;
+    justify-content: end;
+
+    margin-top: 30px;
+}
