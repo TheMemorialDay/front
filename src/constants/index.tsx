@@ -17,6 +17,8 @@ export const SU_QA_PATH = `${SU_PATH}/qa`;
 export const SU_QA_WRITE_PATH = `${SU_QA_PATH}/write`;
 export const SU_QA_DETAIL_PATH = `${SU_QA_PATH}/detail`;
 
+export const SHOPPING_CART_PATH = '/shopping-cart';
+
 export const JO_PATH = '/join';
 export const JOIN_OKAY_PATH = 'okay';
 
@@ -44,6 +46,8 @@ export const SU_ABSOLUTE_NOTICE_DETAIL_PATH = SU_NOTICE_DETAIL_PATH;
 export const SU_ABSOLUTE_QA_PATH = SU_QA_PATH;
 export const SU_ABSOLUTE_QA_WRITE_PATH = SU_QA_WRITE_PATH;
 export const SU_ABSOLUTE_QA_DETAIL_PATH = SU_QA_DETAIL_PATH;
+
+export const SHOPPING_CART_ABSOLUTE_PATH = SHOPPING_CART_PATH;
 
 export const JO_ABSOLUTE_PATH = JO_PATH;
 export const JO_OKAY_ABSOLUTE_PATH = `${JO_PATH}/${JOIN_OKAY_PATH}`;

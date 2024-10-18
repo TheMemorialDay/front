@@ -110,16 +110,3 @@
     outline: none;
     border: 2px solid rgb(161, 161, 161);
 }
-
-#notice-wrapper .button,
-#qa-wrapper .button,
-#qa-write-wrapper .button,
-#qa-detail-wrapper .button {
-    padding: 7px 20px;
-    border-radius: 5px;
-
-    background-color: var(--black-color);
-    color: var(--white-color);
-
-    cursor: pointer;
-}
