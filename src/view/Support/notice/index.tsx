@@ -17,8 +17,11 @@ interface TableRowProps {
 export function NoticeRow() {
     // 데이터 넣은 후 요소 자리에 맞게 넣어주기
 
+    // function: 네비게이터 //
     const navigator = useNavigate();
 
+    // event handler: 로우 클릭 시 디테일 페이지로 이동 //
+    //* 나중에 해당 번호 가져오기
     const onDetailButtonHandler = () => {
         navigator(SU_ABSOLUTE_NOTICE_DETAIL_PATH);
     };

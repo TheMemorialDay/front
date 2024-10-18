@@ -14,6 +14,8 @@ export const HO_PATH = '/how';
 export const SU_PATH = '/support/notice';
 export const SU_NOTICE_DETAIL_PATH = `${SU_PATH}/detail`;
 export const SU_QA_PATH = `${SU_PATH}/qa`;
+export const SU_QA_WRITE_PATH = `${SU_QA_PATH}/write`;
+export const SU_QA_DETAIL_PATH = `${SU_QA_PATH}/detail`;
 
 export const JO_PATH = '/join';
 
@@ -39,6 +41,8 @@ export const HO_ABSOLUTE_PATH = HO_PATH;
 export const SU_ABSOLUTE_PATH = SU_PATH;
 export const SU_ABSOLUTE_NOTICE_DETAIL_PATH = SU_NOTICE_DETAIL_PATH;
 export const SU_ABSOLUTE_QA_PATH = SU_QA_PATH;
+export const SU_ABSOLUTE_QA_WRITE_PATH = SU_QA_WRITE_PATH;
+export const SU_ABSOLUTE_QA_DETAIL_PATH = SU_QA_DETAIL_PATH;
 
 export const JO_ABSOLUTE_PATH = JO_PATH;
 

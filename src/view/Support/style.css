@@ -1,8 +1,13 @@
+:root {
+    --black-color: rgba(0, 0, 0, 1);
+    --white-color: rgba(255, 255, 255, 1);
+}
+
 #support-wrapper,
 #qa-wrapper,
-#notice-detail-wrapper {
+#notice-detail-wrapper,
+#qa-write-wrapper {
     width: 1545px;
-    margin-top: 50px;
 }
 
 #notice-wrapper,
@@ -10,6 +15,10 @@
 #notice-detail-wrapper {
     display: flex;
     flex-direction: column;
+}
+
+#notice-wrapper,
+#qa-wrapper {
     gap: 10px;
 }
 
@@ -32,6 +41,10 @@
     border-bottom: 2px solid rgba(0, 0, 0, 1);
 }
 
+#notice-wrapper .table .th {
+    padding: 8px 50px;
+}
+
 #notice-wrapper .table .th,
 #qa-wrapper .table .th {
     display: flex;
@@ -40,8 +53,10 @@
 
     font-size: 18px;
     font-weight: 700;
+}
 
-    padding: 8px 50px;
+#notice-wrapper .table .tr {
+    padding: 8px 25px;
 }
 
 #notice-wrapper .table .tr,
@@ -50,13 +65,11 @@
     gap: 44px;
 
     border-bottom: 1px solid rgba(0, 0, 0, 1);
-    padding: 8px 25px;
 }
 
 #notice-wrapper .table .tr .td-no,
 #qa-wrapper .table .tr .td-no {
     width: 70px;
-    text-align: center;
 }
 
 #notice-wrapper .table .tr .td-title,
@@ -99,12 +112,14 @@
 }
 
 #notice-wrapper .button,
-#qa-wrapper .button {
+#qa-wrapper .button,
+#qa-write-wrapper .button,
+#qa-detail-wrapper .button {
     padding: 7px 20px;
     border-radius: 5px;
 
-    background-color: rgba(0, 0, 0, 1);
-    color: rgba(255, 255, 255, 1);
+    background-color: var(--black-color);
+    color: var(--white-color);
 
     cursor: pointer;
 }

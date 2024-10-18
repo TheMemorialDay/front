@@ -1,7 +1,10 @@
 import React from 'react'
 import './style.css';
 
+// component: NoticeDetail 컴포넌트 //
 export default function NoticeDetail() {
+
+    // render: NoticeDetail 컴포넌트 렌더링 //
     return (
         <div id='notice-detail-wrapper'>
             <div className='title'>SUPPORT</div>
@@ -16,7 +19,7 @@ export default function NoticeDetail() {
                 </div>
             </div>
             <div className='main'>
-                <div className='main-content'></div>
+                <div className='main-content'>제 2차 정기 점검으로 인해 불편을 끼쳐드려 죄송합니다.</div>
             </div>
         </div>
     )
