@@ -277,6 +277,8 @@ Content-Type: application/json;charset=UTF-8
 | storeName | String | 가게명 | O |
 | storeRating | Float | 가게 별점 | O |
 | reviewCount | Integer | 리뷰 개수 | O |
+| likeCount | Integer | 찜 개수 | O |
+| storeAddress | String | 가게 주소 | O |
 | storeAddress | String | 가게 주소 | O |
 | storeUrl | String | 가게 이미지 URL | O |
 | sundayOpen          | Integer    | 일요일 오픈시간   | O |
@@ -308,8 +310,9 @@ Content-Type: application/json;charset=UTF-8
     {
       "storeName": "가게명임의값",
       "storeAddress": "금정구 부곡동",
-      "storeRating": "4.5",
-      "reviewCount": "127",
+      "storeRating": 4.5,
+      "reviewCount": 127,
+      "likeCount": 14,
       "storeUrl": "http://localhost:4000/file/store_image.jpg"
     }
   ]
@@ -403,22 +406,22 @@ Content-Type: application/json;charset=UTF-8
   "stores":  [
     {
       "productName": "가게명임의값",
-      "storeRating": "4.5",
+      "storeRating": 4.5,
       "storeAddress": "금정구 동부곡로 9번길 53 1층",
-      "sundayOpen": "11",
-      "sundayLast": "20",
-      "mondayOpen": "11",
-      "mondayLast": "20",
-      "tuesdayOpen": "11",
-      "tuesdayLast": "20",
-      "wednesdayOpen": "11",
-      "wednesdayLast": "20",
-      "thursdayOpen": "11",
-      "thursdayLast": "20",
-      "fridayOpen": "11",
-      "fridayLast": "20",
-      "saturdayOpen": "11",
-      "saturdayLast": "20",
+      "sundayOpen": 11,
+      "sundayLast": 20,
+      "mondayOpen": 11,
+      "mondayLast": 20,
+      "tuesdayOpen": 11,
+      "tuesdayLast": 20,
+      "wednesdayOpen": 11,
+      "wednesdayLast": 20,
+      "thursdayOpen": 11,
+      "thursdayLast": 20,
+      "fridayOpen": 11,
+      "fridayLast": 20,
+      "saturdayOpen": 11,
+      "saturdayLast": 20,
       "storeIntroduce": "생화 케이크 제작 전문점입니다.",
       "storeUrl": "http://localhost:4000/file/store_image.jpg"
     }
@@ -427,7 +430,7 @@ Content-Type: application/json;charset=UTF-8
     {
       "productName": "케이크1",
       "productTag": "귀여움",
-      "productPrice": "35000",
+      "productPrice": 35000,
       "productOptionUrl": "http://localhost:4000/file/store_image.jpg"
     }
   ]
@@ -864,7 +867,7 @@ Content-Type: application/json;charset=UTF-8
 | reviewDay | 작성일 | Date | O |
 | reviewContents | 리뷰 내용 | String | O |
 | productName | 상품 이름 | String | O |
-| reviewUrl | 리뷰 사진 url | String | X |
+| reviewPhotoUrl | 리뷰 사진 url | String[] | X |
 
 ###### Example
 
@@ -878,24 +881,32 @@ Content-Type: application/json;charset=UTF-8
   "message": "Success."
   "review":  [
     {
-      "reviewRating": "4.5",
+      "reviewRating": s4.5,
       "reviewDay": "2024.01.03",
       "reviewContents": "모양도 예쁘고 맛도 있었어요!",
       "productName": "케이크1",
-      "reviewUrl": "http://localhost:4000/file/review_image.jpg"
+      "reviewPhotoUrl": "[http://localhost:4000/file/review_image.jpg]"
     }
   ]
 }
 ```
 
-**응답 실패 (데이터베이스 에러)**
+**응답 : 실패 (인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "AF",
+  "message": "Authentication fail."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
-  "message": "Database error."
+  "message": "DataBase error."
 }
 ```
-***
