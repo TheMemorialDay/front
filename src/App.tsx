@@ -3,7 +3,7 @@ import './App.css';
 
 import MainLayout from './layouts/MainLayout';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { HO_PATH, JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH, ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH } from './constants';
+import { HO_PATH, JO_PATH, LOGIN_PATH, MY_INFO_PATH, MY_LIKE_PATH, MY_ORDER_DETAIL_PATH, MY_ORDER_MANAGE_PATH, MY_PATH, MY_PRODUCT_PATH, MY_REVIEW_PATH, MY_SALES_PATH, MY_STORE_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH, ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH } from './constants';
 import Stores from './view/Stores';
 import Support from './view/Support';
 import Join from './view/Join';
@@ -15,6 +15,15 @@ import ShopOrder from './view/Stores/Order';
 import ShopInformation from './view/Stores/Information';
 import ShopContact from './view/Stores/Contact';
 import ShopReview from './view/Stores/Review';
+import MyPage from './view/MyPage';
+import MyInfo from './view/MyPage/MyInfo';
+import MyReview from './view/MyPage/MyReview';
+import MyOrder from './view/MyPage/MyOrderDetail';
+import MyLike from './view/MyPage/MyLike';
+import MyProduct from './view/MyPage/MyProduct';
+import MyStore from './view/MyPage/MyStore';
+import MyOrderManage from './view/MyPage/MyOrderManage';
+import MySales from './view/MyPage/MySales';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -66,6 +75,17 @@ export default function TheMemorialDay() {
       <Route path={SU_PATH} element={<MainLayout />}  >
         <Route path={SU_PATH} element={<Support />} />
         <Route path={SU_QA_PATH} element={<Qa />} />
+      </Route>
+      <Route path={MY_PATH} element={<MainLayout />}  >
+        <Route path={MY_PATH} element={<MyPage />} />
+        <Route path={MY_INFO_PATH} element={<MyInfo />} />
+        <Route path={MY_REVIEW_PATH} element={<MyReview />} />
+        <Route path={MY_ORDER_DETAIL_PATH} element={<MyOrder />} />
+        <Route path={MY_LIKE_PATH} element={<MyLike />} />
+        <Route path={MY_STORE_PATH} element={<MyStore />} />
+        <Route path={MY_PRODUCT_PATH} element={<MyProduct />} />
+        <Route path={MY_ORDER_MANAGE_PATH} element={<MyOrderManage />} />
+        <Route path={MY_SALES_PATH} element={<MySales />} />
       </Route>
     </Routes>
   );
