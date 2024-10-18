@@ -32,8 +32,8 @@ body {
 }
 
 .home-title {
-    margin-top: 300px;
-    margin-bottom: 300px;
+    margin-top: 370px;
+    margin-bottom: 370px;
 }
 
 html:not(:focus-within) {
@@ -82,13 +82,14 @@ body.home::before {
 }
 
 .reader-content-comment {
-    margin-top: 100px;
+    margin-top: 140px;
     line-height: 70px;
     font-size: 50px;
 }
 
 .how-question {
     width: 100%;
+    margin-top: 50px;
     margin-bottom: 60px;
 }
 
@@ -96,8 +97,8 @@ body.home::before {
 .how-question-b,
 .how-question-c {
     /* display: grid; */
-    width: 100%;
-    margin-top: 40px;
+    /* width: 100%; */
+    margin-top: 50px;
     border: 1px solid #D2D2D2;
     border-radius: 50px;
     padding: 26px;
@@ -111,6 +112,7 @@ body.home::before {
 }
 
 .question-answer {
+    font-size: 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -118,7 +120,7 @@ body.home::before {
 
 
 .how-answer div {
-    font-size: 14px;
+    font-size: 16px;
     padding: 12px;
     margin-left: 14px;
 }
@@ -211,7 +213,7 @@ footer {
 
 footer .footer-title-logo {
     text-align: left;
-    font-size: 14px;
+    font-size: 16px;
     
     padding-right: 30px;
     border-right: 1px solid #D2D2D2;
@@ -221,7 +223,7 @@ footer .footer-content {
     display: flex;
     text-align: left;
     align-items: center;
-    font-size: 10px;
+    font-size: 14px;
     gap: 30px;
 }
 
@@ -324,12 +326,12 @@ h2 span {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 20px;
+    padding: 30px;
     border: 1px solid #D2D2D2;
     border-radius: 20px;
-    width: 250px;
+    width: 280px;
     height: auto;
-    font-size: 20px;
+    font-size: 26px;
     display: flex;
     margin: 0 auto;
     margin-top: 450px;
