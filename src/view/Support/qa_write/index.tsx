@@ -46,12 +46,12 @@ export default function QaWrite() {
             </div>
             <div className='main'>
                 <div className='script'>내용</div>
-                <input 
-                    value={script} 
-                    type='text' 
-                    placeholder='내용(공백 포함 최소 15글자 입니다.)' 
-                    onChange={onScriptChangeHandler} 
-                    maxLength={15}
+                <input
+                    value={script}
+                    type='text'
+                    placeholder='내용(공백 포함 최소 15글자 입니다.)'
+                    onChange={onScriptChangeHandler}
+                    minLength={15}
                 />
             </div>
             <div className='bottom'>
