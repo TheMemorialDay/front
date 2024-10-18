@@ -51,7 +51,7 @@ export default function QaWrite() {
                     type='text' 
                     placeholder='내용(공백 포함 최소 15글자 입니다.)' 
                     onChange={onScriptChangeHandler} 
-                    maxLength={15}
+                    minLength={15}
                 />
             </div>
             <div className='bottom'>
