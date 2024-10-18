@@ -1,3 +1,9 @@
-#notice-wrapper .table .th {
-    justify-content: space-between;
+#notice-wrapper .th .td-date {
+    width: 85px;
+    text-align: center;
+}
+
+#notice-wrapper .th .td-title {
+    flex: 1;
+    text-align: center;
 }

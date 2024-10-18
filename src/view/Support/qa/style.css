@@ -1,7 +1,5 @@
-#qa-wrapper .table .th .td-box {
-    display: flex;
-    justify-content: space-between;
-    flex: 1;
+#qa-wrapper .table .th {
+    padding: 8px 25px;
 }
 
 #qa-wrapper .table .th .td-no,
@@ -9,13 +7,17 @@
     width: 680px;
 }
 
+#qa-wrapper .td-box {
+    display: flex;
+    gap: 78px;
+}
+
 #qa-wrapper .table .th .td-writer,
 #qa-wrapper .table .th .td-date,
 #qa-wrapper .table .th .td-status {
-    width: 38px;
     text-align: center;
 }
 
-#qa-wrapper .table .tr .td-status {
-    width: 50px;
+#qa-wrapper .table .tr {
+    padding: 8px 30px;
 }
