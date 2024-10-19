@@ -1,6 +1,5 @@
 import React from 'react'
 import './style.css';
-import { useNavigate } from 'react-router-dom';
 
 // component: 장바구니 컴포넌트 //
 export default function ShoppingCart() {

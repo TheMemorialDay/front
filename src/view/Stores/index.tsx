@@ -1,8 +1,6 @@
-import React, { ChangeEvent, MouseEvent, useState } from 'react'
+import React from 'react'
 import './style.css';
-import { useNavigate } from 'react-router';
-import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
-import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import StoreComponent from '../../components/storeThumbnail';
 
 interface CakeComponentProps {
   imageUrl: string;
@@ -19,8 +17,6 @@ function CakeComponent({ imageUrl, context }: CakeComponentProps) {
     </div >
   );
 }
-
-
 
 function FilterMenu() {
   return (
@@ -74,50 +70,6 @@ function FilterMenu() {
 };
 
 export default function Stores() {
-
-  
-
-
-  interface StoreComponentProps {
-    imageUrl: string;
-    name: string;
-    location: string;
-    rating: number;
-    reviews: number;
-  }
-
-  function StoreComponent({ imageUrl, name, location, rating, reviews }: StoreComponentProps) {
-    
-    const [checked, setChecked] = useState<boolean>(false);
-
-    const onHeartClickHandler = (event: MouseEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      checked ? setChecked(false) : setChecked(true);
-    };
-    
-    return (
-      <div className='store-card' onClick={onPostButtonClickHandler}>
-        <div className='shop-image' style={{ backgroundImage: `url(${imageUrl})` }}></div>
-        <div className='shop-info'>
-          <div className='liked'>
-            <h2 className="shop-name">{name}</h2>
-            <div onClick={onHeartClickHandler} className={checked ? 'red-heart' : 'white-heart'}></div>
-          </div>
-            
-          
-          <p className="shop-location">{location}</p>
-          <p className="shop-rating">별점 {rating}</p>
-          <p className="shop-reviews">리뷰 {reviews}</p>
-        </div>
-      </div>
-    );
-  }
-
-  const navigator = useNavigate();
-
-  const onPostButtonClickHandler = () => {
-    navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH);
-  };
 
   return (
     <div id='store-wrapper'>
