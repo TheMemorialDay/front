@@ -28,26 +28,139 @@
     font-size: 25px;
 }
 
+/** 셀렉터 start ===================================================================== */
 #mypage-sales-wrapper .sales-date-box {
 	display: flex;
+}
+
+#mypage-sales-wrapper .year-select-box {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+#mypage-sales-wrapper .year-input-box {
+	display: flex;
+	border: 1px solid rgba(67, 67, 67, 1);
+	padding: 5px 5px;
+
+	width: 100px;
+}
+
+#mypage-sales-wrapper .year-input-box.close {
+	border-radius: 5px;
+
+	cursor: pointer;
+}
+
+#mypage-sales-wrapper .year-input-box.open {
+	position: relative;
+
+	border-radius: 5px 5px 0 0;
+	border-bottom: none;
+
+	cursor: pointer;
+}
+
+#mypage-sales-wrapper .selected-item {
+	flex: 1;
+}
+
+#mypage-sales-wrapper .selector-box {
+	position: absolute;
+	top: 33px;
+	left: -1px;
+
+	width: 112px;
+	border-radius: 0 0 5px 5px;
+
+	box-sizing: border-box;
+	border: 1px solid rgba(238, 238, 238, 1);
+	border-top: none;
+
+	background-color: rgba(255, 255, 255, 1);
+
+	max-height: 95px;
+	overflow-y: auto;
+}
+
+#mypage-sales-wrapper .selector-box .selector-option {
+	padding: 6px 10px;
+	border-top: 1px solid rgba(134, 134, 134, 1);
+}
+
+#mypage-sales-wrapper .arrow-down-button {
+	background-image: url(../../../../public/images/arrow-down.png);
+	width: 20px;
+	height: 25px;
+	
+	background-size: 100% 100%;
+}
+
+#mypage-sales-wrapper .arrow-up-button {
+	background-image: url(../../../../public/images/arrow-up.png);
+	width: 20px;
+	height: 25px;
+	
+	background-size: 100% 100%;
+}
+
+/** 픽업 완료된 상품 상자 start =================================================  */
+#mypage-sales-wrapper .completed-order-container {
+	display: flex;
+	flex-direction: column;
 	gap: 15px;
 }
 
-#mypage-sales-wrapper .selec-year-box,
-#mypage-sales-wrapper .selec-month-box {
+#mypage-sales-wrapper .completed-box {
 	display: flex;
-	align-items: center;
-	gap: 5px;
+	flex-direction: column;
+
+	border: 2px solid rgba(67, 67, 67, 1);
+    border-radius: 15px;
 }
 
-#mypage-sales-wrapper .selec-year,
-#mypage-sales-wrapper .selec-month {
-    border: 1px solid rgb(117 117 117);
-    border-radius: 5px;
+#mypage-sales-wrapper .top {
+	display: flex;
+	justify-content: space-between;
 
-	text-align: center;
-    line-height: 30px;
-    font-size: 18px;
+	border-bottom: 2px solid rgba(67, 67, 67, 1);
 
-	padding: 0 10px;
+	padding: 5px 15px;
+}
+
+#mypage-sales-wrapper .main {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+
+	padding: 25px 20px;
+    box-sizing: border-box;
+}
+
+#mypage-sales-wrapper .image {
+	background-image: url(../../../../public/images/cake/cake9.jpg);
+	width: 130px;
+	height: 90px;
+
+	background-size: 100% 100%;
+
+	border-radius: 15px;
+}
+
+#mypage-sales-wrapper .order-info {
+	flex: 1;
+
+	display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#mypage-sales-wrapper .order-price {
+	width: 170px;
+
+	font-size: 25px;
+    font-weight: 600;
+
+	margin: 0px -35px -70px 0px;
 }
