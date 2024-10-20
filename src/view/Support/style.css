@@ -68,9 +68,9 @@
     border-bottom: 1px solid rgba(0, 0, 0, 1);
 }
 
-#notice-wrapper .table .tr .td-no,
-#qa-wrapper .table .tr .td-no {
+#notice-wrapper .table .tr .td-no {
     width: 70px;
+    text-align: center;
 }
 
 #notice-wrapper .table .tr .td-title,
