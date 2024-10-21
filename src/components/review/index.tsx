@@ -1,28 +1,32 @@
 import { useEffect, useState } from "react";
 import { ReviewComponentPros } from "../../types";
+import './style.css';
+import ReviewPhotoList from "../../types/review-images.interface";
+
+// interface: 리뷰 사진 리스트 //
+interface ReviewImageProps {
+    reviewPhotos: ReviewPhotoList;
+}
 
 // component: 리뷰 상자 컴포넌트 //
-export default function ReviewComponent({ reviewRating, reviewDay, reviewContents, productName, reviewPhotoUrl, imageCount }: ReviewComponentPros) {
+export default function ReviewComponent({ reviewRating, reviewDay, reviewContents, productName, reviewPhotoUrl, imageCount}: ReviewComponentPros) {
     
     // state: 모달 팝업 상태 //
     const [modalOpen, setModalOpen] = useState<boolean>(false);
-
-    // state: 사진 순서 상태 //
-    const [reviewImage, setReviewImage] = useState<string[]>([]);
 
     // state: 이미지 인덱스 상태 //
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     // event handler: 이전 사진으로 이동 //
-    const onPrevImageClickHandler = () => {
+    const nextClickHandler = () => {
         if (currentIndex < 0) return;
-        const reviewImage = setCurrentIndex(currentIndex - 1);
-        // setReviewImage(reviewImage);
+        if (currentIndex >= 0) setCurrentIndex(currentIndex + 1);
     };
 
-    // event handler: 이전 사진으로 이동 //
-    const onNextImageClickHandler = () => {
-
+    // event handler: 다음 사진으로 이동 //
+    const prevClickHandler = () => {
+        if (currentIndex > 4) return;
+        if (currentIndex < 4) setCurrentIndex(currentIndex - 1);
     };
 
     // event handler: 모달 열기 //
@@ -66,9 +70,12 @@ export default function ReviewComponent({ reviewRating, reviewDay, reviewContent
             {modalOpen &&
                 <div className='myreview-modal' onClick={onModalCloseHandler}>
                     <div className='modal-box' onClick={(event) => event.stopPropagation()}>
-                        <div className='arrow-left' onClick={onPrevImageClickHandler}></div>
-                        <div className='review-photo'></div>
-                        <div className='arrow-right'></div>
+                        <div className='arrow-left' onClick={prevClickHandler}></div>
+                        {/* {reviewPhotos.reviewPhotoList.slice(currentIndex, currentIndex + 4)
+                            .map((photo, index) =>
+                            <div className='review-photo' key={index}>{photo}</div>
+                        )} */}
+                        <div className='arrow-right' onClick={nextClickHandler}></div>
                     </div>
                 </div>
             }

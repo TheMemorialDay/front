@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import './style.css';
 import ReviewComponent from '../../../components/review';
 import { useNavigate } from 'react-router-dom';
@@ -6,12 +6,6 @@ import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../../constants';
 
 // component: 마이페이지 리뷰 컴포넌트 //
 export default function MyReview() {
-
-    // state: 모달창 useRef //
-    const modalRef = useRef<HTMLDivElement | null>(null);
-
-    // state: 모달 팝업 상태 //
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
 
     // function: 네비게이터 //
     const navigator = useNavigate();
