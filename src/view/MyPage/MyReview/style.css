@@ -1,4 +1,19 @@
+#mypage-review-wrapper {
+    width: 1330px;
+    gap: 45px;
+}
+
 #mypage-review-wrapper .title {
     text-align: center;
     margin-top: 70px;
+    font-size: 30px;
+}
+
+#mypage-review-wrapper .main-title {
+    font-size: 25px;
+    font-weight: 600;
+    
+    margin-bottom: 15px;
+
+    cursor: pointer;
 }

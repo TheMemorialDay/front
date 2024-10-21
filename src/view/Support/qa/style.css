@@ -21,3 +21,7 @@
 #qa-wrapper .table .tr {
     padding: 8px 30px;
 }
+
+#qa-wrapper .table .tr .td-no {
+    width: 70px;
+}

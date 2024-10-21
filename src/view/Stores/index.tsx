@@ -1,8 +1,6 @@
-import React, { ChangeEvent, MouseEvent, useState } from 'react'
+import React from 'react'
 import './style.css';
-import { useNavigate } from 'react-router';
-import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
-import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import StoreComponent from '../../components/storeThumbnail';
 
 interface CakeComponentProps {
   imageUrl: string;
@@ -19,8 +17,6 @@ function CakeComponent({ imageUrl, context }: CakeComponentProps) {
     </div >
   );
 }
-
-
 
 function FilterMenu() {
   return (
@@ -75,50 +71,6 @@ function FilterMenu() {
 
 export default function Stores() {
 
-  
-
-
-  interface StoreComponentProps {
-    imageUrl: string;
-    name: string;
-    location: string;
-    rating: number;
-    reviews: number;
-  }
-
-  function StoreComponent({ imageUrl, name, location, rating, reviews }: StoreComponentProps) {
-    
-    const [checked, setChecked] = useState<boolean>(false);
-
-    const onHeartClickHandler = (event: MouseEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      checked ? setChecked(false) : setChecked(true);
-    };
-    
-    return (
-      <div className='store-card' onClick={onPostButtonClickHandler}>
-        <div className='shop-image' style={{ backgroundImage: `url(${imageUrl})` }}></div>
-        <div className='shop-info'>
-          <div className='liked'>
-            <h2 className="shop-name">{name}</h2>
-            <div onClick={onHeartClickHandler} className={checked ? 'red-heart' : 'white-heart'}></div>
-          </div>
-            
-          
-          <p className="shop-location">{location}</p>
-          <p className="shop-rating">별점 {rating}</p>
-          <p className="shop-reviews">리뷰 {reviews}</p>
-        </div>
-      </div>
-    );
-  }
-
-  const navigator = useNavigate();
-
-  const onPostButtonClickHandler = () => {
-    navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH);
-  };
-
   return (
     <div id='store-wrapper'>
       <div className='store-top'>
@@ -160,10 +112,10 @@ export default function Stores() {
         </div>
         <FilterMenu />
         <div className='shop-list'>
-          <StoreComponent imageUrl="/picture1.png" name="이도씨 베이킹" location="금정구 부곡동" rating={4.5} reviews={127} />
-          <StoreComponent imageUrl="/picture12.png" name="어스 베이킹" location="금정구 장전동" rating={4.3} reviews={291} />
-          <StoreComponent imageUrl="/picture13.png" name="바닐바닐" location="금정구 장전동" rating={3.8} reviews={83} />
-          <StoreComponent imageUrl="/picture14.png" name="온도 케이크" location="동래구 명륜동" rating={4.0} reviews={333} />
+          <StoreComponent storeImageUrl="/picture1.png" storeName="이도씨 베이킹" location="금정구 부곡동" reviewRating={4.5} reviews={127} />
+          <StoreComponent storeImageUrl="/picture12.png" storeName="어스 베이킹" location="금정구 장전동" reviewRating={4.3} reviews={291} />
+          <StoreComponent storeImageUrl="/picture13.png" storeName="바닐바닐" location="금정구 장전동" reviewRating={3.8} reviews={83} />
+          <StoreComponent storeImageUrl="/picture14.png" storeName="온도 케이크" location="동래구 명륜동" reviewRating={4.0} reviews={333} />
         </div>
       </div>
     </div >

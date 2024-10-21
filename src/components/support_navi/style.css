@@ -6,9 +6,7 @@
     margin-top: 70px;
 }
 
-#supportnavi-wrapper .title,
-#notice-detail-wrapper .title,
-#mypage-review-wrapper .title {
+#supportnavi-wrapper .title {
     text-align: center;
     font-size: 30px;
 }

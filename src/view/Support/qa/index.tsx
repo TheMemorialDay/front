@@ -68,7 +68,7 @@ export default function Qa() {
 
     // event handler: 큐엔에이 검색 버튼 //
     const onSearchButtonHandler = () => {
-        const searchedList = originalList.filter(qa => (qa.qaTitle, qa.qaWriter).includes(searchWords));
+        const searchedList = originalList.filter(qa => (qa.questionTitle, qa.name).includes(searchWords));
         setTotalList(searchedList);
         initViewList(searchedList);
     }; 
