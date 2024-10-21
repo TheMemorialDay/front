@@ -31,23 +31,33 @@
 /** 셀렉터 start ===================================================================== */
 #mypage-sales-wrapper .sales-date-box {
 	display: flex;
+	gap: 15px;
 }
 
-#mypage-sales-wrapper .year-select-box {
+#mypage-sales-wrapper .year-select-box,
+#mypage-sales-wrapper .month-select-box {
 	display: flex;
 	gap: 5px;
 	align-items: center;
 }
 
-#mypage-sales-wrapper .year-input-box {
+#mypage-sales-wrapper .year-input-box,
+#mypage-sales-wrapper .month-input-box {
 	display: flex;
 	border: 1px solid rgba(67, 67, 67, 1);
 	padding: 5px 5px;
+}
 
+#mypage-sales-wrapper .year-input-box {
 	width: 100px;
 }
 
-#mypage-sales-wrapper .year-input-box.close {
+#mypage-sales-wrapper .month-input-box {
+	width: 85px;
+}
+
+#mypage-sales-wrapper .year-input-box.close,
+#mypage-sales-wrapper .month-input-box.close {
 	border-radius: 5px;
 
 	cursor: pointer;
@@ -62,16 +72,20 @@
 	cursor: pointer;
 }
 
+#mypage-sales-wrapper .month-input-box.open {
+	position: relative;
+
+	border-radius: 5px 5px 0 0;
+	border-bottom: none;
+
+	cursor: pointer;
+}
+
 #mypage-sales-wrapper .selected-item {
 	flex: 1;
 }
 
 #mypage-sales-wrapper .selector-box {
-	position: absolute;
-	top: 33px;
-	left: -1px;
-
-	width: 112px;
 	border-radius: 0 0 5px 5px;
 
 	box-sizing: border-box;
@@ -82,6 +96,32 @@
 
 	max-height: 95px;
 	overflow-y: auto;
+}
+
+#mypage-sales-wrapper .selector-box.year {
+	position: absolute;
+	top: 33px;
+	left: -1px;
+
+	width: 112px;
+}
+
+#mypage-sales-wrapper .selector-box.month {
+	position: absolute;
+    top: 35px;
+    left: -1px;
+	
+    width: 98px;
+}
+
+#mypage-sales-wrapper .selector-box::-webkit-scrollbar {
+	background: none;
+	width: 8px;
+}
+
+#mypage-sales-wrapper .selector-box::-webkit-scrollbar-thumb {
+	background-color: rgba(134, 134, 134, 1);
+	border-radius: 5px;
 }
 
 #mypage-sales-wrapper .selector-box .selector-option {

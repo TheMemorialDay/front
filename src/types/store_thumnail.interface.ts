@@ -1,9 +1,9 @@
 //# 스토어 섬네일 정보 리스트
 
 export default interface StoreComponentProps {
-	imageUrl: string;
-	name: string;
+	storeImageUrl: string;
+	storeName: string;
 	location: string;
-	rating: number;
+	reviewRating: number;
 	reviews: number;
 }
