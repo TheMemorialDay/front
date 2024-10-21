@@ -1,9 +1,8 @@
 #mypage-like-wrapper {
 	display: flex;
 	flex-direction: column;
-	gap: 50px;
 
-	width: 1345px;
+	width: 1350px;
 	margin-top: 60px;
 }
 
@@ -17,5 +16,4 @@
 	display: flex;
 	justify-content: space-between;
 	flex-wrap: wrap;
-	gap: 46px;
 }

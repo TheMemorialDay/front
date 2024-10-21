@@ -6,6 +6,7 @@ import StoreComponentProps from "./store_thumnail.interface";
 import CompletedOrderProps from "./completed-order.interface";
 import YearSelectProps from "./year-select.interface";
 import MonthSelectProps from "./month-select.interface";
+import ReviewImageList from "./review-images.interface";
 
 export type {
     NoticeList,
@@ -15,5 +16,6 @@ export type {
     StoreComponentProps,
     CompletedOrderProps,
     YearSelectProps,
-    MonthSelectProps
+    MonthSelectProps,
+    ReviewImageList
 }

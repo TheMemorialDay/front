@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './style.css';
 import { MonthSelectProps } from '../../types';
 
@@ -13,14 +13,28 @@ export default function MonthSelect() {
 	// state: 월 셀렉터 상태 //
 	const [monthSelector, setMonthSelector] = useState<boolean>(false);
 
+	// state: 월 선택 셀렉터 참조 상태 //
+	const selectBoxRef = useRef<HTMLDivElement|null>(null);
+
 	// event handler: 년도 셀렉터 상태 토글 //
 	const onmonthSelectorToggleHandler = () => {
 		setMonthSelector(!monthSelector);
 	};
 
+	// effect: 외부 클릭 시 셀렉터 닫히기 //
+	useEffect(() => {
+		const handleClick = (event: MouseEvent) => {
+			if (selectBoxRef.current && !selectBoxRef.current.contains(event.target as Node)) {
+				setMonthSelector(false);
+			}
+		};
+		window.addEventListener('mousedown', handleClick);
+		return () => window.removeEventListener('mousedown', handleClick);
+	}, []);
+
 	// render: 월 선택 컴포넌트 렌더링 //
 	return (
-		<div className='month-select-box'>
+		<div ref={selectBoxRef} className='month-select-box'>
 			{monthSelector ?
 				<div className='month-input-box open' onClick={onmonthSelectorToggleHandler}>
 					<div className='selected-item'>월 선택</div>
