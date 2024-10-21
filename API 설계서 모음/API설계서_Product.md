@@ -148,7 +148,7 @@ Content-Type: application/json;charset=UTF-8
 The Memoridal Day의 상품관리와 관련된 REST API 모듈입니다.  
 상품 상세페이지, 상품 등록, 상품 삭제, 상품 수정 등의 API가 포함되어 있습니다.  
   
-- url : /mypage/product_mange/
+- url : /mypage/product/
 
 ***
 
@@ -156,7 +156,7 @@ The Memoridal Day의 상품관리와 관련된 REST API 모듈입니다.
   
 ##### 설명
 
-상품 관리 페이지에서 상품 추가 버튼을 클릭하여 상품을 신규로 추가하며 설정하는 페이지이다. 클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함하고 URL에 상품번호를 포함하고 상품 이름, 상품 소개, 가격, 당일 케이크 여부, 상품옵션 리스트, 상품 테마 리스트, 상품태그명, 상품사진을 입력하여 요청하고 상품 등록이 이루어지면 성공에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다. 
+상품 관리 페이지에서 상품 추가 버튼을 클릭하여 상품을 신규로 추가하며 설정하는 페이지이다. 클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함하고 URL에 상품번호를 포함하고 상품 이름, 상품 소개, 가격, 당일 케이크 여부, 상품옵션 리스트, 상품 테마 리스트, 상품태그명, 상품사진을 입력하여 요청하고 상품 등록이 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다. 
 
 - method : **POST**  
 - end point : **/{storeNumber}**  
@@ -196,7 +196,7 @@ The Memoridal Day의 상품관리와 관련된 REST API 모듈입니다.
 ###### Example
 
 ```bash
-curl -v -X POST "http://localhost:4000/mypage/product_manage/{storeNumber}" \
+curl -v -X POST "http://localhost:4000/mypage/product/{storeNumber}" \
  -d "productName = '초코케이크'" \
  -d "productIntroduce : '달달한 수제 케이크.' " \
  -d "productPrice = 40000" \
@@ -333,7 +333,7 @@ Content-Type: application/json;charset=UTF-8
 ###### Example
 
 ```bash
-curl -v -X PATCH "http://localhost:4000/mypage/product_manage/{store_number}/{product_number}" \
+curl -v -X PATCH "http://localhost:4000/mypage/product/{store_number}/{product_number}" \
  -d "productName = '레터링케이크'" \
  -d "productIntroduce : '자유자제로 적을 수 있는 케이크.' " \
  -d "productPrice = 20000" \
@@ -450,7 +450,7 @@ Content-Type: application/json;charset=UTF-8
 ###### Example
 
 ```bash
-curl -v -X DELETE "http://localhost:4000/mypage/product_manage/{storeNumber}/{productNumber}" \
+curl -v -X DELETE "http://localhost:4000/mypage/product/{storeNumber}/{productNumber}" \
 ```
 
 ##### Response
