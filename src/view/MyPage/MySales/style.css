@@ -12,7 +12,7 @@
 	text-align: center;
 	font-weight: 600;
 
-	/* margin-bottom: 10px; */
+	margin-bottom: 15px;
 }
 
 #mypage-sales-wrapper .line {
@@ -20,11 +20,16 @@
 }
 
 #mypage-sales-wrapper .sales-graph-box {
-	background-color: cadetblue;
+	background-image: url(/public//images/예시_월매출.png);
+	width: 100%;
+    height: 460px;
+
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: auto;
 
 	/* margin-top: 30px; */
     text-align: center;
-    height: 300px;
     font-size: 25px;
 }
 

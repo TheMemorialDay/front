@@ -13,7 +13,7 @@ export default function MySales() {
             <div className='title'>매출 관리</div>
             <div className='line'></div>
 
-            <div className='sales-graph-box'>월 매출 현황</div>
+            <div className='sales-graph-box'></div>
 
             <div className='sales-date-box'>
                 <YearSelect />
