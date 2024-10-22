@@ -8,7 +8,8 @@ import { JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_
   ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH, 
   SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, SHOPPING_CART_PATH, MY_PATH, 
   MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_LIKE_PATH, MY_STORE_PATH, MY_PRODUCT_PATH, 
-  MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PRODUCT_ADD_PATH } from './constants';
+  MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PRODUCT_ADD_PATH, 
+  MY_PRODUCT_UPDATE_PATH} from './constants';
 
 import Stores from './view/Stores';
 import Support from './view/Support';
@@ -102,6 +103,7 @@ export default function TheMemorialDay() {
         <Route path={MY_PRODUCT_PATH}>
           <Route index element={<MyProduct />} />
           <Route path={MY_PRODUCT_ADD_PATH} element={<Update/>} /> 
+          <Route path={MY_PRODUCT_UPDATE_PATH} element={<Update />} />
         </Route>
 
         <Route path={MY_ORDER_MANAGE_PATH} element={<MyOrderManage />} />
