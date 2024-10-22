@@ -33,7 +33,10 @@ export const MY_ORDER_DETAIL_PATH = `order-detail`;
 export const MY_REVIEW_PATH = `review`;
 export const MY_LIKE_PATH = `like`;
 export const MY_STORE_PATH = `store`;
+
 export const MY_PRODUCT_PATH = `product`;
+export const MY_PRODUCT_ADD_PATH = `1`;
+
 export const MY_ORDER_MANAGE_PATH = `order-manage`;
 export const MY_SALES_PATH = `sales`;
 
@@ -72,7 +75,10 @@ export const MY_ORDER_DETAIL_ABSOLUTE_PATH = `${MY_PATH}/${MY_ORDER_DETAIL_PATH}
 export const MY_REVIEW_ABSOLUTE_PATH = `${MY_PATH}/${MY_REVIEW_PATH}`;
 export const MY_LIKE_ABSOLUTE_PATH = `${MY_PATH}/${MY_LIKE_PATH}`;
 export const MY_STORE_ABSOLUTE_PATH = `${MY_PATH}/${MY_STORE_PATH}`;
+
 export const MY_PRODUCT_ABSOLUTE_PATH = `${MY_PATH}/${MY_PRODUCT_PATH}`;
+export const MY_PRODUCT_ADD_ABSOLUTE_PATH = `${MY_PRODUCT_ABSOLUTE_PATH}/${MY_PRODUCT_ADD_PATH}`;
+
 export const MY_ORDER_MANAGE_ABSOLUTE_PATH = `${MY_PATH}/${MY_ORDER_MANAGE_PATH}`;
 export const MY_SALES_ABSOLUTE_PATH = `${MY_PATH}/${MY_SALES_PATH}`;
 

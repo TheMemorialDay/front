@@ -1,0 +1,137 @@
+#manage-product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#manage-product .title {
+    font-size: 30px;
+    font-weight: 600;
+    text-align: center;
+
+    margin-top: 50px;
+    margin-bottom: 25px;
+}
+
+#manage-product .custom-hr {
+    width: 80vw;
+    color: rgba(0, 0, 0, 0.7);
+    margin-bottom: 70px;
+}
+
+#manage-product .center {
+    flex-direction: column;
+    justify-items: center;
+}
+
+#manage-product .product-box {
+    display: flex;
+    flex-direction: row;
+    width: 80vw;
+    height: 330px;
+    gap: 50px;
+    justify-content: space-around;
+}
+
+#manage-product .add-button {
+    width: 240px;
+    height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    margin-top: -20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+    z-index: 1;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+#manage-product .add-button:hover {
+    transform: translateY(-10px);
+}
+
+#manage-product .add-button .circle {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    z-index: 2;
+    background-color: black;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+
+    font-size: 25px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 10px;
+}
+
+#manage-product .add-button .add-text {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+#manage-product .legacy-product {
+    width: 240px;
+    height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    margin-top: -20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+    z-index: 1;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    position: relative;
+}
+
+.close-button {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* 반투명 배경 */
+    color: black;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#manage-product .legacy-product:hover {
+    transform: translateY(-10px);
+}
+
+#manage-product .legacy-product:hover .close-button {
+    display: block;
+}
+
+.cake-item:hover {
+    transform: scale(1.05);
+}

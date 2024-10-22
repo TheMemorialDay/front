@@ -37,7 +37,7 @@ const MyPage = () => {
                     <div className='category-title'>가게 관리</div>
                 </div>
                 <div className='review' onClick={() => onClickNavigation(MY_PRODUCT_PATH)}>
-                    <div className='category-icon'></div>
+                    <div className='category-icon-product'></div>
                     <div className='category-title'>상품 관리</div>
                 </div>
                 <div className='order-detail' onClick={() => onClickNavigation(MY_ORDER_MANAGE_PATH)}>
