@@ -1,31 +1,39 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './style.css';
-import { MonthSelectProps } from '../../types';
-
-// interface: 월 선택 //
-interface SelectMonthProps {
-	month: MonthSelectProps;
-}
+import { SalesDateSelectProps } from '../../types';
 
 // component: 월 선택 컴포넌트 //
 export default function MonthSelect() {
 
-	// state: 월 셀렉터 상태 //
-	const [monthSelector, setMonthSelector] = useState<boolean>(false);
+	// state: 월 셀렉터 오픈 상태 //
+    const [monthSelectorOpen, setMonthSelectorOpen] = useState<boolean>(false);
+
+	// state: 월 선택 상태 //
+	const [monthSelected, setMonthSelected] = useState<SalesDateSelectProps | null>(null);
 
 	// state: 월 선택 셀렉터 참조 상태 //
 	const selectBoxRef = useRef<HTMLDivElement|null>(null);
 
+	// state: 선택 가능한 년도 리스트 상태 //
+	const [monthList, setMonthList] = useState<SalesDateSelectProps[]>([]);
+
 	// event handler: 년도 셀렉터 상태 토글 //
 	const onmonthSelectorToggleHandler = () => {
-		setMonthSelector(!monthSelector);
+		setMonthSelectorOpen(!monthSelectorOpen);
+	};
+
+	// event handler: 월 선택 //
+	const onYearSelectButtonHandler = (month: SalesDateSelectProps) => {
+		setMonthSelected(month);
+		if (!month) setMonthSelected(null);
+		setMonthSelectorOpen(false);
 	};
 
 	// effect: 외부 클릭 시 셀렉터 닫히기 //
 	useEffect(() => {
 		const handleClick = (event: MouseEvent) => {
 			if (selectBoxRef.current && !selectBoxRef.current.contains(event.target as Node)) {
-				setMonthSelector(false);
+				setMonthSelectorOpen(false);
 			}
 		};
 		window.addEventListener('mousedown', handleClick);
@@ -35,11 +43,14 @@ export default function MonthSelect() {
 	// render: 월 선택 컴포넌트 렌더링 //
 	return (
 		<div ref={selectBoxRef} className='month-select-box'>
-			{monthSelector ?
+			{monthSelectorOpen ?
 				<div className='month-input-box open' onClick={onmonthSelectorToggleHandler}>
 					<div className='selected-item'>월 선택</div>
 					<div className='arrow-up-button'></div>
 					<div className='selector-box month'>
+						{/* {monthList.map((month, index) => 
+							<div className='selector-option' key={index}>{month.month}</div>
+						)} */}
 						<div className='selector-option'>12</div>
 						<div className='selector-option'>11</div>
 						<div className='selector-option'>10</div>
