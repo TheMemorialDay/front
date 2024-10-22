@@ -138,6 +138,7 @@
 #shopping-cart-wrapper .bottom {
     display: flex;
     justify-content: end;
+    gap: 20px;
 }
 
 #shopping-cart-wrapper .total-count {

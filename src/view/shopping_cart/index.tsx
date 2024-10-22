@@ -7,10 +7,20 @@ import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
 // component: 장바구니 컴포넌트 //
 export default function ShoppingCart() {
 
+    // function: 네비게이터 //
+    const navigator = useNavigate();
+
     // event handler: 삭제 버튼 //
     const onDeleteButtonHandler = () => {
         const isConfirm = window.confirm('정말로 삭제하시겠습니까?')
         if (!isConfirm) return;
+    };
+
+    // event handler: 주문 요청 버튼 //
+    const onOrderRequestButtonHandler = () => {
+        const isConfirm = window.confirm('주문하시겠습니까?');
+        if (!isConfirm) return;
+        // 네비게이터 주문 요청 완료 페이지 이동
     };
 
     // render: 장바구니 컴포넌트 렌더링 //
@@ -43,6 +53,7 @@ export default function ShoppingCart() {
 
             <div className='bottom'>
                 <div className='total-count'>총 금액 33,000</div>
+                <div className='button order-request-button' onClick={onOrderRequestButtonHandler}>주문</div>
             </div>
         </div>
     )
