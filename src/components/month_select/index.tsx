@@ -14,10 +14,10 @@ export default function MonthSelect() {
 	// state: 월 선택 셀렉터 참조 상태 //
 	const selectBoxRef = useRef<HTMLDivElement|null>(null);
 
-	// state: 선택 가능한 년도 리스트 상태 //
+	// state: 선택 가능한 월 리스트 상태 //
 	const [monthList, setMonthList] = useState<SalesDateSelectProps[]>([]);
 
-	// event handler: 년도 셀렉터 상태 토글 //
+	// event handler: 월 셀렉터 상태 토글 //
 	const onmonthSelectorToggleHandler = () => {
 		setMonthSelectorOpen(!monthSelectorOpen);
 	};
@@ -49,7 +49,7 @@ export default function MonthSelect() {
 					<div className='arrow-up-button'></div>
 					<div className='selector-box month'>
 						{/* {monthList.map((month, index) => 
-							<div className='selector-option' key={index}>{month.month}</div>
+							<div className='selector-option' onClick={() => onYearSelectButtonHandler(month)} key={index}>{month.month}</div>
 						)} */}
 						<div className='selector-option'>12</div>
 						<div className='selector-option'>11</div>

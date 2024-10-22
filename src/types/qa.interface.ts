@@ -6,6 +6,6 @@ export default interface QaList {
     questionContents: string;
     questionDay: string;
     name: string;
-    questionStatus: '대기' | '완료';
+    questionStatus: string;
     answerContents: string;
 }

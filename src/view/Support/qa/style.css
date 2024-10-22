@@ -25,3 +25,7 @@
 #qa-wrapper .table .tr .td-no {
     width: 70px;
 }
+
+#qa-wrapper .tr .td-title {
+    cursor: pointer;
+}

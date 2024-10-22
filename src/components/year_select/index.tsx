@@ -49,7 +49,7 @@ export default function YearSelect() {
 					<div className='arrow-up-button'></div>
 					<div className='selector-box year'>
 						{/* {yearList.map((year, index) => 
-							<div className='selector-option' key={index}>{year.year}</div>
+							<div className='selector-option' onClick={() => onYearSelectButtonHandler(year)} key={index}>{year.year}</div>
 						)} */}
 						<div className='selector-option'>2024</div>
 						<div className='selector-option'>2025</div>
