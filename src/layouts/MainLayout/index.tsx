@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './style.css';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN, HO_ABSOLUTE_PATH, HO_PATH, JO_ABSOLUTE_PATH, JO_PATH, LOGIN_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH, SHOPPING_CART_ABSOLUTE_PATH, SIGN_UP_PATH, ST_ABSOLUTE_PATH, ST_PATH, SU_ABSOLUTE_PATH, SU_PATH } from '../../constants';
+import { ACCESS_TOKEN, HO_ABSOLUTE_PATH, HO_PATH, JO_ABSOLUTE_PATH, JO_PATH, LOGIN_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH, SHOPPING_CART_ABSOLUTE_PATH, SIGN_UP_ABSOLUTE_PATH, SIGN_UP_PATH, ST_ABSOLUTE_PATH, ST_PATH, SU_ABSOLUTE_PATH, SU_PATH } from '../../constants';
 
 // component: 로고 컴포넌트 //
 function Logo() {
@@ -98,7 +98,7 @@ function TopPersonalNavigation() {
 
     // event handler: 회원가입 버튼 //
     const onSignUpClickHandler = () => {
-        navigator(SIGN_UP_PATH);
+        navigator(SIGN_UP_ABSOLUTE_PATH);
     }
 
     // event Handler: 로그아웃 버튼 클릭 이벤트 처리 //
