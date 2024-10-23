@@ -8,7 +8,7 @@ import { useCookies } from 'react-cookie';
 type AuthPath = 'logIn' | 'findId' | 'findIdResult' | 'findPassword' | 'changePassword';
 interface AuthComponentProps {
     onPathChange: (path: AuthPath) => void;
-  }
+}
 
 // component: 로그인 화면 컴포넌트 //
 function SignIn({onPathChange}: AuthComponentProps) {

@@ -1,8 +1,8 @@
 #ok {
     display: flex;
     flex-direction: column;
-    align-items: center;  /* Corrected */
-    justify-content: center; /* Added */
+    align-items: center;
+    justify-content: center; 
 }
 
 #ok .emoji {

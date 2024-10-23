@@ -7,6 +7,7 @@
 
 #myPage .myPage-title {
     font-size: 30px;
+    font-weight: 800;
 }
 
 #general {
@@ -46,7 +47,7 @@
     cursor: pointer;
 }
 
-#myPage .userInfo:hover ,
+#myPage .userInfo:hover,
 #myPage .review:hover,
 #myPage .order-detail:hover,
 #myPage .like:hover,
@@ -58,12 +59,27 @@
     transform: translateY(-6px);
 }
 
-#myPage .category-icon {
+#myPage .category-icon-product {
     width: 140px;
     height: 140px;
     background-size: cover;
-    background-image: url('/public/images/login-icon.png');
+    background-image: url('/public/images/product.png');
     background-image: no-repeat;
-    /* display: flex;
-    align-items: center; */
+}
+
+
+#myPage .order-icon {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-image: url('/public/images/shopping-cart.png');
+    background-image: no-repeat;
+}
+
+#myPage .order-manage-icon {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-image: url('/public/images/order.png');
+    background-image: no-repeat;
 }
