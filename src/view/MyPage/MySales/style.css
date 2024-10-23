@@ -1,0 +1,211 @@
+#mypage-sales-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+
+	margin-top: 50px;
+	width: 1275px;
+}
+
+#mypage-sales-wrapper .title {
+	font-size: 30px;
+	text-align: center;
+	font-weight: 600;
+
+	margin-bottom: 15px;
+}
+
+#mypage-sales-wrapper .line {
+	border-bottom: 1px solid rgba(134, 134, 134, 1);
+}
+
+#mypage-sales-wrapper .sales-graph-box {
+	background-image: url(/public//images/예시_월매출.png);
+	width: 100%;
+    height: 460px;
+
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: auto;
+
+	/* margin-top: 30px; */
+    text-align: center;
+    font-size: 25px;
+}
+
+/** 셀렉터 start ===================================================================== */
+#mypage-sales-wrapper .sales-date-box {
+	display: flex;
+	gap: 15px;
+}
+
+#mypage-sales-wrapper .year-select-box,
+#mypage-sales-wrapper .month-select-box {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+#mypage-sales-wrapper .year-input-box,
+#mypage-sales-wrapper .month-input-box {
+	display: flex;
+	border: 1px solid rgba(67, 67, 67, 1);
+	padding: 5px 5px;
+}
+
+#mypage-sales-wrapper .year-input-box {
+	width: 100px;
+}
+
+#mypage-sales-wrapper .month-input-box {
+	width: 85px;
+}
+
+#mypage-sales-wrapper .year-input-box.close,
+#mypage-sales-wrapper .month-input-box.close {
+	border-radius: 5px;
+
+	cursor: pointer;
+}
+
+#mypage-sales-wrapper .year-input-box.open {
+	position: relative;
+
+	border-radius: 5px 5px 0 0;
+	border-bottom: none;
+
+	cursor: pointer;
+}
+
+#mypage-sales-wrapper .month-input-box.open {
+	position: relative;
+
+	border-radius: 5px 5px 0 0;
+	border-bottom: none;
+
+	cursor: pointer;
+}
+
+#mypage-sales-wrapper .selected-item {
+	flex: 1;
+}
+
+#mypage-sales-wrapper .selector-box {
+	border-radius: 0 0 5px 5px;
+
+	box-sizing: border-box;
+	border: 1px solid rgba(238, 238, 238, 1);
+	border-top: none;
+
+	background-color: rgba(255, 255, 255, 1);
+
+	max-height: 95px;
+	overflow-y: auto;
+}
+
+#mypage-sales-wrapper .selector-box.year {
+	position: absolute;
+	top: 33px;
+	left: -1px;
+
+	width: 112px;
+}
+
+#mypage-sales-wrapper .selector-box.month {
+	position: absolute;
+    top: 35px;
+    left: -1px;
+	
+    width: 98px;
+}
+
+#mypage-sales-wrapper .selector-box::-webkit-scrollbar {
+	background: none;
+	width: 8px;
+}
+
+#mypage-sales-wrapper .selector-box::-webkit-scrollbar-thumb {
+	background-color: rgba(134, 134, 134, 1);
+	border-radius: 5px;
+}
+
+#mypage-sales-wrapper .selector-box .selector-option {
+	padding: 6px 10px;
+	border-top: 1px solid rgba(134, 134, 134, 1);
+}
+
+#mypage-sales-wrapper .arrow-down-button {
+	background-image: url(../../../../public/images/arrow-down.png);
+	width: 20px;
+	height: 25px;
+	
+	background-size: 100% 100%;
+}
+
+#mypage-sales-wrapper .arrow-up-button {
+	background-image: url(../../../../public/images/arrow-up.png);
+	width: 20px;
+	height: 25px;
+	
+	background-size: 100% 100%;
+}
+
+/** 픽업 완료된 상품 상자 start =================================================  */
+#mypage-sales-wrapper .completed-order-container {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+#mypage-sales-wrapper .completed-box {
+	display: flex;
+	flex-direction: column;
+
+	border: 2px solid rgba(67, 67, 67, 1);
+    border-radius: 15px;
+}
+
+#mypage-sales-wrapper .top {
+	display: flex;
+	justify-content: space-between;
+
+	border-bottom: 2px solid rgba(67, 67, 67, 1);
+
+	padding: 5px 15px;
+}
+
+#mypage-sales-wrapper .main {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+
+	padding: 25px 20px;
+    box-sizing: border-box;
+}
+
+#mypage-sales-wrapper .image {
+	background-image: url(../../../../public/images/cake/cake9.jpg);
+	width: 130px;
+	height: 90px;
+
+	background-size: 100% 100%;
+
+	border-radius: 15px;
+}
+
+#mypage-sales-wrapper .order-info {
+	flex: 1;
+
+	display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#mypage-sales-wrapper .order-price {
+	width: 170px;
+
+	font-size: 25px;
+    font-weight: 600;
+
+	margin: 0px -35px -70px 0px;
+}

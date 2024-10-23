@@ -27,13 +27,14 @@ export default function QaWrite() {
     };
 
     // event handler: 큐엔에이 작성 취소 버튼 //
-    const onWirteCancleButtonHandler = () => {
+    const onWriteCancleButtonHandler = () => {
         navigator(SU_ABSOLUTE_QA_PATH);
     };
 
     // event handler: 큐엔에이 등록 버튼 //
     //* api 작성 후 다시 작성 
     const onWriteRegisterButtonHandler = () => {
+        alert('등록이 완료되었습니다.');
         navigator(SU_ABSOLUTE_QA_PATH);
     };
 
@@ -55,7 +56,7 @@ export default function QaWrite() {
                 />
             </div>
             <div className='bottom'>
-                <div className='button cancle-button' onClick={onWirteCancleButtonHandler}>취소</div>
+                <div className='button cancle-button' onClick={onWriteCancleButtonHandler}>취소</div>
                 <div className='button write-button' onClick={onWriteRegisterButtonHandler}>등록</div>
             </div>
         </div>

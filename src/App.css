@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @font-face {
-    font-family: 'Pretendard';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
+  font-family: 'Pretendard';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
 }
 
 body {
@@ -19,11 +19,14 @@ body {
 }
 
 .button {
-    padding: 7px 20px;
-    border-radius: 5px;
+  width: 72px;
+  height: 35px;
+  padding: 7px 20px;
+  box-sizing: border-box;
+  border-radius: 5px;
 
-    background-color: var(--black-color);
-    color: var(--white-color);
+  background-color: var(--black-color);
+  color: var(--white-color);
 
-    cursor: pointer;
+  cursor: pointer;
 }

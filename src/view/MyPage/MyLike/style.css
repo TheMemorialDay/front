@@ -1,0 +1,19 @@
+#mypage-like-wrapper {
+	display: flex;
+	flex-direction: column;
+
+	width: 1350px;
+	margin-top: 60px;
+}
+
+#mypage-like-wrapper .title {
+	font-size: 30px;
+	text-align: center;
+	font-weight: 600;
+}
+
+#mypage-like-wrapper .main {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}

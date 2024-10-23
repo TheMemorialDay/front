@@ -1,14 +1,33 @@
 import React from 'react'
 import './style.css';
+import CartBox from '../../components/shopping_cart';
 import { useNavigate } from 'react-router-dom';
+import { ACCESS_TOKEN, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
+import { useCookies } from 'react-cookie';
 
 // component: 장바구니 컴포넌트 //
 export default function ShoppingCart() {
+
+    // state: cookie 상태 //
+    const [ cookies ] = useCookies();
+
+    // function: 네비게이터 //
+    const navigator = useNavigate();
 
     // event handler: 삭제 버튼 //
     const onDeleteButtonHandler = () => {
         const isConfirm = window.confirm('정말로 삭제하시겠습니까?')
         if (!isConfirm) return;
+    };
+
+    // event handler: 주문 요청 버튼 //
+    const onOrderRequestButtonHandler = () => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) return;
+
+        const isConfirm = window.confirm('주문하시겠습니까?');
+        if (!isConfirm) return;
+        // 네비게이터 주문 요청 완료 페이지 이동
     };
 
     // render: 장바구니 컴포넌트 렌더링 //
@@ -23,49 +42,25 @@ export default function ShoppingCart() {
                 </div>
 
                 <div className='main-box'>
-                    <input type="checkbox" id="check1" />
-                    <label htmlFor="check1"></label>
-
-                    <div className='cart-box'>
-                        <div className='image'></div>
-                        <div className='cart-info'>
-                            <div className='product-name'>부산 케이크</div>
-                            <div className='product-info'>
-                                <div>부드러운 초코 케이크</div>
-                                <div>옵션 1호, 초코, 요청사항 없음, 1개</div>
-                                <div>픽업 일시 2024.11.01</div>
-                            </div>
-                        </div>
-                        <div className='total-count'>금액 33,000</div>
+                    <div className='item-box'>
+                        <input type="checkbox" id="check1" />
+                        <label htmlFor="check1"></label>
+                        <CartBox />
+                        <div className='button delete-button' onClick={onDeleteButtonHandler}>삭제</div>
                     </div>
-
-                    <div className='button delete-button' onClick={onDeleteButtonHandler}>삭제</div>
-                </div>
-
-                {/* UI를 위해 잠깐만 복사 */}
-                <div className='main-box'>
-                    <input type="checkbox" id="check1" />
-                    <label htmlFor="check1"></label>
-
-                    <div className='cart-box'>
-                        <div className='image'></div>
-                        <div className='cart-info'>
-                            <div className='product-name'>부산 케이크</div>
-                            <div className='product-info'>
-                                <div>부드러운 초코 케이크</div>
-                                <div>옵션 1호, 초코, 요청사항 없음, 1개</div>
-                                <div>픽업 일시 2024.11.01</div>
-                            </div>
-                        </div>
-                        <div className='total-count'>금액 33,000</div>
+                    
+                    <div className='item-box'>
+                        <input type="checkbox" id="check2" />
+                        <label htmlFor="check2"></label>
+                        <CartBox />
+                        <div className='button delete-button' onClick={onDeleteButtonHandler}>삭제</div>
                     </div>
-
-                    <div className='button delete-button'>삭제</div>
                 </div>
             </div>
 
             <div className='bottom'>
                 <div className='total-count'>총 금액 33,000</div>
+                <div className='button order-request-button' onClick={onOrderRequestButtonHandler}>주문</div>
             </div>
         </div>
     )

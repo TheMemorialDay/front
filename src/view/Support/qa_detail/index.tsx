@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import SupportNavi from '../../../components/support_navi'
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import { SU_ABSOLUTE_QA_PATH } from '../../../constants';
+import { QaList } from '../../../types';
 
 // component: Q&A Detail 컴포넌트 //
 export default function QaDetail() {
+
+    // state: 답변 여부 상태 //
+    const [hasAnswer, setHasAnswer] = useState<QaList | null>(null);
 
     // function: 네비게이터 //
     const navigator = useNavigate();
@@ -45,10 +49,12 @@ export default function QaDetail() {
 
             <div className='line'></div>
 
-            <div className='answer-box'>
-                <div className='answer-title'>답변</div>
-                <div className='answer-text'>저희가 가게에 직접 확인해보겠습니다. 조금만 기다려 주세요.</div>
-            </div>
+            {hasAnswer &&
+                <div className='answer-box'>
+                    <div className='answer-title'>답변</div>
+                    <div className='answer-text'>저희가 가게에 직접 확인해보겠습니다. 조금만 기다려 주세요.</div>
+                </div>
+            }
 
             <div className='button-box'>
                 <div className='button delete-button' onClick={onDeleteButtonHandler}>삭제</div>

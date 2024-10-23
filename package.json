@@ -13,6 +13,7 @@
     "antd": "^5.21.4",
     "cookie": "^1.0.1",
     "dependency": "^0.0.1",
+    "lodash": "^4.17.21",
     "react": "^18.3.1",
     "react-cookie": "^7.2.0",
     "react-dom": "^18.3.1",
@@ -48,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.12"
   }
 }

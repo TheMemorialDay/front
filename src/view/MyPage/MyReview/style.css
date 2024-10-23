@@ -1,0 +1,70 @@
+#mypage-review-wrapper {
+    width: 1330px;
+    gap: 45px;
+}
+
+#mypage-review-wrapper .title {
+    text-align: center;
+    margin-top: 70px;
+    font-size: 30px;
+}
+
+#mypage-review-wrapper .main-title {
+    font-size: 25px;
+    font-weight: 600;
+    
+    margin-bottom: 15px;
+
+    cursor: pointer;
+}
+
+/** 모달 start ================================================================  */
+#mypage-review-wrapper .myreview-modal {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#mypage-review-wrapper .modal-box {
+    width: 800px;
+    height: 500px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+#mypage-review-wrapper .slider-image-container {
+    width: 550px;
+    height: 350px;
+
+    background-color: thistle;
+}
+
+#mypage-review-wrapper .arrow-left {
+    background-image: url(/public/round-left.png);
+}
+
+#mypage-review-wrapper .arrow-right {
+    background-image: url(/public/round-right.png);
+}
+
+#mypage-review-wrapper .arrow-left,
+#mypage-review-wrapper .arrow-right {
+    width: 40px;
+    height: 40px;
+
+    background-repeat: no-repeat;
+
+    cursor: pointer;
+}

@@ -10,6 +10,11 @@
     border-bottom: 1px solid rgba(188, 188, 188, 1);
 }
 
+#notice-detail-wrapper .title {
+    text-align: center;
+    font-size: 30px;
+}
+
 #notice-detail-wrapper .detail-title,
 #notice-detail-wrapper .detail-date {
     display: flex;
@@ -45,7 +50,7 @@
     border-radius: 15px;
 
     width: 100%;
-    height: 680px;
+    height: 610px;
 
     box-sizing: border-box;
     padding: 20px

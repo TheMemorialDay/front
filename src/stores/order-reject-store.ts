@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { OrderRejectReason } from "../types";
+import { OrderRejectReason } from "../types/orderreject.interface";
 
 interface OrderReject {
   orderReject: OrderRejectReason | string;
