@@ -1,0 +1,198 @@
+#info-update {
+    flex-direction: column;
+    align-items: center;
+}
+
+#info-update .title {
+    margin-top: 100px;
+    justify-content: center;
+    display: flex;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 35px;
+}
+
+#info-update .update-box {
+    align-items: center;
+    flex-direction: column;
+    overflow: auto;
+    max-height: 480px;
+    width: 100%;
+}
+
+#info-update .update-box::-webkit-scrollbar {
+    width: 4px;
+}
+
+#info-update .update-box::-webkit-scrollbar-thumb {
+    background: lightgray; 
+    border-radius: 6px;
+    
+}
+
+#info-update .update-box::-webkit-scrollbar-thumb:hover {
+    background: darkgray; 
+    border-radius: 6px;
+    
+}
+
+#info-update .inputs1 {
+    width: 380px;
+    margin: 10px 0px;
+    height: 15px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    padding: 15px 10px;
+}
+
+#info-update .inputs2 {
+    width: 380px;
+    margin: 10px 0px;
+    height: 15px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    padding: 15px 10px;
+}
+
+#info-update .gender-box {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#info-update .gender-box .unselected {
+    display: flex;
+    width: 193px;
+    height: 45px;
+    border: 1px solid darkgray;
+    background-color: white;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#info-update .gender-box .selected {
+    display: flex;
+    width: 193px;
+    height: 45px;
+    border: 1px solid black;
+    background-color: black;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+}
+
+#info-update .message-false {
+    font-size: 12px;
+    font-weight: 200;
+    color: red;
+    /* margin-bottom: 20px; */
+    margin-left: 11px;
+    align-self: stretch;
+}
+
+#info-update .send-button {
+    width: 250px;
+    height: 45px;
+    margin: 10px 0px;
+    border-radius: 6px;
+    background-color: black;
+    display: flex;
+    color: white;
+    font-size: 14px;
+    font-weight: 400;
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer;
+    /* margin-top: 10px; */
+}
+
+#info-update .send-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#info-update .withdraw-button {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 100px; 
+    height: 30px;
+    color: black;
+    background-color: white;
+    margin-top: 30px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 13px 0;
+    border: 1px solid;
+}
+
+#info-update .cancel-button {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 100px; 
+    height: 30px;
+    color: black;
+    background-color: white;
+    margin-top: 30px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 13px 0;
+    
+    border: 1px solid;
+}
+
+#info-update .update-button {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 100px; 
+    height: 30px;
+    background-color: black;
+    color: white;
+    margin-top: 30px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 13px 0;
+}
+
+#info-update .withdraw-button:hover,
+#info-update .cancel-button:hover,
+#info-update .update-button:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#info-update .button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#info-update .tel-number-box,
+#info-update .tel-auth-box {
+    display: flex;
+    max-width: 401.33px;
+    gap: 10px;
+}
+
+#info-update .cancel-update-button {
+    display: flex;
+    gap: 10px;
+}
+
+
+

@@ -1,0 +1,191 @@
+#my-store {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+#my-store .title {
+    margin-top: 100px;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 35px;
+}
+
+#my-store .store-manage {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+    overflow: auto;
+    overflow-y: scroll;
+    max-height: 480px;
+    width: 100%;
+    scrollbar-width: none;
+}
+
+#my-store .store-manage::-webkit-scrollbar {
+    display: none;
+}
+
+#my-store .inputs1 {
+    width: 380px;
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    padding: 15px 10px;
+    margin: 16px 0;
+}
+
+#my-store .file-box {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+    margin: 10px 0px;
+}
+
+#my-store .register-file {
+    height: 25px;
+    padding: 10px;
+    border: 1px solid darkgray;
+    border-radius: 6px;
+    width: 250px;
+}
+
+#my-store label {
+    font-size: 12px;
+}
+
+
+#my-store .file-button {
+    cursor: pointer;
+    display: flex;
+    height: 45px;
+    width: 120px;
+    border-radius: 6px;
+    border: 1px solid black;
+    background-color: black;
+    color: white;
+    font-size: 16px;
+    font-weight: 400;
+    justify-content: center;
+    align-items: center;
+}
+
+#my-store .detailed-intro {
+    font-family: 'Pretendard';
+    width: 380px;
+    height: 200px;
+    resize: none;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    padding: 15px 10px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+#my-store .pickup-section {
+    width: 401.33px;
+    margin-top: 30px;
+}
+
+#my-store .pickup-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+#my-store .pickup-day {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 12px 0px;
+}
+
+#my-store .pickup-day span {
+    margin: 0 10px;
+}
+
+#my-store .time-label {
+    font-size: 12px;
+    margin-right: 5px;
+    justify-content: space-between;
+}
+
+#my-store .pickup-day select {
+    text-align: center;
+    margin: 0 5px;
+    border: 1px solid lightgray;
+    border-radius: 6px;
+    background: white;
+    padding: 8px 10px;
+    color: black;
+    width: 80px;
+}
+
+#my-store .button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#my-store .cancel-button,
+#my-store .update-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 45px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+#my-store .cancel-button {
+    background-color: white;
+    color: black;
+    border: 1px solid;
+}
+
+#my-store .update-button {
+    background-color: black;
+    color: white;
+}
+
+#my-store .cancel-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#my-store .update-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#my-store select::-webkit-scrollbar {
+    background-color: transparent;
+    width: 6px;
+}
+
+#my-store select::-webkit-scrollbar-thumb {
+    background-color: #babac0;
+    border-radius: 16px;
+}
+
+#my-store select::-webkit-scrollbar-thumb:hover {
+    background-color: #a0a0a5;
+}
+
+#my-store select::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+#my-store select::-webkit-scrollbar-track:hover {
+    background-color: transparent;
+}
+
+#my-store select::-webkit-scrollbar-button {
+    display: none;
+}

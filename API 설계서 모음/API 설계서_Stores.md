@@ -129,7 +129,6 @@ Content-Type: application/json;charset=UTF-8
 | storeIntegerroduce | String | 간단한 가게 소개 | O |
 | storeParticular | String | 상세소개글 | O |
 | storeContact | String | 문의하기 | O |
-| storeParticular | String | 상세소개글 | O |
 | sundayOpen          | Integer    | 일요일 오픈시간   | O |
 | sundayLast          | Integer    | 일요일 마감시간   | O |
 | mondayOpen          | Integer    | 월요일 오픈시간   | O |
@@ -478,7 +477,6 @@ Content-Type: application/json;charset=UTF-8
 | storeIntegerroduce | String | 간단한 가게 소개 | O |
 | storeParticular | String | 상세소개글 | O |
 | storeContact | String | 문의하기 | O |
-| storeParticular | String | 상세소개글 | O |
 | sundayOpen          | Integer    | 일요일 오픈시간   | O |
 | sundayLast          | Integer    | 일요일 마감시간   | O |
 | mondayOpen          | Integer    | 월요일 오픈시간   | O |
