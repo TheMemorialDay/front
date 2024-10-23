@@ -4,7 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { MY_PRODUCT_ABSOLUTE_PATH } from '../../../../constants';
 
 interface ProductProps {
-    imageUrl: string;
+    productImageUrls: string[];
+    productName: string;
+    roductIntroduce: string;
+    productPrice: number;
+    //options: Option[]; 맛, 옵션
+    themas: string[]; // 귀여움, 러블리 등
+    tag: string; // 포토, 레터링 등
 }
 
 interface TagProps {
@@ -12,7 +18,7 @@ interface TagProps {
     onRemove?: () => void;
 }
 
-// component: 상품 태그 컴포넌트 //
+// component: 상품 테마 컴포넌트 //
 function Tags({content}: TagProps) {
 
     // render: 상품 태그 렌더링 //
@@ -21,7 +27,7 @@ function Tags({content}: TagProps) {
     )
 }
 
-// component: 선택된 상품 태그 컴포넌트 //
+// component: 선택된 상품 테마 컴포넌트 //
 function SelectedTags({content, onRemove}: TagProps) {
 
     // render: 선택된 상품 태그 렌더링 //
@@ -74,7 +80,7 @@ function SizeOption() {
 
     // render: 케이크 크기 옵션 렌더링 //
     return (
-        <div className='option-box'>케이크 크기 추가
+        <div className='option-box'>크기
                     <div className='radio-handler'>
                         <div className='detail-text'>
                             {showInput && (
@@ -154,7 +160,7 @@ function FlavorOption() {
 
     // render: 케이크 맛 옵션 렌더링 //
     return (
-        <div className='option-box'>케이크 맛 추가
+        <div className='option-box'>맛
                     <div className='radio-handler'>
                         <div className='detail-text'>
                             {showFlavorInput && (
@@ -202,11 +208,6 @@ function NewOption() {
     const [inputDetailValue, SetInputDetailValue] = useState<string>('');
     const [newOptions, setNewOptions] = useState<{ option: string, price: string }[]>([]);
     const [newOptionAdditionalPrice, setNewOptionAdditionalPrice] = useState<string>('');   
-    
-    // state: 사용자 추가 옵션 리스트 상태 //
-    const [options, setOptions] = useState<{ value: string, price: string }[]>([]); // 입력된 옵션 배열
-    const [currentInput, setCurrentInput] = useState<string>('');  // 현재 입력 중인 옵션 값
-    const [currentPrice, setCurrentPrice] = useState<string>('');
 
     // event handler: 옵션 추가 이름 변경 이벤트 핸들러 //
     const onChangeNewOptionHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -246,15 +247,6 @@ function NewOption() {
         }
     }
 
-    // event handler: 옵션 추가 핸들러 //
-    const handleAddOption = () => {
-        if (currentInput.trim() !== '') {
-            setOptions([...options, { value: currentInput, price: currentPrice || '0' }]);  // 입력된 옵션을 배열에 추가
-            setCurrentInput('');  // 입력 필드 초기화
-            setCurrentPrice('');  // 추가 금액 필드 초기화
-        }
-    };
-
     // event handler: 라디오 버튼 삭제 이벤트 핸들러 //
     const handleRemoveButtonClick = (indexToRemove: number) => {
         setNewOptions((prevButtons) => prevButtons.filter((_, index) => index !== indexToRemove));
@@ -263,11 +255,11 @@ function NewOption() {
     // render: 사용자 추가 옵션 렌더링 //
     return (
         <div className='option-box' style={{marginBottom: "20px"}}>
-                        <input className='new-option-name' placeholder='옵션을 입력하세요.(ex: 색상)' onKeyPress={handleNewOptionKeyPress} 
-                            onChange={onChangeNewOptionHandler}/>
+            <input className='new-option-name' placeholder='옵션을 입력하세요.(ex: 색상)' onKeyPress={handleNewOptionKeyPress} 
+                onChange={onChangeNewOptionHandler}/>
 
-                        <div className='radio-handler'>
-                            <div className='detail-text'>
+                    <div className='radio-handler'>
+                        <div className='detail-text'>
                                 {radioValueBool && (
                                     <div>
                                         <input
@@ -287,7 +279,6 @@ function NewOption() {
                                             placeholder="추가 금액(ex: 5000) 없으면 0, 입력 후 엔터"
                                         />
                                     </div>
-                                    
                                 )}
             
                                 {newOptions.map((button, index) => (
@@ -297,10 +288,10 @@ function NewOption() {
                                         <label htmlFor={`radio-${index}`} style={{marginLeft:"5px"}}>{button.option} (+{button.price}원)</label>
                                     </div>
                                 ))}
-                            </div>
-                            <div className='plus-button' onClick={onNewOptionClickHandler}>추가</div>
                         </div>
+                        <div className='plus-button' onClick={onNewOptionClickHandler}>추가</div>
                     </div>
+        </div>
     )
 }
 
@@ -322,15 +313,10 @@ function OptionList() {
     // render: 사용자 추가 옵션 리스트 렌더링 //
     return (
         <div>
-            <div>
-                {optionComponents.map((_, index) => (
-                    <NewOption key={index}/>
-                ))}
-            </div>
+            <div>{optionComponents.map((_, index) => (<NewOption key={index}/>))}</div>
             <div className='option-add-box'>
                 <div className='plus-button-option' onClick={handleAddNewOption}>옵션 추가</div>
             </div>
-            
         </div>
     )
 }
@@ -375,19 +361,19 @@ function Pictures() {
                     <div className='add-text'>사진 추가</div>
                 </div>
                 <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
                 />
 
                 <div className='images-box'>
                     {selectedFiles.map((file, index) => (
                         <div key={index} className='legacy-product'
-                        style={{ backgroundImage:  `url(${URL.createObjectURL(file)})`, 
-                        backgroundSize: "cover"}}
+                            style={{ backgroundImage:  `url(${URL.createObjectURL(file)})`, 
+                            backgroundSize: "cover"}}
                         />))}
                 </div>
             </div>
@@ -395,7 +381,7 @@ function Pictures() {
     )
 }
 
-// component: 상품 태그 컴포넌트 //
+// component: 상품 테마 컴포넌트 //
 function ProductTags() {
 
     // state: 케이크 태그 상태 //
@@ -406,7 +392,7 @@ function ProductTags() {
         if (!selectedTags.includes(tag) && selectedTags.length < 5) { // 태그가 5개 미만일 때만 추가
             setSelectedTags([...selectedTags, tag]);
         } else if (selectedTags.length >= 5) {
-            alert('태그는 최대 5개까지만 선택할 수 있습니다.');
+            alert('상품 테마는 최대 5개까지만 선택할 수 있습니다.');
         }
     };
 
@@ -475,16 +461,67 @@ function ProductTags() {
                         </div>
                     </div>
                     <div className='selected-tags'>
-                    {selectedTags.length === 0 ? '태그 최대 5개 선택' : 
+                    {selectedTags.length === 0 ? '상품 테마 최대 5개 선택' : 
                         <div>
-                            {/* <div style={{marginRight: "5px"}}>X</div> */}
                             <div style={{display:"flex", flexDirection:"row"}}> {selectedTags.map(tag => (<SelectedTags key={tag} content={tag}
                                 onRemove={() => handleTagRemove(tag)}/>))}</div>
                         </div>
-                        
                     }
                     </div>
                 </div>
+    )
+}
+
+interface CakeComponentProps {
+    imageUrl: string;
+    context: string;
+    isSelected: boolean;
+    onClick: () => void;
+}
+
+// component: 케이크 태그 컴포넌트 //
+function CakeComponent({ imageUrl, context, isSelected, onClick }: CakeComponentProps) {
+
+    // render: 케이크 태그 렌더링 //
+    return (
+        <div className='filter-cake' onClick={onClick}
+            style={{cursor: "pointer", userSelect: "none",  
+                backgroundColor: isSelected ? 'rgba(211, 211, 211, 0.3)' : 'transparent',
+                padding:"15px", margin:"-4px"
+            }}>
+            <div className='circle-box'>
+                <div className='circle' style={{ backgroundImage: `url(${imageUrl})` }}></div>
+            </div>
+            <div className='context' style={{fontSize: "18px"}}>{context}</div>
+        </div>
+    );
+}
+
+// component: 상품 태그 컴포넌트 //
+function ProductThema() {
+
+    // state: 선택된 태그를 저장하는 상태
+    const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+    // event handler: 태그 클릭 이벤트 핸들러
+    const onTagClickHandler = (tag: string) => {
+        setSelectedTag(tag); // 클릭된 태그를 상태로 저장
+    };
+
+    // render: 상품 태그 렌더링 //
+    return (
+        <div className='store-filter' style={{marginBottom: "30px"}}>
+            <div className='filter-box'>
+                <CakeComponent imageUrl="/photo.png" context="포토" isSelected={selectedTag === "포토"} onClick={() => onTagClickHandler("포토")}/>
+                <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={selectedTag === "레터링"} onClick={() => onTagClickHandler("레터링")}/>
+                <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={selectedTag === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")}/>
+                <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={selectedTag === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")}/>
+                <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={selectedTag === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")}/>
+                <CakeComponent imageUrl="/today.png" context="당일 케이크" isSelected={selectedTag === "당일 케이크"} onClick={() => onTagClickHandler("당일 케이크")}/>
+                <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={selectedTag === "비건 케이크"} onClick={() => onTagClickHandler("비건 케이크")}/>
+                <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={selectedTag === "떡 케이크"} onClick={() => onTagClickHandler("떡 케이크")}/>
+            </div>
+        </div>
     )
 }
 
@@ -495,9 +532,7 @@ function Add() {
     const [productName, setProductName] = useState<string>('');
     const [productExplain, setProductExplain] = useState<string>('');
     const [defaultPrice, setDefaultPrice] = useState<number>(0);
-
-    // state: 사용자 입력 옵션 //
-    const [addOptionBool, setAddOptionBool] = useState<boolean>(false);
+    const [onedayCake, setOnedayCake] = useState<boolean | null>(null);
     
     // function: 네비게이터 //
     const navigator = useNavigate();
@@ -525,9 +560,10 @@ function Add() {
         else return;
     }
 
-    // event handler: 옵션 추가 버튼 클릭 이벤트 핸들러 //
-    const onAddOptionClickHandler = () => {
-        setAddOptionBool(!addOptionBool);
+    // event handler: 당일 케이크 여부 선택 이벤트 핸들러 //
+    const selectedOnedayClickHandler = (onedayCheck: boolean) => {
+        setOnedayCake(onedayCheck);
+        console.log(onedayCheck);
     }
 
     // event handler: 취소 버튼 클릭 이벤트 핸들러 //
@@ -554,6 +590,19 @@ function Add() {
                 <textarea className='product-explain' placeholder='메뉴 설명' onChange={onExplainChangeHandler}/>
                 <input className='product-price' placeholder='메뉴 최소 가격 (ex: 30000)' onChange={onDefaultPriceChangeHandler}/>
                 
+                <div className='oneday-cake'>
+                    <div onClick={() => {selectedOnedayClickHandler(true)}}
+                        className= {onedayCake === true ? 'possible' : 
+                            onedayCake === null ? 'impossible' : 'impossible'}>당일 케이크 가능</div>
+                    <div onClick={() => {selectedOnedayClickHandler(false)}}
+                        className= {onedayCake === false ? 'possible' : 
+                            onedayCake === null ? 'impossible' :'impossible'}>당일 케이크 불가능</div>
+                </div>
+
+                <div style={{fontSize: "20px", fontWeight: "700", marginTop: "30px"}}>
+                    케이크 종류를 하나 선택해 주세요.
+                </div>
+                <ProductThema />
                 <SizeOption />
                 <FlavorOption />
                 <OptionList />
