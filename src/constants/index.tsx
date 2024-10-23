@@ -1,8 +1,6 @@
 // variable: 상대 경로 상수 //
 export const ROOT_PATH = '/';
 
-export const AUTH_PATH = '/auth';
-
 export const ST_PATH = '/stores';
 export const ST_ORDER_DETAIL_PATH = '1/order';
 export const ST_INFORMATION_DETAIL_PATH = '1/information';
@@ -45,8 +43,6 @@ export const MY_SALES_PATH = `sales`;
 
 // variable: 절대 경로 상수 //
 export const ROOT_ABSOLUTE_PATH = ROOT_PATH;
-
-export const AUTH_ABSOLUTE_PATH = AUTH_PATH;
 
 export const ST_ABSOLUTE_PATH = ST_PATH;
 export const ST_ABSOLUTE_ORDER_DETAIL_PATH = `${ST_PATH}/${ST_ORDER_DETAIL_PATH}`;
