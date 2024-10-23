@@ -9,18 +9,18 @@ interface MyOrderDetailComponentProps {
     orderCode: string;
     orderImage: string;
     orderProduct: string;
-    orderOption: string;
-    orderPlan: string;
-    orderValue: string;
+    optionSelect: string;
+    pickupTime: string;
+    totalPrice: string;
 }
 
-function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, orderOption, orderPlan, orderValue }: MyOrderDetailComponentProps) {
+function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSelect, pickupTime, totalPrice }: MyOrderDetailComponentProps) {
 
     const { orderMessage, orderStatus, setOrderMessage, setOrderStatus } = useOrderStore();
     const [modalOpen, setModalOpen] = useState(false);
     const modalBackground = useRef<HTMLDivElement | null>(null);
     const [secondReject, setSecondReject] = useState(false);
-    const { orderReject, setOrderRejectStatus, otherReason, setOtherReason } = useOrderReject();
+    const { orderReject, setOrderRejectStatus, cancelReason, setCancelReason } = useOrderReject();
 
     function ReadyAccept() {
         return (
@@ -150,7 +150,7 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, orderOpti
                             }
                             <div className='review-bottom'>
                                 <div className='button disable' onClick={() => setModalOpen(false)}>취소</div>
-                                <div className='button' onClick={() => { setOrderStatus('주문 거부'); setOrderMessage('rejectOrder'); setModalOpen(false); setOtherReason(inputReason); }}>거부</div>
+                                <div className='button' onClick={() => { setOrderStatus('주문 거부'); setOrderMessage('rejectOrder'); setModalOpen(false); setCancelReason(inputReason); }}>거부</div>
                             </div>
                         </div>
                     </div >
@@ -185,10 +185,10 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, orderOpti
                     </div>
                     <div className="order-details">
                         <p className="order-product">{orderProduct}</p>
-                        <p className="order-option">{orderOption}</p>
-                        <p className="order-plan">픽업일시 {orderPlan}</p>
+                        <p className="order-option">{optionSelect}</p>
+                        <p className="order-plan">픽업일시 {pickupTime}</p>
                     </div>
-                    <div className="order-value">금액 : {orderValue}원</div>
+                    <div className="order-value">금액 : {totalPrice}원</div>
                 </div>
             </div>
             {
@@ -209,7 +209,7 @@ export default function MyOrderManage() {
             <div className='order-history-h2'>주문 관리</div>
             <div className='order-day'>2024. 11. 01</div>
             <div className='my-order-list'>
-                <MyOrderDetailComponent orderStatus='승인' orderCode='20241021000001' orderImage='/picture12.png' orderProduct='딸기 케이크' orderOption='2호, 빨강, 요청사항: 이쁘게 해주세요' orderPlan='2024. 11. 10' orderValue='35000' />
+                <MyOrderDetailComponent orderStatus='승인' orderCode='20241021000001' orderImage='/picture12.png' orderProduct='딸기 케이크' optionSelect='2호, 빨강, 요청사항: 이쁘게 해주세요' pickupTime='2024. 11. 10' totalPrice='35000' />
 
             </div>
             <div></div>

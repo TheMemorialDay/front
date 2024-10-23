@@ -10,16 +10,16 @@ interface MyOrderDetailComponentProps {
     orderCode: string;
     orderImage: string;
     orderProduct: string;
-    orderOption: string;
-    orderPlan: string;
-    orderValue: string;
+    optionSelect: string;
+    pickupTime: string;
+    totalPrice: string;
 }
 
 // component: 주문 내역 컴포넌트 //
-function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, orderOption, orderPlan, orderValue }: MyOrderDetailComponentProps) {
+function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSelect, pickupTime, totalPrice }: MyOrderDetailComponentProps) {
 
     const { orderMessage, orderStatus, setOrderMessage, setOrderStatus } = useOrderStore();
-    const { orderReject, setOrderRejectStatus, otherReason, setOtherReason } = useOrderReject();
+    const { orderReject, setOrderRejectStatus, cancelReason, setCancelReason } = useOrderReject();
 
 
     function ReadyAccept() {
@@ -78,8 +78,8 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, orderOpti
                                 <p className='review-cancel' onClick={() => setModalOpen(false)}>X</p>
                             </div>
                             {
-                                otherReason === '' ?
-                                    <div className='reject-reason'>{orderReject} 🤣</div> : <div className='reject-reason'>{otherReason} 🤣</div>
+                                cancelReason === '' ?
+                                    <div className='reject-reason'>{orderReject} 🤣</div> : <div className='reject-reason'>{cancelReason} 🤣</div>
                             }
                         </div>
                     </div >
@@ -227,10 +227,10 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, orderOpti
                     </div>
                     <div className="order-details">
                         <p className="order-product">{orderProduct}</p>
-                        <p className="order-option">{orderOption}</p>
-                        <p className="order-plan">픽업일시 {orderPlan}</p>
+                        <p className="order-option">{optionSelect}</p>
+                        <p className="order-plan">픽업일시 {pickupTime}</p>
                     </div>
-                    <div className="order-value">금액 : {orderValue}원</div>
+                    <div className="order-value">금액 : {totalPrice}원</div>
                 </div>
             </div>
             {
@@ -253,7 +253,7 @@ export default function MyOrderDetail() {
             <div className='order-history-h2'>주문 내역</div>
             <div className='order-day'>2024. 11. 01</div>
             <div className='my-order-list'>
-                <MyOrderDetailComponent orderStatus='승인' orderCode='20241021000001' orderImage='/picture12.png' orderProduct='딸기 케이크' orderOption='2호, 빨강, 요청사항: 이쁘게 해주세요' orderPlan='2024. 11. 10' orderValue='35000' />
+                <MyOrderDetailComponent orderStatus='승인' orderCode='20241021000001' orderImage='/picture12.png' orderProduct='딸기 케이크' optionSelect='2호, 빨강, 요청사항: 이쁘게 해주세요' pickupTime='2024. 11. 10' totalPrice='35000' />
 
             </div>
             <div></div>

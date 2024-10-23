@@ -3,16 +3,16 @@ import { OrderRejectReason } from "../types";
 
 interface OrderReject {
   orderReject: OrderRejectReason | string;
-  otherReason: string;
+  cancelReason: string;
   setOrderRejectStatus: (status: Partial<OrderReject>) => void; // 수정: Partial 사용
-  setOtherReason: (status: string) => void;
+  setCancelReason: (status: string) => void;
 }
 
 const useOrderReject = create<OrderReject>(set => ({
   orderReject: '재료가 소진되었습니다.',
-  otherReason: '',
+  cancelReason: '',
   setOrderRejectStatus: (state: Partial<OrderReject>) => set(() => state),
-  setOtherReason: (reason: string) => set(() => ({ otherReason: reason }))
+  setCancelReason: (reason: string) => set(() => ({ cancelReason: reason }))
 }));
 
 export default useOrderReject;
