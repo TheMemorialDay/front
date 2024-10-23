@@ -27,6 +27,7 @@ export const SIGN_UP_PATH = `sign-up`;
 
 export const MY_PATH = '/mypage';
 export const MY_INFO_PATH = `user-info`;
+export const MY_PASSWORD_CHECK_PATH = `password-check`;
 export const MY_ORDER_DETAIL_PATH = `order-detail`;
 export const MY_REVIEW_PATH = `review`;
 export const MY_LIKE_PATH = `like`;
@@ -68,6 +69,7 @@ export const SIGN_UP_ABSOLUTE_PATH = `${LOGIN_PATH}/${SIGN_UP_PATH}`;
 
 export const MY_ABSOLUTE_PATH = MY_PATH;
 export const MY_INFO_ABSOLUTE_PATH = `${MY_PATH}/${MY_INFO_PATH}`;
+export const MY_PASSWORD_CHECK_ABSOLUTE_PATH = `${MY_INFO_ABSOLUTE_PATH}/${MY_PASSWORD_CHECK_PATH}`;
 export const MY_ORDER_DETAIL_ABSOLUTE_PATH = `${MY_PATH}/${MY_ORDER_DETAIL_PATH}`;
 export const MY_REVIEW_ABSOLUTE_PATH = `${MY_PATH}/${MY_REVIEW_PATH}`;
 export const MY_LIKE_ABSOLUTE_PATH = `${MY_PATH}/${MY_LIKE_PATH}`;

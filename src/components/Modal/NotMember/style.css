@@ -1,0 +1,48 @@
+#not-member-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+#not-member-container .not-member-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#not-member-container .not-member-message {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+#not-member-container .not-member-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+#not-member-container .confirm-button,
+#not-member-container .cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#not-member-container .confirm-button {
+    border: 1px solid;
+    border-radius: 5px;
+    color: white;
+}
+
+#not-member-container .cancel-button {
+    border: 1px solid;
+    border-radius: 5px;
+    color: white;
+}

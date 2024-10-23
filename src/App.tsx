@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 import MainLayout from './layouts/MainLayout';
@@ -8,7 +8,7 @@ import { JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_
   ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH, 
   SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, SHOPPING_CART_PATH, MY_PATH, 
   MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_LIKE_PATH, MY_STORE_PATH, MY_PRODUCT_PATH, 
-  MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PRODUCT_ADD_PATH, 
+  MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PASSWORD_CHECK_PATH, MY_PRODUCT_ADD_PATH, 
   MY_PRODUCT_UPDATE_PATH} from './constants';
 
 import Stores from './view/Stores';
@@ -23,7 +23,7 @@ import ShopInformation from './view/Stores/Information';
 import ShopContact from './view/Stores/Contact';
 import ShopReview from './view/Stores/Review';
 import MyPage from './view/MyPage';
-import MyInfo from './view/MyPage/MyInfo';
+import InfoUpdate from './view/MyPage/MyInfo';
 import MyReview from './view/MyPage/MyReview';
 import MyOrder from './view/MyPage/MyOrderDetail';
 import MyLike from './view/MyPage/MyLike';
@@ -37,6 +37,9 @@ import QaDetail from './view/Support/qa_detail';
 import OkayScreen from './view/Join/okScreen';
 import ShoppingCart from './view/shopping_cart';
 import Update from './view/MyPage/MyProduct/update';
+import MyPasswordCheck from './view/MyPage/MyInfo/MyPasswordCheck';
+import { useCookies } from 'react-cookie';
+import NotMember from './components/Modal/NotMember';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -59,8 +62,22 @@ function Index() {
 
 // component: TheMemorialDay 컴포넌트 //
 export default function TheMemorialDay() {
+  const [cookies] = useCookies(['ACCESS_TOKEN']);
+  const isLoggedIn = Boolean(cookies.ACCESS_TOKEN);
+  const [showNotMemberModal, setShowNotMemberModal] = useState(false);
+  const navigator = useNavigate();
+
+  const handleNotMemberModalClose = () => {
+      setShowNotMemberModal(false);
+  };
+
+  const handleNotMemberModalConfirm = () => {
+    setShowNotMemberModal(false);
+      navigator(LOGIN_PATH); // 로그인 페이지로 이동
+  };
 
   return (
+    <>
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Index />} />
@@ -94,7 +111,10 @@ export default function TheMemorialDay() {
       </Route>
       <Route path={MY_PATH} element={<MainLayout />}  >
         <Route path={MY_PATH} element={<MyPage />} />
-        <Route path={MY_INFO_PATH} element={<MyInfo />} />
+        <Route path={MY_INFO_PATH} >
+          <Route index element={<InfoUpdate />} />
+        <Route path={MY_PASSWORD_CHECK_PATH} element={<MyPasswordCheck />} />
+        </Route>
         <Route path={MY_REVIEW_PATH} element={<MyReview />} />
         <Route path={MY_ORDER_DETAIL_PATH} element={<MyOrder />} />
         <Route path={MY_LIKE_PATH} element={<MyLike />} />
@@ -110,6 +130,14 @@ export default function TheMemorialDay() {
         <Route path={MY_SALES_PATH} element={<MySales />} />
       </Route>
     </Routes>
+    {showNotMemberModal && (
+                <NotMember
+                    onClose={handleNotMemberModalClose}
+                    onConfirm={handleNotMemberModalConfirm}
+                />
+            )}
+    </>
+    
   );
 
 }
