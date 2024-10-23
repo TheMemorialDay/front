@@ -48,15 +48,14 @@
     transform: translateY(-10px);
 }
 
-#myPage .category-icon {
-    width: 120px;
-    height: 120px;
+#myPage .category-icon-product {
+    width: 140px;
+    height: 140px;
     background-size: cover;
-    background-image: url('/public/images/login-icon.png');
+    background-image: url('/public/images/product.png');
     background-image: no-repeat;
-    /* display: flex;
-    align-items: center; */
 }
+
 
 #myPage .order-icon {
     width: 120px;

@@ -188,8 +188,7 @@
     align-items: center;
     cursor: pointer;
     color: white;
-  }
-
+}
 
 #sign-up .gender-box :hover {
     display: flex;
