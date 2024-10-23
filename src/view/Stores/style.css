@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 200px;
+  height: 300px;
 }
 
 .store-notice {
@@ -266,10 +266,11 @@ select {
 
 .liked {
   display: flex;
-  justify-content: space-between; /* 양 끝으로 요소 배치 */
+  justify-content: space-between;
+  /* 양 끝으로 요소 배치 */
 }
 
-.red-heart{
+.red-heart {
   background-image: url('/public/images/full-heart.png');
   background-size: 100% 100%;
   width: 17px;
