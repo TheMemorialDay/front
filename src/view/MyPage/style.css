@@ -59,6 +59,79 @@
     transform: translateY(-6px);
 }
 
+#myPage .category-icon.userInfo {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-image: url('/public/images/mypage/userInfo.png');
+    background-image: no-repeat;
+    border: 1.5px solid white;
+}
+
+#myPage .category-icon.review {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-image: url('/public/images/mypage/review.png');
+    background-image: no-repeat;
+    border: 1.5px solid white;
+}
+
+#myPage .category-icon.order-detail {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-image: url('/public/images/mypage/shoppingCart.png');
+    background-image: no-repeat;
+    border: 1.5px solid white;
+}
+
+#myPage .category-icon.like {
+    width: 120px;
+    height: 120px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-image: url('/public/images/mypage/like.png');
+    background-image: no-repeat;
+    border: 1.5px solid white;
+}
+
+#ceo .category-icon.store {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-image: url('/public/images/mypage/store.png');
+    background-image: no-repeat;
+    border: 1.5px solid white;
+}
+
+#ceo .category-icon.product {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-image: url('/public/images/mypage/product.png');
+    background-image: no-repeat;
+    border: 1.5px solid white;
+} 
+
+#ceo .category-icon.order-manage {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-image: url('/public/images/mypage/orderManage.png');
+    background-image: no-repeat;
+    border: 1.5px solid white;
+} 
+
+#ceo .category-icon.sales {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-image: url('/public/images/mypage/sales.png');
+    background-image: no-repeat;
+    border: 1.5px solid white;
+}
+
 #myPage .category-icon-product {
     width: 140px;
     height: 140px;
