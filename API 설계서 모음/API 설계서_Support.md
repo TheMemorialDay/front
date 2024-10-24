@@ -12,7 +12,7 @@ The Memorial Day 서비스의 공지사항, Q&A와 관련된 REST API 모듈입�
 공지사항 리스트 조회, 공지사항 상세 조회, Q&A 리스트 조회, Q&A 작성, Q&A 상세 조회, Q&A 질문 삭제 API가 포함되어 있습니다.
 Q&A 작성, Q&A 질문 삭제 외에는 인증 없이 요청할 수 있습니다.
   
-- url : /support  
+- url : /support/notice  
 
 ***
 
@@ -23,7 +23,7 @@ Q&A 작성, Q&A 질문 삭제 외에는 인증 없이 요청할 수 있습니다
 클라이언트는 Notice를 클릭하여 공지사항 리스트 조회를 요청할 수 있으며, 성공 시 성공에 대한 응답을 받습니다. 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **GET**  
-- URL : **/notice**  
+- URL : **/support/notice**  
 
 ##### Request
 
@@ -107,7 +107,7 @@ Content-Type: application/json;charset=UTF-8
 클라이언트는 Notice의 한 공지사항을 클릭하여 공지사항의 상세 조회를 요청할 수 있으며, 성공 시 성공에 대한 응답을 받습니다. 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **GET**  
-- URL : **/notice/{noticeNumber}**  
+- URL : **/support/notice/{noticeNumber}**  
 
 ##### Request
 
@@ -183,7 +183,7 @@ Content-Type: application/json;charset=UTF-8
 클라이언트는 Q&A를 클릭하여 Q&A 리스트 조회를 요청할 수 있으며, 성공 시 성공에 대한 응답을 받습니다. 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **GET**  
-- URL : **/question**  
+- URL : **/support/notice/question**  
 
 ##### Request
 
@@ -200,7 +200,7 @@ Content-Type: application/json;charset=UTF-8
 ###### Example
 
 ```bash
-curl -v -X GET "http://localhost:4000/support/question \
+curl -v -X GET "http://localhost:4000/support/notice/question \
 ```
 
 ##### Response
@@ -273,7 +273,7 @@ Content-Type: application/json;charset=UTF-8
 클라이언트는 Q&A의 한 질문을 클릭하여 질문의 상세 조회를 요청할 수 있으며, 성공 시 성공에 대한 응답을 받습니다. 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **GET**  
-- URL : **/question/{questionNumber}**  
+- URL : **/support/notice/question/{questionNumber}**  
 
 ##### Request
 
@@ -290,7 +290,7 @@ Content-Type: application/json;charset=UTF-8
 ###### Example
 
 ```bash
-curl -v -X GET "http://localhost:4000/support/question/1 \
+curl -v -X GET "http://localhost:4000/support/notice/question/1 \
 ```
 
 ##### Response
@@ -352,7 +352,7 @@ Content-Type: application/json;charset=UTF-8
 클라이언트는 Q&A의 작성을 클릭하여 질문 제목과 내용을 입력하여 요청하고, 성공 시 성공에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 에러, 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **POST**  
-- URL : **/question/write**  
+- URL : **support/notice/question/write**  
 
 ##### Request
 
@@ -373,7 +373,7 @@ Content-Type: application/json;charset=UTF-8
 ###### Example
 
 ```bash
-curl -v -X POST "http://localhost:4000/support/question/write \
+curl -v -X POST "http://localhost:4000/support/notice/question/write \
  -h "Authorization=Bearer XXXX" \
  -d "questionTitle=질문1" \
  -d "questionContents=내용1" \
@@ -454,7 +454,7 @@ Content-Type: application/json;charset=UTF-8
 클라이언트는 Q&A의 질문 삭제를 요청하고, 성공 시 성공에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 에러, 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **DELETE**  
-- URL : **/question/{questionNumber}**  
+- URL : **support/notice/question/{questionNumber}**  
 
 ##### Request
 
@@ -474,7 +474,7 @@ Content-Type: application/json;charset=UTF-8
 ###### Example
 
 ```bash
-curl -v -X DELETE "http://localhost:4000/support/question/1 \
+curl -v -X DELETE "http://localhost:4000/support/notice/question/1 \
  -h "Authorization=Bearer XXXX"
  ```
 

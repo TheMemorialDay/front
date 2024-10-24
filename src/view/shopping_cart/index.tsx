@@ -2,10 +2,14 @@ import React from 'react'
 import './style.css';
 import CartBox from '../../components/shopping_cart';
 import { useNavigate } from 'react-router-dom';
-import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
+import { ACCESS_TOKEN, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
+import { useCookies } from 'react-cookie';
 
 // component: 장바구니 컴포넌트 //
 export default function ShoppingCart() {
+
+    // state: cookie 상태 //
+    const [ cookies ] = useCookies();
 
     // function: 네비게이터 //
     const navigator = useNavigate();
@@ -18,6 +22,9 @@ export default function ShoppingCart() {
 
     // event handler: 주문 요청 버튼 //
     const onOrderRequestButtonHandler = () => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) return;
+
         const isConfirm = window.confirm('주문하시겠습니까?');
         if (!isConfirm) return;
         // 네비게이터 주문 요청 완료 페이지 이동
