@@ -1,14 +1,14 @@
 import React, { ChangeEvent, useState } from 'react'
 import './style.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ACCESS_TOKEN, ROOT_ABSOLUTE_PATH, ROOT_PATH, SIGN_UP_ABSOLUTE_PATH, ST_ABSOLUTE_PATH } from '../../constants';
+import { ACCESS_TOKEN, ROOT_PATH, SIGN_UP_ABSOLUTE_PATH, ST_ABSOLUTE_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 
 
 type AuthPath = 'logIn' | 'findId' | 'findIdResult' | 'findPassword' | 'changePassword';
 interface AuthComponentProps {
     onPathChange: (path: AuthPath) => void;
-  }
+}
 
 // component: 로그인 화면 컴포넌트 //
 function SignIn({onPathChange}: AuthComponentProps) {
