@@ -101,10 +101,10 @@ export default function TheMemorialDay() {
       </Route>
       <Route path={SU_PATH} element={<MainLayout />}  >
         <Route path={SU_PATH} element={<Support />} />
-        <Route path={SU_NOTICE_DETAIL_PATH} element={<NoticeDetail />} />
+        <Route path={SU_NOTICE_DETAIL_PATH(':noticeNumber')} element={<NoticeDetail />} />
         <Route path={SU_QA_PATH} element={<Qa />} />
         <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
-        <Route path={SU_QA_DETAIL_PATH} element={<QaDetail />} />
+        <Route path={SU_QA_DETAIL_PATH(':questionNumber')} element={<QaDetail />} />
       </Route>
       <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
         <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />

@@ -10,10 +10,10 @@ export const ST_REVIEW_DETAIL_PATH = '1/reivew';
 export const HO_PATH = '/how';
 
 export const SU_PATH = '/support/notice';
-export const SU_NOTICE_DETAIL_PATH = `${SU_PATH}/{noticeNumber}`; // detail
+export const SU_NOTICE_DETAIL_PATH = (noticeNumber: number | string) => `${SU_PATH}/${noticeNumber}`; // detail
 export const SU_QA_PATH = `${SU_PATH}/question`;
 export const SU_QA_WRITE_PATH = `${SU_QA_PATH}/write`;
-export const SU_QA_DETAIL_PATH = `${SU_QA_PATH}/{questionNumber}`; // detail
+export const SU_QA_DETAIL_PATH = (questionNumber: string | number) =>  `${SU_QA_PATH}/${questionNumber}`; // detail
 
 export const SHOPPING_CART_PATH = '/shopping-cart';
 
