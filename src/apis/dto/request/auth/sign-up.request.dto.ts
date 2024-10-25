@@ -6,7 +6,7 @@ export default interface SignUpRequestDto {
 	birth: string;
 	gender: string;
 	telNumber: string;
-	authNumber: string;
+	telAuthNumber: string;
 	joinPath: string;
 	snsId: string | null;
 }
