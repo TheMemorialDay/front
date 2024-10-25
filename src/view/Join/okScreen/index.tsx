@@ -30,7 +30,6 @@ function OkScreen() {
     )
 }
 
-
 export default function OkayScreen() {
   return (
     <OkScreen />
