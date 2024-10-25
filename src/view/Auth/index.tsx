@@ -1,8 +1,13 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import './style.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ACCESS_TOKEN, ROOT_ABSOLUTE_PATH, ROOT_PATH, SIGN_UP_ABSOLUTE_PATH, ST_ABSOLUTE_PATH } from '../../constants';
+import { ACCESS_TOKEN, ROOT_PATH, SIGN_UP_ABSOLUTE_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
+import SnsContainer from '../../components/sns_login_sign_up';
+import { SignInResponseDto } from '../../apis/dto/response/auth';
+import { ResponseDto } from '../../apis/dto/response';
+import { SignInRequestDto } from '../../apis/dto/request';
+import { signInRequest } from '../../apis';
 
 
 type AuthPath = 'logIn' | 'findId' | 'findIdResult' | 'findPassword' | 'changePassword';
@@ -24,6 +29,28 @@ function SignIn({onPathChange}: AuthComponentProps) {
 
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
+
+    // function: 로그인 Response 처리 함수 //
+    const signInResponse = (responseBody: SignInResponseDto | ResponseDto | null) => {
+        const message = 
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '아이디와 비밀번호를 모두 입력하세요.' :
+            responseBody.code === 'SF' ? '로그인 정보가 일치하지 않습니다.' :
+            responseBody.code === 'TCF' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody != null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            setMessage(message);
+            return;
+        }
+
+        const { accessToken, expiration } = responseBody as SignInResponseDto;
+        const expires = new Date(Date.now() + (expiration * 1000));
+        setCookies(ACCESS_TOKEN, accessToken, { path: ROOT_PATH, expires });
+
+        navigator(ROOT_PATH);
+    };
 
     // event handler: 아이디 변경 이벤트 핸들러 //
     const onIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -51,18 +78,26 @@ function SignIn({onPathChange}: AuthComponentProps) {
             return;
         }
 
-        // const accessToken = 'test';
-        // const expiration = 1000;
-        // const expires = new Date(Date.now() + (expiration * 1000));
-        // setCookies(ACCESS_TOKEN, accessToken, {path: ROOT_PATH, expires});
+        const requestBody: SignInRequestDto = {
+            userId: id,
+            password
+        };
 
-        navigator(ST_ABSOLUTE_PATH);
+        signInRequest(requestBody).then(signInResponse);
+
+        setId('');
+        setPassword('');
     }
 
     // event handler: 회원가입 클릭 이벤트 핸들러 //
     const signUpClickHandler = () => {
         navigator(SIGN_UP_ABSOLUTE_PATH);
     }
+
+    // effect: 아이디 및 비밀번호 변경시마다 입력창 비워주기 //
+    useEffect(() => {
+        setMessage('');
+    }, [id, password]);
 
     //render: 로그인 화면 컴포넌트 렌더링 //
     return (
@@ -82,12 +117,7 @@ function SignIn({onPathChange}: AuthComponentProps) {
                     <div>|</div>
                     <div className='find' onClick={signUpClickHandler}>회원가입</div>
                 </div>
-                <div className='sns-container'>
-                    
-                    <div className='kakao'></div>
-                    <div className='naver'></div>
-                    <div className='google'></div>
-                </div>
+                <SnsContainer />
             </div>
     )
 }
