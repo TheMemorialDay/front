@@ -7,10 +7,15 @@ import { ResponseDto } from '../../../apis/dto/response';
 import { PostQnARequestDto } from '../../../apis/dto/request/support';
 import { PostQnARequest } from '../../../apis/dto';
 import { useCookies } from 'react-cookie';
+import { useSignInUserStore } from '../../../stores';
 
 export default function QaWrite() {
+
     // state: 쿠키 상태 //
     const [cookies] = useCookies();
+
+    // state: 로그인 유저 상태 //
+    const {signInUser} = useSignInUserStore();
 
     // state: 제목 상태 //
     const [questionTitle, setSubjact] = useState<string>('');
@@ -65,7 +70,8 @@ export default function QaWrite() {
         }
 
         const questionDay = Date.now().toString();
-        const userId = 'qwer1234'; //저스탄드로 유저 아이디 공유
+        const userId = "qwer1234";
+        //const userId = signInUser?.userId;
         const questionStatus = '미응답';
         const answerContents = ''; 
 
@@ -100,3 +106,5 @@ export default function QaWrite() {
         </div>
     )
 }
+
+

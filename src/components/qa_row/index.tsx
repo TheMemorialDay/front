@@ -6,13 +6,13 @@ import formatDate from '../dateChange/DateChange';
 import maskString from '../maskingString/MaskingString';
 
 interface QnAProps {
-    qna: QaList;
+    qnas: QaList;
     getQnAList: () => void;
     onDetailClickHandler: (noticeNumber: number) => void;
 }
 
 // component: QARow 컴포넌트 //
-export default function QaRow({qna, getQnAList, onDetailClickHandler}: QnAProps) {
+export default function QaRow({qnas, getQnAList, onDetailClickHandler}: QnAProps) {
     
     // state: 해당 게시글 답변 상태 //
     const [anwserState, setAnwserState] = useState<'대기' | '완료'>('대기');
@@ -28,12 +28,12 @@ export default function QaRow({qna, getQnAList, onDetailClickHandler}: QnAProps)
     // render: QARow 컴포넌트 렌더링 //
     return (
         <>
-            <div className="tr" onClick={() => onDetailClickHandler(qna.questionNumber)}>
-                <div className="td-no">{qna.questionNumber}</div>
-                <div className="td-title">{qna.questionTitle}</div>
-                <div className="td-writer">{maskString(qna.userId)}</div>
-                <div className="td-date">{formatDate(qna.questionDay)}</div>
-                <div className="td-status">{qna.questionStatus === '미응답' ? '대기' : '완료'}</div>
+            <div className="tr" onClick={() => onDetailClickHandler(qnas.questionNumber)}>
+                <div className="td-no">{qnas.questionNumber}</div>
+                <div className="td-title">{qnas.questionTitle}</div>
+                <div className="td-writer">{maskString(qnas.userId)}</div>
+                <div className="td-date">{formatDate(qnas.questionDay)}</div>
+                <div className="td-status">{qnas.questionStatus === '미응답' ? '대기' : '완료'}</div>
             </div>
             
         </>

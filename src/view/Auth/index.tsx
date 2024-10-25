@@ -51,10 +51,10 @@ function SignIn({onPathChange}: AuthComponentProps) {
             return;
         }
 
-        const accessToken = 'test';
-        const expiration = 1000;
-        const expires = new Date(Date.now() + (expiration * 1000));
-        setCookies(ACCESS_TOKEN, accessToken, {path: ROOT_PATH, expires});
+        // const accessToken = 'test';
+        // const expiration = 1000;
+        // const expires = new Date(Date.now() + (expiration * 1000));
+        // setCookies(ACCESS_TOKEN, accessToken, {path: ROOT_PATH, expires});
 
         navigator(ST_ABSOLUTE_PATH);
     }

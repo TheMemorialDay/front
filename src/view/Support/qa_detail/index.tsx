@@ -9,9 +9,13 @@ import { GetQnADetailResponseDto } from '../../../apis/dto/response/support';
 import { ResponseDto } from '../../../apis/dto/response';
 import maskString from '../../../components/maskingString/MaskingString';
 import formatDate from '../../../components/dateChange/DateChange';
+import { useSignInUserStore } from '../../../stores';
 
 // component: Q&A Detail 컴포넌트 //
 export default function QaDetail() {
+
+    // state: 로그인 유저 상태 //
+    const {signInUser} = useSignInUserStore();
 
     // state: 질문 번호 //
     const {questionNumber} = useParams<{ questionNumber: string }>();
@@ -87,7 +91,7 @@ export default function QaDetail() {
             alert('유효한 질문 번호가 없습니다.');
             return;
         }
-        
+
         deleteQnARequest(questionNumber).then(deleteQnAResponse);
         navigator(SU_ABSOLUTE_QA_PATH);
     };
@@ -131,9 +135,15 @@ export default function QaDetail() {
                 </div>
             }
 
-            <div className='button-box'>
-                <div className='button delete-button' onClick={onDeleteButtonHandler}>삭제</div>
-            </div>
+            {signInUser?.userId === writerId ? 
+                <div className='button-box'>
+                    <div className='button delete-button' onClick={onDeleteButtonHandler}>삭제</div>
+                </div>
+            :
+                ''
+            }
+
+            
         </div>
     )
 }

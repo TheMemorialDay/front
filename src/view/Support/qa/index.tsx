@@ -5,14 +5,22 @@ import { QaList } from '../../../types';
 import { usePagination } from '../../../hooks';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import { SU_ABSOLUTE_QA_WRITE_PATH, SU_QA_DETAIL_PATH } from '../../../constants';
+import { ACCESS_TOKEN, SU_ABSOLUTE_QA_WRITE_PATH, SU_QA_DETAIL_PATH } from '../../../constants';
 import QaRow from '../../../components/qa_row';
 import { getQnAListRequest } from '../../../apis/dto';
 import { GetQnAListResponseDto } from '../../../apis/dto/response/support';
 import { ResponseDto } from '../../../apis/dto/response';
+import { useSignInUserStore } from '../../../stores';
+import { useCookies } from 'react-cookie';
 
 // component: support qa 컴포넌트 //
 export default function Qa() {
+
+    // state: 로그인 유저 상태 //
+    const {signInUser} = useSignInUserStore();
+
+    // state: 쿠키 상태 //
+    const [cookies] = useCookies();
 
     // state: 검색 입력 창 상태 //
     const [searchWords, setSearchWords] = useState<string>('');
@@ -22,11 +30,6 @@ export default function Qa() {
 
     // function: 네비게이터 //
     const navigator = useNavigate();
-
-    // event handler: 로우 클릭 시 디테일 페이지로 이동 //
-    const onDetailButtonHandler = (questionNumber: number | string) => {
-        navigator(SU_QA_DETAIL_PATH(questionNumber));
-    };
 
     // function: qna list 불러오기 함수 //
     const getQnAList = () => {
@@ -50,6 +53,10 @@ export default function Qa() {
         setOriginalList(qnas);
     };
 
+    // event handler: 로우 클릭 시 디테일 페이지로 이동 //
+    const onDetailButtonHandler = (questionNumber: number | string) => {
+        navigator(SU_QA_DETAIL_PATH(questionNumber));
+    };
 
     // event handler: 검색 입력 창 내용 변경 감지 //
     const onSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -59,17 +66,26 @@ export default function Qa() {
 
     // event handler: 큐엔에이 검색 버튼 //
     const onSearchButtonHandler = () => {
-        const searchedList = originalList.filter(qa => (qa.questionTitle, qa.userId).includes(searchWords));
+        const searchedList = originalList.filter(qnas => (qnas.questionTitle).includes(searchWords));
         setTotalList(searchedList);
         initViewList(searchedList);
     }; 
 
     // event handler: 큐엔에이 작성 페이지 이동 //
     const onQaWriteButtonHandler = () => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
         navigator(SU_ABSOLUTE_QA_WRITE_PATH);
     };
 
-    //* 커스텀 훅 가져오기
+    // event handler: 엔터키로 검색 버튼 동작 //
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            onSearchButtonHandler();
+        }
+    }
+
+    // 커스텀 훅 가져오기
     const {
         currentPage,
         totalPage,
@@ -109,7 +125,7 @@ export default function Qa() {
                         </div>
                     </div>
 
-                    {viewList.map((qna, index) => <QaRow key={index} qna={qna} getQnAList={getQnAList} onDetailClickHandler={onDetailButtonHandler}/> )}
+                    {viewList.map((qna, index) => <QaRow key={index} qnas={qna} getQnAList={getQnAList} onDetailClickHandler={onDetailButtonHandler}/> )}
                     
 
                 </div>
@@ -124,7 +140,7 @@ export default function Qa() {
                     onNextSectionClickHandler={onNextSectionClickHandler}
                 />
                 <div className="search-box">
-                    <input value={searchWords} placeholder="제목을 입력하세요" onChange={onSearchChangeHandler} />
+                    <input value={searchWords} placeholder="제목을 입력하세요." onChange={onSearchChangeHandler} onKeyDown={handleKeyDown}/>
                     <div className="button search-button" onClick={onSearchButtonHandler}>검색</div>
                 </div>
             </div>

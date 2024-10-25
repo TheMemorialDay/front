@@ -84,6 +84,13 @@ export default function Notice() {
         initViewList(searchedList);
     };
 
+    // event handler: 엔터키로 검색 버튼 동작 //
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            onSearchButtonHandler();
+        }
+    }
+
     //* 커스텀 훅 가져오기
     const {
         currentPage,
@@ -130,7 +137,7 @@ export default function Notice() {
                     onNextSectionClickHandler={onNextSectionClickHandler}
                 />
                 <div className="search-box">
-                    <input value={searchWords} placeholder="제목을 입력하세요" onChange={onSearchChangeHandler} />
+                    <input value={searchWords} placeholder="제목을 입력하세요" onChange={onSearchChangeHandler} onKeyDown={handleKeyDown}/>
                     <div className="button search-button" onClick={onSearchButtonHandler}>검색</div>
                 </div>
             </div>
