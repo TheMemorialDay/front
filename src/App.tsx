@@ -9,7 +9,9 @@ import { JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_
   SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, SHOPPING_CART_PATH, MY_PATH, 
   MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_LIKE_PATH, MY_STORE_PATH, MY_PRODUCT_PATH, 
   MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PASSWORD_CHECK_PATH, MY_PRODUCT_ADD_PATH, 
-  MY_PRODUCT_UPDATE_PATH} from './constants';
+  MY_PRODUCT_UPDATE_PATH,
+  ST_PRODUCT_ORDER_PATH,
+  ST_ORDER_DONE_PATH} from './constants';
 
 import Stores from './view/Stores';
 import Support from './view/Support';
@@ -40,6 +42,8 @@ import Update from './view/MyPage/MyProduct/update';
 import MyPasswordCheck from './view/MyPage/MyInfo/MyPasswordCheck';
 import { useCookies } from 'react-cookie';
 import NotMember from './components/Modal/NotMember';
+import Order from './view/Stores/Order/detail';
+import DoneScreen from './view/Stores/Order/done';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -85,7 +89,11 @@ export default function TheMemorialDay() {
       <Route path={ST_PATH} element={<MainLayout />}>
         <Route index element={<Stores />} />
         <Route path={ST_PATH} element={<Stores />} />
-        <Route path={ST_ORDER_DETAIL_PATH} element={<ShopOrder />} />
+        <Route path={ST_ORDER_DETAIL_PATH} >
+          <Route index element={<ShopOrder />} />
+          <Route path={ST_PRODUCT_ORDER_PATH} element={<Order/>}/>
+          <Route path={ST_ORDER_DONE_PATH} element={<DoneScreen/>}/>
+        </Route>
         <Route path={ST_INFORMATION_DETAIL_PATH} element={<ShopInformation />} />
         <Route path={ST_CONTACT_DETAIL_PATH} element={<ShopContact />} />
         <Route path={ST_REVIEW_DETAIL_PATH} element={<ShopReview />} />
@@ -101,10 +109,10 @@ export default function TheMemorialDay() {
       </Route>
       <Route path={SU_PATH} element={<MainLayout />}  >
         <Route path={SU_PATH} element={<Support />} />
-        <Route path={SU_NOTICE_DETAIL_PATH} element={<NoticeDetail />} />
+        <Route path={SU_NOTICE_DETAIL_PATH(':noticeNumber')} element={<NoticeDetail />} />
         <Route path={SU_QA_PATH} element={<Qa />} />
         <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
-        <Route path={SU_QA_DETAIL_PATH} element={<QaDetail />} />
+        <Route path={SU_QA_DETAIL_PATH(':questionNumber')} element={<QaDetail />} />
       </Route>
       <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
         <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />

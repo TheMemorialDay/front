@@ -456,7 +456,7 @@ Content-Type: application/json;charset=UTF-8
 데이터 유효성 검사 실패 에러, 인증 실패 에러, 데이터베이스 에러가 발생할 수 있습니다.
 
 - method : **PATCH**  
-- URL : **/mypage/storeInfo/{userId}/update**  
+- URL : **/mypage/store/{storeNumber}**  
 
 ##### Request
 
@@ -557,6 +557,17 @@ Content-Type: application/json;charset=UTF-8
 {
   "code": "VF",
   "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (존재하지 않는 상점)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "NS",
+  "message": "No exist store."
 }
 ```
 

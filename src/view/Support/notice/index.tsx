@@ -4,45 +4,33 @@ import { NoticeList } from "../../../types";
 import Pagination from "../../../components/Pagination";
 import './style.css';
 import SupportNavi from "../../../components/support_navi";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { SU_ABSOLUTE_NOTICE_DETAIL_PATH } from "../../../constants";
+import { getNoticeListRequest } from "../../../apis/dto";
+import GetNoticeListResponseDto from "../../../apis/dto/response/support/get-notice-list-response.dto";
+import { ResponseDto } from "../../../apis/dto/response";
+import formatDate from "../../../components/dateChange/DateChange";
+
 
 // interface: 공지사항 리스트 아이템 //
 interface TableRowProps {
-    notices: NoticeList;
+    notice: NoticeList;
+    getNoticeList: () => void;
+    onDetailClickHandler: (noticeNumber: number) => void;
 };
 
 // component: NoticeRow 컴포넌트 //
-// { notices }: TableRowProps
-export function NoticeRow() {
-    // 데이터 넣은 후 요소 자리에 맞게 넣어주기
 
-    // function: 네비게이터 //
-    const navigator = useNavigate();
-
-    // event handler: 로우 클릭 시 디테일 페이지로 이동 //
-    //* 나중에 해당 번호 가져오기
-    const onDetailButtonHandler = () => {
-        navigator(SU_ABSOLUTE_NOTICE_DETAIL_PATH);
-    };
-
+export function NoticeRow({notice, getNoticeList, onDetailClickHandler}: TableRowProps) {
+    
     // render: NoticeRow 컴포넌트 렌더링 //
     return (
-        <>
-            <div className="tr" onClick={onDetailButtonHandler}>
-                <div className="td-no">10</div>
-                <div className="td-title">제 2차 서버 점검이 있습니다.</div>
-                <div className="td-date">2024-10-04</div>
-            </div>
-            {/* 확인용 */}
-            <div className="tr">
-                <div className="td-no">10</div>
-                <div className="td-title">제 2차 서버 점검이 있습니다.</div>
-                <div className="td-date">2024-10-04</div>
-            </div>
-        </>
+        <div className="tr" onClick={() => onDetailClickHandler(notice.noticeNumber)}>
+            <div className="td-no">{notice.noticeNumber}</div>
+            <div className="td-title">{notice.noticeTitle}</div>
+            <div className="td-date">{formatDate(notice.noticeDay)}</div>
+        </div>
     )
-
 }
 
 // component: Support Notice 컴포넌트 //
@@ -52,6 +40,36 @@ export default function Notice() {
     const [searchWords, setSearchWords] = useState<string>('');
     // state: 원본 리스트 상태 //
     const [originalList, setOriginalList] = useState<NoticeList[]>([]);
+
+    // function: 네비게이터 //
+    const navigator = useNavigate();
+
+    // function: notice list 불러오기 함수 //
+    const getNoticeList = () => {
+        getNoticeListRequest().then(getNoticeListResponse);
+    };
+
+    // function: getNoticeList response 처리 함수 //
+    const getNoticeListResponse = (responseBody: GetNoticeListResponseDto | ResponseDto | null) => {
+        const message = 
+            responseBody === null ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 'SU';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if(!isSuccessed) {
+            alert(message);
+            return ;
+        }
+
+        const {notices} = responseBody as GetNoticeListResponseDto;
+        setTotalList(notices);
+        setOriginalList(notices);
+    };
+
+    // event handler: 공지사항 tr 클릭 이벤트 핸들러 //
+    const onTrClickHandler = (noticeNumber: number) => {
+        navigator(SU_ABSOLUTE_NOTICE_DETAIL_PATH(noticeNumber));
+    }
 
     // event handler: 검색 입력 창 내용 변경 감지 //
     const onSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -65,6 +83,13 @@ export default function Notice() {
         setTotalList(searchedList);
         initViewList(searchedList);
     };
+
+    // event handler: 엔터키로 검색 버튼 동작 //
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            onSearchButtonHandler();
+        }
+    }
 
     //* 커스텀 훅 가져오기
     const {
@@ -80,28 +105,26 @@ export default function Notice() {
         onNextSectionClickHandler,
     } = usePagination<NoticeList>();
 
+    // effect: 컴포넌트 로드시 용품 리스트 불러오기 함수 //
+    useEffect(getNoticeList, []);
+
     // render: Support Notice 렌더링 //
     return (
         <div id="notice-wrapper">
             <SupportNavi />
 
-            {/* 이 부분 따로 가져가서 렌더링 */}
             <div className="top">
-                <div className="top-text">전체 12건</div>
+                <div className="top-text">전체 {totalCount}건</div>
             </div>
 
-            {/* 이 부분도 따로 컴포넌트에 가져가서 렌더링 */}
             <div className="main">
-
                 <div className="table">
                     <div className="th">
                         <div className="td-no">No.</div>
                         <div className="td-title">Title</div>
                         <div className="td-date">Date</div>
                     </div>
-                
-                    <NoticeRow />
-
+                    {viewList.map((notice, index) => <NoticeRow key={index} notice={notice} getNoticeList={getNoticeList} onDetailClickHandler={onTrClickHandler}/> )}
                 </div>
             </div>
 
@@ -114,7 +137,7 @@ export default function Notice() {
                     onNextSectionClickHandler={onNextSectionClickHandler}
                 />
                 <div className="search-box">
-                    <input value={searchWords} placeholder="제목을 입력하세요" onChange={onSearchChangeHandler} />
+                    <input value={searchWords} placeholder="제목을 입력하세요" onChange={onSearchChangeHandler} onKeyDown={handleKeyDown}/>
                     <div className="button search-button" onClick={onSearchButtonHandler}>검색</div>
                 </div>
             </div>

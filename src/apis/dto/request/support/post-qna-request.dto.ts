@@ -1,7 +1,5 @@
-// Notice Q&A 리스트 타입 정의
-
-export default interface QaList {
-    questionNumber: number;
+// interface: post QnA request body dto //
+export default interface PostQnARequestDto {
     questionTitle: string;
     questionContents: string;
     questionDay: string;
