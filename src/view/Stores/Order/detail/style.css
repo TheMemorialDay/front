@@ -1,0 +1,309 @@
+#product-order {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+#tags {
+    border-radius: 20px;
+    background-color: rgb(214, 183, 245);
+    display: flex;
+    font-size: 13px;
+    font-weight: 700;
+    color: black;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    width: 50px;
+    margin-right: 5px;
+}
+
+#preview {
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#product-order .photo-zone {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    height: 500px;
+    align-items: center;
+    margin-top: 100px;
+}
+
+#product-order .arrow-left {
+    background-image: url('/public/images/round-left.png');
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    justify-content: center; /* 가로 정렬 */
+    align-items: center; 
+}
+
+#product-order .images {
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 380px;
+    height: 500px;
+}
+
+#product-order .preview-box {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+#product-order .arrow-right {
+    background-image: url('/public/images/round-right.png');
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+}
+
+#product-order .order-page {
+    display: flex;
+    flex-direction: column;
+    margin-top: 100px;
+    overflow-x: auto;
+    height: 550px;
+    padding-right: 40px;
+}
+
+#product-order .order-page::-webkit-scrollbar {
+    width: 4px;
+}
+
+/* 스크롤바 핸들 (움직이는 부분) */
+#product-order .order-page::-webkit-scrollbar-thumb {
+    background: lightgray; 
+    border-radius: 6px; /* 핸들의 둥근 모서리 */
+}
+
+#product-order .order-page::-webkit-scrollbar-thumb:hover {
+    background: darkgray; 
+    border-radius: 6px; /* 핸들의 둥근 모서리 */
+}
+
+#product-order .text {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+#product-order .custom-hr {
+    margin-top: 20px;
+    width: 35vw;
+    color: darkgray;
+    margin-bottom: 20px;
+}
+
+#product-order .cake-name {
+    font-size: 19px;
+    font-weight: 600;
+}
+
+#product-order .thema-zone {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+}
+
+#product-order .cake-introduce {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#product-order .cake-price {
+    font-size: 19px;
+    font-weight: 600;
+    text-align: right;
+
+    margin-top: 20px;
+}
+
+#product-order .pickup-date {
+    display: flex;
+    flex-direction: row;
+
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#product-order .option-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-right: 40px;
+
+    display: flex;
+    
+    align-items: center;
+}
+
+/******************************************************************************************************************************/
+/* 전체 Datepicker 스타일 */
+.react-datepicker {
+    font-family: Arial, sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* 달력 헤더 스타일 */
+  .react-datepicker__header {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+    padding: 8px 0;
+  }
+  
+  /* 달력의 네비게이션 버튼 (이전/다음 달 이동) */
+  .react-datepicker__navigation {
+    top: 10px;
+    line-height: 1.7rem;
+    font-weight: bold;
+  }
+  
+  /* 주간 헤더 (월, 화, 수 등) */
+  .react-datepicker__day-names {
+    color: #666;
+    font-weight: bold;
+  }
+  
+  /* 각각의 날짜 (일반적인 날짜) */
+  .react-datepicker__day {
+    width: 40px;
+    line-height: 40px;
+    margin: 2px;
+    color: #333;
+  }
+  
+  /* 오늘 날짜 강조 */
+  .react-datepicker__day--today {
+    background-color: #fffae6;
+    border-radius: 50%;
+  }
+  
+  /* 선택한 날짜 강조 */
+  .react-datepicker__day--selected {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 50%;
+  }
+  
+  /* Hover 시의 날짜 스타일 */
+  .react-datepicker__day:hover {
+    background-color: #f0f0f0;
+    border-radius: 50%;
+  }
+
+  .react-datepicker__input-container input {
+    width: 250px;  /* 입력 필드의 너비 */
+    height: 25px;  /* 입력 필드의 높이 */
+    font-size: 16px;  /* 글자 크기 */
+    padding: 10px;  /* 내부 여백 */
+    border-radius: 6px;  /* 모서리 둥글게 */
+    border: 1px solid #ccc;  /* 테두리 */
+  }
+  
+/*******************************************************************************************************************************/
+
+#produce-order .pick-size {
+    display: flex;
+    flex-direction: column;
+}
+
+#produce-order .radio-group {
+    gap: 7px;
+}
+
+#product-order .count-handler {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+    justify-content: center;
+    align-items: center;
+}
+
+#product-order .count-up {
+    width: 20px;
+    height: 20px;
+    background-image: url('/public/images/arrow-up.png');
+}
+
+#product-order .count-down {
+    background-image: url('/public/images/arrow-down.png');
+    width: 20px;
+    height: 20px;
+    background-size: cover;
+}
+
+#product-order .textarea {
+    margin-left: 20px;
+    width: 500px;
+    height: 100px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    margin-top: 15px;
+
+    font-size: 14px;
+    font-weight: 400;
+}
+
+#product-order .checkbox {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 50px;
+}
+
+#product-order .total-price {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: right;
+}
+
+#product-order .order-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 250px;
+    height: 25px;
+    padding: 10px;
+
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+
+    background-color: black;
+    border-radius: 6px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+#product-order .order-button:hover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 250px;
+    height: 25px;
+    padding: 10px;
+
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.7);
+}

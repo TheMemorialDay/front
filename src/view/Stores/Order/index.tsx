@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
 import './style.css';
 import React, { useState } from 'react'
-import { ST_ABSOLUTE_CONTACT_DETAIL_PATH, ST_ABSOLUTE_INFORMATION_DETAIL_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH, ST_ABSOLUTE_REVIEW_DETAIL_PATH } from '../../../constants';
+import { ST_ABSOLUTE_CONTACT_DETAIL_PATH, ST_ABSOLUTE_INFORMATION_DETAIL_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH, ST_ABSOLUTE_REVIEW_DETAIL_PATH, ST_PRODUCT_ORDER_ABSOLUTE_PATH } from '../../../constants';
 import ShopMain from '../../../components/Shopinformation';
 
 export default function ShopOrder() {
@@ -24,21 +24,26 @@ export default function ShopOrder() {
     navigator(ST_ABSOLUTE_REVIEW_DETAIL_PATH);
   };
 
+  const onProductClickHandler = () => {
+    navigator(ST_PRODUCT_ORDER_ABSOLUTE_PATH);
+  }
+
 
   interface ShopComponentProps {
     imageUrl: string;
     title: string;
     price: string;
     hashtags: string;
+    onDetailClickHandler: () => void;
   };
 
-  function ShopComponent({ imageUrl, title, price, hashtags }: ShopComponentProps) {
+  function ShopComponent({ imageUrl, title, price, hashtags, onDetailClickHandler}: ShopComponentProps) {
 
     const [hover, setHover] = useState(false);
     return (
       <div className="cake-item" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} style={{ backgroundImage: `url(${imageUrl})` }}>
         {hover && (
-          <div className="cake-overlay">
+          <div className="cake-overlay" onClick={() => onDetailClickHandler()}>
             <h2>{title}</h2>
             <p className='hashtags'>{hashtags}</p>
             <p className='price'>{price}원</p>
@@ -59,10 +64,10 @@ export default function ShopOrder() {
         <div className='shop-review' onClick={onReviewButtonClickHandler}>리뷰</div>
       </div>
       <div className='product'>
-        <ShopComponent imageUrl="/picture1.png" title="케이크1" price="35000" hashtags='#깔끔함 #달달함 #꽃케잌' />
-        <ShopComponent imageUrl="/picture12.png" title="케이크2" price="45000" hashtags='#깔끔함 #청량함' />
-        <ShopComponent imageUrl="/picture13.png" title="케이크3" price="32000" hashtags='#귀여움 #핑크' />
-        <ShopComponent imageUrl="/picture14.png" title="케이크4" price="30000" hashtags='#로또당첨' />
+        <ShopComponent imageUrl="/picture1.png" title="케이크1" price="35000" hashtags='#깔끔함 #달달함 #꽃케잌' onDetailClickHandler={onProductClickHandler}/>
+        <ShopComponent imageUrl="/picture12.png" title="케이크2" price="45000" hashtags='#깔끔함 #청량함' onDetailClickHandler={onProductClickHandler}/>
+        <ShopComponent imageUrl="/picture13.png" title="케이크3" price="32000" hashtags='#귀여움 #핑크' onDetailClickHandler={onProductClickHandler}/>
+        <ShopComponent imageUrl="/picture14.png" title="케이크4" price="30000" hashtags='#로또당첨' onDetailClickHandler={onProductClickHandler}/>
       </div>
     </div>
   )
