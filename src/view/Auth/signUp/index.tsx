@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useState } from 'react'
 import './style.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { LOGIN_PATH, SIGN_IN_ABSOLUTE_PATH } from '../../../constants';
+import { SIGN_IN_ABSOLUTE_PATH } from '../../../constants';
 import SnsContainer from '../../../components/sns_login_sign_up';
 import { ResponseDto } from '../../../apis/dto/response';
 import { idCheckRequest, signUpRequest, telAuthCheckRequest, telAuthRequest } from '../../../apis';

@@ -496,10 +496,10 @@ export default function Auth() {
             <div className='auth-container'>
                 {
                     path === 'logIn' ? <SignIn onPathChange={onPathChangeHandler} /> :
-                        path === 'findId' ? <FindId onPathChange={onPathChangeHandler} /> :
-                            path === 'findIdResult' ? <FindIdResult onPathChange={onPathChangeHandler} /> :
-                                path === 'findPassword' ? <FindPassword onPathChange={onPathChangeHandler} /> :
-                                    path === 'changePassword' ? <ChangePassword onPathChange={onPathChangeHandler} /> : ''
+                    path === 'findId' ? <FindId onPathChange={onPathChangeHandler} /> :
+                    path === 'findIdResult' ? <FindIdResult onPathChange={onPathChangeHandler} /> :
+                    path === 'findPassword' ? <FindPassword onPathChange={onPathChangeHandler} /> :
+                    path === 'changePassword' ? <ChangePassword onPathChange={onPathChangeHandler} /> : ''
                 }
             </div>
         </div>
