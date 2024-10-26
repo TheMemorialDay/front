@@ -4,8 +4,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { LOGIN_PATH, SIGN_IN_ABSOLUTE_PATH } from '../../../constants';
 import SnsContainer from '../../../components/sns_login_sign_up';
 import { ResponseDto } from '../../../apis/dto/response';
-import { IdCheckRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from '../../../apis/dto/request';
 import { idCheckRequest, signUpRequest, telAuthCheckRequest, telAuthRequest } from '../../../apis';
+import { IdCheckRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from '../../../apis/dto/request/auth';
 
 // component: 회원가입 화면 컴포넌트 //
 export default function SignUp() {
@@ -254,19 +254,13 @@ export default function SignUp() {
 
         if (isTrue) {
             setTelMessage('');
-            alert(telMessage);
             const requestBody: TelAuthRequestDto = { telNumber };
             telAuthRequest(requestBody).then(telAuthResponse);
-        }else {
-            
-
+        } else {
             setTelMessage('숫자 11자로 입력해주세요.');
-            alert(telMessage);
             setTelNumberMessageError(true);
             return;
         }
-
-       
 
     }
 
@@ -304,6 +298,7 @@ export default function SignUp() {
             snsId
         };
 
+        alert('회원가입이 완료되었습니다.');
         signUpRequest(requestBody).then(signUpResponse);
     }
 

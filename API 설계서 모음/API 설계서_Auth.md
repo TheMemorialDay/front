@@ -174,25 +174,14 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (존재하지 않는 이름)**
+**응답 : 실패 (존재하지 않는 정보)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
 
 {
-  "code": "NN",
-  "message": "No exist name."
-}
-```
-
-**응답 : 실패 (존재하지 않는 전화번호)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-
-{
-  "code": "NT",
-  "message": "No exist tel number."
+  "code": "NF",
+  "message": "No exist info."
 }
 ```
 
@@ -236,14 +225,14 @@ Content-Type: application/json;charset=UTF-8
 | name | type | description | required |
 |---|:---:|:---:|:---:|
 | telNumber | String | 인증 번호를 확인할 사용자 전화번호 | O |
-| authNumber | String | 인증 확인에 사용할 인증 번호 | O |
+| telAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
 
 ###### Example
 
 ```bash
 curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-tel-auth-check" \
  -d "telNumber=01011112222" \
- -d "authNumber=1234"
+ -d "telAuthNumber=1234"
 ```
 
 ##### Response
@@ -414,14 +403,14 @@ Content-Type: application/json;charset=UTF-8
 | name | type | description | required |
 |---|:---:|:---:|:---:|
 | telNumber | String | 인증 번호를 확인할 사용자 전화번호 | O |
-| authNumber | String | 인증 확인에 사용할 인증 번호 | O |
+| telAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
 
 ###### Example
 
 ```bash
 curl -v -X POST "http://localhost:4000/api/v1/auth/password-search-tel-auth-check" \
  -d "telNumber=01011112222" \
- -d "authNumber=1234"
+ -d "telAuthNumber=1234"
 ```
 
 ##### Response
@@ -781,14 +770,14 @@ Content-Type: application/json;charset=UTF-8
 | name | type | description | required |
 |---|:---:|:---:|:---:|
 | telNumber | String | 인증 번호를 확인할 사용자 전화번호 | O |
-| authNumber | String | 인증 확인에 사용할 인증 번호 | O |
+| teltelAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
 
 ###### Example
 
 ```bash
 curl -v -X POST "http://localhost:4000/api/v1/auth/tel-auth-check" \
  -d "telNumber=01011112222" \
- -d "authNumber=1234"
+ -d "telAuthNumber=1234"
 ```
 
 ##### Response
@@ -877,7 +866,7 @@ Content-Type: application/json;charset=UTF-8
 | birth | String | 사용자의 생년월일(yyyymmdd) | O |
 | gender | String | 사용자의 성별(남/녀) | O |
 | telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
-| authNumber | String | 전화번호 인증번호 | O |
+| teltelAuthNumber | String | 전화번호 인증번호 | O |
 | joinPath | String | 회원가입 경로 (기본: 'HOME', 카카오: 'KAKAO', 네이버: 'NAVER', 구글: 'GOOGLE') | O |
 | snsId | String | SNS 가입 시 sns oauth2 ID | X |
 
@@ -891,7 +880,7 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/sign-up" \
  -d "birth=010425" \
  -d "gender=여" \
  -d "telNumber=01012345678" \
- -d "authNumber=1234" \
+ -d "teltelAuthNumber=1234" \
  -d "joinPath=HOME" 
 ```
 
@@ -1118,7 +1107,7 @@ curl -X GET "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
 | birth | String | 사용자의 생년월일(yyyymmdd) | O |
 | gender | String | 사용자의 성별(남/녀) | O |
 | telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
-| authNumber | String | 전화번호 인증번호 | O |
+| teltelAuthNumber | String | 전화번호 인증번호 | O |
 
 ###### Example
 
@@ -1134,7 +1123,7 @@ Content-Type: application/json;charset=UTF-8
   "birth": "010425",
   "gender": "여",
   "telNumber": "01011112222",
-  "authNumber": "1234"
+  "telAuthNumber": "1234"
 }
 ```
 
@@ -1279,14 +1268,14 @@ Content-Type: application/json;charset=UTF-8
 | name | type | description | required |
 |---|:---:|:---:|:---:|
 | telNumber | String | 인증 번호를 확인할 사용자 전화번호 | O |
-| authNumber | String | 인증 확인에 사용할 인증 번호 | O |
+| telAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
 
 ###### Example
 
 ```bash
 curl -v -X POST "http://localhost:4000/api/v1/mypage/userInfo/tel-auth-check" \
  -d "telNumber=01011112222" \
- -d "authNumber=1234"
+ -d "telAuthNumber=1234"
 ```
 
 ##### Response
@@ -1374,7 +1363,7 @@ Content-Type: application/json;charset=UTF-8
 | birth | String | 사용자의 생년월일(yyyymmdd) | O |
 | gender | String | 사용자의 성별(남/녀) | O |
 | telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
-| authNumber | String | 전화번호 인증번호 | O |
+| telAuthNumber | String | 전화번호 인증번호 | O |
 
 
 ###### Example
@@ -1387,7 +1376,7 @@ curl -v -X PATCH "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
  -d "birth=010101" \
  -d "gender=남" \
  -d "telNumber=01012123456" \
- -d "authNumber=5678"
+ -d "telAuthNumber=5678"
 ```
 
 ##### Response

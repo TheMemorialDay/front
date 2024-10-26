@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from "axios";
-import { IdCheckRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { ResponseDto } from "./dto/response";
+import { IdCheckRequestDto, IdSearchAfterRequestDto, IdSearchBeforeRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { IdSearchResponseDto } from "./dto/response/auth";
 
 
 // variable: API URL 상수 //
@@ -13,6 +14,7 @@ const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 
 const POST_STORE_API_MODULE = `${MYPAGE_STORE_MODULE}`;
 
+//* Auth
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
 
 const ID_CHECK_API_URL = `${AUTH_MODULE_URL}/id-check`;
@@ -20,7 +22,8 @@ const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
-const ID_SEARCH_API_URL = `${AUTH_MODULE_URL}/id-search`;
+const ID_SEARCH_BEFORE_API_URL = `${AUTH_MODULE_URL}/id-search`;
+const ID_SEARCH_AFTER_API_URL = `${AUTH_MODULE_URL}/id-search-tel-auth-check`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -83,6 +86,22 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
 export const postStoreRequest = async (requestBody: PostStoreRequestDto, accessToken: string) => {
   const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody, bearerAuthorization(accessToken))
     .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: id search before 요청 함수 //
+export const idSearchBeforeRequest = async (requestBody: IdSearchBeforeRequestDto) => {
+  const responseBody = await axios.post(ID_SEARCH_BEFORE_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: id search after 요청 함수 //
+export const idSearchAfterRequest = async (requestBody: IdSearchAfterRequestDto) => {
+  const responseBody = await axios.post(ID_SEARCH_AFTER_API_URL, requestBody)
+    .then(responseDataHandler<IdSearchResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 };
