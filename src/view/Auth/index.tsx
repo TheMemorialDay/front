@@ -8,6 +8,7 @@ import { IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/
 import { ResponseDto } from '../../apis/dto/response';
 import { idSearchAfterRequest, idSearchBeforeRequest, signInRequest } from '../../apis';
 import { IdSearchAfterRequestDto, IdSearchBeforeRequestDto, SignInRequestDto } from '../../apis/dto/request/auth';
+import useIdSearchResult from '../../stores/id-search-result-store';
 
 
 type AuthPath = 'logIn' | 'findId' | 'findIdResult' | 'findPassword' | 'changePassword';
@@ -143,10 +144,11 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const [isTelAuthNumber, setIsTelAuthNumber] = useState<boolean>(false);
 
     // variable: 아이디 찾기 가능 상태 확인 //
-    const isIdSearchPossible = name && isTelNumber && isTelAuthNumber;
+    const isIdSearchPossible = isName && isTelNumber && isTelAuthNumber;
 
     // variable: 변수 선언 //
-    const isPossible = name && isMatched1 && isMatched2;
+    const isPossible = isName && isMatched1 && isMatched2;
+    const {zusName, zusUserId, zusTelNumber, setZusName, setZusTelNumber, setZusUserId} = useIdSearchResult();
 
     // function: 네비게이터 //
     const navigator = useNavigate();
@@ -165,21 +167,26 @@ function FindId({ onPathChange }: AuthComponentProps) {
             setIdSearchMessage(message);
             return;
         }
+        
     };
 
     // function: 아이디 찾기 after Response 처리 함수 //
     const idSearchAfterResponse = (responseBody: IdSearchResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
         if (!isSuccessed) {
             setIdSearchMessage(message);
             return;
         }
-        navigator(SIGN_IN_ABSOLUTE_PATH);
+        const idCheckResult = responseBody as IdSearchResponseDto;
+        setZusName(idCheckResult.name);
+        setZusTelNumber(idCheckResult.telNumber);
+        setZusUserId(idCheckResult.userId);
+        //navigator(SIGN_IN_ABSOLUTE_PATH);
     };
 
     // event handler: 이름 변경 이벤트 핸들러 //
@@ -218,19 +225,6 @@ function FindId({ onPathChange }: AuthComponentProps) {
         }
     }
 
-    // event handler: 최종 아이디 찾기 버튼 클릭 //
-    const onIdSearchClickHandler = () => {
-        if (!isIdSearchPossible) {
-            alert('정확하게 입력해주세요.');
-            return;
-        }
-
-        const requestBody: IdSearchAfterRequestDto = { telNumber, telAuthNumber };
-        idSearchAfterRequest(requestBody).then(idSearchAfterResponse);
-
-        console.log(isIdSearchPossible);
-    };
-
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
     const onCheckClickHandler = () => {
         if (!telAuthNumber) {
@@ -260,6 +254,19 @@ function FindId({ onPathChange }: AuthComponentProps) {
         }
     }
 
+    // event handler: 최종 아이디 찾기 버튼 클릭 //
+    const onIdSearchClickHandler = () => {
+        if (!isIdSearchPossible) {
+            alert('정확하게 입력해주세요.');
+            return;
+        }
+        
+        onPathChange('findIdResult');
+
+        const requestBody: IdSearchAfterRequestDto = { telNumber, telAuthNumber };
+        idSearchAfterRequest(requestBody).then(idSearchAfterResponse);
+    };
+
     //render: 아이디 찾기 화면 렌더링 //
     return (
         <div id='find-id'>
@@ -284,13 +291,69 @@ function FindId({ onPathChange }: AuthComponentProps) {
 
 
             </div>
-            <div className='login-button' onClick={onIdSearchClickHandler}>아이디 찾기 확인</div>
+            
+            {/* <div className='login-button' onClick={onIdSearchClickHandler}>아이디 찾기 확인</div> */}
+            <div className='login-button' onClick={onIdSearchClickHandler} >아이디 찾기 확인</div>
         </div>
     )
 }
 
 // component: 아이디 찾기 결과 화면 컴포넌트 //
 function FindIdResult({ onPathChange }: AuthComponentProps) {
+
+    // state: 아이디 찾기 입력값 검증 상태 //
+    const [isName, setIsName] = useState<boolean>(false);
+    const [isTelNumber, setIsTelNumber] = useState<boolean>(false);
+    const [isTelAuthNumber, setIsTelAuthNumber] = useState<boolean>(false);
+
+    const [telAuthNumber, setTelAuthNumber] = useState<string>('');
+    
+    // state: 아이디 찾기 상태 //
+    const [idSearchMessage, setIdSearchMessage] = useState<string>('');
+
+    // state: zustand 만든 거 가져오기 //
+    const { zusName, setZusName, zusTelNumber, setZusTelNumber, zusUserId, setZusUserId } = useIdSearchResult();
+    //const {} = useIdSearchResult();
+    const message = zusName + ", " + zusTelNumber + ", " + zusUserId;
+    alert(message);
+
+    // variable: 아이디 찾기 가능 상태 확인 //
+    const isIdSearchPossible = isName && isTelNumber && isTelAuthNumber;
+
+    // function: 네비게이터 //
+    const navigator = useNavigate();
+
+    //     // function: 아이디 찾기 after Response 처리 함수 //
+    //     const idSearchAfterResponse = (responseBody: IdSearchResponseDto | ResponseDto | null) => {
+    //         const message =
+    //             !responseBody ? '서버에 문제가 있습니다.' :
+    //                 responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+    //                     responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+    
+    //         const isSuccessed = responseBody != null && responseBody.code === 'SU';
+    //         if (!isSuccessed) {
+    //             setIdSearchMessage(message);
+    //             return;
+    //         }
+    //         navigator(SIGN_IN_ABSOLUTE_PATH);
+    //     };
+
+    // useEffect(() => {
+    //     onIdSearchClickHandler();
+    // }, []);
+
+    // // event handler: 최종 아이디 찾기 버튼 클릭 //
+    // const onIdSearchClickHandler = () => {
+    //     if (!isIdSearchPossible) {
+    //         alert('정확하게 입력해주세요.');
+    //         return;
+    //     }
+
+    //     // onPathChange('findIdResult');
+
+    //     const requestBody: IdSearchAfterRequestDto = { telNumber, telAuthNumber };
+    //     idSearchAfterRequest(requestBody).then(idSearchAfterResponse);
+    // };
 
     //render: 아이디 찾기 결과 화면 렌더링 //
     return (
@@ -299,15 +362,15 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
             <div className='login-box'>
                 <div className='one-line'>
                     <div className='name'>이름</div>
-                    <div className='name-result'>정호정</div>
+                    <div className='name-result'>{zusName}</div>
                 </div>
                 <div className='one-line'>
                     <div className='telNumber'>전화번호</div>
-                    <div className='telNumber-result'>010-1234-5678</div>
+                    <div className='telNumber-result'>{zusTelNumber}</div>
                 </div>
                 <div className='one-line'>
                     <div className='id'>아이디</div>
-                    <div className='id-result'>qwer1234</div>
+                    <div className='id-result'>{zusUserId}</div>
                 </div>
             </div>
             <div className='login-button' onClick={() => onPathChange('logIn')}>로그인</div>

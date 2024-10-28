@@ -209,14 +209,14 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - 아이디 찾기의 인증번호 확인  
+#### - 아이디 찾기의 인증번호 확인 후 결과 
   
 ##### 설명
 
 클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다. 일치한다면 성공에 대한 응답을 받고 이름, 전화번호, 아이디를 보여줍니다. 만약 일치하지 않는다면 전화번호 인증 실패에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **POST**  
-- end point : **/id-search-tel-auth-check**  
+- end point : **/id-search-result**  
 
 ##### Request
 
@@ -480,13 +480,21 @@ Content-Type: application/json;charset=UTF-8
 
 | name | type | description | required |
 |---|:---:|:---:|:---:|
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| userId | String | 사용자의 아이디 | O |
+| telNumber | String | 사용자의 전화번호 (11자의 숫자) | O |
+| telAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
 | password | String | 사용자의 비밀번호 (8~13자의 영문 + 숫자) | O |
 
 ###### Example
 
 ```bash
 curl -v -X PATCH "http://localhost:4000/api/v1/auth/password-resetting" \
- -d "password=P!ssw0rd"\
+  -d "userId=qwer1234"\
+  -d "telNumber=01011112222"\
+  -d "telAuthNumber=1234"
+  -d "password=P!ssw0rd"\
 ```
 
 ##### Response
@@ -656,7 +664,7 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - 전화번호 인증  
+#### - (회원가입) 전화번호 인증  
   
 ##### 설명
 
@@ -754,7 +762,7 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - 인증번호 확인  
+#### - (회원가입) 인증번호 확인  
   
 ##### 설명
 
@@ -972,7 +980,7 @@ The Memorial Day 서비스의 회원 정보 수정과 관련된 REST API 모듈�
 
 ***
 
-#### - 비밀번호 확인
+#### - (회원정보 수정화면에 진입 시) 비밀번호 확인
   
 ##### 설명
 
@@ -1107,7 +1115,6 @@ curl -X GET "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
 | birth | String | 사용자의 생년월일(yyyymmdd) | O |
 | gender | String | 사용자의 성별(남/녀) | O |
 | telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
-| teltelAuthNumber | String | 전화번호 인증번호 | O |
 
 ###### Example
 
@@ -1159,7 +1166,7 @@ Content-Type: application/json;charset=UTF-8
 
 <hr>
 
-#### - 전화번호 인증  
+#### - (회원정보 수정) 전화번호 인증  
   
 ##### 설명
 
@@ -1252,7 +1259,7 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - 인증번호 확인  
+#### - (회원 정보 수정)인증번호 확인  
   
 ##### 설명
 

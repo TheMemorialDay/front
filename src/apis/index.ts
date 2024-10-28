@@ -23,7 +23,7 @@ const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const ID_SEARCH_BEFORE_API_URL = `${AUTH_MODULE_URL}/id-search`;
-const ID_SEARCH_AFTER_API_URL = `${AUTH_MODULE_URL}/id-search-tel-auth-check`;
+const ID_SEARCH_AFTER_API_URL = `${AUTH_MODULE_URL}/id-search-result`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
