@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { ResponseDto } from "./dto/response";
-import { IdCheckRequestDto, IdSearchAfterRequestDto, IdSearchBeforeRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { IdCheckRequestDto, IdSearchAfterRequestDto, IdSearchBeforeRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import { IdSearchResponseDto } from "./dto/response/auth";
 
 
@@ -24,6 +24,9 @@ const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const ID_SEARCH_BEFORE_API_URL = `${AUTH_MODULE_URL}/id-search`;
 const ID_SEARCH_AFTER_API_URL = `${AUTH_MODULE_URL}/id-search-result`;
+const PASSWORD_SEARCH_API_URL = `${AUTH_MODULE_URL}/password-search`;
+const PASSWORD_SEARCH_TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-tel-auth-check`;
+const PATCH_PASSWORD_API_URL = `${AUTH_MODULE_URL}/password-resetting`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -102,6 +105,30 @@ export const idSearchBeforeRequest = async (requestBody: IdSearchBeforeRequestDt
 export const idSearchAfterRequest = async (requestBody: IdSearchAfterRequestDto) => {
   const responseBody = await axios.post(ID_SEARCH_AFTER_API_URL, requestBody)
     .then(responseDataHandler<IdSearchResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: password search (userId + telNumber) 요청 함수 //
+export const passwordSearchRequest = async (requestBody: PasswordSearchRequestDto) => {
+  const responseBody = await axios.post(PASSWORD_SEARCH_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: password search tel-auth check (telNumber + telAuthNumber) 요청 함수 //
+export const passwordSearchTelAuthCheck = async (requestBody: PasswordSearchTelAuthCheckRequestDto) => {
+  const responseBody = await axios.post(PASSWORD_SEARCH_TEL_AUTH_CHECK_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: patch password 요청 함수 //
+export const patchPassword = async (requestBody: PatchPasswordRequestDto) => {
+  const responseBody = await axios.patch(PATCH_PASSWORD_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 };

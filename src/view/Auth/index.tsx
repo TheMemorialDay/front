@@ -1,13 +1,13 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import './style.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ACCESS_TOKEN, ROOT_PATH, SIGN_IN_ABSOLUTE_PATH, SIGN_UP_ABSOLUTE_PATH } from '../../constants';
+import { ACCESS_TOKEN, ROOT_PATH, SIGN_UP_ABSOLUTE_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import SnsContainer from '../../components/sns_login_sign_up';
 import { IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { idSearchAfterRequest, idSearchBeforeRequest, signInRequest } from '../../apis';
-import { IdSearchAfterRequestDto, IdSearchBeforeRequestDto, SignInRequestDto } from '../../apis/dto/request/auth';
+import { idSearchAfterRequest, idSearchBeforeRequest, passwordSearchRequest, signInRequest } from '../../apis';
+import { IdSearchAfterRequestDto, IdSearchBeforeRequestDto, PasswordSearchRequestDto, SignInRequestDto } from '../../apis/dto/request/auth';
 import useIdSearchResult from '../../stores/id-search-result-store';
 
 
@@ -186,7 +186,6 @@ function FindId({ onPathChange }: AuthComponentProps) {
         setZusName(idCheckResult.name);
         setZusTelNumber(idCheckResult.telNumber);
         setZusUserId(idCheckResult.userId);
-        //navigator(SIGN_IN_ABSOLUTE_PATH);
     };
 
     // event handler: 이름 변경 이벤트 핸들러 //
@@ -291,8 +290,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
 
 
             </div>
-            
-            {/* <div className='login-button' onClick={onIdSearchClickHandler}>아이디 찾기 확인</div> */}
+
             <div className='login-button' onClick={onIdSearchClickHandler} >아이디 찾기 확인</div>
         </div>
     )
@@ -322,38 +320,6 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
 
     // function: 네비게이터 //
     const navigator = useNavigate();
-
-    //     // function: 아이디 찾기 after Response 처리 함수 //
-    //     const idSearchAfterResponse = (responseBody: IdSearchResponseDto | ResponseDto | null) => {
-    //         const message =
-    //             !responseBody ? '서버에 문제가 있습니다.' :
-    //                 responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
-    //                     responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
-    //         const isSuccessed = responseBody != null && responseBody.code === 'SU';
-    //         if (!isSuccessed) {
-    //             setIdSearchMessage(message);
-    //             return;
-    //         }
-    //         navigator(SIGN_IN_ABSOLUTE_PATH);
-    //     };
-
-    // useEffect(() => {
-    //     onIdSearchClickHandler();
-    // }, []);
-
-    // // event handler: 최종 아이디 찾기 버튼 클릭 //
-    // const onIdSearchClickHandler = () => {
-    //     if (!isIdSearchPossible) {
-    //         alert('정확하게 입력해주세요.');
-    //         return;
-    //     }
-
-    //     // onPathChange('findIdResult');
-
-    //     const requestBody: IdSearchAfterRequestDto = { telNumber, telAuthNumber };
-    //     idSearchAfterRequest(requestBody).then(idSearchAfterResponse);
-    // };
 
     //render: 아이디 찾기 결과 화면 렌더링 //
     return (
@@ -391,8 +357,32 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
     const [isMatched1, setIsMatched1] = useState<boolean>(false);
     const [isMatched2, setIsMatched2] = useState<boolean>(false);
 
+    // state: 메시지 상태 //
+    const [passwordMessage, setPasswordMessage] = useState<string>('');
+    const [passwordMessageError, setPasswordMessageError] = useState<boolean>(false);
+
+    // state: 인증번호 전송 상태 //
+    const [isSend, setSend] = useState<boolean>(false);
+
+    // state: request를 위한 없는 상태 만든 거 //
+    const [userId, setUserId] = useState<string>('');
+
     // variable: 변수 선언 //
     const isPossible = id && isMatched1 && isMatched2;
+
+    // function: 비밀번호 찾기 (userId + telNumber) Response 처리 함수 //
+    const passwordSearchResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'NF' ? '존재하지 않는 정보입니다.' :
+            responseBody.code === 'TF' ? '전송에 실패했습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        setPasswordMessage(message);
+        setPasswordMessageError(!isSuccessed)
+        setSend(isSuccessed);
+    };
 
     // event handler: 아이디 변경 이벤트 핸들러 //
     const onIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -425,6 +415,9 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
         if (isTrue) setTelMessage('인증번호가 전송되었습니다.');
         else setTelMessage('전화번호 11자 입력해주세요.');
+
+        const requestBody: PasswordSearchRequestDto = { userId, telNumber };
+        passwordSearchRequest(requestBody).then(passwordSearchResponse);
     }
 
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
