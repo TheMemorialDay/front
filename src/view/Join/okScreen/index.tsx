@@ -12,6 +12,7 @@ function OkScreen() {
     // event handler: 확인 버튼 클릭 이벤트 핸들러 //
     const onClickHandler = () => {
         navigator(ROOT_ABSOLUTE_PATH);
+        window.location.reload();
     }
 
     // render: 등록 완료 화면 렌더링 //
@@ -19,13 +20,15 @@ function OkScreen() {
         <div id='ok'>
             <div className='emoji'></div>
             <div className='contents'>
-                <div className='big'>가게 등록 요청이 완료되었습니다.</div>
+                <div className='big'>사업자 등록 진위 확인 완료!</div>
                 <div className='small'>
-                    <div>사업 등록증 진위 확인을 기다려 주세요.</div>
-                    <div>3 ~4일 뒤, 휴대폰 메시지로 알려드릴게요!</div>
+                    <div>마이페이지로 이동 후</div>
+                    <div>가게 상세 정보를 입력해주세요.</div>
                 </div>
             </div>
-            <div className='button-box' onClick={onClickHandler}>확인</div>
+            <div className='button-box' onClick={onClickHandler}>나중에</div>
+            {/* 마이페이지 가게 관리 페이지로 이동 
+            <div className='button-box' onClick={onClickHandler}>확인</div> */}
         </div>
     )
 }
