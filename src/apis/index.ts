@@ -118,7 +118,7 @@ export const passwordSearchRequest = async (requestBody: PasswordSearchRequestDt
 };
 
 // function: password search tel-auth check (telNumber + telAuthNumber) 요청 함수 //
-export const passwordSearchTelAuthCheck = async (requestBody: PasswordSearchTelAuthCheckRequestDto) => {
+export const passwordSearchTelAuthCheckRequest = async (requestBody: PasswordSearchTelAuthCheckRequestDto) => {
   const responseBody = await axios.post(PASSWORD_SEARCH_TEL_AUTH_CHECK_API_URL, requestBody)
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
@@ -126,7 +126,7 @@ export const passwordSearchTelAuthCheck = async (requestBody: PasswordSearchTelA
 };
 
 // function: patch password 요청 함수 //
-export const patchPassword = async (requestBody: PatchPasswordRequestDto) => {
+export const patchPasswordRequest = async (requestBody: PatchPasswordRequestDto) => {
   const responseBody = await axios.patch(PATCH_PASSWORD_API_URL, requestBody)
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);

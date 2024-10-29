@@ -11,7 +11,7 @@ interface IdSearchResult {
 	setZusUserId: (zusUserId: String) => void 
 }
 
-const useIdSearchResult = create<IdSearchResult>(set => ({
+const useIdSearchResultZustand = create<IdSearchResult>(set => ({
 	zusName: '',
 	zusTelNumber: '',
 	zusUserId: '',
@@ -20,4 +20,4 @@ const useIdSearchResult = create<IdSearchResult>(set => ({
 	setZusUserId: (zusUserId: String) => set(state => ({...state, zusUserId}))
 }))
 
-export default useIdSearchResult;
+export default useIdSearchResultZustand;

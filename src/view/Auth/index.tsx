@@ -6,9 +6,11 @@ import { useCookies } from 'react-cookie';
 import SnsContainer from '../../components/sns_login_sign_up';
 import { IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { idSearchAfterRequest, idSearchBeforeRequest, passwordSearchRequest, signInRequest } from '../../apis';
-import { IdSearchAfterRequestDto, IdSearchBeforeRequestDto, PasswordSearchRequestDto, SignInRequestDto } from '../../apis/dto/request/auth';
+import { idSearchAfterRequest, idSearchBeforeRequest, passwordSearchRequest, passwordSearchTelAuthCheckRequest, patchPasswordRequest, signInRequest } from '../../apis';
+import { IdSearchAfterRequestDto, IdSearchBeforeRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto } from '../../apis/dto/request/auth';
 import useIdSearchResult from '../../stores/id-search-result-store';
+import usePatchPasswordZustand from '../../stores/patch-password.store';
+import useIdSearchResultZustand from '../../stores/id-search-result-store';
 
 
 type AuthPath = 'logIn' | 'findId' | 'findIdResult' | 'findPassword' | 'changePassword';
@@ -143,12 +145,14 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const [isTelNumber, setIsTelNumber] = useState<boolean>(false);
     const [isTelAuthNumber, setIsTelAuthNumber] = useState<boolean>(false);
 
+    // state: zustand 상태 //
+    const { setZusName, setZusTelNumber, setZusUserId } = useIdSearchResultZustand();
+
     // variable: 아이디 찾기 가능 상태 확인 //
     const isIdSearchPossible = isName && isTelNumber && isTelAuthNumber;
 
     // variable: 변수 선언 //
     const isPossible = isName && isMatched1 && isMatched2;
-    const {zusName, zusUserId, zusTelNumber, setZusName, setZusTelNumber, setZusUserId} = useIdSearchResult();
 
     // function: 네비게이터 //
     const navigator = useNavigate();
@@ -174,8 +178,8 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const idSearchAfterResponse = (responseBody: IdSearchResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
-                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -311,9 +315,7 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
 
     // state: zustand 만든 거 가져오기 //
     const { zusName, setZusName, zusTelNumber, setZusTelNumber, zusUserId, setZusUserId } = useIdSearchResult();
-    //const {} = useIdSearchResult();
     const message = zusName + ", " + zusTelNumber + ", " + zusUserId;
-    alert(message);
 
     // variable: 아이디 찾기 가능 상태 확인 //
     const isIdSearchPossible = isName && isTelNumber && isTelAuthNumber;
@@ -348,27 +350,29 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
 // component: 비밀번호 찾기 화면 컴포넌트 //
 function FindPassword({ onPathChange }: AuthComponentProps) {
 
+    // state: zustand 상태 //
+    const { userId, zusTelNumber, telAuthNumber, zusPassword, setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword} = usePatchPasswordZustand();
+
     // state: 변수 상태 //
-    const [id, setId] = useState<string>('');
-    const [telNumber, setTelNumber] = useState<string>('');
-    const [authNumber, setAuthNumber] = useState<string>('');
+    // const [id, setId] = useState<string>('');
+    // const [telNumber, setTelNumber] = useState<string>('');
+    // const [authNumber, setAuthNumber] = useState<string>('');
+
+    // state: 메세지 상태 //
     const [telMessage, setTelMessage] = useState<string>('');
     const [authMessage, setAuthMessage] = useState<string>('');
-    const [isMatched1, setIsMatched1] = useState<boolean>(false);
-    const [isMatched2, setIsMatched2] = useState<boolean>(false);
 
-    // state: 메시지 상태 //
-    const [passwordMessage, setPasswordMessage] = useState<string>('');
-    const [passwordMessageError, setPasswordMessageError] = useState<boolean>(false);
+    // state: 메세지 에러 상태 //
+    const [isTelMessageError, setTelMessageError] = useState<boolean>(false);
+    const [isAuthMessageError, setAuthMessageError] = useState<boolean>(false);
 
-    // state: 인증번호 전송 상태 //
+    // state: 인증 번호 전송여부 상태 //
     const [isSend, setSend] = useState<boolean>(false);
+    // state: 전화번호 인증 여부 //
+    const [isAuth, setAuth] = useState<boolean>(false);
 
-    // state: request를 위한 없는 상태 만든 거 //
-    const [userId, setUserId] = useState<string>('');
-
-    // variable: 변수 선언 //
-    const isPossible = id && isMatched1 && isMatched2;
+    // variable: 비밀번호 재설정 가능 검증 //
+    const isPatchPasswordPossible = userId && isSend && isAuth;
 
     // function: 비밀번호 찾기 (userId + telNumber) Response 처리 함수 //
     const passwordSearchResponse = (responseBody: ResponseDto | null) => {
@@ -376,64 +380,82 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
             !responseBody ? '서버에 문제가 있습니다.' :
             responseBody.code === 'NF' ? '존재하지 않는 정보입니다.' :
             responseBody.code === 'TF' ? '전송에 실패했습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'SU' ? '인증번호를 전송하였습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        setPasswordMessage(message);
-        setPasswordMessageError(!isSuccessed)
+        setTelMessage(message);
+        setTelMessageError(!isSuccessed);
         setSend(isSuccessed);
+    };
+
+    // function: 비밀번호 찾기 (인증번호 telAuthNumber 확인) Response 처리 함수 //
+    const passwordTelAuthCheckResponse = (responseBody: ResponseDto | null) => {
+        const message = 
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'SU' ? '인증번호가 일치합니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        setAuthMessage(message);
+        setAuthMessageError(!isSuccessed);
+        setAuth(isSuccessed);
     };
 
     // event handler: 아이디 변경 이벤트 핸들러 //
     const onIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
-        setId(value);
+        setUserId(value);
     }
 
     // event Handler: 전화번호 변경 이벤트 처리 //
     const onTelNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
-        setTelNumber(value);
+        setZusTelNumber(value);
     };
 
     // event handler: 전화번호 인증번호 변경 이벤트 핸들러 //
     const onAuthNumberChangeHandler = (evnet: ChangeEvent<HTMLInputElement>) => {
         const { value } = evnet.target;
-        setAuthNumber(value);
+        setTelAuthNumber(value);
     };
 
     // event handler: 전송 버튼 클릭 이벤트 핸들러 //
     const onSendClickHandler = () => {
-        if (!telNumber) {
-            setTelMessage('');
+        if (!userId || !zusTelNumber) return;
+
+        const pattern = /^[0-9]{11}$/;
+        const isMatched = pattern.test(zusTelNumber);
+
+        if (!isMatched) {
+            setTelMessage('전화번호 11자 입력해주세요.');
+            setTelMessageError(true);
             return;
         }
 
-        const pattern = /^[0-9]{11}$/;
-        const isTrue = pattern.test(telNumber);
-        setIsMatched1(isTrue);
-
-        if (isTrue) setTelMessage('인증번호가 전송되었습니다.');
-        else setTelMessage('전화번호 11자 입력해주세요.');
-
-        const requestBody: PasswordSearchRequestDto = { userId, telNumber };
+        const requestBody: PasswordSearchRequestDto = { userId, telNumber: zusTelNumber, password: zusPassword};
         passwordSearchRequest(requestBody).then(passwordSearchResponse);
     }
 
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
     const onCheckClickHandler = () => {
-        if (!authNumber) {
-            setAuthMessage('인증번호가 일치하지 않습니다.');
+        if (!telAuthNumber) {
+            setAuthMessage('인증번호를 입력하세요.');
+            setAuthMessageError(true);
             return;
         }
 
-        // 랜덤 생성한 인증 번호 4자리와 일치하다면
-        const isTrue = true;
-        setIsMatched2(isTrue);
-
-        if (isTrue) setAuthMessage('인증번호가 일치합니다.');
-        else setAuthMessage('인증번호가 일치하지 않습니다.');
+        const requestBody: PasswordSearchTelAuthCheckRequestDto = { telNumber: zusTelNumber, telAuthNumber };
+        passwordSearchTelAuthCheckRequest(requestBody).then(passwordTelAuthCheckResponse);
     }
+
+    // event handler: 비밀번호 재설정 버튼 클릭 핸들러 //
+    const onNextPatchPasswordClickHandler = () => {
+        if (!isPatchPasswordPossible) return;
+
+        onPathChange('changePassword');
+    };
 
     // event handler: 엔터키로 전송 버튼 동작 //
     const handleKeyDown1 = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -454,26 +476,25 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         <div id='find-password'>
             <div className='auth-title'>비밀번호 찾기</div>
             <div className='login-box'>
-                <input className='input-id' placeholder='아이디' value={id} onChange={onIdChangeHandler}></input>
+                <input className='input-id' placeholder='아이디' value={userId} onChange={onIdChangeHandler} />
                 <div className='tel'>
-                    <input className='tel-number' placeholder='전화번호 – 빼고 입력해주세요.' value={telNumber} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
+                    <input className='tel-number' placeholder='전화번호 – 빼고 입력해주세요.' value={zusTelNumber} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
                     <div className='send-button' onClick={onSendClickHandler}>전송</div>
                 </div>
-                <div className={isMatched1 ? 'message-true' : 'message-false'}>{telMessage}</div>
+                <div className={isTelMessageError ? 'message-false' : 'message-true'}>{telMessage}</div>
 
-                {isMatched1 &&
-                    <div>
-                        <div className='tel' style={{ marginTop: '20px' }}>
-                            <input className='tel-number' placeholder='인증번호 4자리' value={authNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
-                            <div className='send-button' onClick={onCheckClickHandler}>확인</div>
-                        </div>
-                        <div className={isMatched2 ? 'message-true' : 'message-false'}>{authMessage}</div>
+                {isSend &&
+                <div>
+                    <div className='tel' style={{ marginTop: '20px' }}>
+                        <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
+                        <div className='send-button' onClick={onCheckClickHandler}>확인</div>
                     </div>
+                    <div className={isAuthMessageError ? 'message-false' : 'message-true'}>{authMessage}</div>
+                </div>
                 }
 
-
             </div>
-            <div className='login-button' onClick={() => isPossible ? onPathChange('changePassword') : alert('정보를 모두 입력해주세요')}>비밀번호 재설정</div>
+            <div className='login-button' onClick={onNextPatchPasswordClickHandler}>비밀번호 재설정</div>
         </div>
     )
 }
@@ -481,18 +502,55 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 // component: 비밀번호 재설정 화면 컴포넌트 //
 function ChangePassword({ onPathChange }: AuthComponentProps) {
 
+    // state: zustand 상태 //
+    const { userId, zusTelNumber, telAuthNumber, zusPassword, setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword} = usePatchPasswordZustand();
+
+    // state: 새 비밀번호 상태 //
+    const [newPassword, setNewPassword] = useState<string>('');
+
     // state: 변수 상태 //
-    const [password, setPassword] = useState<string>('');
+    // const [password, setPassword] = useState<string>('');
+
     const [passwordCheck, setPasswordCheck] = useState<string>('');
-    const [passwordMessage, setPasswordMessage] = useState<string>('');
     const [pwCheckMsg, setPwCheckMsg] = useState<string>('');
     const [isMatched1, setIsMatched1] = useState<boolean>(false);
     const [isMatched2, setIsMatched2] = useState<boolean>(false);
+    
+    // state: 메시지 상태 //
+    const [passwordMessage, setPasswordMessage] = useState<string>('');
+
+    // state: 에러메시지 상태 //
+    const [passwordMessageError, setPasswordMessageError] = useState<boolean>(false); 
+
+    // state: 기존 비밀번호 현 비밀번호 비교 상태 //
+    // const [CheckedPassword, setCheckedPassword] = useState<boolean>(false); // 중복 x
+
+    // function: 비밀번호 재설정 Response 처리 함수 //
+    const patchPasswordResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        setPasswordMessage(message);
+        setPasswordMessageError(!isSuccessed);
+        // setCheckedPassword(!isSuccessed);
+        // setZusPassword(zusPassword);
+
+        if (zusPassword === newPassword) {
+            alert('잘못된 값입니다.');
+            return;
+        }
+
+        alert('비밀번호가 변경되었습니다.');
+        onPathChange('logIn');
+
+    };
 
     // event handler: 비밀번호 변경 이벤트 핸들러 //
     const onChangePasswordHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
-        setPassword(value);
+        setNewPassword(value);
 
         const pattern = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,13}$/;
         let isTrue = pattern.test(value);
@@ -509,7 +567,7 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
         const { value } = event.target;
         setPasswordCheck(value);
 
-        let isTrue = (password === value);
+        let isTrue = (newPassword === value);
         setIsMatched2(isTrue);
 
         if (!isTrue) setPwCheckMsg('비밀번호가 일치하지 않습니다.');
@@ -517,17 +575,25 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
 
     }
 
+    // event handler: 비밀번호 변경 요청 버튼 이벤트 핸들러 //
+    const onPatchPasswordClickHandler = () => {
+        if (!zusPassword) return;
+
+        const requestBody: PatchPasswordRequestDto = { userId, telNumber: zusTelNumber, telAuthNumber, password: newPassword };
+        patchPasswordRequest(requestBody).then(patchPasswordResponse);
+    };
+
     // render: 비밀번호 재설정 화면 렌더링 //
     return (
         <div id='change-password'>
             <div className='auth-title'>비밀번호 재설정</div>
             <div className='login-box'>
-                <input className='input-id' type='password' placeholder='비밀번호 (영문+숫자 8~13자)' value={password} onChange={onChangePasswordHandler} />
+                <input className='input-id' type='password' placeholder='비밀번호 (영문+숫자 8~13자)' value={newPassword} onChange={onChangePasswordHandler} />
                 <div className={isMatched1 ? 'message-true' : 'message-false'}>{passwordMessage}</div>
                 <input className='input-id' type='password' placeholder='비밀번호 확인' value={passwordCheck} onChange={onChangePwCheckHandler} />
                 <div className={isMatched2 ? 'message-true' : 'message-false'}>{pwCheckMsg}</div>
             </div>
-            <div className='login-button' onClick={() => onPathChange('logIn')}>비밀번호 변경</div>
+            <div className='login-button' onClick={onPatchPasswordClickHandler}>비밀번호 변경</div>
         </div>
     )
 }
