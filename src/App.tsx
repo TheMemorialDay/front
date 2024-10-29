@@ -36,6 +36,7 @@ import QaWrite from './view/Support/qa_write';
 import QaDetail from './view/Support/qa_detail';
 import OkayScreen from './view/Join/okScreen';
 import ShoppingCart from './view/shopping_cart';
+import Add from './view/MyPage/MyProduct/update';
 import Update from './view/MyPage/MyProduct/update';
 import MyPasswordCheck from './view/MyPage/MyInfo/MyPasswordCheck';
 import { useCookies } from 'react-cookie';
@@ -122,7 +123,7 @@ export default function TheMemorialDay() {
 
         <Route path={MY_PRODUCT_PATH}>
           <Route index element={<MyProduct />} />
-          <Route path={MY_PRODUCT_ADD_PATH} element={<Update/>} /> 
+          <Route path={MY_PRODUCT_ADD_PATH} element={<Add/>} /> 
           <Route path={MY_PRODUCT_UPDATE_PATH} element={<Update />} />
         </Route>
 

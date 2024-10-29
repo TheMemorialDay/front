@@ -6,9 +6,11 @@ import StoreComponentProps from "./store_thumnail.interface";
 import CompletedOrderProps from "./completed-order.interface";
 import YearSelectProps from "./sales-date-select.interface";
 import SalesDateSelectProps from "./sales-date-select.interface";
+import Product from "./product.interface";
 import { OrderRejectReason } from "./orderreject.interface";
 
 export type {
+    Product,
     NoticeList,
     QaList,
     ReviewComponentPros,

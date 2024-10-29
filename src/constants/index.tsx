@@ -34,8 +34,8 @@ export const MY_LIKE_PATH = `like`;
 export const MY_STORE_PATH = `store`;
 
 export const MY_PRODUCT_PATH = `product`;
-export const MY_PRODUCT_ADD_PATH = `1`;
-export const MY_PRODUCT_UPDATE_PATH = `1/1`;
+export const MY_PRODUCT_ADD_PATH = `add`;
+export const MY_PRODUCT_UPDATE_PATH = `update/:productNumber`;
 
 export const MY_ORDER_MANAGE_PATH = `order-manage`;
 export const MY_SALES_PATH = `sales`;
