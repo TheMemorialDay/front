@@ -11,7 +11,11 @@ import { JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_
   MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PASSWORD_CHECK_PATH, MY_PRODUCT_ADD_PATH, 
   MY_PRODUCT_UPDATE_PATH,
   ST_PRODUCT_ORDER_PATH,
-  ST_ORDER_DONE_PATH} from './constants';
+  ST_ORDER_DONE_PATH,
+  ACCESS_TOKEN,
+  ROOT_PATH,
+  SIGN_IN_ABSOLUTE_PATH,
+  JO_USER_PATH} from './constants';
 
 import Stores from './view/Stores';
 import Support from './view/Support';
@@ -44,6 +48,10 @@ import { useCookies } from 'react-cookie';
 import NotMember from './components/Modal/NotMember';
 import Order from './view/Stores/Order/detail';
 import DoneScreen from './view/Stores/Order/done';
+import { GetSignInRequest } from './apis';
+import { GetSignInResponseDto } from './apis/dto/response/auth';
+import { ResponseDto } from './apis/dto/response';
+import { useSignInUserStore } from './stores';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -66,7 +74,13 @@ function Index() {
 
 // component: TheMemorialDay 컴포넌트 //
 export default function TheMemorialDay() {
-  const [cookies] = useCookies(['ACCESS_TOKEN']);
+
+  // state: cookie 상태 //
+  const [cookies, setCookie, removeCookie] = useCookies();
+
+  // state: 로그인 유저 정보 상태 //
+  const {signInUser, setSignInUser} = useSignInUserStore();
+
   const isLoggedIn = Boolean(cookies.ACCESS_TOKEN);
   const [showNotMemberModal, setShowNotMemberModal] = useState(false);
   const navigator = useNavigate();
@@ -79,6 +93,38 @@ export default function TheMemorialDay() {
     setShowNotMemberModal(false);
       navigator(LOGIN_PATH); // 로그인 페이지로 이동
   };
+
+  // function: get sign in response 처리 함수 //
+  const getSignInResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+    const message = 
+      !responseBody ? '로그인 유저 정보를 불러오는데 문제가 발생하였습니다.' :
+      responseBody.code === 'NI' ? '로그인 유저가 존재하지 않습니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' : 
+      responseBody.code === 'DBE' ? '로그인 유저 정보를 불러오는데 문제가 발생하였습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      removeCookie(ACCESS_TOKEN, {path: ROOT_PATH});
+      setSignInUser(null);
+      navigator(SIGN_IN_ABSOLUTE_PATH);
+      return;
+    }
+
+    const {userId, name, telNumber, permission} = responseBody as GetSignInResponseDto;
+    setSignInUser({userId, name, telNumber, permission});
+  }
+
+  // effect: cookie의 accessToken값이 변경될 때 마다 로그인 유저 정보 요청 함수 //
+  useEffect(() => {
+    const accessToken = cookies[ACCESS_TOKEN];
+    if(accessToken) {
+	    GetSignInRequest(accessToken).then(getSignInResponse);
+    } else {
+      setSignInUser(null);
+    }
+  }, [cookies[ACCESS_TOKEN]]);
+
 
   return (
     <>
@@ -104,7 +150,7 @@ export default function TheMemorialDay() {
         <Route path={SIGN_UP_PATH} element={<SignUp />} />
       </Route>
       <Route path={JO_PATH} element={<MainLayout />}  >
-        <Route path={JO_PATH} element={<Join />} />
+        <Route path={JO_USER_PATH(':userId')} element={<Join />} />
         <Route path={JOIN_OKAY_PATH} element={<OkayScreen />} />
       </Route>
       <Route path={SU_PATH} element={<MainLayout />}  >

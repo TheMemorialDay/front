@@ -8,4 +8,5 @@ export default interface QaList {
     userId: string;
     questionStatus: string;
     answerContents: string;
+    name: string;
 }
