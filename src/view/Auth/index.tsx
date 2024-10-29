@@ -387,6 +387,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         setTelMessage(message);
         setTelMessageError(!isSuccessed);
         setSend(isSuccessed);
+        setZusPassword(zusPassword);
     };
 
     // function: 비밀번호 찾기 (인증번호 telAuthNumber 확인) Response 처리 함수 //
@@ -577,7 +578,7 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
 
     // event handler: 비밀번호 변경 요청 버튼 이벤트 핸들러 //
     const onPatchPasswordClickHandler = () => {
-        if (!zusPassword) return;
+        if (!newPassword) return;
 
         const requestBody: PatchPasswordRequestDto = { userId, telNumber: zusTelNumber, telAuthNumber, password: newPassword };
         patchPasswordRequest(requestBody).then(patchPasswordResponse);

@@ -254,7 +254,6 @@ export default function SignUp() {
 
         if (isTrue) {
             setTelMessage('');
-            //alert(telMessage);
             const requestBody: TelAuthRequestDto = { telNumber };
             telAuthRequest(requestBody).then(telAuthResponse);
         } else {

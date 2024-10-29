@@ -479,8 +479,6 @@ Content-Type: application/json;charset=UTF-8
 ###### Request Body
 
 | name | type | description | required |
-|---|:---:|:---:|:---:|
-| name | type | description | required |
 | userId | String | 사용자의 아이디 | O |
 | telNumber | String | 사용자의 전화번호 (11자의 숫자) | O |
 | telAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
