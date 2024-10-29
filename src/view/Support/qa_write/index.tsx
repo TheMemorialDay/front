@@ -61,8 +61,8 @@ export default function QaWrite() {
 
     // event handler: 큐엔에이 등록 버튼 //
     const onWriteRegisterButtonHandler = () => {
-        //const accessToken = cookies[ACCESS_TOKEN];
-        //if(!accessToken) return;
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
 
         if (!questionTitle || !questionContents) {
             alert("모두 입력해주세요.");
@@ -70,16 +70,21 @@ export default function QaWrite() {
         }
 
         const questionDay = Date.now().toString();
-        const userId = "qwer1234";
-        //const userId = signInUser?.userId;
+        const userId = signInUser?.userId;
         const questionStatus = '미응답';
         const answerContents = ''; 
 
-        const requestBody: PostQnARequestDto = {
-            questionTitle, questionContents, questionDay, userId, questionStatus, answerContents
-        };
-
-        PostQnARequest(requestBody).then(postQnAResponse);
+        if(userId !== undefined) {
+            const requestBody: PostQnARequestDto = {
+                questionTitle, questionContents, questionDay, userId, questionStatus, answerContents
+            };
+    
+            PostQnARequest(requestBody, accessToken).then(postQnAResponse);
+        } else {
+            alert('로그인 정보가 없습니다.');
+            return;
+        }
+        
     };
 
     return (

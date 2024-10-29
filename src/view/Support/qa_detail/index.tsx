@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SupportNavi from '../../../components/support_navi'
 import './style.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { SU_ABSOLUTE_QA_PATH } from '../../../constants';
+import { ACCESS_TOKEN, SU_ABSOLUTE_QA_PATH } from '../../../constants';
 import { QaList } from '../../../types';
 import { deleteQnARequest, getQnADetailRequest } from '../../../apis/dto';
 import { GetQnADetailResponseDto } from '../../../apis/dto/response/support';
@@ -10,9 +10,13 @@ import { ResponseDto } from '../../../apis/dto/response';
 import maskString from '../../../components/maskingString/MaskingString';
 import formatDate from '../../../components/dateChange/DateChange';
 import { useSignInUserStore } from '../../../stores';
+import { useCookies } from 'react-cookie';
 
 // component: Q&A Detail 컴포넌트 //
 export default function QaDetail() {
+
+    // state: cookie state //
+    const [cookies] = useCookies();
 
     // state: 로그인 유저 상태 //
     const {signInUser} = useSignInUserStore();
@@ -87,14 +91,20 @@ export default function QaDetail() {
         const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
         if (!isConfirm) return;
 
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
+
         if (!questionNumber) {
             alert('유효한 질문 번호가 없습니다.');
             return;
         }
 
-        deleteQnARequest(questionNumber).then(deleteQnAResponse);
+        deleteQnARequest(questionNumber, accessToken).then(deleteQnAResponse);
         navigator(SU_ABSOLUTE_QA_PATH);
     };
+
+    // variable: 로그인 유저 상태 //
+    const isUser = signInUser?.userId !== undefined && signInUser?.userId === writerId;
 
     // effect: 공지 사항 불러오기 이펙트 //
     useEffect(() => {
@@ -135,7 +145,7 @@ export default function QaDetail() {
                 </div>
             }
 
-            {signInUser?.userId === writerId ? 
+            {isUser ? 
                 <div className='button-box'>
                     <div className='button delete-button' onClick={onDeleteButtonHandler}>삭제</div>
                 </div>

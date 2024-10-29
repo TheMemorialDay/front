@@ -254,6 +254,7 @@ export default function SignUp() {
 
         if (isTrue) {
             setTelMessage('');
+            //alert(telMessage);
             const requestBody: TelAuthRequestDto = { telNumber };
             telAuthRequest(requestBody).then(telAuthResponse);
         } else {
@@ -261,7 +262,6 @@ export default function SignUp() {
             setTelNumberMessageError(true);
             return;
         }
-
     }
 
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
