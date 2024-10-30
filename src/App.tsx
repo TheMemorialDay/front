@@ -199,12 +199,12 @@ export default function TheMemorialDay() {
           <Route path={MY_PRODUCT_ADD_PATH} element={<Add/>} /> 
           <Route path={MY_PRODUCT_UPDATE_PATH} element={<Update />} />
         </Route>
+        </Route>
         <Route path={JO_PATH} element={<MainLayout />}  >
           <Route path={JO_PATH} element={<Join />} />
           <Route path={JOIN_OKAY_PATH} element={<OkayScreen />} />
         </Route>
-        </Route>
-        <Route path={SU_PATH} element={<MainLayout />}  >``
+        <Route path={SU_PATH} element={<MainLayout />}  >
           <Route path={SU_PATH} element={<Support />} />
           <Route path={SU_NOTICE_DETAIL_PATH(':noticeNumber')} element={<NoticeDetail />} />
           <Route path={SU_QA_PATH} element={<Qa />} />
