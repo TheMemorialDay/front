@@ -1,4 +1,4 @@
-// interface: post tool request Body dto
+// interface: post product request Body dto
 
 export interface PostProductOptionDetailRequestDto {
     productCategory: string;

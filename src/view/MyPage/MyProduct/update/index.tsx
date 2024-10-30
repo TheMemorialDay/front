@@ -1,9 +1,11 @@
 import React, { useState, ChangeEvent, useRef, KeyboardEvent, useEffect } from 'react';
 import './style.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fileUploadRequest, getProductRequest, postProductRequest } from '../../../../apis';
-import { PostProductOptionRequestDto } from '../../../../apis/dto/request/product';
+import { fileUploadRequest, getProductRequest, patchProductRequest, postProductRequest } from '../../../../apis';
+import { PostProductOptionRequestDto, PostProductRequestDto } from '../../../../apis/dto/request/product';
 import { GetProductResponseDto } from '../../../../apis/dto/response/product';
+import { PatchProductRequestDto } from '../../../../apis/dto/request/product/patch-product.request.dto';
+import { convertUrlToFile } from '../../../../util';
 
 
 
@@ -11,16 +13,16 @@ import { GetProductResponseDto } from '../../../../apis/dto/response/product';
 const defaultImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q0oOxqQNdL6kZp0iSKLbV1/img.png';
 
 // DTO 정의
-export interface PostProductRequestDto {
-    productImages: string[];
-    productName: string;
-    productIntroduce: string;
-    productPrice: number;
-    productToday: boolean;
-    productTag: string;
-    options: PostProductOptionRequestDto[];
-    themes: string[];
-}
+// export interface PostProductRequestDto {
+//     productImages: string[];
+//     productName: string;
+//     productIntroduce: string;
+//     productPrice: number;
+//     productToday: boolean;
+//     productTag: string;
+//     options: PostProductOptionRequestDto[];
+//     themes: string[];
+// }
 
 const defaultProductData: PostProductRequestDto = {
     productImages: [],
@@ -36,7 +38,7 @@ const defaultProductData: PostProductRequestDto = {
 // component: Add 컴포넌트 //
 const Add = () => {
     const { productNumber } = useParams<{ productNumber?: string }>();
-    const [productData, setProductData] = useState<PostProductRequestDto>(defaultProductData);
+    const [productData, setProductData] = useState<PostProductRequestDto | PatchProductRequestDto>(defaultProductData);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const navigator = useNavigate();
 
@@ -47,7 +49,7 @@ const Add = () => {
                     const response = await getProductRequest(productNumber);
                     if (response) {
                         const product = response as GetProductResponseDto;
-                        const convertedProductData: PostProductRequestDto = {
+                        const convertedProductData: PatchProductRequestDto = {
                             productImages: product.productImages || [],
                             productName: product.productName,
                             productIntroduce: product.productIntroduce,
@@ -58,6 +60,13 @@ const Add = () => {
                             themes: product.themes || [],
                         };
 
+                        const files: File[] = [];
+                        for (const productImage of product.productImages) {
+                            const file = await convertUrlToFile(productImage);
+                            files.push(file);
+                        }
+
+                        setSelectedFiles(files);
                         setProductData(convertedProductData);
                     }
                 } catch (error) {
@@ -107,12 +116,14 @@ const Add = () => {
 const onRegisterClickHandler = async () => {
     console.log('입력된 데이터:', productData);
 
-    const urls: string[] = [];
+    let urls: string[] = [];
     for (const file of selectedFiles) {
         const formData = new FormData();
         formData.append('file', file);
-        const url = await fileUploadRequest(formData);
+        let url = await fileUploadRequest(formData);
+        console.log(url);
         if (url) urls.push(url);
+        console.log(urls);
     }
 
     if (!urls.length) urls.push(defaultImageUrl);
@@ -149,13 +160,31 @@ const onRegisterClickHandler = async () => {
         themes: productData.themes, // 선택된 테마
     };
 
+    const patchRequestBody: PatchProductRequestDto = {
+        productName: productData.productName,
+        productIntroduce: productData.productIntroduce,
+        productPrice: productData.productPrice,
+        productToday: productData.productToday,
+        productTag: productData.productTag, // 선택된 태그
+        options: productData.options,
+        productImages: urls,
+        themes: productData.themes, // 선택된 테마
+    };
+
     try {
-        const response = await postProductRequest(requestBody); // requestBody로 수정
-        console.log('상품 등록 성공:', response);
+        let response;
+        if (productNumber) {
+            // 수정 요청
+            response = await patchProductRequest(productNumber, patchRequestBody); // 수정 API 호출
+        } else {
+            // 추가 요청
+            response = await postProductRequest(requestBody, 2); // 추가 API 호출
+        }
+        console.log('상품 등록/수정 성공:', response);
         navigator('../');
     } catch (error) {
-        console.error('상품 등록 실패:', error);
-        alert('상품 등록에 실패했습니다.');
+        console.error('상품 등록/수정 실패:', error);
+        alert('상품 등록/수정에 실패했습니다.');
     }
 };
     return (
@@ -178,11 +207,11 @@ const onRegisterClickHandler = async () => {
                 <div style={{ fontSize: "20px", fontWeight: "700", marginTop: "30px" }}>
                     케이크 종류를 하나 선택해 주세요.
                 </div>
-                <ProductThema onTagChange={(tag) => setProductData({ ...productData, productTag: tag })} />
-                <SizeOption onOptionsChange={(options) => setProductData({ ...productData, options })} />
-                <FlavorOption onOptionsChange={(options) => setProductData({ ...productData, options })} />
-                <OptionList onOptionsChange={(options) => setProductData({ ...productData, options })} />
-                <ProductTags onTagsChange={(tags) => setProductData({ ...productData, themes: tags })} />
+                <ProductThema product={productData} onTagChange={(tag) => setProductData({ ...productData, productTag: tag })} />
+                <SizeOption product={productData} onOptionsChange={(options) => setProductData({ ...productData, options })} />
+                <FlavorOption product={productData} onOptionsChange={(options) => setProductData({ ...productData, options })} />
+                <OptionList product={productData} onOptionsChange={(options) => setProductData({ ...productData, options })} />
+                <ProductTags product={productData} onTagsChange={(tags) => setProductData({ ...productData, themes: tags })} />
             </div>
 
             <div className='button-box'>
@@ -249,8 +278,8 @@ const Pictures = ({ files, onImagesChange, onReset }: PicturesProps) => {
 
 
 // component: SizeOption 컴포넌트 //
-const SizeOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
-    const [options, setOptions] = useState<PostProductOptionRequestDto[]>([]);
+const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
+    
     const [inputValue, setInputValue] = useState<string>('');
     const [showInput, setShowInput] = useState<boolean>(false);
     const [additionalPrice, setAdditionalPrice] = useState<string>('');
@@ -276,8 +305,7 @@ const SizeOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProduc
                     productOptionPrice: Number(additionalPrice) || 0
                 }]
             };
-            const updatedOptions = [...options, newOption];
-            setOptions(updatedOptions);
+            const updatedOptions = [...product.options, newOption];
             onOptionsChange(updatedOptions); // 상위 컴포넌트에 옵션 전달
             setInputValue('');
             setAdditionalPrice('');
@@ -286,8 +314,7 @@ const SizeOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProduc
     };
 
     const handleRemoveButtonClick = (indexToRemove: number) => {
-        const updatedButtons = options.filter((_, index) => index !== indexToRemove);
-        setOptions(updatedButtons);
+        const updatedButtons = product.options.filter((_, index) => index !== indexToRemove);
         onOptionsChange(updatedButtons); // 상위 컴포넌트에 업데이트된 옵션 전달
     };
 
@@ -316,7 +343,7 @@ const SizeOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProduc
                         </div>
                     )}
 
-                    {options.map((option, index) => (
+                    {product.options.filter(item => item.productOptionName === "크기").map((option, index) => (
                         <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
                             <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
                             <input type="radio" id={`radio-${index}`} name="radioGroup" value={option.productOptionName} disabled />
@@ -333,8 +360,7 @@ const SizeOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProduc
 };
 
 // component: FlavorOption 컴포넌트 //
-const FlavorOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
-    const [options, setOptions] = useState<PostProductOptionRequestDto[]>([]);
+const FlavorOption = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
     const [inputFlavorValue, setInputFlavorValue] = useState<string>('');
     const [showFlavorInput, setShowFlavorInput] = useState<boolean>(false);
     const [flavorAdditionalPrice, setFlavorAddtionalPrice] = useState<string>('');
@@ -361,8 +387,7 @@ const FlavorOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProd
                     productOptionPrice: Number(flavorAdditionalPrice) || 0
                 }]
             };
-            const updatedFlavors = [...options, newFlavor];
-            setOptions(updatedFlavors);
+            const updatedFlavors = [...product.options, newFlavor];
             onOptionsChange(updatedFlavors); // 상위 컴포넌트에 옵션 전달
             setInputFlavorValue('');
             setFlavorAddtionalPrice('');
@@ -371,8 +396,7 @@ const FlavorOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProd
     };
 
     const handleRemoveButtonClick = (indexToRemove: number) => {
-        const updatedButtons = options.filter((_, index) => index !== indexToRemove);
-        setOptions(updatedButtons);
+        const updatedButtons = product.options.filter((_, index) => index !== indexToRemove);
         onOptionsChange(updatedButtons); // 상위 컴포넌트에 업데이트된 옵션 전달
     };
 
@@ -401,7 +425,7 @@ const FlavorOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProd
                         </div>
                     )}
 
-                    {options.map((option, index) => (
+                    {product.options.filter(item => item.productOptionName === "맛").map((option, index) => (
                         <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
                             <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
                             <input type="radio" id={`flavor-radio-${index}`} name="flavorGroup" value={option.productOptionName} disabled />
@@ -418,7 +442,7 @@ const FlavorOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProd
 };
 
 // component: OptionList 컴포넌트 //
-const OptionList = ({ onOptionsChange }: { onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
+const OptionList = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
     const [optionComponents, setOptionComponents] = useState<number[]>([]);
 
     const handleAddNewOption = () => {
@@ -432,7 +456,7 @@ const OptionList = ({ onOptionsChange }: { onOptionsChange: (options: PostProduc
     return (
         <div>
             <div>{optionComponents.map((_, index) => (
-                <NewOption key={index} onOptionsChange={onOptionsChange} />
+                <NewOption key={index} product={product} onOptionsChange={onOptionsChange} />
             ))}</div>
             <div className='option-add-box'>
                 <div className='plus-button-option' onClick={handleAddNewOption}>옵션 추가</div>
@@ -442,10 +466,9 @@ const OptionList = ({ onOptionsChange }: { onOptionsChange: (options: PostProduc
 };
 
 // component: NewOption 컴포넌트 //
-const NewOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
+const NewOption = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
     const [newInputValue, setNewInputValue] = useState<string>('');
     const [inputDetailValue, setInputDetailValue] = useState<string>('');
-    const [newOptions, setNewOptions] = useState<PostProductOptionRequestDto[]>([]);
     const [newOptionAdditionalPrice, setNewOptionAdditionalPrice] = useState<string>('');   
 
     const onChangeNewOptionHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -466,8 +489,7 @@ const NewOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProduct
                 productOptionName: newInputValue,
                 optionDetails: [{ productCategory: inputDetailValue, productOptionPrice: Number(newOptionAdditionalPrice) || 0 }]
             };
-            const updatedOptions = [...newOptions, newOption];
-            setNewOptions(updatedOptions);
+            const updatedOptions = [...product.options, newOption];
             onOptionsChange(updatedOptions); // 상위 컴포넌트에 옵션 전달
             setInputDetailValue('');
             setNewOptionAdditionalPrice('');
@@ -475,8 +497,7 @@ const NewOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProduct
     };
 
     const handleRemoveButtonClick = (indexToRemove: number) => {
-        const updatedOptions = newOptions.filter((_, index) => index !== indexToRemove);
-        setNewOptions(updatedOptions);
+        const updatedOptions = product.options.filter((_, index) => index !== indexToRemove);
         onOptionsChange(updatedOptions); // 상위 컴포넌트에 업데이트된 옵션 전달
     };
 
@@ -487,7 +508,7 @@ const NewOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProduct
 
             <div className='radio-handler'>
                 <div className='detail-text'>
-                    {newOptions.map((button, index) => (
+                    {product.options.map((button, index) => (
                         <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
                             <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
                             <input type="radio" id={`new-option-radio-${index}`} name="newOptionGroup" value={button.productOptionName} disabled />
@@ -503,22 +524,20 @@ const NewOption = ({ onOptionsChange }: { onOptionsChange: (options: PostProduct
 };
 
 // component: ProductTags 컴포넌트 //
-const ProductTags = ({ onTagsChange }: { onTagsChange: (tags: string[]) => void }) => {
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+const ProductTags = ({ product, onTagsChange }: { product: PostProductRequestDto, onTagsChange: (tags: string[]) => void }) => {
+    
 
     const handleTagClick = (tag: string) => {
-        if (!selectedTags.includes(tag) && selectedTags.length < 5) {
-            const updatedTags = [...selectedTags, tag];
-            setSelectedTags(updatedTags);
+        if (!product.themes.includes(tag) && product.themes.length < 5) {
+            const updatedTags = [...product.themes, tag];
             onTagsChange(updatedTags); // 상위 컴포넌트에 업데이트된 태그 전달
-        } else if (selectedTags.length >= 5) {
+        } else if (product.themes.length >= 5) {
             alert('상품 테마는 최대 5개까지만 선택할 수 있습니다.');
         }
     };
 
     const handleTagRemove = (tag: string) => {
-        const updatedTags = selectedTags.filter((selectedTag) => selectedTag !== tag);
-        setSelectedTags(updatedTags);
+        const updatedTags = product.themes.filter((selectedTag) => selectedTag !== tag);
         onTagsChange(updatedTags); // 상위 컴포넌트에 업데이트된 태그 전달
     };
 
@@ -581,10 +600,10 @@ const ProductTags = ({ onTagsChange }: { onTagsChange: (tags: string[]) => void 
                 </div>
             </div>
             <div className='selected-tags'>
-                {selectedTags.length === 0 ? '상품 테마 최대 5개 선택' :
+                {product.themes.length === 0 ? '상품 테마 최대 5개 선택' :
                     <div>
                         <div style={{ display: "flex", flexDirection: "row" }}>
-                            {selectedTags.map(tag => (
+                            {product.themes.map(tag => (
                                 <SelectedTags key={tag} content={tag} onRemove={() => handleTagRemove(tag)} />
                             ))}
                         </div>
@@ -613,24 +632,22 @@ const SelectedTags = ({ content, onRemove }: { content: string; onRemove: () => 
 };
 
 // component: ProductThema 컴포넌트 //
-const ProductThema = ({ onTagChange }: { onTagChange: (tag: string) => void }) => {
-    const [selectedTag, setSelectedTag] = useState<string | null>(null);
-
+const ProductThema = ({ product, onTagChange }: { product: PostProductRequestDto, onTagChange: (tag: string) => void }) => {
+    
     const onTagClickHandler = (tag: string) => {
-        setSelectedTag(tag);
         onTagChange(tag); // 상위 컴포넌트에 선택된 태그 전달
     };
 
     return (
         <div className='store-filter' style={{ marginBottom: "30px" }}>
             <div className='filter-box' >
-                <CakeComponent imageUrl="/photo.png" context="포토" isSelected={selectedTag === "포토"} onClick={() => onTagClickHandler("포토")} />
-                <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={selectedTag === "레터링"} onClick={() => onTagClickHandler("레터링")} />
-                <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={selectedTag === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")} />
-                <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={selectedTag === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")} />
-                <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={selectedTag === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")} />
-                <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={selectedTag === "비건 케이크"} onClick={() => onTagClickHandler("비건 케이크")} />
-                <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={selectedTag === "떡 케이크"} onClick={() => onTagClickHandler("떡 케이크")} />
+                <CakeComponent imageUrl="/photo.png" context="포토" isSelected={product.productTag === "포토"} onClick={() => onTagClickHandler("포토")} />
+                <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={product.productTag === "레터링"} onClick={() => onTagClickHandler("레터링")} />
+                <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={product.productTag === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")} />
+                <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={product.productTag === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")} />
+                <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={product.productTag === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")} />
+                <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={product.productTag === "비건 케이크"} onClick={() => onTagClickHandler("비건 케이크")} />
+                <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={product.productTag === "떡 케이크"} onClick={() => onTagClickHandler("떡 케이크")} />
             </div>
         </div>
     );

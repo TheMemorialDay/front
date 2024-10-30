@@ -56,10 +56,10 @@ const responseErrorHandler = (error:any) => {
 //     return responseBody;
 // };
 
-export const postProductRequest = async (requestBody: PostProductRequestDto) => {
+export const postProductRequest = async (requestBody: PostProductRequestDto, storeNumber: number | string) => {
     try {
         // const response = await axios.post(POST_PRODUCT_API_URL, requestBody);
-        const response = await axios.post(`${THEMEMORIALDAY_API_DOMAIN}/mypage/product/add`, requestBody);
+        const response = await axios.post(`${THEMEMORIALDAY_API_DOMAIN}/mypage/product/${storeNumber}`, requestBody);
 
         return responseDataHandler<ResponseDto>(response);
     } catch (error) {
@@ -67,6 +67,14 @@ export const postProductRequest = async (requestBody: PostProductRequestDto) => 
         throw errorData;
     }
 };
+
+// export const postProductRequest = async (requestBody: PostProductRequestDto) => {        원래 이렇게 쓰는 게 정석
+//     // const response = await axios.post(POST_PRODUCT_API_URL, requestBody);
+//     const responseBody = await axios.post(`${THEMEMORIALDAY_API_DOMAIN}/mypage/product/add`, requestBody)
+//         .then(responseDataHandler<ResponseDto>)
+//         .catch(responseErrorHandler)
+//         return responseBody;
+// };
 
 
 // export const getProductListRequest = async (accessToken: string) => {
@@ -134,17 +142,17 @@ export const getProductRequest = async (productNumber: number | string): Promise
     }
 };
 
-// // function: get product 요청 함수 //
+// function: patch product 요청 함수 //
 
-// export const updateProductRequest = async (productNumber: number | string, data: PostProductRequestDto): Promise<any> => {
-//     try {
-//         const response = await axios.patch(`${THEMEMORIALDAY_API_DOMAIN}/mypage/product/update/${productNumber}`, data);
-//         return responseDataHandler(response); // 응답 처리
-//     } catch (error) {
-//         responseErrorHandler(error);
-//         return null; // 오류 발생 시 null 반환
-//     }
-// };
+export const patchProductRequest = async (productNumber: number | string, data: PostProductRequestDto): Promise<any> => {
+    try {
+        const response = await axios.patch(`${THEMEMORIALDAY_API_DOMAIN}/mypage/product/${productNumber}`, data);
+        return responseDataHandler(response); // 응답 처리
+    } catch (error) {
+        responseErrorHandler(error);
+        return null;
+    }
+};
 
 const FILE_UPLOAD_URL = `${THEMEMORIALDAY_API_DOMAIN}/file/upload`;
 
