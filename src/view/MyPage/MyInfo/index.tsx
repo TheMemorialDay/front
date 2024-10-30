@@ -1,31 +1,97 @@
 import React, { ChangeEvent, useState } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import { MY_PATH } from '../../../constants';
+import { ACCESS_TOKEN, MY_PATH } from '../../../constants';
+import useUserInfoZustand from '../../../stores/user-check-after-info.store';
+import { ResponseDto } from '../../../apis/dto/response';
+import { TelAuthCheckRequestDto, TelAuthRequestDto } from '../../../apis/dto/request/auth';
+import { patchUserInfoRequest, telAuthCheckRequest, telAuthRequest } from '../../../apis';
+import { PatchUserInfoRequestDto } from '../../../apis/dto/request/mypage_user_info';
+import { Cookies, useCookies } from 'react-cookie';
 
+// component: 마이페이지 유저 정보 수정 컴포넌트 //
 export default function InfoUpdate() {
-
-    const navigate = useNavigate();
-
+    
     // state: 기존 정보로 초기화 //
-    const [name, setName] = useState<string>('기존 이름');
-    const [password, setPassword] = useState<string>('');
+    // const [name, setName] = useState<string>('기존 이름');
+    // const [password, setPassword] = useState<string>('');
     const [passwordCheck, setPasswordCheck] = useState<string>('');
-    const [birth, setBirth] = useState<string>('YYYYMMDD');
-    const [gender, setGender] = useState<string>('여');
-    const [telNumber, setTelNumber] = useState<string>('01012345678');
+    // const [birth, setBirth] = useState<string>('YYYYMMDD');
+    // const [gender, setGender] = useState<string>('여');
+    // const [telNumber, setTelNumber] = useState<string>('01012345678');
     const [authNumber, setAuthNumber] = useState<string>('');
-
+    
+    // state: 메시지 상태 //
     const [telMessage, setTelMessage] = useState<string>('');
     const [authMessage, setAuthMessage] = useState<string>('');
-
-    // state: 메시지 상태 //
     const [passwordMessage, setPasswordMessage] = useState<string>('');
     const [isPwMatched, setIsPwMatched] = useState<boolean>(false);
     const [birthMessage, setBirthMessage] = useState<string>('');
-    const [birthMsgBool, setBirthMsgBool] = useState<boolean>(false);
     const [isMatched1, setIsMatched1] = useState<boolean>(false);
     const [isMatched2, setIsMatched2] = useState<boolean>(false);
+    
+    // state: 메시지 에러 상태 //
+    const [birthMsgBool, setBirthMsgBool] = useState<boolean>(false);
+    const [telNumberMessageError, setTelNumberMessageError] = useState<boolean>(false);
+    const [telAuthCheckMessageError, setTelAuthCheckMessageError] = useState<boolean>(false);
+
+    // state: 검증 상태 //
+    const [isSend, setSend] = useState<boolean>(false);
+    const [isCheckedAuthNumber, setCheckedAuthNumber] = useState<boolean>(false);
+
+    // state: zustand 가져오기 //
+    const { userId, password, name, birth, gender, telNumber, 
+        setUserId, setPassword, setName, setBirth, setGender, setTelNumber } 
+        = useUserInfoZustand();
+
+    // state: cookie //
+    const [cookies] = useCookies();
+
+    // variable: 회원 수정 가능 상태 확인 //
+    const isPossible = name && password && birth && gender && telNumber && isSend && isCheckedAuthNumber
+        && isPwMatched && isMatched1 && isMatched2 && birthMsgBool && telNumberMessageError
+        && telAuthCheckMessageError;
+
+    // function: 네비게이터 //
+    const navigate = useNavigate();
+
+    // function: 전화번호 인증 Response 처리 함수 //
+    const telAuthResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '숫자 11자를 입력해주세요.' :
+            responseBody.code === 'DT' ? '중복된 전화번호입니다.' :
+            responseBody.code === 'TF' ? '전송에 실패했습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'SU' ? '인증번호가 전송되었습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        setTelMessage(message);
+        setIsMatched1(isSuccessed);
+        setTelNumberMessageError(isSuccessed);
+        setSend(isSuccessed);
+    };
+
+    // function: 전화번호 & 인증번호 인증 Response 처리 함수 //
+    const telAuthCheckResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
+            responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'SU' ? '인증번호가 확인되었습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        setAuthMessage(message);
+        setTelAuthCheckMessageError(!isSuccessed);
+        setCheckedAuthNumber(isSuccessed);
+        setIsMatched2(isSuccessed);
+    };
+
+    // function: 회원정보 수정 완료 Response 처리 함수 //
+    const userUpdateCompletedResponse = () => {
+
+    };
 
     // event handler: 이름 변경 이벤트 핸들러 //
     const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -99,7 +165,7 @@ export default function InfoUpdate() {
         setAuthNumber(value);
     }
 
-    // event handler: 전송 버튼 클릭 이벤트 핸들러 //
+    // event handler: 전화번호 인증 확인 / 전송 버튼 클릭 이벤트 핸들러 //
     const onSendClickHandler = () => {
         if (!telNumber) {
             setTelMessage('');
@@ -108,19 +174,25 @@ export default function InfoUpdate() {
 
         const pattern = /^[0-9]{11}$/;
         const isTrue = pattern.test(telNumber);
-        setIsMatched1(isTrue);
-        if (isTrue) setTelMessage('인증번호가 전송되었습니다.');
-        else setTelMessage('전화번호 11자 입력해주세요.');
+        console.log("istrue:"+isTrue);
+
+        if (isTrue) {
+            setTelMessage('');
+            const requestBody: TelAuthRequestDto = { telNumber };
+            telAuthRequest(requestBody).then(telAuthResponse);
+        } else {
+            setTelMessage('숫자 11자로 입력해주세요.');
+            setTelNumberMessageError(true);
+            return;
+        }
     }
 
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
     const onCheckClickHandler = () => {
         if (!authNumber) return;
 
-        const isTrue = true; // 실제 인증 로직 추가 필요
-        setIsMatched2(isTrue);
-        if (isTrue) setAuthMessage('인증번호가 일치합니다.');
-        else setAuthMessage('인증번호가 일치하지 않습니다.');
+        const requestBody: TelAuthCheckRequestDto = { telNumber, telAuthNumber: authNumber };
+        telAuthCheckRequest(requestBody).then(telAuthCheckResponse);
     }
 
     // event handler: 취소 버튼 클릭 이벤트 핸들러 //
@@ -128,18 +200,28 @@ export default function InfoUpdate() {
         navigate(MY_PATH);
     }
 
-    // event handler: 수정 버튼 클릭 이벤트 핸들러 //
+    // event handler: 최종 / 수정 버튼 클릭 이벤트 핸들러 //
     const onEditClickHandler = () => {
-        // 수정할 로직 추가
-        if (isMatched1 && isMatched2 && isPwMatched && birthMsgBool) {
-            alert('정보가 수정되었습니다.');
-            navigate(MY_PATH);
-        } else {
+        if(!isPossible) {
             alert('정확하게 입력해주세요.');
+            return;
         }
+
+        const requestBody: PatchUserInfoRequestDto = {
+            password,
+            name,
+            gender,
+            birth,
+            telNumber
+        };
+
+        const accessToken = cookies[ACCESS_TOKEN];
+
+        alert('수정이 완료되었습니다.');
+        patchUserInfoRequest(requestBody, userId, accessToken).then(userUpdateCompletedResponse);
     }
 
-    // render: 개인 정보 수정 페이지 렌더링 //
+    // render: 마이페이지 개인 정보 수정 페이지 렌더링 //
     return (
         <div id='info-update' style={{ width: "450px" }}>
             <div className='title'>개인 정보 수정</div>

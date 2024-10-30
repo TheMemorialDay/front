@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACCESS_TOKEN, ROOT_PATH, SIGN_UP_ABSOLUTE_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import SnsContainer from '../../components/sns_login_sign_up';
-import { IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
+import { GetOnlyPasswordResponseDto, IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
 import { idSearchAfterRequest, idSearchBeforeRequest, passwordSearchRequest, passwordSearchTelAuthCheckRequest, patchPasswordRequest, signInRequest } from '../../apis';
 import { IdSearchAfterRequestDto, IdSearchBeforeRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto } from '../../apis/dto/request/auth';
@@ -315,7 +315,6 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
 
     // state: zustand 만든 거 가져오기 //
     const { zusName, setZusName, zusTelNumber, setZusTelNumber, zusUserId, setZusUserId } = useIdSearchResult();
-    const message = zusName + ", " + zusTelNumber + ", " + zusUserId;
 
     // variable: 아이디 찾기 가능 상태 확인 //
     const isIdSearchPossible = isName && isTelNumber && isTelAuthNumber;
@@ -375,7 +374,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
     const isPatchPasswordPossible = userId && isSend && isAuth;
 
     // function: 비밀번호 찾기 (userId + telNumber) Response 처리 함수 //
-    const passwordSearchResponse = (responseBody: ResponseDto | null) => {
+    const passwordSearchResponse = (responseBody: GetOnlyPasswordResponseDto |ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
             responseBody.code === 'NF' ? '존재하지 않는 정보입니다.' :
@@ -384,10 +383,15 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
             responseBody.code === 'SU' ? '인증번호를 전송하였습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        setTelMessage(message);
-        setTelMessageError(!isSuccessed);
-        setSend(isSuccessed);
-        setZusPassword(zusPassword);
+
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        } else setSend(isSuccessed);
+
+        const { password } = responseBody as GetOnlyPasswordResponseDto;
+        //setZusPassword(password);
+        console.log(password);
     };
 
     // function: 비밀번호 찾기 (인증번호 telAuthNumber 확인) Response 처리 함수 //
@@ -435,7 +439,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
             return;
         }
 
-        const requestBody: PasswordSearchRequestDto = { userId, telNumber: zusTelNumber, password: zusPassword};
+        const requestBody: PasswordSearchRequestDto = { userId, telNumber: zusTelNumber};
         passwordSearchRequest(requestBody).then(passwordSearchResponse);
     }
 
@@ -521,7 +525,7 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
     const [passwordMessage, setPasswordMessage] = useState<string>('');
 
     // state: 에러메시지 상태 //
-    const [passwordMessageError, setPasswordMessageError] = useState<boolean>(false); 
+    // const [passwordMessageError, setPasswordMessageError] = useState<boolean>(false); 
 
     // state: 기존 비밀번호 현 비밀번호 비교 상태 //
     // const [CheckedPassword, setCheckedPassword] = useState<boolean>(false); // 중복 x
@@ -530,16 +534,14 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
     const patchPasswordResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '같은 비밀번호는 사용할 수 없습니다.' :
             responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        setPasswordMessage(message);
-        setPasswordMessageError(!isSuccessed);
-        // setCheckedPassword(!isSuccessed);
-        // setZusPassword(zusPassword);
 
-        if (zusPassword === newPassword) {
-            alert('잘못된 값입니다.');
+        if(!isSuccessed) {
+            setPasswordMessage(message);
+            setIsMatched1(isSuccessed);
             return;
         }
 

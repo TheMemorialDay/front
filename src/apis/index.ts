@@ -2,10 +2,12 @@ import axios, { AxiosResponse } from "axios";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { ResponseDto } from "./dto/response";
 import { IdCheckRequestDto, IdSearchAfterRequestDto, IdSearchBeforeRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
-import { IdSearchResponseDto } from "./dto/response/auth";
+import { GetOnlyPasswordResponseDto, IdSearchResponseDto } from "./dto/response/auth";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
 import GetSignInResponseDto from "./dto/response/auth/get-sign-in-response.dto";
+import { PasswordCheckOfUserUpdateRequestDto, PatchUserInfoRequestDto } from "./dto/request/mypage_user_info";
+import { GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
 
 
 
@@ -13,6 +15,8 @@ import GetSignInResponseDto from "./dto/response/auth/get-sign-in-response.dto";
 const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
+const MYPAGE_USER_UPDATE_PASSWORD_CHECK_API_URL = `${MYPAGE_MODULE_URL}/password-check`;
+const MYPAGE_PATCH_USER_INFO_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/${userId}`;
 
 const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 
@@ -31,6 +35,7 @@ const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const ID_SEARCH_BEFORE_API_URL = `${AUTH_MODULE_URL}/id-search`;
 const ID_SEARCH_AFTER_API_URL = `${AUTH_MODULE_URL}/id-search-result`;
 const PASSWORD_SEARCH_API_URL = `${AUTH_MODULE_URL}/password-search`;
+const PASSWORD_SEARCH_AND_GET_PASSWORD_API_URL = (userId: string) => `${AUTH_MODULE_URL}/password-search/${userId}`;
 const PASSWORD_SEARCH_TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-tel-auth-check`;
 const PATCH_PASSWORD_API_URL = `${AUTH_MODULE_URL}/password-resetting`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/get-sign-in`;
@@ -110,6 +115,14 @@ export const postStoreRequest = async (requestBody: PostStoreRequestDto, accessT
   return responseBody;
 };
 
+// function: 개인 정보 수정 비밀번호 확인 user update password check 요청 함수 //
+export const passwordCheckOfUserUpdateRequest = async (requestBody: PasswordCheckOfUserUpdateRequestDto, accessToken: string) => {
+  const responseBody = await axios.post(MYPAGE_USER_UPDATE_PASSWORD_CHECK_API_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<GetUserInfosResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
 // function: id search before 요청 함수 //
 export const idSearchBeforeRequest = async (requestBody: IdSearchBeforeRequestDto) => {
   const responseBody = await axios.post(ID_SEARCH_BEFORE_API_URL, requestBody)
@@ -129,7 +142,7 @@ export const idSearchAfterRequest = async (requestBody: IdSearchAfterRequestDto)
 // function: password search (userId + telNumber) 요청 함수 //
 export const passwordSearchRequest = async (requestBody: PasswordSearchRequestDto) => {
   const responseBody = await axios.post(PASSWORD_SEARCH_API_URL, requestBody)
-    .then(responseDataHandler<ResponseDto>)
+    .then(responseDataHandler<GetOnlyPasswordResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 };
@@ -142,7 +155,7 @@ export const passwordSearchTelAuthCheckRequest = async (requestBody: PasswordSea
   return responseBody;
 };
 
-// function: patch password 요청 함수 //
+// function: 비밀번호 재설정 patch password 요청 함수 //
 export const patchPasswordRequest = async (requestBody: PatchPasswordRequestDto) => {
   const responseBody = await axios.patch(PATCH_PASSWORD_API_URL, requestBody)
     .then(responseDataHandler<ResponseDto>)
@@ -161,6 +174,14 @@ export const GetSignInRequest = async(accessToken: string) => {
 // function: patch join 요청 함수 //
 export const patchJoinRequest = async(requestBody: PatchJoinRequestDto, userId: string, accessToken: string) => {
   const responseBody = await axios.patch(PATCH_JOIN_URL(userId), requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
+// function: 회원 정보 수정 patch user info 요청 함수 //
+export const patchUserInfoRequest = async (requestBody: PatchUserInfoRequestDto, userId: string, accessToken: string) => {
+  const responseBody = await axios.patch(MYPAGE_PATCH_USER_INFO_API_URL(userId), requestBody, bearerAuthorization(accessToken))
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;

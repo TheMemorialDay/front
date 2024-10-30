@@ -2,5 +2,4 @@
 export default interface PasswordSearchRequestDto {
 	userId: string;
 	telNumber: string;
-	password: string;
 }
