@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import './style.css';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN, HO_ABSOLUTE_PATH, HO_PATH, JO_ABSOLUTE_PATH, JO_PATH, LOGIN_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH, SHOPPING_CART_ABSOLUTE_PATH, SIGN_UP_ABSOLUTE_PATH, SIGN_UP_PATH, ST_ABSOLUTE_PATH, ST_PATH, SU_ABSOLUTE_PATH, SU_PATH } from '../../constants';
+import { ACCESS_TOKEN, HO_ABSOLUTE_PATH, HO_PATH, JO_ABSOLUTE_PATH, JO_PATH, JO_USER_ABSOLUTE_PATH, JO_USER_PATH, LOGIN_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH, SHOPPING_CART_ABSOLUTE_PATH, SIGN_IN_ABSOLUTE_PATH, SIGN_UP_ABSOLUTE_PATH, SIGN_UP_PATH, ST_ABSOLUTE_PATH, ST_PATH, SU_ABSOLUTE_PATH, SU_PATH } from '../../constants';
+import { useSignInUserStore } from '../../stores';
 
 // component: 로고 컴포넌트 //
 function Logo() {
@@ -38,19 +39,37 @@ function TopNavigation() {
     // state: path 상태 //
     const { pathname } = useLocation();
 
+    // state: login user state //
+    const {signInUser} = useSignInUserStore();
+    const [userId, setUserId] = useState<string>('');
+
+    // function: 네비게이터 함수 //
+    const navigator = useNavigate();
+
     // variable: 특정 경로 여부 변수 //
     const isSt = pathname.startsWith(ST_PATH);
     const isHo = pathname.startsWith(HO_PATH);
     const isSu = pathname.startsWith(SU_PATH);
     const isJo = pathname.startsWith(JO_PATH);
 
-    // function: 네비게이터 함수 //
-    const navigator = useNavigate();
-
     // event handler: 네비게이션 아이템 클릭 이벤트 //
     const onItemClickHandler = (path: string) => {
         navigator(path);
     };
+
+    // event handler: join page 클릭 이벤트 //
+    const onJoinClickHandler = () => {
+        //alert(signInUser?.permission);
+        if(signInUser?.userId && signInUser.permission === '일반') {
+            navigator(JO_USER_ABSOLUTE_PATH);
+        }else if(signInUser?.userId && signInUser.permission === '사장'){
+            alert('이미 가게가 등록된 계정입니다.');
+            navigator(ROOT_ABSOLUTE_PATH);
+        }else {
+            alert('로그인이 필요한 서비스입니다.');
+            navigator(SIGN_IN_ABSOLUTE_PATH);
+        }
+    }
 
     // render: 상단 네비게이션 컴포넌트 //
     return (
@@ -65,7 +84,7 @@ function TopNavigation() {
                 <div className={`navigation-item ${isSu ? 'active' : ''}`} onClick={() => onItemClickHandler(SU_ABSOLUTE_PATH)}>
                     <div className='item-text'>SUPPORT</div>
                 </div>
-                <div className={`navigation-item ${isJo ? 'active' : ''}`} onClick={() => onItemClickHandler(JO_ABSOLUTE_PATH)}>
+                <div className={`navigation-item ${isJo ? 'active' : ''}`} onClick={onJoinClickHandler}>
                     <div className='item-text'>JOIN</div>
                 </div>
             </div>
@@ -118,7 +137,7 @@ function TopPersonalNavigation() {
             <div 
                 className='layout-my-icon' 
                 onMouseEnter={() => setIsHovered(true)}></div>
-            <div className='layout-my-cart' onClick={onShoppingCartIconClickHandler}></div>
+            {/* <div className='layout-my-cart' onClick={onShoppingCartIconClickHandler}></div> */}
         
             {isHovered && (
                 <div className='menu-box'

@@ -51,6 +51,9 @@
 
     font-size: 20px;
     font-weight: 500;
+
+    cursor: pointer;
+    user-select: none;
 }
 
 #ok .button-box:hover {

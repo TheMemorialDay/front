@@ -2,28 +2,56 @@ import React, { ChangeEvent, useState } from 'react'
 import SupportNavi from '../../../components/support_navi'
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import { SU_ABSOLUTE_QA_PATH } from '../../../constants';
+import { ACCESS_TOKEN, SU_ABSOLUTE_QA_PATH } from '../../../constants';
+import { ResponseDto } from '../../../apis/dto/response';
+import { PostQnARequestDto } from '../../../apis/dto/request/support';
+import { PostQnARequest } from '../../../apis/dto';
+import { useCookies } from 'react-cookie';
+import { useSignInUserStore } from '../../../stores';
 
 export default function QaWrite() {
 
+    // state: 쿠키 상태 //
+    const [cookies] = useCookies();
+
+    // state: 로그인 유저 상태 //
+    const {signInUser} = useSignInUserStore();
+
     // state: 제목 상태 //
-    const [subject, setSubjact] = useState<string>('');
+    const [questionTitle, setSubjact] = useState<string>('');
     // state: 내용 상태 //
-    const [script, setScript] = useState<string>('');
+    const [questionContents, setquestionContents] = useState<string>('');
 
     // function: 네비게이터 //
     const navigator = useNavigate();
 
+    // function: post QnA response 처리 함수 //
+    const postQnAResponse = (responseBody: ResponseDto | null) => {
+        const message = 
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '모두 입력해주세요.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+        responseBody?.code === 'AF' ? '잘못된 접근입니다.' : 'SU';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if(!isSuccessed) {
+            alert(message);
+            return;
+        }
+        alert('등록이 완료되었습니다.');
+        navigator(SU_ABSOLUTE_QA_PATH);
+    };
+
     // event handler: 제목 입력 상태 //
-    const onSubjectChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onquestionTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setSubjact(value);
     };
 
     // event handler: 내용 입력 상태 //
-    const onScriptChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onquestionContentsChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
-        setScript(value);
+        setquestionContents(value);
     };
 
     // event handler: 큐엔에이 작성 취소 버튼 //
@@ -32,26 +60,47 @@ export default function QaWrite() {
     };
 
     // event handler: 큐엔에이 등록 버튼 //
-    //* api 작성 후 다시 작성 
     const onWriteRegisterButtonHandler = () => {
-        alert('등록이 완료되었습니다.');
-        navigator(SU_ABSOLUTE_QA_PATH);
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
+
+        if (!questionTitle || !questionContents) {
+            alert("모두 입력해주세요.");
+            return;
+        }
+
+        const questionDay = Date.now().toString();
+        const userId = signInUser?.userId;
+        const questionStatus = '미응답';
+        const answerContents = ''; 
+
+        if(userId !== undefined) {
+            const requestBody: PostQnARequestDto = {
+                questionTitle, questionContents, questionDay, userId, questionStatus, answerContents
+            };
+    
+            PostQnARequest(requestBody, accessToken).then(postQnAResponse);
+        } else {
+            alert('로그인 정보가 없습니다.');
+            return;
+        }
+        
     };
 
     return (
         <div id='qa-write-wrapper'>
             <SupportNavi />
             <div className='top'>
-                <div className='subject'>제목</div>
-                <input value={subject} type='text' placeholder='제목을 입력해주세요.' onChange={onSubjectChangeHandler} />
+                <div className='questionTitle'>제목</div>
+                <input value={questionTitle} type='text' placeholder='제목을 입력해주세요.' onChange={onquestionTitleChangeHandler} />
             </div>
             <div className='main'>
-                <div className='script'>내용</div>
+                <div className='questionContents'>내용</div>
                 <input
-                    value={script}
+                    value={questionContents}
                     type='text'
                     placeholder='내용(공백 포함 최소 15글자 입니다.)'
-                    onChange={onScriptChangeHandler}
+                    onChange={onquestionContentsChangeHandler}
                     minLength={15}
                 />
             </div>
@@ -62,3 +111,5 @@ export default function QaWrite() {
         </div>
     )
 }
+
+
