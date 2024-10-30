@@ -2,17 +2,16 @@
 export default interface PostStoreRequestDto {
   userId: string;
   storeName: string;
-  storeIntroduce: string;
-  storeParticular: string;
-  storeContact: string;
-  storeCaution: string;
+  storeIntroduce: string | null;
+  storeParticular: string | null;
+  storeContact: string | null;
+  storeCaution: string | null;
   storeAddress: string;
   storeGugun: string;
   storeDong: string;
-  storeTel: string;
-  storeRating: number;
-  reviewCount: number;
-  likeCount: number;
+  storeLatitude: string;
+  storeLongtitude: string;
+  storeTel: string | null;
   storeImageUrl: string;
   mondayOpen: string;
   mondayLast: string;
