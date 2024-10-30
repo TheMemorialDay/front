@@ -1,34 +1,40 @@
 import React from 'react'
-import { useNavigate } from 'react-router';
+import { useNavigate, useOutletContext } from 'react-router';
 import { ST_ABSOLUTE_CONTACT_DETAIL_PATH, ST_ABSOLUTE_INFORMATION_DETAIL_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH, ST_ABSOLUTE_REVIEW_DETAIL_PATH } from '../../../constants';
 import './style.css';
 import ShopMain from '../../../components/Shopinformation';
 import ReviewComponent from '../../../components/review';
+import { GetStoreResponseDto } from '../../../apis/dto/response/stores';
 
 
 export default function ShopReview() {
 
   const navigator = useNavigate();
 
+  const { store } = useOutletContext<{ store: GetStoreResponseDto | null }>();
+
   const onOrderButtonClickHandler = () => {
-    navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH);
+    if (store)
+      navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH(store.storeNumber));
   };
 
   const onInformationButtonClickHandler = () => {
-    navigator(ST_ABSOLUTE_INFORMATION_DETAIL_PATH);
+    if (store)
+      navigator(ST_ABSOLUTE_INFORMATION_DETAIL_PATH(store.storeNumber));
   };
 
   const onContactButtonClickHandler = () => {
-    navigator(ST_ABSOLUTE_CONTACT_DETAIL_PATH);
+    if (store)
+      navigator(ST_ABSOLUTE_CONTACT_DETAIL_PATH(store.storeNumber));
   };
 
   const onReviewButtonClickHandler = () => {
-    navigator(ST_ABSOLUTE_REVIEW_DETAIL_PATH);
+    if (store)
+      navigator(ST_ABSOLUTE_REVIEW_DETAIL_PATH(store.storeNumber));
   };
 
   return (
     <div id='store-detail-wrapper'>
-      <ShopMain />
       <div className='menu-bar-review'>
         <div className='shop-order' onClick={onOrderButtonClickHandler}>주문하기</div>
         <div className='shop-information' onClick={onInformationButtonClickHandler}>매장정보</div>

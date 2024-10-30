@@ -9,6 +9,8 @@ export default interface PatchStoreRequestDto {
   storeAddress: string;
   storeGugun: string;
   storeDong: string;
+  storeLatitude: string;
+  storeLongtitude: string;
   storeTel: string;
   storeRating: number;
   reviewCount: number;
