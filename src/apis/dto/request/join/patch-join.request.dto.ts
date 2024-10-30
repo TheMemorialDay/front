@@ -3,4 +3,5 @@ export default interface PatchJoinRequestDto{
     businessNumber: string;
     businessOpendate: string;
     permission: string;
+    businessUrl: string;
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import './style.css'
 import { useNavigate } from 'react-router-dom'
-import { ROOT_ABSOLUTE_PATH } from '../../../constants';
+import { MY_STORE_ABSOLUTE_PATH, ROOT_ABSOLUTE_PATH } from '../../../constants';
 
 // component: 등록 완료 화면 컴포넌트 //
 function OkScreen() {
@@ -12,6 +12,13 @@ function OkScreen() {
     // event handler: 확인 버튼 클릭 이벤트 핸들러 //
     const onClickHandler = () => {
         navigator(ROOT_ABSOLUTE_PATH);
+        window.location.reload();
+    }
+
+    // event handler: 확인 버튼 클릭 이벤트 핸들러 //
+    const onClickHandler2 = () => {
+        navigator(MY_STORE_ABSOLUTE_PATH);
+        // 나중에 가게 불러오기가 바로 안되면 마이페이지까지 이동하는 걸로 변경하기
         window.location.reload();
     }
 
@@ -26,9 +33,12 @@ function OkScreen() {
                     <div>가게 상세 정보를 입력해주세요.</div>
                 </div>
             </div>
-            <div className='button-box' onClick={onClickHandler}>나중에</div>
-            {/* 마이페이지 가게 관리 페이지로 이동 
-            <div className='button-box' onClick={onClickHandler}>확인</div> */}
+
+            <div style={{display: "flex", flexDirection: "row", gap: "15px"}}>
+                <div className='button-box' onClick={onClickHandler}>나중에</div>
+                <div className='button-box' onClick={onClickHandler2}>확인</div>
+            </div>
+            
         </div>
     )
 }

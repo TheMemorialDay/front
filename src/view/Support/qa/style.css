@@ -65,8 +65,16 @@
     align-items: center;
 }
 
-.arrow-image {
+.arrow-image-up {
     background-image: url('/public/images/arrow-down.png');
+    background-size: cover;
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+}
+
+.arrow-image-down {
+    background-image: url('/public/images/arrow-up.png');
     background-size: cover;
     width: 20px;
     height: 20px;

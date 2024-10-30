@@ -122,7 +122,7 @@ export const patchJoinRequest = async(requestBody: PatchJoinRequestDto, userId: 
 
 // API 요청 URL 및 serviceKey 설정
 const apiUrl = "http://api.odcloud.kr/api/nts-businessman/v1/status";
-const serviceKey = "9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==";
+const serviceKey = process.env.BUSINESS_API_SERVICE_KEY;
 
 // function: 사업자 등록증 진위 확인 api 요청 함수2 //
 export const checkBusinessNumRequest = async(requestBody: BusinessNumCheckRequestDto) => {
