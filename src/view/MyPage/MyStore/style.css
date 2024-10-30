@@ -194,3 +194,16 @@
     display: flex;
     gap: 10px;
 }
+
+.file-selection {
+    width: 100%;
+}
+
+.file-box .profile-image {
+    border-radius: 6px;
+    width: 70%;
+    height: 250px;
+
+    background-size: cover;
+    background-position: 50% 50%;
+}

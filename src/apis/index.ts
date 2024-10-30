@@ -2,16 +2,20 @@ import axios, { AxiosResponse } from "axios";
 import { IdCheckRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { ResponseDto } from "./dto/response";
+import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
 
 
 // variable: API URL 상수 //
 const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
+
+const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
 
 const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 
 const POST_STORE_API_MODULE = `${MYPAGE_STORE_MODULE}`;
+const GET_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
 
@@ -80,9 +84,36 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
 };
 
 // function: post Store 요청 함수 //
-export const postStoreRequest = async (requestBody: PostStoreRequestDto, accessToken: string) => {
-  const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody, bearerAuthorization(accessToken))
+export const postStoreRequest = async (requestBody: PostStoreRequestDto) => {
+  const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody)
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 };
+
+// function: get Store 요청 함수 //
+export const getStoreRequest = async (storeNumber: number | string) => {
+  const responseBody = await axios.get(GET_STORE_API_URL(storeNumber))
+    .then(responseDataHandler<GetStoreResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
+// function: get Store List 요청 함수 //
+export const getStoreListRequest = async () => {
+  const responseBody = await axios.get(GET_STORE_LIST_API_URL)
+    .then(responseDataHandler<GetStoreListResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
+const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
+const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
+
+// function: file upload 요청 함수 //
+export const fileUploadRequest = async (requestBody: FormData) => {
+  const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart)
+    .then(responseDataHandler<string>)
+    .catch(error => null);
+  return url;
+}
