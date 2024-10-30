@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { MouseEvent, useState } from 'react'
 import './style.css';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { MY_PRODUCT_ADD_ABSOLUTE_PATH, MY_PRODUCT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
@@ -14,7 +14,8 @@ function Legacy({imageUrl} : ShopComponentProps) {
     const navigator = useNavigate();
 
     // event handler: 엑스 버튼 클릭 이벤트 핸들러 //
-    const onDeleteButtonClickHandler = () => {
+    const onDeleteButtonClickHandler = (event: MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
         const isConfirm = window.confirm("정말 삭제하시겠습니까?");
         if(!isConfirm) return;
     }

@@ -21,7 +21,9 @@ export const SU_QA_DETAIL_PATH = (questionNumber: string | number) => `${SU_QA_P
 
 export const SHOPPING_CART_PATH = '/shopping-cart';
 
+
 export const JO_PATH = '/join';
+export const JO_USER_PATH = (userId: string) =>  `${userId}`;
 export const JOIN_OKAY_PATH = 'okay';
 
 export const OTHERS_PATH = '*';
@@ -70,6 +72,7 @@ export const SU_ABSOLUTE_QA_DETAIL_PATH = SU_QA_DETAIL_PATH;
 export const SHOPPING_CART_ABSOLUTE_PATH = SHOPPING_CART_PATH;
 
 export const JO_ABSOLUTE_PATH = JO_PATH;
+export const JO_USER_ABSOLUTE_PATH = `${JO_PATH}/${JO_USER_PATH}`;
 export const JO_OKAY_ABSOLUTE_PATH = `${JO_PATH}/${JOIN_OKAY_PATH}`;
 
 export const SIGN_IN_ABSOLUTE_PATH = LOGIN_PATH;

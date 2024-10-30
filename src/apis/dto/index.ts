@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from "axios"
 import GetNoticeListResponseDto from "./response/support/get-notice-list-response.dto";
 import { GetNoticeDetailResponseDto, GetQnADetailResponseDto, GetQnAListResponseDto } from "./response/support";
 import { PostQnARequestDto } from "./request/support";
+import { access } from "fs";
 
 // variable: api url 상수//
 const THE_MEMORIAL_DAY_MAIN_DOMAIN = process.env.REACT_APP_API_URL;
@@ -65,16 +66,16 @@ export const getQnADetailRequest = async(questionNumber: number | string) => {
 }
 
 // function: post QnA 요청 함수 //
-export const PostQnARequest = async(requestBody: PostQnARequestDto) => {
-    const responseBody = await axios.post(QNA_WRITE_API_URL, requestBody)
+export const PostQnARequest = async(requestBody: PostQnARequestDto, accessToken:string) => {
+    const responseBody = await axios.post(QNA_WRITE_API_URL, requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
 
 // function: delete QnA 요청 함수 //
-export const deleteQnARequest = async(questionNumber: number | string) => {
-    const responseBody = await axios.delete(QNA_DELETE_API_URL(questionNumber))
+export const deleteQnARequest = async(questionNumber: number | string, accessToken:string) => {
+    const responseBody = await axios.delete(QNA_DELETE_API_URL(questionNumber), bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;

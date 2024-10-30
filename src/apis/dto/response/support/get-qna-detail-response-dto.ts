@@ -8,4 +8,5 @@ export default interface GetQnADetailResponseDto extends ResponseDto{
     userId: string;
     questionStatus: string;
     answerContents :string | undefined;
+    name: string;
 }

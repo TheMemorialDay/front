@@ -14,8 +14,10 @@ import {
   ST_PRODUCT_ORDER_PATH,
   ST_ORDER_DONE_PATH,
   MY_STORE_DETAIL_PATH,
-  ST_NUMBER_PATH
-} from './constants';
+  ST_NUMBER_PATH,ACCESS_TOKEN,
+  ROOT_PATH,
+  SIGN_IN_ABSOLUTE_PATH,
+  JO_USER_PATH} from './constants';
 
 import Stores from './view/Stores';
 import Support from './view/Support';
@@ -49,6 +51,10 @@ import NotMember from './components/Modal/NotMember';
 import Order from './view/Stores/Order/detail';
 import DoneScreen from './view/Stores/Order/done';
 import ShopMain from './components/Shopinformation';
+import { GetSignInRequest } from './apis';
+import { GetSignInResponseDto } from './apis/dto/response/auth';
+import { ResponseDto } from './apis/dto/response';
+import { useSignInUserStore } from './stores';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -71,7 +77,13 @@ function Index() {
 
 // component: TheMemorialDay 컴포넌트 //
 export default function TheMemorialDay() {
-  const [cookies] = useCookies(['ACCESS_TOKEN']);
+
+  // state: cookie 상태 //
+  const [cookies, setCookie, removeCookie] = useCookies();
+
+  // state: 로그인 유저 정보 상태 //
+  const {signInUser, setSignInUser} = useSignInUserStore();
+
   const isLoggedIn = Boolean(cookies.ACCESS_TOKEN);
   const [showNotMemberModal, setShowNotMemberModal] = useState(false);
   const navigator = useNavigate();
@@ -84,6 +96,38 @@ export default function TheMemorialDay() {
     setShowNotMemberModal(false);
     navigator(LOGIN_PATH); // 로그인 페이지로 이동
   };
+
+  // function: get sign in response 처리 함수 //
+  const getSignInResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+    const message = 
+      !responseBody ? '로그인 유저 정보를 불러오는데 문제가 발생하였습니다.' :
+      responseBody.code === 'NI' ? '로그인 유저가 존재하지 않습니다.' :
+      responseBody.code === 'AF' ? '잘못된 접근입니다.' : 
+      responseBody.code === 'DBE' ? '로그인 유저 정보를 불러오는데 문제가 발생하였습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      removeCookie(ACCESS_TOKEN, {path: ROOT_PATH});
+      setSignInUser(null);
+      navigator(SIGN_IN_ABSOLUTE_PATH);
+      return;
+    }
+
+    const {userId, name, telNumber, permission} = responseBody as GetSignInResponseDto;
+    setSignInUser({userId, name, telNumber, permission});
+  }
+
+  // effect: cookie의 accessToken값이 변경될 때 마다 로그인 유저 정보 요청 함수 //
+  useEffect(() => {
+    const accessToken = cookies[ACCESS_TOKEN];
+    if(accessToken) {
+	    GetSignInRequest(accessToken).then(getSignInResponse);
+    } else {
+      setSignInUser(null);
+    }
+  }, [cookies[ACCESS_TOKEN]]);
+
 
   return (
     <>
@@ -119,10 +163,30 @@ export default function TheMemorialDay() {
           <Route path={ST_REVIEW_DETAIL_PATH(':storeNumber')} element={<ShopReview />} /> */}
 
         </Route>
-        <Route path={OTHERS_PATH} element={<Index />} />
-        <Route path={LOGIN_PATH} element={<MainLayout />} >
-          <Route path={LOGIN_PATH} element={<Auth />} />
-          <Route path={SIGN_UP_PATH} element={<SignUp />} />
+      <Route path={OTHERS_PATH} element={<Index />} />
+      <Route path={LOGIN_PATH} element={<MainLayout />} >
+        <Route path={LOGIN_PATH} element={<Auth />} />
+        <Route path={SIGN_UP_PATH} element={<SignUp />} />
+      </Route>
+      <Route path={JO_PATH} element={<MainLayout />}  >
+        <Route path={JO_USER_PATH(':userId')} element={<Join />} />
+        <Route path={JOIN_OKAY_PATH} element={<OkayScreen />} />
+      </Route>
+      <Route path={SU_PATH} element={<MainLayout />}  >
+        <Route path={SU_PATH} element={<Support />} />
+        <Route path={SU_NOTICE_DETAIL_PATH(':noticeNumber')} element={<NoticeDetail />} />
+        <Route path={SU_QA_PATH} element={<Qa />} />
+        <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
+        <Route path={SU_QA_DETAIL_PATH(':questionNumber')} element={<QaDetail />} />
+      </Route>
+      <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
+        <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />
+      </Route>
+      <Route path={MY_PATH} element={<MainLayout />}  >
+        <Route path={MY_PATH} element={<MyPage />} />
+        <Route path={MY_INFO_PATH} >
+          <Route index element={<InfoUpdate />} />
+        <Route path={MY_PASSWORD_CHECK_PATH} element={<MyPasswordCheck />} />
         </Route>
         <Route path={JO_PATH} element={<MainLayout />}  >
           <Route path={JO_PATH} element={<Join />} />
