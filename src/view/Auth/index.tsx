@@ -132,13 +132,19 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const [name, setName] = useState<string>('');
     const [telNumber, setTelNumber] = useState<string>('');
     const [telAuthNumber, setTelAuthNumber] = useState<string>('');
+
+    const [isSend, setSend] = useState<boolean>(false);
+    const [isAuth, setAuth] = useState<boolean>(false);
+
+    // state: 메시지 상태 //
     const [telMessage, setTelMessage] = useState<string>('');
     const [authMessage, setAuthMessage] = useState<string>('');
+    const [isTelMessageError, setTelMessageError] = useState<boolean>(false);
+    const [isAuthMessageError, setAuthMessageError] = useState<boolean>(false);
+
+    // state: 매칭 상태 //
     const [isMatched1, setIsMatched1] = useState<boolean>(false);
     const [isMatched2, setIsMatched2] = useState<boolean>(false);
-
-    // state: 아이디 찾기 상태 //
-    const [idSearchMessage, setIdSearchMessage] = useState<string>('');
 
     // state: 아이디 찾기 입력값 검증 상태 //
     const [isName, setIsName] = useState<boolean>(false);
@@ -167,10 +173,12 @@ function FindId({ onPathChange }: AuthComponentProps) {
             responseBody.code === 'SU' ? '정보가 확인되었습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
-        if (!isSuccessed) {
-            setIdSearchMessage(message);
-            return;
-        }
+
+        setTelMessage(message);
+        setTelMessageError(!isSuccessed);
+        setSend(isSuccessed);
+
+        if (!isSuccessed) return;
         
     };
 
@@ -182,10 +190,11 @@ function FindId({ onPathChange }: AuthComponentProps) {
             responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
-        if (!isSuccessed) {
-            setIdSearchMessage(message);
-            return;
-        }
+
+        setAuthMessage(message);
+        setAuthMessageError(!isSuccessed);
+        setAuth(isSuccessed);
+
         const idCheckResult = responseBody as IdSearchResponseDto;
         setZusName(idCheckResult.name);
         setZusTelNumber(idCheckResult.telNumber);
@@ -222,7 +231,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
         setIsMatched1(isTrue);
 
         if (isTrue) {
-            setIdSearchMessage('');
+            setTelMessage('인증번호가 전송되었습니다.');
             const requestBody: IdSearchBeforeRequestDto = { name, telNumber };
             idSearchBeforeRequest(requestBody).then(idSearchBeforeResponse);
         }
@@ -237,7 +246,8 @@ function FindId({ onPathChange }: AuthComponentProps) {
 
         // 랜덤 생성한 인증 번호 4자리와 일치하다면
         const isTrue = true;
-        setIsMatched2(isTrue);
+        // setIsMatched2(isTrue);
+        setAuth(isTrue);
 
         if (isTrue) setAuthMessage('인증번호가 일치합니다.');
         else setAuthMessage('인증번호가 일치하지 않습니다.');
@@ -280,15 +290,15 @@ function FindId({ onPathChange }: AuthComponentProps) {
                     <input className='tel-number' placeholder='전화번호 – 빼고 입력해주세요.' value={telNumber} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
                     <div className='send-button' onClick={onSendClickHandler}>전송</div>
                 </div>
-                <div className={isMatched1 ? 'message-true' : 'message-false'}>{telMessage}</div>
+                <div className={`message ${isTelMessageError ? 'false' : 'true' }`}>{telMessage}</div>
 
-                {isMatched1 &&
+                {isSend &&
                     <div>
                         <div className='tel' style={{ marginTop: '20px' }}>
                             <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
                             <div className='send-button' onClick={onCheckClickHandler}>확인</div>
                         </div>
-                        <div className={isMatched2 ? 'message-true' : 'message-false'}>{authMessage}</div>
+                        <div className={`message ${isAuth ? 'false' : 'true' }`}>{authMessage}</div>
                     </div>
                 }
 
@@ -350,12 +360,9 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
 function FindPassword({ onPathChange }: AuthComponentProps) {
 
     // state: zustand 상태 //
-    const { userId, zusTelNumber, telAuthNumber, zusPassword, setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword} = usePatchPasswordZustand();
-
-    // state: 변수 상태 //
-    // const [id, setId] = useState<string>('');
-    // const [telNumber, setTelNumber] = useState<string>('');
-    // const [authNumber, setAuthNumber] = useState<string>('');
+    const { userId, zusTelNumber, telAuthNumber, zusPassword, 
+        setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword} 
+        = usePatchPasswordZustand();
 
     // state: 메세지 상태 //
     const [telMessage, setTelMessage] = useState<string>('');
@@ -384,13 +391,13 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
 
-        if (!isSuccessed) {
-            alert(message);
-            return;
-        } else setSend(isSuccessed);
+        setTelMessage(message);
+        setTelMessageError(!isSuccessed);
+        setSend(isSuccessed);
+
+        if (!isSuccessed) return;
 
         const { password } = responseBody as GetOnlyPasswordResponseDto;
-        //setZusPassword(password);
         console.log(password);
     };
 
@@ -486,7 +493,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
                     <input className='tel-number' placeholder='전화번호 – 빼고 입력해주세요.' value={zusTelNumber} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
                     <div className='send-button' onClick={onSendClickHandler}>전송</div>
                 </div>
-                <div className={isTelMessageError ? 'message-false' : 'message-true'}>{telMessage}</div>
+                <div className={`message ${isTelMessageError ? 'false' : 'true' }`}>{telMessage}</div>
 
                 {isSend &&
                 <div>
@@ -494,7 +501,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
                         <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
                         <div className='send-button' onClick={onCheckClickHandler}>확인</div>
                     </div>
-                    <div className={isAuthMessageError ? 'message-false' : 'message-true'}>{authMessage}</div>
+                    <div className={`message ${isAuth ? 'true' : 'false' }`}>{authMessage}</div>
                 </div>
                 }
 
