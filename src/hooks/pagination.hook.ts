@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
+import Pagination from "../components/Pagination";
 
 // variable: 페이지 당 보여줄 아이템 수 //
 const ITEMS_PER_PAGE = 10;
+const STORES_PER_PAGE = 8;
+
 // variable: 섹션 당 표시할 페이지 수 //
 const PAGES_PER_SECTION = 10;
+const STORES_PAGES_PER_SECTION = 5;
 
 const usePagination = <T>() => {
     // state: 페이징 관련 상태 //

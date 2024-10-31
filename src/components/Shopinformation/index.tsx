@@ -86,6 +86,7 @@ export default function ShopMain() {
       console.log('가게 번호가 없습니다. 등록페이지로 이동합니다.');
       return;
     }
+    console.log("스토어 넘버: " + storeNumber);
 
     getStoreRequest(storeNumber).then(getStoreResponse);
   }, [storeNumber])

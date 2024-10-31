@@ -1,13 +1,14 @@
-import React, { ChangeEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, JO_OKAY_ABSOLUTE_PATH, ROOT_ABSOLUTE_PATH } from '../../constants';
 import { PatchJoinRequestDto } from '../../apis/dto/request/join';
-import { checkBusinessNumRequest, fileUploadRequest, patchJoinRequest } from '../../apis';
+import { checkBusinessNumRequest, checkBusinessRequest, fileUploadRequest, patchJoinRequest } from '../../apis';
 import { useCookies } from 'react-cookie';
 import { ResponseDto } from '../../apis/dto/response';
 import { useSignInUserStore } from '../../stores';
 import BusinessNumCheckRequestDto from '../../apis/dto/request/join/business-num-check.request.dto';
+import BusinessCheckRequestDto from '../../apis/dto/request/join/business-check.request.dto';
 
 
 // component: 사장 권한 등록 조인 화면 컴포넌트 //
@@ -29,7 +30,61 @@ export default function Join() {
     const [fileName, setFileName] = useState<string>('');
     const pdfInputRef = useRef<HTMLInputElement | null>(null);
     const [businessFile, setBusinessFile] = useState<File | null>(null);
-    const [url, setUrl] = useState<string | null>(null);
+    const [sendUrl, setSendUrl] = useState<string | null>('');
+
+    // effect: sendUrl 업데이트 //
+    useEffect(() => {
+        if (sendUrl && signInUser?.name) {
+            // const requestBody: BusinessNumCheckRequestDto = {
+            //     b_no: [businessNumber]
+            // };
+            // checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
+            const requestBody: BusinessCheckRequestDto = {
+                businesses: [{
+                    b_no: businessNumber,
+                    start_dt: openDate,
+                    p_nm: signInUser.name,
+                    p_nm2: "",
+                    b_nm: "",
+                    corp_no: "",
+                    b_sector: "",
+                    b_type: ""
+                }]
+            }
+            const accessToken = cookies[ACCESS_TOKEN];
+            if(!accessToken) return;
+            checkBusinessRequest(accessToken, requestBody).then(businessCheckResponse);
+        }
+    }, [sendUrl]);
+
+    // function: business check response 함수 //
+    const businessCheckResponse = (responseBody: string | null | ResponseDto) => {
+        const message = 
+            !responseBody ? "서버에 문제가 있습니다." :
+            responseBody === "01" ? "인증 완료" :
+            responseBody === "02" ? "유효하지 않은 정보입니다." : responseBody;
+        
+        const isSuccessed = responseBody !== null && responseBody === "01";
+        if(!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
+
+        console.log("send file: " + sendUrl);
+        if(signInUser?.userId && sendUrl) {
+            const requestBody: PatchJoinRequestDto = {
+                businessNumber,
+                businessOpendate: openDate,
+                permission: "사장",
+                businessUrl: sendUrl
+            };
+            console.log(requestBody);
+            patchJoinRequest(requestBody, signInUser.userId, accessToken).then(patchJoinResponse);
+        }
+    }
 
     // function: 네비게이션 함수 //
     const navigator = useNavigate();
@@ -49,14 +104,17 @@ export default function Join() {
             return;
         }
         console.log(message);
+
         const accessToken = cookies[ACCESS_TOKEN];
         if(!accessToken) return;
 
-        if(signInUser?.userId) {
+        console.log("send file: " + sendUrl);
+        if(signInUser?.userId && sendUrl) {
             const requestBody: PatchJoinRequestDto = {
                 businessNumber,
                 businessOpendate: openDate,
-                permission: "사장"
+                permission: "사장",
+                businessUrl: sendUrl
             };
             console.log(requestBody);
             patchJoinRequest(requestBody, signInUser.userId, accessToken).then(patchJoinResponse);
@@ -121,7 +179,7 @@ export default function Join() {
 
     // event handler: 등록 버튼 클릭 이벤트 핸들러 //
     const onResigterButtonClickHandler = async() => {
-        if(!businessNumber  || !openDate) {
+        if(!businessNumber  || !openDate || !fileName) {
             alert('모두 입력해주세요.');
             return;
         } else if(!isMatched || !isMatched2) {
@@ -129,21 +187,24 @@ export default function Join() {
             return;
         }
 
+        let url: string | null = null;
         if(businessFile) {
             const formData = new FormData();
             formData.append('file', businessFile);
-            setUrl(await fileUploadRequest(formData));
+            url = await fileUploadRequest(formData);
+            console.log("selected file: " + url);
+            setSendUrl(url);
         }
-        
-        if(signInUser?.userId) {
-            const requestBody: BusinessNumCheckRequestDto = {
-                b_no: [businessNumber]
-            }
-            checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
-        }else {
-            alert('사업자 등록증 PDF 파일을 등록하여 주세요.');
-            return;
-        }
+
+        // if(signInUser?.userId && url) {
+        //     const requestBody: BusinessNumCheckRequestDto = {
+        //         b_no: [businessNumber]
+        //     }
+        //     checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
+        // }else {
+        //     alert('사업자 등록증 PDF 파일을 등록하여 주세요.');
+        //     return;
+        // }
     }
 
 
@@ -157,7 +218,7 @@ export default function Join() {
 
             <div className='business'>
                 <input className='register-number' placeholder='사업자 등록 번호' maxLength={10} value={businessNumber} onChange={onbusinessNumber}/>
-                <div className='file-box' style={{display:"none"}}>
+                <div className='file-box'>
 
                     <input
                         type="file"
