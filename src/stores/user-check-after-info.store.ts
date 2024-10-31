@@ -9,12 +9,14 @@ interface UserInfo {
 	birth: string;
 	gender: string;
 	telNumber: string;
+	telAuthNumber: string;
 	setUserId: (userId: string) => void;
 	setPassword: (password: string) => void;
 	setName: (name: string) => void;
 	setBirth: (birth: string) => void;
 	setGender: (gender: string) => void;
 	setTelNumber: (telNumber: string) => void;
+	setTelAuthNumber: (telAuthNumber: string) => void; 
 }
 
 const useUserInfoZustand = create<UserInfo>(set => ({
@@ -24,12 +26,14 @@ const useUserInfoZustand = create<UserInfo>(set => ({
 	birth: '',
 	gender: '',
 	telNumber: '',
+	telAuthNumber: '',
 	setUserId: (userId: string) => set(state => ({...state, userId})),
 	setPassword: (password: string) => set(state => ({...state, password})),
 	setName: (name: string) => set(state => ({...state, name})),
 	setBirth: (birth: string) => set(state => ({...state, birth})),
 	setGender: (gender: string) => set(state => ({...state, gender})),
-	setTelNumber: (telNumber: string) => set(state => ({...state, telNumber}))
+	setTelNumber: (telNumber: string) => set(state => ({...state, telNumber})),
+	setTelAuthNumber: (telAuthNumber: string) => set(state => ({...state, telAuthNumber}))
 }))
 
 export default useUserInfoZustand;

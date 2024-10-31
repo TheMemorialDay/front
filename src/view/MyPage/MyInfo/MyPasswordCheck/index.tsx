@@ -8,7 +8,7 @@ import { passwordCheckOfUserUpdateRequest } from '../../../../apis';
 import { PasswordCheckOfUserUpdateRequestDto } from '../../../../apis/dto/request/mypage_user_info';
 import { GetUserInfosResponseDto } from '../../../../apis/dto/response/mypage_user_info';
 import useUserInfoZustand from '../../../../stores/user-check-after-info.store';
-import { ACCESS_TOKEN } from '../../../../constants';
+import { ACCESS_TOKEN, MY_INFO_ABSOLUTE_PATH } from '../../../../constants';
 
 export default function MyPasswordCheck() {
     // state: 비밀번호 상태 및 메시지 상태
@@ -26,6 +26,9 @@ export default function MyPasswordCheck() {
     const { password, name, birth, gender, telNumber, 
         setPassword, setName, setBirth, setGender, setTelNumber } 
         = useUserInfoZustand();
+
+    // variable: access token //
+    const accessToken = cookies[ACCESS_TOKEN];
 
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -48,7 +51,6 @@ export default function MyPasswordCheck() {
             return;
         }
 
-        const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) return;
 
         const userInfo = responseBody as GetUserInfosResponseDto;
@@ -58,9 +60,7 @@ export default function MyPasswordCheck() {
         setGender(userInfo.gender);
         setTelNumber(userInfo.telNumber);
 
-        // const { accessToken, expiration } = responseBody as PasswordCheckOfUserUpdateResponseDto;
-        // const expires = new Date(Date.now() + (expiration * 1000));
-        // setCookie(ACCESS_TOKEN, accessToken, { path: ROOT_PATH, expires });
+        navigator(MY_INFO_ABSOLUTE_PATH);
     };
 
     // event handler: 비밀번호 변경 이벤트 핸들러 //
@@ -83,10 +83,8 @@ export default function MyPasswordCheck() {
     const onEditInfoClickHandler = () => {
         if (!password) return;
 
-        navigator('./view/MyPage/MyInfo');
-
-        const requestBody: PasswordCheckOfUserUpdateRequestDto = { userId, password };
-        passwordCheckOfUserUpdateRequest(requestBody).then(userUpdateResponse);
+        const requestBody: PasswordCheckOfUserUpdateRequestDto = { password };
+        passwordCheckOfUserUpdateRequest(requestBody, accessToken).then(userUpdateResponse);
     };
 
     // render: 본인 확인 페이지 렌더링 //

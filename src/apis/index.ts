@@ -15,8 +15,16 @@ import { GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
 const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
-const MYPAGE_USER_UPDATE_PASSWORD_CHECK_API_URL = `${MYPAGE_MODULE_URL}/password-check`;
-const MYPAGE_PATCH_USER_INFO_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/${userId}`;
+// MyPage UserInfo
+const MYPAGE_USER_INFO_API_URL = `${MYPAGE_MODULE_URL}/user-info`;
+// 마이페이지 정보 수정 들어갈 때 비밀번호 확인 URL
+const MYPAGE_USER_UPDATE_PASSWORD_CHECK_API_URL = `${MYPAGE_USER_INFO_API_URL}/password-check`;
+// 마이페이지 정보 수정 중 전화번호 인증 URL
+const MYPAGE_PATCH_USER_INFO_TEL_AUTH_API_URL = `${MYPAGE_USER_INFO_API_URL}/tel-auth`;
+// 마이페이지 정보 수정 중 전화번호 + 인증번호 인증 URL
+const MYPAGE_PATCH_USER_INFO_TEL_AUTH_CHECK_API_URL = `${MYPAGE_USER_INFO_API_URL}/tel-auth-check`;
+// 마이페이지 최종 수정 URL
+const MYPAGE_PATCH_USER_COMPLETED_API_URL = `${MYPAGE_USER_INFO_API_URL}/patch-info`;
 
 const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 
@@ -75,6 +83,14 @@ export const idCheckRequest = async (requestBody: IdCheckRequestDto) => {
   return responseBody;
 };
 
+// function: 회원 정보 수정 patch user info 요청 함수 //
+export const patchUserInfoRequest = async (requestBody: PatchUserInfoRequestDto, accessToken: string) => {
+  const responseBody = await axios.patch(MYPAGE_PATCH_USER_COMPLETED_API_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
 // function: tel auth api 요청 함수 //
 export const telAuthRequest = async (requestBody: TelAuthRequestDto) => {
   const responseBody = await axios.post(TEL_AUTH_API_URL, requestBody)
@@ -83,9 +99,25 @@ export const telAuthRequest = async (requestBody: TelAuthRequestDto) => {
   return responseBody;
 };
 
+// function: MYPAGE USER INFO tel auth api 요청 함수 //
+export const userInfoTelAuthReqeust = async (requestBody: TelAuthRequestDto, accessToken: string) => {
+  const responseBody = await axios.post(MYPAGE_PATCH_USER_INFO_TEL_AUTH_API_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
 // function: tel auth check api 요청 함수 //
 export const telAuthCheckRequest = async (requestBody: TelAuthCheckRequestDto) => {
   const responseBody = await axios.post(TEL_AUTH_CHECK_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: MYPAGE USER INFO tel auth check api 요청 함수 //
+export const userInfoTelAuthCheckRequest = async (requestBody: TelAuthCheckRequestDto, accessToken: string) => {
+  const responseBody = await axios.post(MYPAGE_PATCH_USER_INFO_TEL_AUTH_CHECK_API_URL, requestBody, bearerAuthorization(accessToken))
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
@@ -174,14 +206,6 @@ export const GetSignInRequest = async(accessToken: string) => {
 // function: patch join 요청 함수 //
 export const patchJoinRequest = async(requestBody: PatchJoinRequestDto, userId: string, accessToken: string) => {
   const responseBody = await axios.patch(PATCH_JOIN_URL(userId), requestBody, bearerAuthorization(accessToken))
-    .then(responseDataHandler<ResponseDto>)
-    .catch(responseErrorHandler);
-  return responseBody;
-}
-
-// function: 회원 정보 수정 patch user info 요청 함수 //
-export const patchUserInfoRequest = async (requestBody: PatchUserInfoRequestDto, userId: string, accessToken: string) => {
-  const responseBody = await axios.patch(MYPAGE_PATCH_USER_INFO_API_URL(userId), requestBody, bearerAuthorization(accessToken))
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
