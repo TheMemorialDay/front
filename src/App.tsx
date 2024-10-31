@@ -44,6 +44,7 @@ import QaWrite from './view/Support/qa_write';
 import QaDetail from './view/Support/qa_detail';
 import OkayScreen from './view/Join/okScreen';
 import ShoppingCart from './view/shopping_cart';
+import Add from './view/MyPage/MyProduct/update';
 import Update from './view/MyPage/MyProduct/update';
 import MyPasswordCheck from './view/MyPage/MyInfo/MyPasswordCheck';
 import { useCookies } from 'react-cookie';
@@ -188,11 +189,22 @@ export default function TheMemorialDay() {
           <Route index element={<InfoUpdate />} />
         <Route path={MY_PASSWORD_CHECK_PATH} element={<MyPasswordCheck />} />
         </Route>
+        <Route path={MY_REVIEW_PATH} element={<MyReview />} />
+        <Route path={MY_ORDER_DETAIL_PATH} element={<MyOrder />} />
+        <Route path={MY_LIKE_PATH} element={<MyLike />} />
+        <Route path={MY_STORE_PATH} element={<MyStore />} />
+
+        <Route path={MY_PRODUCT_PATH}>
+          <Route index element={<MyProduct />} />
+          <Route path={MY_PRODUCT_ADD_PATH} element={<Add/>} /> 
+          <Route path={MY_PRODUCT_UPDATE_PATH} element={<Update />} />
+        </Route>
+        </Route>
         <Route path={JO_PATH} element={<MainLayout />}  >
           <Route path={JO_PATH} element={<Join />} />
           <Route path={JOIN_OKAY_PATH} element={<OkayScreen />} />
         </Route>
-        <Route path={SU_PATH} element={<MainLayout />}  >``
+        <Route path={SU_PATH} element={<MainLayout />}  >
           <Route path={SU_PATH} element={<Support />} />
           <Route path={SU_NOTICE_DETAIL_PATH(':noticeNumber')} element={<NoticeDetail />} />
           <Route path={SU_QA_PATH} element={<Qa />} />
