@@ -3,11 +3,12 @@ import './style.css';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, JO_OKAY_ABSOLUTE_PATH, ROOT_ABSOLUTE_PATH } from '../../constants';
 import { PatchJoinRequestDto } from '../../apis/dto/request/join';
-import { checkBusinessNumRequest, fileUploadRequest, patchJoinRequest } from '../../apis';
+import { checkBusinessNumRequest, checkBusinessRequest, fileUploadRequest, patchJoinRequest } from '../../apis';
 import { useCookies } from 'react-cookie';
 import { ResponseDto } from '../../apis/dto/response';
 import { useSignInUserStore } from '../../stores';
 import BusinessNumCheckRequestDto from '../../apis/dto/request/join/business-num-check.request.dto';
+import BusinessCheckRequestDto from '../../apis/dto/request/join/business-check.request.dto';
 
 
 // component: 사장 권한 등록 조인 화면 컴포넌트 //
@@ -33,13 +34,57 @@ export default function Join() {
 
     // effect: sendUrl 업데이트 //
     useEffect(() => {
-        if (sendUrl && signInUser?.userId) {
-            const requestBody: BusinessNumCheckRequestDto = {
-                b_no: [businessNumber]
-            };
-            checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
+        if (sendUrl && signInUser?.name) {
+            // const requestBody: BusinessNumCheckRequestDto = {
+            //     b_no: [businessNumber]
+            // };
+            // checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
+            const requestBody: BusinessCheckRequestDto = {
+                businesses: [{
+                    b_no: businessNumber,
+                    start_dt: openDate,
+                    p_nm: signInUser.name,
+                    p_nm2: "",
+                    b_nm: "",
+                    corp_no: "",
+                    b_sector: "",
+                    b_type: ""
+                }]
+            }
+            const accessToken = cookies[ACCESS_TOKEN];
+            if(!accessToken) return;
+            checkBusinessRequest(accessToken, requestBody).then(businessCheckResponse);
         }
     }, [sendUrl]);
+
+    // function: business check response 함수 //
+    const businessCheckResponse = (responseBody: string | null | ResponseDto) => {
+        const message = 
+            !responseBody ? "서버에 문제가 있습니다." :
+            responseBody === "01" ? "인증 완료" :
+            responseBody === "02" ? "유효하지 않은 정보입니다." : responseBody;
+        
+        const isSuccessed = responseBody !== null && responseBody === "01";
+        if(!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
+
+        console.log("send file: " + sendUrl);
+        if(signInUser?.userId && sendUrl) {
+            const requestBody: PatchJoinRequestDto = {
+                businessNumber,
+                businessOpendate: openDate,
+                permission: "사장",
+                businessUrl: sendUrl
+            };
+            console.log(requestBody);
+            patchJoinRequest(requestBody, signInUser.userId, accessToken).then(patchJoinResponse);
+        }
+    }
 
     // function: 네비게이션 함수 //
     const navigator = useNavigate();
@@ -151,8 +196,6 @@ export default function Join() {
             setSendUrl(url);
         }
 
-        
-        
         // if(signInUser?.userId && url) {
         //     const requestBody: BusinessNumCheckRequestDto = {
         //         b_no: [businessNumber]

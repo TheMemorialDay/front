@@ -51,10 +51,11 @@ import NotMember from './components/Modal/NotMember';
 import Order from './view/Stores/Order/detail';
 import DoneScreen from './view/Stores/Order/done';
 import ShopMain from './components/Shopinformation';
-import { GetSignInRequest } from './apis';
+
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
 import { useSignInUserStore } from './stores';
+import { GetSignInRequest } from './apis';
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -135,13 +136,13 @@ export default function TheMemorialDay() {
         <Route element={<MainLayout />}>
           <Route index element={<Index />} />
         </Route>
+
         <Route path={ST_PATH} element={<MainLayout />}>
           <Route index element={<Stores />} />
 
           <Route path={ST_NUMBER_PATH(':storeNumber')} element={<ShopMain />}>
             <Route path={ST_ORDER_DETAIL_PATH}>
               <Route index element={<ShopOrder />} />
-
             </Route>
             <Route path={ST_INFORMATION_DETAIL_PATH} element={<ShopInformation />} />
             <Route path={ST_CONTACT_DETAIL_PATH} element={<ShopContact />} />
@@ -154,63 +155,40 @@ export default function TheMemorialDay() {
               <Route path={ST_ORDER_DONE_PATH} element={<DoneScreen />} />
             </Route>
           </Route>
-          {/* <Route path={ST_NUMBER_PATH(':storeNumber')} element={<ShopMain />}>
-            <Route path={ST_PRODUCT_ORDER_PATH} element={<Order />} />
-            <Route path={ST_ORDER_DONE_PATH} element={<DoneScreen />} />
-          </Route>
-          <Route path={ST_INFORMATION_DETAIL_PATH(':storeNumber')} element={<ShopInformation />} />
-          <Route path={ST_CONTACT_DETAIL_PATH(':storeNumber')} element={<ShopContact />} />
-          <Route path={ST_REVIEW_DETAIL_PATH(':storeNumber')} element={<ShopReview />} /> */}
+        </Route>
 
+        <Route path={OTHERS_PATH} element={<Index />} />
+        <Route path={LOGIN_PATH} element={<MainLayout />} >
+          <Route path={LOGIN_PATH} element={<Auth />} />
+          <Route path={SIGN_UP_PATH} element={<SignUp />} />
         </Route>
-      <Route path={OTHERS_PATH} element={<Index />} />
-      <Route path={LOGIN_PATH} element={<MainLayout />} >
-        <Route path={LOGIN_PATH} element={<Auth />} />
-        <Route path={SIGN_UP_PATH} element={<SignUp />} />
-      </Route>
-      <Route path={JO_PATH} element={<MainLayout />}  >
-        <Route path={JO_USER_PATH(':userId')} element={<Join />} />
-        <Route path={JOIN_OKAY_PATH} element={<OkayScreen />} />
-      </Route>
-      <Route path={SU_PATH} element={<MainLayout />}  >
-        <Route path={SU_PATH} element={<Support />} />
-        <Route path={SU_NOTICE_DETAIL_PATH(':noticeNumber')} element={<NoticeDetail />} />
-        <Route path={SU_QA_PATH} element={<Qa />} />
-        <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
-        <Route path={SU_QA_DETAIL_PATH(':questionNumber')} element={<QaDetail />} />
-      </Route>
-      <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
-        <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />
-      </Route>
-      <Route path={MY_PATH} element={<MainLayout />}  >
-        <Route path={MY_PATH} element={<MyPage />} />
-        <Route path={MY_INFO_PATH} >
-          <Route index element={<InfoUpdate />} />
-        <Route path={MY_PASSWORD_CHECK_PATH} element={<MyPasswordCheck />} />
-        </Route>
+
         <Route path={JO_PATH} element={<MainLayout />}  >
-          <Route path={JO_PATH} element={<Join />} />
+          <Route path={JO_USER_PATH(':userId')} element={<Join />} />
           <Route path={JOIN_OKAY_PATH} element={<OkayScreen />} />
         </Route>
-        <Route path={SU_PATH} element={<MainLayout />}  >``
+
+        <Route path={SU_PATH} element={<MainLayout />}  >
           <Route path={SU_PATH} element={<Support />} />
           <Route path={SU_NOTICE_DETAIL_PATH(':noticeNumber')} element={<NoticeDetail />} />
           <Route path={SU_QA_PATH} element={<Qa />} />
           <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
           <Route path={SU_QA_DETAIL_PATH(':questionNumber')} element={<QaDetail />} />
         </Route>
-        <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
-          <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />
-        </Route>
+
         <Route path={MY_PATH} element={<MainLayout />}  >
           <Route path={MY_PATH} element={<MyPage />} />
           <Route path={MY_INFO_PATH} >
             <Route index element={<InfoUpdate />} />
             <Route path={MY_PASSWORD_CHECK_PATH} element={<MyPasswordCheck />} />
           </Route>
+
           <Route path={MY_REVIEW_PATH} element={<MyReview />} />
+
           <Route path={MY_ORDER_DETAIL_PATH} element={<MyOrder />} />
+
           <Route path={MY_LIKE_PATH} element={<MyLike />} />
+
           <Route path={MY_STORE_PATH} element={<MyStore />} />
           <Route path={MY_STORE_DETAIL_PATH(':storeNumber')} element={<MyStore />} />
 

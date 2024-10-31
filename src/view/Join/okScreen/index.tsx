@@ -17,7 +17,7 @@ function OkScreen() {
 
     // event handler: 확인 버튼 클릭 이벤트 핸들러 //
     const onClickHandler2 = () => {
-        navigator(MY_STORE_ABSOLUTE_PATH);
+        //navigator();
         // 나중에 가게 불러오기가 바로 안되면 마이페이지까지 이동하는 걸로 변경하기
         window.location.reload();
     }
@@ -36,7 +36,7 @@ function OkScreen() {
 
             <div style={{display: "flex", flexDirection: "row", gap: "15px"}}>
                 <div className='button-box' onClick={onClickHandler}>나중에</div>
-                <div className='button-box' onClick={onClickHandler2}>확인</div>
+                {/* <div className='button-box' onClick={onClickHandler2}>확인</div> */}
             </div>
             
         </div>

@@ -6,6 +6,8 @@ import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/sto
 import { GetSignInResponseDto } from "./dto/response/auth";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
+import BusinessCheckRequestDto from "./dto/request/join/business-check.request.dto";
+import ApiResponseDto from "./dto/response/join/api-response.dto";
 
 
 
@@ -41,6 +43,22 @@ const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
   const { data } = response;
   return data;
 }
+
+// function: response data 처리 함수 //
+const responseDataHandler2 = <T extends ApiResponseDto>(response: AxiosResponse<T, any>) => {
+  const {data} = response;
+  if (data.status_code !== "OK") {
+    return data.status_code; 
+  }
+
+  // data 배열 내의 각 항목에 대해 valid 값 체크
+  for (const item of data.data) {
+    return item.valid;  
+  }
+
+  // 위 조건에 해당하지 않는 경우 빈 문자열 반환
+  return null; // string, null
+};
 
 // function: response data 처리 함수 //
 const responseDataHandler3 = <T extends BusinessNumCheckResponseDto>(response: AxiosResponse<T, any>) => {
@@ -112,6 +130,10 @@ export const postStoreRequest = async (requestBody: PostStoreRequestDto) => {
 export const getStoreRequest = async (storeNumber: number | string) => {
   const responseBody = await axios.get(GET_STORE_API_URL(storeNumber))
     .then(responseDataHandler<GetStoreResponseDto>)
+    .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function: get sign in 요청 함수 //
 export const GetSignInRequest = async(accessToken: string) => {
   const responseBody = await axios.get(GET_SIGN_IN_API_URL, bearerAuthorization(accessToken))
@@ -124,6 +146,10 @@ export const GetSignInRequest = async(accessToken: string) => {
 export const getStoreListRequest = async () => {
   const responseBody = await axios.get(GET_STORE_LIST_API_URL)
     .then(responseDataHandler<GetStoreListResponseDto>)
+    .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function: patch join 요청 함수 //
 export const patchJoinRequest = async(requestBody: PatchJoinRequestDto, userId: string, accessToken: string) => {
   const responseBody = await axios.patch(PATCH_JOIN_URL(userId), requestBody, bearerAuthorization(accessToken))
@@ -133,8 +159,20 @@ export const patchJoinRequest = async(requestBody: PatchJoinRequestDto, userId: 
 }
 
 // API 요청 URL 및 serviceKey 설정
+const apiUrl2 = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
 const apiUrl = "http://api.odcloud.kr/api/nts-businessman/v1/status";
 const serviceKey = process.env.BUSINESS_API_SERVICE_KEY;
+
+// function: 사업자 등록증 진위 확인 api 요청 함수1 //
+export const checkBusinessRequest = async(accessToken: string, requestBody: BusinessCheckRequestDto) => {
+  const responseBody = await axios.post(`${apiUrl2}?serviceKey=${serviceKey}`, requestBody, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(responseDataHandler2<ApiResponseDto>)
+      .catch(responseErrorHandler);
+  return responseBody;
+}
 
 // function: 사업자 등록증 진위 확인 api 요청 함수2 //
 export const checkBusinessNumRequest = async(requestBody: BusinessNumCheckRequestDto) => {
