@@ -155,9 +155,17 @@ export const passwordCheckOfUserUpdateRequest = async (requestBody: PasswordChec
   return responseBody;
 }
 
-// function: id search before 요청 함수 //
+// function: id search before 요청 함수 (name + telNumber) //
 export const idSearchBeforeRequest = async (requestBody: IdSearchBeforeRequestDto) => {
   const responseBody = await axios.post(ID_SEARCH_BEFORE_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: tel auth api 요청 함수 //
+export const idSearchTelAuthRequest = async (requestBody: TelAuthRequestDto) => {
+  const responseBody = await axios.post(TEL_AUTH_API_URL, requestBody)
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
