@@ -161,6 +161,8 @@ export default function MyStore() {
         setFriday({ start: fridayOpen, end: fridayLast });
         setSaturday({ start: saturdayOpen, end: saturdayLast });
         setSunday({ start: sundayOpen, end: sundayLast });
+
+        
     };
 
 
@@ -302,7 +304,9 @@ export default function MyStore() {
             sundayLast: sunday.end
         };
 
-        postStoreRequest(requestBody).then(postStoreResponse);
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
+        postStoreRequest(requestBody, accessToken).then(postStoreResponse);
     }
 
     // event handler: 월요일 시작 시간 변경 핸들러 //

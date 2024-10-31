@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import { MY_PRODUCT_ADD_ABSOLUTE_PATH, MY_PRODUCT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
+import { ACCESS_TOKEN, MY_PRODUCT_ADD_ABSOLUTE_PATH, MY_PRODUCT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
 import { getProductListRequest } from '../../../apis';
 import { Product } from '../../../types';
 import { GetProductListResponseDto } from '../../../apis/dto/response/product';
 import { ProductResponse } from '../../../apis/dto/response/product/get-product-list-response.dto';
+import { useSignInUserStore } from '../../../stores';
+import { useCookies } from 'react-cookie';
 
 const defaultProfileImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q0oOxqQNdL6kZp0iSKLbV1/img.png';
 
@@ -52,20 +54,28 @@ const convertProductResponseToProduct = (response: ProductResponse): Product => 
 export default function MyProduct() {
     const [products, setProducts] = useState<Product[]>([]);
     const navigator = useNavigate();
+    const {signInUser} = useSignInUserStore();
+    const [userId, setUserId] = useState<string>('');
+    const [cookies] = useCookies();
 
-    const loadProducts = async () => {
-        const userId = "pdu08075"; // 실제 사용자 ID로 변경해야 돼여
+    const loadProducts = async () => {    
+        
 
         try {
-            const productsData: GetProductListResponseDto | null = await getProductListRequest(userId);
-            // console.log("API 응답 데이터:", productsData); // 응답 데이터 로그 확인
+            const accessToken = cookies[ACCESS_TOKEN];
+            if (!userId || !accessToken) return;
+            
+                const productsData: GetProductListResponseDto | null = await getProductListRequest(userId, accessToken);
+                // console.log("API 응답 데이터:", productsData); // 응답 데이터 로그 확인
 
-            if (productsData && 'products' in productsData) {
-                const convertedProducts = productsData.products.map(convertProductResponseToProduct);
-                setProducts(convertedProducts);
-            } else {
-                setProducts([]);
-            }
+                if (productsData && 'products' in productsData) {
+                    const convertedProducts = productsData.products.map(convertProductResponseToProduct);
+                    setProducts(convertedProducts);
+                } else {
+                    setProducts([]);
+                }
+            
+            
         } catch (error) {
             console.error("API 호출 중 오류 발생:", error);
             setProducts([]);
@@ -85,8 +95,16 @@ export default function MyProduct() {
     };
 
     useEffect(() => {
+        if (signInUser?.userId) {
+            setUserId(signInUser.userId);
+        }
+    }, [signInUser?.userId]); 
+
+    useEffect(() => {
         loadProducts();
-    }, []);    return (
+    }, [userId, cookies]);    
+    
+    return (
         <div id='manage-product'>
             <div className='title'>상품 관리</div>
             <hr className='custom-hr' />

@@ -10,6 +10,8 @@ import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/j
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
 import BusinessCheckRequestDto from "./dto/request/join/business-check.request.dto";
 import ApiResponseDto from "./dto/response/join/api-response.dto";
+import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
+import { access } from 'fs';
 
 // variable: API URL 상수 //
 
@@ -20,19 +22,20 @@ const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
 const POST_PRODUCT_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_LIST_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
-// const PATCH_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
+//const PATCH_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 // const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
+const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
 
 const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 
 const PATCH_JOIN_URL = (userId: string | null) => `${MEMORIALDAY_API_DOMAIN}/join/${userId}`;
 
 const POST_STORE_API_MODULE = `${MYPAGE_STORE_MODULE}`;
-const GET_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}`;
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
 
@@ -61,11 +64,20 @@ const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
 //     return responseBody;
 // };
 
+// function: get store number 요청 함수 //
+export const getStoreNumberRequest = async(userId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_STORE_NUMBER_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetStoreNumber>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+
 // function: post product 요청 함수 //                              토큰 인증 관련 지우고 임의로 진행(원래는 위와 같이 작성)
-export const postProductRequest = async (requestBody: PostProductRequestDto, storeNumber: number | string) => {
+export const postProductRequest = async (requestBody: PostProductRequestDto, storeNumber: number | string, accessToken: string) => {
     try {
         // const response = await axios.post(POST_PRODUCT_API_URL, requestBody);
-        const response = await axios.post(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${storeNumber}`, requestBody);
+        const response = await axios.post(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${storeNumber}`, requestBody, bearerAuthorization(accessToken));
 
         return responseDataHandler<ResponseDto>(response);
     } catch (error) {
@@ -77,9 +89,9 @@ export const postProductRequest = async (requestBody: PostProductRequestDto, sto
 // function: get product list 요청 함수 //                               토큰 인증 관련 지우고 임의로 진행(원래는 위와 같이(63~68) 작성)
 
 // getProductListRequest.ts
-export const getProductListRequest = async (userId: string): Promise<GetProductListResponseDto | null> => {
+export const getProductListRequest = async (userId: string, accessToken: string): Promise<GetProductListResponseDto | null> => {
     try {
-        const response = await axios.get(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${userId}`);
+        const response = await axios.get(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${userId}`, bearerAuthorization(accessToken));
         return responseDataHandler<GetProductListResponseDto>(response); // 일단 에러 해결때문에 이렇게 작성
     } catch (error) {
         responseErrorHandler(error);
@@ -88,9 +100,9 @@ export const getProductListRequest = async (userId: string): Promise<GetProductL
 };
 
 // function: get product 요청 함수 //                                       로그인 끝나면 위와 같이 수정(토큰 포함)
-export const getProductRequest = async (productNumber: number | string): Promise<GetProductResponseDto | null> => {
+export const getProductRequest = async (productNumber: number | string, accessToken: string): Promise<GetProductResponseDto | null> => {
     try {
-        const response = await axios.get(`${MEMORIALDAY_API_DOMAIN}/mypage/product/update/${productNumber}`);
+        const response = await axios.get(`${MEMORIALDAY_API_DOMAIN}/mypage/product/update/${productNumber}`, bearerAuthorization(accessToken));
         return responseDataHandler<GetProductResponseDto>(response);
     } catch (error) {
         responseErrorHandler(error);
@@ -100,9 +112,9 @@ export const getProductRequest = async (productNumber: number | string): Promise
 
 // function: patch product 요청 함수 //
 
-export const patchProductRequest = async (productNumber: number | string, data: PostProductRequestDto): Promise<any> => {
+export const patchProductRequest = async (productNumber: number | string, data: PostProductRequestDto, accessToken: string): Promise<any> => {
     try {
-        const response = await axios.patch(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${productNumber}`, data);
+        const response = await axios.patch(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${productNumber}`, data, bearerAuthorization(accessToken));
         return responseDataHandler(response);
     } catch (error) {
         responseErrorHandler(error);
@@ -189,8 +201,8 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
 };
 
 // function: post Store 요청 함수 //
-export const postStoreRequest = async (requestBody: PostStoreRequestDto) => {
-    const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody)
+export const postStoreRequest = async (requestBody: PostStoreRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
