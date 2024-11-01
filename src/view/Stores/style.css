@@ -395,6 +395,7 @@ select {
   border-radius: 15px;
   width: 4px;
   background-color: rgba(138, 146, 166, 1);
+  overflow-x: hidden;
 }
 
 .dropdown-container .selector .selector-option {
@@ -519,8 +520,7 @@ select {
 }
 
 .dropdown-container .selectors .selector-box::-webkit-scrollbar {
-  width: 4px;
-  background: none;
+  width: 13px;
 }
 
 .dropdown-container .selectors .selector-box::-webkit-scrollbar-thumb {
@@ -528,6 +528,17 @@ select {
   border-radius: 15px;
   width: 4px;
   background-color: rgba(138, 146, 166, 1);
+  border: 2px solid rgba(255, 255, 255, 1);
+}
+
+.dropdown-container .selectors .selector-box::-webkit-scrollbar-button {
+  display: block;
+  height: 5px;
+
+}
+
+.dropdown-container .selectors .selector-box::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .dropdown-container .selectors .selector-option {
@@ -595,17 +606,22 @@ select {
   overflow-y: auto;
 }
 
-
-.dropdown-container .selectors .selector-tag-box::-webkit-scrollbar {
-  width: 4px;
-  background: none;
+.dropdown-container .selector .selector-tag-box::-webkit-scrollbar {
+  width: 13px;
 }
 
-.dropdown-container .selectors .selector-tag-box::-webkit-scrollbar-thumb {
+.dropdown-container .selector .selector-tag-box::-webkit-scrollbar-button {
+  display: block;
+  height: 5px;
+
+}
+
+.dropdown-container .selector .selector-tag-box::-webkit-scrollbar-thumb {
   margin: 4px;
   border-radius: 15px;
   width: 4px;
-  background-color: black;
+  background-color: rgba(138, 146, 166, 1);
+  border: 2px solid rgba(255, 255, 255, 1);
 }
 
 .selected-tag-item {

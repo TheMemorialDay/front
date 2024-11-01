@@ -2,19 +2,17 @@
 export default interface PatchStoreRequestDto {
   userId: string;
   storeName: string;
-  storeIntroduce: string;
-  storeParticular: string;
-  storeContact: string;
-  storeCaution: string;
+  storeIntroduce: string | null;
+  storeParticular: string | null;
+  storeContact: string | null;
+  storeCaution: string | null;
   storeAddress: string;
+  storeDetailAddress: string;
   storeGugun: string;
   storeDong: string;
   storeLatitude: string;
   storeLongtitude: string;
-  storeTel: string;
-  storeRating: number;
-  reviewCount: number;
-  likeCount: number;
+  storeTel: string | null;
   storeImageUrl: string;
   mondayOpen: string;
   mondayLast: string;

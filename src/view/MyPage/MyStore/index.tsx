@@ -4,10 +4,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ACCESS_TOKEN, MY_ABSOLUTE_PATH, MY_PATH, MY_STORE_ABSOLUTE_PATH } from '../../../constants';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 import { useCookies } from 'react-cookie';
-import { PostStoreRequestDto } from '../../../apis/dto/request/store';
-import { fileUploadRequest, getStoreRequest, postStoreRequest } from '../../../apis';
+import { PatchStoreRequestDto, PostStoreRequestDto } from '../../../apis/dto/request/store';
+import { fileUploadRequest, getStoreRequest, patchStoreRequest, postStoreRequest } from '../../../apis';
 import { ResponseDto } from '../../../apis/dto/response';
 import { GetStoreResponseDto } from '../../../apis/dto/response/stores';
+import { useSignInUserStore } from '../../../stores';
 
 
 // Kakao Maps API에서 Geocoder 결과와 상태 타입 정의
@@ -30,6 +31,9 @@ const defaultProfileImageUrl = 'https://i.ibb.co/7Qg0CTF/ready-To-Image.png';
 
 export default function MyStore() {
 
+    // state: 로그인 유저 상태 //
+    const { signInUser } = useSignInUserStore();
+
     // function: 네비게이터 함수 //
     const navigate = useNavigate();
 
@@ -40,21 +44,26 @@ export default function MyStore() {
     const { storeNumber } = useParams();
 
     // state: 가게 정보
-    const [userId, setUserId] = useState<string>('qwer1234');
-    const [storeName, setStoreName] = useState<string>('기존 가게 이름');
-    const [businessNumber, setBusinessNumber] = useState<string>('123-45-67890'); // 수정 불가
-    const [storeTel, setStoreTel] = useState<string>('01012345678');
-    const [storeAddress, setStoreAddress] = useState<string>('기존 가게 주소');
+    const [userId, setUserId] = useState<string>('');
+    const [storeName, setStoreName] = useState<string>('');
+    const [storeTel, setStoreTel] = useState<string | null>('');
+    const [storeAddress, setStoreAddress] = useState<string>('');
+    const [storeDetailAddress, setStoreDetailAddress] = useState<string>('');
     const [previewUrl, setPreviewUrl] = useState<string>(defaultProfileImageUrl);
     const [storeImageUrl, setStoreImageUrl] = useState<File | null>(null);
-    const [storeIntroduce, setStoreIntroduce] = useState<string | null>('기존 간단한 가게 소개');
-    const [storeParticular, setStoreParticular] = useState<string | null>('기존 상세 소개글');
-    const [storeContact, setStoreContact] = useState<string | null>('기존 문의 연락처');
+    const [storeIntroduce, setStoreIntroduce] = useState<string | null>('');
+    const [storeParticular, setStoreParticular] = useState<string | null>('');
+    const [storeContact, setStoreContact] = useState<string | null>('');
     const [storeCaution, setStoreCaution] = useState<string | null>('');
     const [storeGugun, setStoreGugun] = useState<string>('');
     const [storeDong, setStoreDong] = useState<string>('');
     const [storeLatitude, setStoreLatitude] = useState<string>('');
     const [storeLongtitude, setStoreLongtitude] = useState<string>('');
+
+    // state: 개행을 위한 임시상태 //
+    const [temporalParticular, setTemporalParticular] = useState<string>('');
+    const [temporalContact, setTemporalContact] = useState<string>('');
+    const [temporalCaution, setTemporalCaution] = useState<string>('');
 
     // state: 등록 파일 상태 //
     const storeUrlInputRef = useRef<HTMLInputElement | null>(null);
@@ -123,7 +132,29 @@ export default function MyStore() {
             return;
         }
         // if (!storeNumber) return;
+        if (signInUser) {
+            setUserId(signInUser.userId);
+        }
         navigate(MY_PATH);
+        console.log(userId);
+    }
+
+    // function: patch store response 처리 함수 //
+    const patchStoreResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NS' ? '존재한 상점이 없습니다' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+        if (!storeNumber) return;
+        navigate(MY_PATH);
+        console.log('상점 수정이 완료되었습니다');
     }
 
     // function: get store response 처리 함수 //
@@ -141,15 +172,32 @@ export default function MyStore() {
             return;
         }
 
-        const { userId, storeName, storeIntroduce, storeParticular, storeContact, storeCaution, storeAddress, storeGugun, storeDong, storeLatitude, storeLongtitude,
+        const { userId, storeName, storeTel, storeImageUrl, storeIntroduce, storeParticular, storeContact, storeCaution, storeAddress, storeDetailAddress, storeGugun, storeDong, storeLatitude, storeLongtitude,
             mondayOpen, mondayLast, tuesdayOpen, tuesdayLast, wednesdayOpen, wednesdayLast, thursdayOpen, thursdayLast, fridayOpen, fridayLast, saturdayOpen, saturdayLast, sundayOpen, sundayLast
         } = responseBody as GetStoreResponseDto;
+
+        if (storeParticular) {
+            setStoreParticular(storeParticular.replace(/\\n/g, "\n"));
+            setTemporalParticular(storeParticular.replace(/\n/g, "\\n"));
+        };
+
+        if (storeContact) {
+            setStoreContact(storeContact.replace(/\\n/g, "\n"));
+            setTemporalContact(storeContact.replace(/\n/g, "\\n"))
+        };
+
+        if (storeCaution) {
+            setStoreCaution(storeCaution.replace(/\\n/g, "\n"));
+            setTemporalCaution(storeCaution.replace(/\n/g, "\\n"))
+        };
+
         setStoreName(storeName);
+        setUserId(userId);
+        setStoreTel(storeTel);
+        setPreviewUrl(storeImageUrl);
         setStoreIntroduce(storeIntroduce);
-        setStoreParticular(storeParticular);
-        setStoreContact(storeContact);
-        setStoreCaution(storeCaution);
         setStoreAddress(storeAddress);
+        setStoreDetailAddress(storeDetailAddress);
         setStoreGugun(storeGugun);
         setStoreDong(storeDong);
         setStoreLatitude(storeLatitude);
@@ -181,6 +229,12 @@ export default function MyStore() {
         setStoreAddress(event.target.value);
     };
 
+    // event handler: 상세주소 변경 이벤트 핸들러 //
+    const onStoreDetailAddressChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        setStoreDetailAddress(event.target.value);
+    };
+
+    // event handler: 이미지 클릭 이벤트 핸들러 //
     const onStoreImageClickHandler = () => {
         const { current } = storeUrlInputRef;
         if (!current) return;
@@ -212,29 +266,27 @@ export default function MyStore() {
     };
 
     // event handler: 상세 소개글 변경 이벤트 핸들러 //
-    const onStoreParticularChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onStoreParticularChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setStoreParticular(event.target.value);
+        setTemporalParticular(event.target.value.replace(/\n/g, "\\n"));
     };
 
-    // event handler: 문의 연락처 변경 이벤트 핸들러 //
-    const onStoreContactChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    // event handler: 문의사항 변경 이벤트 핸들러 //
+    const onStoreContactChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setStoreContact(event.target.value);
+        setTemporalContact(event.target.value.replace(/\n/g, "\\n"));
+
     };
 
     // event handler: 가게 유의사항 변경 이벤트 핸들러 //
-    const onStoreCautionChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onStoreCautionChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         setStoreCaution(event.target.value);
+        setTemporalCaution(event.target.value.replace(/\n/g, "\\n"));
+
     };
 
     // event handler: 취소 버튼 클릭 이벤트 핸들러 //
     const onCancelClickHandler = () => {
-        navigate(MY_PATH);
-    };
-
-    // event handler: 수정 버튼 클릭 이벤트 핸들러 //
-    const onUpdateClickHandler = () => {
-        // 수정 로직 추가
-        alert('정보가 수정되었습니다.');
         navigate(MY_PATH);
     };
 
@@ -257,31 +309,40 @@ export default function MyStore() {
 
         let url: string | null = null;
         if (storeImageUrl) {
-            console.log('aaa')
             const formData = new FormData();
             formData.append('file', storeImageUrl);
             url = await fileUploadRequest(formData);
         }
         url = url ? url : previewUrl;
 
-        // if (!storeNumber) {
-        //     console.log('가게 번호오류');
-        //     return;
-        // }
-        // const accessToken = cookies[ACCESS_TOKEN];
-        // if (!accessToken) {
-        //     console.log('토큰 오류');
-        //     return;
-        // }
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) {
+            console.log('토큰 오류');
+            return;
+        }
+
+        if (storeParticular) {
+            setTemporalParticular(storeParticular.replace(/\n/g, "\\n"));
+        };
+
+        if (storeContact) {
+            setTemporalContact(storeContact.replace(/\n/g, "\\n"));
+
+        };
+
+        if (storeCaution) {
+            setTemporalCaution(storeCaution.replace(/\n/g, "\\n"));
+        };
 
         const requestBody: PostStoreRequestDto = {
-            userId,
+            userId: userId,
             storeName: storeName,
             storeIntroduce: storeIntroduce,
-            storeParticular: storeParticular,
-            storeContact: storeContact,
-            storeCaution: storeCaution,
+            storeParticular: temporalParticular,
+            storeContact: temporalContact,
+            storeCaution: temporalCaution,
             storeAddress: storeAddress,
+            storeDetailAddress: storeDetailAddress,
             storeGugun: storeGugun,
             storeDong: storeDong,
             storeLatitude: storeLatitude,
@@ -304,9 +365,84 @@ export default function MyStore() {
             sundayLast: sunday.end
         };
 
-        const accessToken = cookies[ACCESS_TOKEN];
-        if(!accessToken) return;
         postStoreRequest(requestBody, accessToken).then(postStoreResponse);
+    }
+
+    // event handler: 가게 수정 버튼 클릭 이벤트 처리 //
+    const onStoreUpdateButtonClickHandler = async () => {
+        if (!storeNumber) {
+            return;
+        }
+
+        if (!storeName) {
+            alert('가게 이름을 작성해주세요 !');
+            return;
+        }
+
+        if (!storeAddress) {
+            alert('가게 주소를 작성해주세요 !');
+            return;
+        }
+
+        let url: string | null = null;
+        if (storeImageUrl) {
+            const formData = new FormData();
+            formData.append('file', storeImageUrl);
+            url = await fileUploadRequest(formData);
+        }
+        url = url ? url : previewUrl;
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) {
+            console.log('토큰 오류');
+            return;
+        }
+
+        if (storeParticular) {
+            setTemporalParticular(storeParticular.replace(/\n/g, "\\n"));
+        };
+
+        if (storeContact) {
+            setTemporalContact(storeContact.replace(/\n/g, "\\n"));
+
+        };
+
+        if (storeCaution) {
+            setTemporalCaution(storeCaution.replace(/\n/g, "\\n"));
+        };
+
+        const requestBody: PatchStoreRequestDto = {
+            userId: userId,
+            storeName: storeName,
+            storeIntroduce: storeIntroduce,
+            storeParticular: temporalParticular,
+            storeContact: temporalContact,
+            storeCaution: temporalCaution,
+            storeAddress: storeAddress,
+            storeDetailAddress: storeDetailAddress,
+            storeGugun: storeGugun,
+            storeDong: storeDong,
+            storeLatitude: storeLatitude,
+            storeLongtitude: storeLongtitude,
+            storeTel: storeTel,
+            storeImageUrl: url,
+            mondayOpen: monday.start,
+            mondayLast: monday.end,
+            tuesdayOpen: tuesday.start,
+            tuesdayLast: tuesday.end,
+            wednesdayOpen: wednesday.start,
+            wednesdayLast: wednesday.end,
+            thursdayOpen: thursday.start,
+            thursdayLast: thursday.end,
+            fridayOpen: friday.start,
+            fridayLast: friday.end,
+            saturdayOpen: saturday.start,
+            saturdayLast: saturday.end,
+            sundayOpen: sunday.start,
+            sundayLast: sunday.end
+        };
+
+        patchStoreRequest(requestBody, storeNumber, accessToken).then(patchStoreResponse);
     }
 
     // event handler: 월요일 시작 시간 변경 핸들러 //
@@ -374,13 +510,24 @@ export default function MyStore() {
 
     // effect: 가게 정보 불러오기 함수 //
     useEffect(() => {
+        if (signInUser) {
+            setUserId(signInUser.userId);
+        }
+
         if (!storeNumber) {
             console.log('가게 번호가 없습니다. 등록페이지로 이동합니다.');
             navigate(MY_STORE_ABSOLUTE_PATH);
             return;
         }
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) {
+            console.log('접근 권한이 없습니다.');
+            return;
+        }
+
         getStoreRequest(storeNumber).then(getStoreResponse);
-    }, [storeNumber])
+    }, [signInUser, storeNumber]);
 
 
     // render: 가게 관리 페이지 렌더링 //
@@ -390,44 +537,31 @@ export default function MyStore() {
 
             <div className='store-manage'>
                 <input className='inputs1' placeholder='가게 이름' value={storeName} onChange={onStoreNameChangeHandler} />
-                <input className='inputs1' placeholder='가게 연락처' value={storeTel} onChange={onContactNumberChangeHandler} />
+                <input className='inputs1' placeholder='가게 연락처' value={storeTel || ''} onChange={onContactNumberChangeHandler} />
 
                 <div className='daum-address'>
                     <input className='register-file' placeholder='가게 주소' value={storeAddress} onChange={onStoreAddressChangeHandler} />
                     <div className='file-button' onClick={onAddressButtonClickHandler}>주소 선택</div>
                 </div>
-
+                <input className='inputs1' placeholder='상세 주소 입력' value={storeDetailAddress} onChange={onStoreDetailAddressChangeHandler} />
                 <div className='file-selection'>
 
                     <label>대표 이미지 파일 선택</label>
                     <div className='file-box'>
-                        {/* <input
-                            type="file"
-                            ref={storeUrlInputRef}
-                            style={{ display: 'none' }} // 숨김 처리
-                            accept="image/*" // 이미지 파일 선택 가능
-                            onChange={onStoreUrlChange}
-                        />
-                        <input
-                            className='register-file'
-                            placeholder='선택된 파일 이름'
-                            // value={storeImageUrl}
-                            readOnly
-                        /> */}
                         <div className='profile-image' style={{ backgroundImage: `url(${previewUrl})` }} onClick={onStoreImageClickHandler}>
                             <input ref={storeUrlInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onStoreUrlChange} />
-                        </div>s
+                        </div>
                         <div className='file-button' style={{ marginTop: '203px' }} onClick={onStoreImageClickHandler}>파일 선택</div>
                     </div>
                 </div>
 
 
                 <input className='inputs1' placeholder='간단한 가게 소개' value={storeIntroduce || ''} onChange={onStoreSimpleIntroChangeHandler} />
-                <input style={{ width: '380px', height: '300px' }} className='detailed-intro' placeholder='상세 소개글' value={storeParticular || ''} onChange={onStoreParticularChangeHandler} />
-                <input style={{ width: '380px', height: '300px' }} className='detailed-intro' placeholder='가게 유의사항' value={storeCaution || ''} onChange={onStoreCautionChangeHandler} />
+                <textarea style={{ width: '380px', height: '300px' }} className='detailed-intro' placeholder='상세 소개글' value={storeParticular || ''} onChange={onStoreParticularChangeHandler} />
+                <textarea style={{ width: '380px', height: '300px' }} className='detailed-intro' placeholder='가게 유의사항' value={storeCaution || ''} onChange={onStoreCautionChangeHandler} />
 
 
-                <input className='inputs1' placeholder='문의 연락처' value={storeContact || ''} onChange={onStoreContactChangeHandler} />
+                <textarea style={{ width: '380px', height: '300px' }} className='detailed-intro' placeholder='문의 연락수단 등등 기재' value={storeContact || ''} onChange={onStoreContactChangeHandler} />
 
                 <div className='pickup-section'>
                     <span className='pickup-title'>픽업 가능 요일</span>
@@ -583,7 +717,10 @@ export default function MyStore() {
 
             <div className='button-container'>
                 <div className='cancel-button' onClick={onCancelClickHandler}>취소</div>
-                <div className='update-button' onClick={onStoreAddButtonClickHandler}>수정</div>
+                {
+                    storeNumber ? <div className='update-button' onClick={onStoreUpdateButtonClickHandler}>수정</div> : <div className='update-button' onClick={onStoreAddButtonClickHandler}>등록</div>
+                }
+
             </div>
         </div >
     );

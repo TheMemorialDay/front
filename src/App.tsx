@@ -14,10 +14,11 @@ import {
   ST_PRODUCT_ORDER_PATH,
   ST_ORDER_DONE_PATH,
   MY_STORE_DETAIL_PATH,
-  ST_NUMBER_PATH,ACCESS_TOKEN,
+  ST_NUMBER_PATH, ACCESS_TOKEN,
   ROOT_PATH,
   SIGN_IN_ABSOLUTE_PATH,
-  JO_USER_PATH} from './constants';
+  JO_USER_PATH
+} from './constants';
 
 import Stores from './view/Stores';
 import Support from './view/Support';
@@ -84,7 +85,7 @@ export default function TheMemorialDay() {
   const [cookies, setCookie, removeCookie] = useCookies();
 
   // state: 로그인 유저 정보 상태 //
-  const {signInUser, setSignInUser} = useSignInUserStore();
+  const { signInUser, setSignInUser } = useSignInUserStore();
 
   const isLoggedIn = Boolean(cookies.ACCESS_TOKEN);
   const [showNotMemberModal, setShowNotMemberModal] = useState(false);
@@ -101,23 +102,23 @@ export default function TheMemorialDay() {
 
   // function: get sign in response 처리 함수 //
   const getSignInResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
-    const message = 
+    const message =
       !responseBody ? '로그인 유저 정보를 불러오는데 문제가 발생하였습니다.' :
-      responseBody.code === 'NI' ? '로그인 유저가 존재하지 않습니다.' :
-      responseBody.code === 'AF' ? '잘못된 접근입니다.' : 
-      responseBody.code === 'DBE' ? '로그인 유저 정보를 불러오는데 문제가 발생하였습니다.' : '';
+        responseBody.code === 'NI' ? '로그인 유저가 존재하지 않습니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '로그인 유저 정보를 불러오는데 문제가 발생하였습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if(!isSuccessed) {
+    if (!isSuccessed) {
       alert(message);
-      removeCookie(ACCESS_TOKEN, {path: ROOT_PATH});
+      removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
       setSignInUser(null);
       navigator(SIGN_IN_ABSOLUTE_PATH);
       return;
     }
 
-    const {userId, name, telNumber, permission} = responseBody as GetSignInResponseDto;
-    setSignInUser({userId, name, telNumber, permission});
+    const { userId, name, telNumber, permission } = responseBody as GetSignInResponseDto;
+    setSignInUser({ userId, name, telNumber, permission });
   }
 
   // effect: cookie의 accessToken값이 변경될 때 마다 로그인 유저 정보 요청 함수 //
@@ -157,7 +158,6 @@ export default function TheMemorialDay() {
             </Route>
           </Route>
         </Route>
-
       <Route path={OTHERS_PATH} element={<Index />} />
       <Route path={LOGIN_PATH} element={<MainLayout />} >
         <Route path={LOGIN_PATH} element={<Auth />} />
@@ -195,6 +195,8 @@ export default function TheMemorialDay() {
           <Route path={MY_PRODUCT_ADD_PATH} element={<Add/>} /> 
           <Route path={MY_PRODUCT_UPDATE_PATH} element={<Update />} />
         </Route>
+        <Route path={MY_ORDER_MANAGE_PATH} element={<MyOrderManage />} />
+        <Route path={MY_SALES_PATH} element={<MySales />} />
       </Route>
     </Routes>
       {showNotMemberModal && (
