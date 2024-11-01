@@ -6,6 +6,8 @@ import { PostProductOptionRequestDto, PostProductRequestDto } from '../../../../
 import { GetProductResponseDto } from '../../../../apis/dto/response/product';
 import { PatchProductRequestDto } from '../../../../apis/dto/request/product/patch-product.request.dto';
 import { convertUrlToFile } from '../../../../util';
+import { useCookies } from 'react-cookie';
+import { ACCESS_TOKEN } from '../../../../constants';
 
 
 
@@ -38,15 +40,18 @@ const defaultProductData: PostProductRequestDto = {
 // component: Add 컴포넌트 //
 const Add = () => {
     const { productNumber } = useParams<{ productNumber?: string }>();
+    const { storeNumber } = useParams<{ storeNumber?: string }>();
     const [productData, setProductData] = useState<PostProductRequestDto | PatchProductRequestDto>(defaultProductData);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [cookies] = useCookies();
     const navigator = useNavigate();
 
     useEffect(() => {
         if (productNumber) {
             const loadProduct = async () => {
                 try {
-                    const response = await getProductRequest(productNumber);
+                    const accessToken = cookies[ACCESS_TOKEN]
+                    const response = await getProductRequest(productNumber, accessToken);
                     if (response) {
                         const product = response as GetProductResponseDto;
                         const convertedProductData: PatchProductRequestDto = {
@@ -173,12 +178,15 @@ const onRegisterClickHandler = async () => {
 
     try {
         let response;
+        const accessToken = cookies[ACCESS_TOKEN]
         if (productNumber) {
             // 수정 요청
-            response = await patchProductRequest(productNumber, patchRequestBody); // 수정 API 호출
+            response = await patchProductRequest(productNumber, patchRequestBody, accessToken); // 수정 API 호출
         } else {
             // 추가 요청
-            response = await postProductRequest(requestBody, 2); // 추가 API 호출
+            if (storeNumber) {
+            response = await postProductRequest(storeNumber, requestBody); // 추가 API 호출
+            }
         }
         console.log('상품 등록/수정 성공:', response);
         navigator('../');
@@ -187,6 +195,8 @@ const onRegisterClickHandler = async () => {
         alert('상품 등록/수정에 실패했습니다.');
     }
 };
+
+
     return (
         <div id='add-product'>
             <div className='title'>상품 관리</div>

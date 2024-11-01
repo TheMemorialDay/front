@@ -7,7 +7,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import {
   JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH,
   ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH,
-  SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, SHOPPING_CART_PATH, MY_PATH,
+  SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, MY_PATH,
   MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_LIKE_PATH, MY_STORE_PATH, MY_PRODUCT_PATH,
   MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PASSWORD_CHECK_PATH, MY_PRODUCT_ADD_PATH,
   MY_PRODUCT_UPDATE_PATH,
@@ -180,9 +180,7 @@ export default function TheMemorialDay() {
         <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
         <Route path={SU_QA_DETAIL_PATH(':questionNumber')} element={<QaDetail />} />
       </Route>
-      <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
-        <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />
-      </Route>
+
       <Route path={MY_PATH} element={<MainLayout />}  >
         <Route path={MY_PATH} element={<MyPage />} />
         <Route path={MY_INFO_PATH} >
@@ -200,20 +198,6 @@ export default function TheMemorialDay() {
           <Route path={MY_PRODUCT_UPDATE_PATH} element={<Update />} />
         </Route>
         </Route>
-        <Route path={JO_PATH} element={<MainLayout />}  >
-          <Route path={JO_PATH} element={<Join />} />
-          <Route path={JOIN_OKAY_PATH} element={<OkayScreen />} />
-        </Route>
-        <Route path={SU_PATH} element={<MainLayout />}  >
-          <Route path={SU_PATH} element={<Support />} />
-          <Route path={SU_NOTICE_DETAIL_PATH(':noticeNumber')} element={<NoticeDetail />} />
-          <Route path={SU_QA_PATH} element={<Qa />} />
-          <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
-          <Route path={SU_QA_DETAIL_PATH(':questionNumber')} element={<QaDetail />} />
-        </Route>
-        <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
-          <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />
-        </Route>
         <Route path={MY_PATH} element={<MainLayout />}  >
           <Route path={MY_PATH} element={<MyPage />} />
           <Route path={MY_INFO_PATH} >
@@ -226,11 +210,11 @@ export default function TheMemorialDay() {
           <Route path={MY_STORE_PATH} element={<MyStore />} />
           <Route path={MY_STORE_DETAIL_PATH(':storeNumber')} element={<MyStore />} />
 
-          <Route path={MY_PRODUCT_PATH}>
+          {/* <Route path={MY_PRODUCT_PATH}>
             <Route index element={<MyProduct />} />
-            <Route path={MY_PRODUCT_ADD_PATH} element={<Update />} />
+            <Route path={MY_PRODUCT_ADD_PATH(':storeNumber')} element={<Update />} />
             <Route path={MY_PRODUCT_UPDATE_PATH} element={<Update />} />
-          </Route>
+          </Route> */}
 
           <Route path={MY_ORDER_MANAGE_PATH} element={<MyOrderManage />} />
           <Route path={MY_SALES_PATH} element={<MySales />} />

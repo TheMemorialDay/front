@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import { MY_PRODUCT_ADD_ABSOLUTE_PATH, MY_PRODUCT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
+import { ACCESS_TOKEN, MY_PRODUCT_ADD_ABSOLUTE_PATH, MY_PRODUCT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
 import { getProductListRequest } from '../../../apis';
 import { Product } from '../../../types';
 import { GetProductListResponseDto } from '../../../apis/dto/response/product';
 import { ProductResponse } from '../../../apis/dto/response/product/get-product-list-response.dto';
+import { useSignInUserStore } from '../../../stores';
+import { useCookies } from 'react-cookie';
+
+// const {signInUser} = useSignInUserStore();
+// const [userId, setUserId] = useState<string>('');
 
 const defaultProfileImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q0oOxqQNdL6kZp0iSKLbV1/img.png';
 
@@ -52,12 +57,17 @@ const convertProductResponseToProduct = (response: ProductResponse): Product => 
 export default function MyProduct() {
     const [products, setProducts] = useState<Product[]>([]);
     const navigator = useNavigate();
+    const [cookies] = useCookies();
 
     const loadProducts = async () => {
-        const userId = "pdu08075"; // 실제 사용자 ID로 변경해야 돼여
+        // if (signInUser? .userId) {
+        //     setUserId(signInUser.userId);
+        // }
+        const userId = "qwer12345"; // 실제 사용자 ID로 변경해야 돼여
 
         try {
-            const productsData: GetProductListResponseDto | null = await getProductListRequest(userId);
+            const accessToken = cookies[ACCESS_TOKEN]
+            const productsData: GetProductListResponseDto | null = await getProductListRequest(userId, accessToken);
             // console.log("API 응답 데이터:", productsData); // 응답 데이터 로그 확인
 
             if (productsData && 'products' in productsData) {

@@ -60,7 +60,7 @@ const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
 // };
 
 // function: post product 요청 함수 //                              토큰 인증 관련 지우고 임의로 진행(원래는 위와 같이 작성)
-export const postProductRequest = async (requestBody: PostProductRequestDto, storeNumber: number | string) => {
+export const postProductRequest = async (storeNumber: number | string, requestBody: PostProductRequestDto) => {
     try {
         // const response = await axios.post(POST_PRODUCT_API_URL, requestBody);
         const response = await axios.post(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${storeNumber}`, requestBody);
@@ -75,9 +75,9 @@ export const postProductRequest = async (requestBody: PostProductRequestDto, sto
 // function: get product list 요청 함수 //                               토큰 인증 관련 지우고 임의로 진행(원래는 위와 같이(63~68) 작성)
 
 // getProductListRequest.ts
-export const getProductListRequest = async (userId: string): Promise<GetProductListResponseDto | null> => {
+export const getProductListRequest = async (userId: string, accessToken: string): Promise<GetProductListResponseDto | null> => {
     try {
-        const response = await axios.get(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${userId}`);
+        const response = await axios.get(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${userId}`, bearerAuthorization(accessToken));
         return responseDataHandler<GetProductListResponseDto>(response); // 일단 에러 해결때문에 이렇게 작성
     } catch (error) {
         responseErrorHandler(error);
@@ -86,9 +86,9 @@ export const getProductListRequest = async (userId: string): Promise<GetProductL
 };
 
 // function: get product 요청 함수 //                                       로그인 끝나면 위와 같이 수정(토큰 포함)
-export const getProductRequest = async (productNumber: number | string): Promise<GetProductResponseDto | null> => {
+export const getProductRequest = async (productNumber: number | string, accessToken: string): Promise<GetProductResponseDto | null> => {
     try {
-        const response = await axios.get(`${MEMORIALDAY_API_DOMAIN}/mypage/product/update/${productNumber}`);
+        const response = await axios.get(`${MEMORIALDAY_API_DOMAIN}/mypage/product/update/${productNumber}`, bearerAuthorization(accessToken));
         return responseDataHandler<GetProductResponseDto>(response);
     } catch (error) {
         responseErrorHandler(error);
@@ -98,16 +98,15 @@ export const getProductRequest = async (productNumber: number | string): Promise
 
 // function: patch product 요청 함수 //
 
-export const patchProductRequest = async (productNumber: number | string, data: PostProductRequestDto): Promise<any> => {
+export const patchProductRequest = async (productNumber: number | string, data: PostProductRequestDto, accessToken: string): Promise<any> => {
     try {
-        const response = await axios.patch(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${productNumber}`, data);
+        const response = await axios.patch(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${productNumber}`, data, bearerAuthorization(accessToken));
         return responseDataHandler(response);
     } catch (error) {
         responseErrorHandler(error);
         return null;
     }
 };
-
 const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
 
 const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
