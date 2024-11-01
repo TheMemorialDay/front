@@ -1,84 +1,379 @@
-import React, { ChangeEvent, KeyboardEvent, MouseEvent, useRef, useState } from 'react'
-import './style.css'
-import { useNavigate } from 'react-router-dom';
-import { MY_PRODUCT_ABSOLUTE_PATH } from '../../../../constants';
+import React, { useState, ChangeEvent, useRef, KeyboardEvent, useEffect } from 'react';
+import './style.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import { fileUploadRequest, getProductRequest, getStoreNumberRequest, patchProductRequest, postProductRequest } from '../../../../apis';
+import { PostProductOptionRequestDto, PostProductRequestDto } from '../../../../apis/dto/request/product';
+import { GetProductResponseDto } from '../../../../apis/dto/response/product';
+import { PatchProductRequestDto } from '../../../../apis/dto/request/product/patch-product.request.dto';
+import { convertUrlToFile } from '../../../../util';
+import { useCookies } from 'react-cookie';
+import { ACCESS_TOKEN } from '../../../../constants';
+import { useSignInUserStore } from '../../../../stores';
+import GetStoreNumber from '../../../../apis/dto/response/product/get-store-number-response.dto';
+import { ResponseDto } from '../../../../apis/dto/response';
 
-interface ProductProps {
-    productImageUrls: string[];
-    productName: string;
-    roductIntroduce: string;
-    productPrice: number;
-    //options: Option[]; 맛, 옵션
-    themas: string[]; // 귀여움, 러블리 등
-    tag: string; // 포토, 레터링 등
-}
 
-interface TagProps {
-    content: string;
-    onRemove?: () => void;
-}
 
-// component: 상품 테마 컴포넌트 //
-function Tags({ content }: TagProps) {
+// variable: 기본 프로필 이미지 URL //
+const defaultImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q0oOxqQNdL6kZp0iSKLbV1/img.png';
 
-    // render: 상품 태그 렌더링 //
+// DTO 정의
+// export interface PostProductRequestDto {
+//     productImages: string[];
+//     productName: string;
+//     productIntroduce: string;
+//     productPrice: number;
+//     productToday: boolean;
+//     productTag: string;
+//     options: PostProductOptionRequestDto[];
+//     themes: string[];
+// }
+
+const defaultProductData: PostProductRequestDto = {
+    productImages: [],
+    productName: '',
+    productIntroduce: '',
+    productPrice: 0,
+    productToday: false,
+    productTag: '',
+    options: [],
+    themes: []
+};
+
+// component: Add 컴포넌트 //
+const Add = () => {
+    const { productNumber } = useParams<{ productNumber?: string }>();
+    //const {storeNumber} = useParams<{storeNumber?: string}>();
+    const [storeNumber, setStoreNumber] = useState<string | number>();
+    const {signInUser} = useSignInUserStore();
+    const [productData, setProductData] = useState<PostProductRequestDto | PatchProductRequestDto>(defaultProductData);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [cookies] = useCookies();
+    const navigator = useNavigate();
+
+    useEffect(() => {
+        if (productNumber) {
+            const loadProduct = async () => {
+                try {
+                    const accessToken = cookies[ACCESS_TOKEN];
+                    if(!accessToken) return;
+                    const response = await getProductRequest(productNumber, accessToken);
+                    if (response) {
+                        const product = response as GetProductResponseDto;
+                        const convertedProductData: PatchProductRequestDto = {
+                            productImages: product.productImages || [],
+                            productName: product.productName,
+                            productIntroduce: product.productIntroduce,
+                            productPrice: product.productPrice,
+                            productToday: product.productToday,
+                            productTag: product.productTag,
+                            options: product.options || [],
+                            themes: product.themes || [],
+                        };
+
+                        const files: File[] = [];
+                        for (const productImage of product.productImages) {
+                            const file = await convertUrlToFile(productImage);
+                            files.push(file);
+                        }
+
+                        setSelectedFiles(files);
+                        setProductData(convertedProductData);
+                    }
+                } catch (error) {
+                    console.error("상품 정보를 불러오는 중 오류 발생:", error);
+                }
+            };
+            loadProduct();
+        } else {
+            setProductData(defaultProductData);
+        }
+    }, [productNumber]);
+
+    const onImagesChange = (files: File[]) => {
+        const allFiles = [...selectedFiles, ...files].slice(0, 5); // 최대 5장까지 유지
+        setSelectedFiles(allFiles);
+    };
+
+    const onReset = () => setSelectedFiles([]);
+
+    const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setProductData({ ...productData, productName: value });
+    };
+
+    const onExplainChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        const { value } = event.target;
+        setProductData({ ...productData, productIntroduce: value });
+    };
+
+    const onDefaultPriceChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        const pattern = /^[0-9]+$/;
+        if (pattern.test(value)) {
+            setProductData({ ...productData, productPrice: Number(value) });
+        }
+    };
+
+    const selectedOnedayClickHandler = (onedayCheck: boolean) => {
+        setProductData({ ...productData, productToday: onedayCheck });
+    };
+
+    const onCancleClickHandler = () => {
+        // navigator('../');
+    };
+
+    // 상품 등록 핸들러 수정
+    const onRegisterClickHandler = async () => {
+    console.log('입력된 데이터:', productData);
+
+    let urls: string[] = [];
+    for (const file of selectedFiles) {
+        const formData = new FormData();
+        formData.append('file', file);
+        let url = await fileUploadRequest(formData);
+        console.log(url);
+        if (url) urls.push(url);
+        console.log(urls);
+    }
+
+    if (!urls.length) urls.push(defaultImageUrl);
+
+    // 필수 필드 검증
+    if (!productData.productName || !productData.productPrice ||
+        !urls.length || !productData.options.length || !productData.productTag) {
+        alert('모든 필드를 올바르게 입력해주세요.');
+        return;
+    }
+
+    // 옵션 검증
+    for (const option of productData.options) {
+        if (!option.productOptionName || !option.optionDetails.length) {
+            alert('모든 옵션과 세부사항을 입력해주세요.');
+            return;
+        }
+        for (const detail of option.optionDetails) {
+            if (!detail.productCategory || detail.productOptionPrice == null) {
+                alert('모든 옵션 세부사항을 입력해주세요.');
+                return;
+            }
+        }
+    }
+
+    const requestBody: PostProductRequestDto = {
+        productName: productData.productName,
+        productIntroduce: productData.productIntroduce,
+        productPrice: productData.productPrice,
+        productToday: productData.productToday,
+        productTag: productData.productTag, // 선택된 태그
+        options: productData.options,
+        productImages: urls,
+        themes: productData.themes, // 선택된 테마
+    };
+
+    const patchRequestBody: PatchProductRequestDto = {
+        productName: productData.productName,
+        productIntroduce: productData.productIntroduce,
+        productPrice: productData.productPrice,
+        productToday: productData.productToday,
+        productTag: productData.productTag, // 선택된 태그
+        options: productData.options,
+        productImages: urls,
+        themes: productData.themes, // 선택된 테마
+    };
+
+    // function: get store number response 처리 //
+    const getStoreNumberResponse = (responseBody: GetStoreNumber | ResponseDto | null) => {
+        const message = 
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : responseBody.code;
+            
+        //alert(message);
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if(!isSuccessed) {
+            alert(message);
+            return;
+        }
+        const storeNum = responseBody as GetStoreNumber;
+        console.log(storeNum.storeNumber);
+        setStoreNumber(storeNum.storeNumber);
+        //return storeNum.storeNumber;
+    }
+
+    
+
+    try {
+        let response;
+        
+        const accessToken = cookies[ACCESS_TOKEN];
+        console.log("액세스 토큰: " + accessToken + ", 스토어 넘버: " + storeNumber);
+        if(!accessToken) return;
+        if (productNumber) {
+            // 수정 요청
+            response = await patchProductRequest(productNumber, patchRequestBody, accessToken); // 수정 API 호출
+        } else {
+            // 추가 요청
+            // if(signInUser) {
+            //     getStoreNumberRequest(signInUser.userId, accessToken).then(getStoreNumberResponse);
+            //     if(storeNumber) {
+            //         response = await postProductRequest(requestBody, storeNumber, accessToken); // 추가 API 호출
+            //     }
+            // }
+            if (signInUser) {
+                const storeNumberResponse = await getStoreNumberRequest(signInUser.userId, accessToken);
+                if (storeNumberResponse && storeNumberResponse.code === 'SU') {
+                    const storeNum = storeNumberResponse as GetStoreNumber;
+                    console.log("스토어 넘버:", storeNum.storeNumber);
+                    setStoreNumber(storeNum.storeNumber); // 스토어 번호 설정
+
+                    // 설정된 storeNumber를 사용해 상품 등록 API 호출
+                    response = await postProductRequest(requestBody, storeNum.storeNumber, accessToken);
+                } else {
+                    alert(storeNumberResponse?.message || '스토어 번호를 가져오는 중 문제가 발생했습니다.');
+                    return;
+                }
+            }
+            
+        }
+        console.log('상품 등록/수정 성공:', response);
+        navigator('../');
+    } catch (error) {
+        console.error('상품 등록/수정 실패:', error);
+        alert('상품 등록/수정에 실패했습니다.');
+    }
+    };
     return (
-        <div id='tags'>{content}</div>
-    )
-}
+        <div id='add-product'>
+            <div className='title'>상품 관리</div>
+            <hr className='custom-hr' />
 
-// component: 선택된 상품 테마 컴포넌트 //
-function SelectedTags({ content, onRemove }: TagProps) {
+            <Pictures files={selectedFiles} onImagesChange={onImagesChange} onReset={onReset} />
+            
+            <div className='product-info'>
+                <input className='product-name' placeholder='메뉴 이름' value={productData.productName} onChange={onNameChangeHandler} />
+                <textarea className='product-explain' placeholder='메뉴 설명' value={productData.productIntroduce} onChange={onExplainChangeHandler} />
+                <input className='product-price' type='number' placeholder='메뉴 최소 가격 (ex: 30000)' value={productData.productPrice || ''} onChange={onDefaultPriceChangeHandler} />
 
-    // render: 선택된 상품 태그 렌더링 //
-    return (
-        <div className='no-select'>
-            <div className='x-sign' onClick={onRemove}>X</div>
-            <div id='tags'>{content}</div>
+                <div className='oneday-cake'>
+                    <div onClick={() => { selectedOnedayClickHandler(true) }} className={productData.productToday ? 'possible' : 'impossible'}>당일 케이크 가능</div>
+                    <div onClick={() => { selectedOnedayClickHandler(false) }} className={!productData.productToday ? 'possible' : 'impossible'}>당일 케이크 불가능</div>
+                </div>
+
+                <div style={{ fontSize: "20px", fontWeight: "700", marginTop: "30px" }}>
+                    케이크 종류를 하나 선택해 주세요.
+                </div>
+                <ProductThema product={productData} onTagChange={(tag) => setProductData({ ...productData, productTag: tag })} />
+                <SizeOption product={productData} onOptionsChange={(options) => setProductData({ ...productData, options })} />
+                <FlavorOption product={productData} onOptionsChange={(options) => setProductData({ ...productData, options })} />
+                <OptionList product={productData} onOptionsChange={(options) => setProductData({ ...productData, options })} />
+                <ProductTags product={productData} onTagsChange={(tags) => setProductData({ ...productData, themes: tags })} />
+            </div>
+
+            <div className='button-box'>
+                <div className='button-cancle' onClick={onCancleClickHandler}>취소</div>
+                <div className='button-register' onClick={onRegisterClickHandler}>등록</div>
+            </div>
         </div>
-    )
+    );
+};
+
+// component:  Pictures 컴포넌트 //
+interface PicturesProps {
+    files: File[];
+    onImagesChange: (files: File[]) => void;
+    onReset: () => void;
 }
 
-// component: 케이크 크기 옵션 컴포넌트 //
-function SizeOption() {
+const Pictures = ({ files, onImagesChange, onReset }: PicturesProps) => {
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // state: 케이크 크기 라디오 버튼 생성 상태 //
-    const [radioButtons, setRadioButtons] = useState<{ size: string, price: string }[]>([]);
+    const openFileDialog = () => {
+        const { current } = fileInputRef;
+        if (!current) return;
+        current.click();
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { files } = event.target;
+        if (!files) return;
+        onImagesChange(Array.from(files));
+    };
+
+    return (
+        <div>
+            <div className='arrange'>
+                <div className='notice' style={{ textAlign: "left" }}>* 첫 번째 사진은 대표 사진입니다.</div>
+                <div className='remove-pics' onClick={onReset}>초기화</div>
+            </div>
+
+            <div className='images-box'>
+                <div className='add-button' onClick={openFileDialog}>
+                    <div className='circle'>+</div>
+                    <div className='add-text'>사진 추가</div>
+                </div>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
+                />
+
+                <div className='images-box'>
+                    {files.map((file, index) => (
+                        <div key={index} className='legacy-product'
+                            style={{ backgroundImage: `url(${URL.createObjectURL(file)})`, backgroundSize: "cover" }} />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+// component: SizeOption 컴포넌트 //
+const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
+    
     const [inputValue, setInputValue] = useState<string>('');
     const [showInput, setShowInput] = useState<boolean>(false);
     const [additionalPrice, setAdditionalPrice] = useState<string>('');
 
-    // event handler: 크기 추가 버튼 클릭 이벤트 핸들러 //
     const handlePlusButtonClick = () => {
         setShowInput(true);
     };
 
-    // event handler: 크기 입력 변경 이벤트 핸들러 //
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value);
     };
 
-    // event handler: 추가 금액 입력 변경 이벤트 핸들러 //
     const onAdditionalPriceHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setAdditionalPrice(event.target.value);
-    }
+    };
 
-    // event handler: 크기 엔터 키 입력 이벤트 //
     const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter' && inputValue.trim() !== '') {
-            setRadioButtons((prevButtons) => [...prevButtons, { size: inputValue, price: additionalPrice || '0' }]);
-            setInputValue('');  // Clear the input field
+            const newOption: PostProductOptionRequestDto = {
+                productOptionName: '크기',
+                optionDetails: [{
+                    productCategory: inputValue,
+                    productOptionPrice: Number(additionalPrice) || 0
+                }]
+            };
+            const updatedOptions = [...product.options, newOption];
+            onOptionsChange(updatedOptions); // 상위 컴포넌트에 옵션 전달
+            setInputValue('');
             setAdditionalPrice('');
-            setShowInput(false);  // Hide input field after adding
+            setShowInput(false);
         }
     };
 
-    // event handler: 라디오 버튼 삭제 이벤트 핸들러 //
     const handleRemoveButtonClick = (indexToRemove: number) => {
-        setRadioButtons((prevButtons) => prevButtons.filter((_, index) => index !== indexToRemove));
+        const updatedButtons = product.options.filter((_, index) => index !== indexToRemove);
+        onOptionsChange(updatedButtons); // 상위 컴포넌트에 업데이트된 옵션 전달
     };
 
-    // render: 케이크 크기 옵션 렌더링 //
     return (
         <div className='option-box'>크기
             <div className='radio-handler'>
@@ -104,61 +399,63 @@ function SizeOption() {
                         </div>
                     )}
 
-                    {radioButtons.map((button, index) => (
+                    {product.options.filter(item => item.productOptionName === "크기").map((option, index) => (
                         <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
                             <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
-                            <input type="radio" id={`radio-${index}`} name="radioGroup" value={button.size} disabled />
-                            <label htmlFor={`radio-${index}`} style={{ marginLeft: "5px" }}>{button.size} (+{button.price}원)</label>
+                            <input type="radio" id={`radio-${index}`} name="radioGroup" value={option.productOptionName} disabled />
+                            <label htmlFor={`radio-${index}`} style={{ marginLeft: "5px" }}>
+                                {option.optionDetails[0].productCategory} (+{option.optionDetails[0].productOptionPrice}원)
+                            </label>
                         </div>
                     ))}
                 </div>
                 <div className='plus-button' onClick={handlePlusButtonClick}>추가</div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-// component: 케이크 맛 옵션 컴포넌트 //
-function FlavorOption() {
-
-    // state: 케이크 맛 라디오 버튼 생성 상태 //
-    const [flavorRadioButtons, setFlavorRadioButtons] = useState<{ flavor: string, price: string }[]>([]);
+// component: FlavorOption 컴포넌트 //
+const FlavorOption = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
     const [inputFlavorValue, setInputFlavorValue] = useState<string>('');
     const [showFlavorInput, setShowFlavorInput] = useState<boolean>(false);
     const [flavorAdditionalPrice, setFlavorAddtionalPrice] = useState<string>('');
 
-    // event handler: 맛 추가 버튼 클릭 이벤트 핸들러 //
     const handleFlavorPlusButtonClick = () => {
         setShowFlavorInput(true);
     };
 
-    // event handler: 맛 입력 변경 이벤트 핸들러 //
     const handleFlavorInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setInputFlavorValue(value);
     };
 
-    // event handler: 맛 가격 입력 변경 이벤트 핸들러 //
     const flavorPriceChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setFlavorAddtionalPrice(event.target.value);
-    }
+    };
 
-    // event handler: 맛 엔터 키 입력 이벤트 //
     const handleFlavorKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter' && inputFlavorValue.trim() !== '') {
-            setFlavorRadioButtons((prevButtons) => [...prevButtons, { flavor: inputFlavorValue, price: flavorAdditionalPrice || '0' }]);
-            setInputFlavorValue('');  // Clear the input field
+            const newFlavor: PostProductOptionRequestDto = {
+                productOptionName: '맛',
+                optionDetails: [{
+                    productCategory: inputFlavorValue,
+                    productOptionPrice: Number(flavorAdditionalPrice) || 0
+                }]
+            };
+            const updatedFlavors = [...product.options, newFlavor];
+            onOptionsChange(updatedFlavors); // 상위 컴포넌트에 옵션 전달
+            setInputFlavorValue('');
             setFlavorAddtionalPrice('');
-            setShowFlavorInput(false);  // Hide input field after adding
+            setShowFlavorInput(false);
         }
     };
 
-    // event handler: 라디오 버튼 삭제 이벤트 핸들러 //
     const handleRemoveButtonClick = (indexToRemove: number) => {
-        setFlavorRadioButtons((prevButtons) => prevButtons.filter((_, index) => index !== indexToRemove));
+        const updatedButtons = product.options.filter((_, index) => index !== indexToRemove);
+        onOptionsChange(updatedButtons); // 상위 컴포넌트에 업데이트된 옵션 전달
     };
 
-    // render: 케이크 맛 옵션 렌더링 //
     return (
         <div className='option-box'>맛
             <div className='radio-handler'>
@@ -166,7 +463,7 @@ function FlavorOption() {
                     {showFlavorInput && (
                         <div>
                             <input
-                                className='cake-size'
+                                className='cake-flavor'
                                 type="text"
                                 value={inputFlavorValue}
                                 onChange={handleFlavorInputChange}
@@ -174,7 +471,7 @@ function FlavorOption() {
                                 autoFocus
                             />
                             <input
-                                className='cake-size-price'
+                                className='cake-flavor-price'
                                 type="text"
                                 value={flavorAdditionalPrice}
                                 onChange={flavorPriceChangeHandler}
@@ -184,226 +481,122 @@ function FlavorOption() {
                         </div>
                     )}
 
-                    {flavorRadioButtons.map((button, index) => (
+                    {product.options.filter(item => item.productOptionName === "맛").map((option, index) => (
                         <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
                             <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
-                            <input type="radio" id={`radio-${index}`} name="radioGroup" value={button.flavor} disabled />
-                            <label htmlFor={`radio-${index}`} style={{ marginLeft: "5px" }}>{button.flavor} (+{button.price}원)</label>
+                            <input type="radio" id={`flavor-radio-${index}`} name="flavorGroup" value={option.productOptionName} disabled />
+                            <label htmlFor={`flavor-radio-${index}`} style={{ marginLeft: "5px" }}>
+                                {option.optionDetails[0].productCategory} (+{option.optionDetails[0].productOptionPrice}원)
+                            </label>
                         </div>
                     ))}
                 </div>
                 <div className='plus-button' onClick={handleFlavorPlusButtonClick}>추가</div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-// component: 사용자 추가 옵션 컴포넌트 //
-function NewOption() {
-
-    // state: 옵션 추가 버튼 상태 //
-    const [newInputValue, setNewInputValue] = useState<string>('');
-    const [radioInputBool, setRadioInputBool] = useState<boolean>(false);
-    const [radioValueBool, setRadioValueBool] = useState<boolean>(false);
-    const [inputDetailValue, SetInputDetailValue] = useState<string>('');
-    const [newOptions, setNewOptions] = useState<{ option: string, price: string }[]>([]);
-    const [newOptionAdditionalPrice, setNewOptionAdditionalPrice] = useState<string>('');
-
-    // event handler: 옵션 추가 이름 변경 이벤트 핸들러 //
-    const onChangeNewOptionHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        setNewInputValue(value);
-    }
-
-    // event handler: 새로운 옵션 이름 엔터 키 입력 이벤트 //
-    const handleNewOptionKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter' && newInputValue.trim() !== '') {
-            setRadioInputBool(!radioInputBool);
-        }
-    };
-
-    // event handler: 새로운 옵션 라디오 버튼 추가 버튼 클릭 이벤트 핸들러 //
-    const onNewOptionClickHandler = () => {
-        setRadioValueBool(!radioValueBool);
-    }
-
-    // event handler: 새로운 옵션 디테일 입력 변경 이벤트 핸들러 //
-    const onNewOptionDetailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        SetInputDetailValue(event.target.value);
-    }
-
-    // event handler: 새로운 옵션 디테일 가격 입력 변경 이벤트 핸들러 //
-    const onNewOptionAdditionalPriceChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setNewOptionAdditionalPrice(event.target.value);
-    }
-
-    // event handler: 새로운 옵션 디테일 엔터 키 입력 이벤트 핸들러 //
-    const onNewOptionDetailKeyPressHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter' && inputDetailValue.trim() !== '') {
-            setNewOptions((prevButtons) => [...prevButtons, { option: inputDetailValue, price: newOptionAdditionalPrice || '0' }]);
-            SetInputDetailValue('');  // Clear the input field
-            setNewOptionAdditionalPrice('');
-            setRadioValueBool(false);  // Hide input field after adding
-        }
-    }
-
-    // event handler: 라디오 버튼 삭제 이벤트 핸들러 //
-    const handleRemoveButtonClick = (indexToRemove: number) => {
-        setNewOptions((prevButtons) => prevButtons.filter((_, index) => index !== indexToRemove));
-    };
-
-    // render: 사용자 추가 옵션 렌더링 //
-    return (
-        <div className='option-box' style={{ marginBottom: "20px" }}>
-            <input className='new-option-name' placeholder='옵션을 입력하세요.(ex: 색상)' onKeyPress={handleNewOptionKeyPress}
-                onChange={onChangeNewOptionHandler} />
-
-            <div className='radio-handler'>
-                <div className='detail-text'>
-                    {radioValueBool && (
-                        <div>
-                            <input
-                                className='cake-size'
-                                type="text"
-                                value={inputDetailValue}
-                                onChange={onNewOptionDetailChangeHandler}
-                                placeholder="입력"
-                                autoFocus
-                            />
-                            <input
-                                className='cake-size-price'
-                                type="text"
-                                value={newOptionAdditionalPrice}
-                                onChange={onNewOptionAdditionalPriceChangeHandler}
-                                onKeyPress={onNewOptionDetailKeyPressHandler}
-                                placeholder="추가 금액(ex: 5000) 없으면 0, 입력 후 엔터"
-                            />
-                        </div>
-                    )}
-
-                    {newOptions.map((button, index) => (
-                        <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
-                            <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
-                            <input type="radio" id={`radio-${index}`} name="radioGroup" value={button.option} disabled />
-                            <label htmlFor={`radio-${index}`} style={{ marginLeft: "5px" }}>{button.option} (+{button.price}원)</label>
-                        </div>
-                    ))}
-                </div>
-                <div className='plus-button' onClick={onNewOptionClickHandler}>추가</div>
-            </div>
-        </div>
-    )
-}
-
-// component: 사용자 추가 옵션 리스트 컴포넌트 //
-function OptionList() {
-
-    // state: 옵션 리스트 상태 //
+// component: OptionList 컴포넌트 //
+const OptionList = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
     const [optionComponents, setOptionComponents] = useState<number[]>([]);
 
-    // event handler: 옵션 추가 버튼 클릭 시 새로운 NewOption 컴포넌트 추가 //
     const handleAddNewOption = () => {
-        if (optionComponents.length < 3) {  // 옵션이 3개 미만일 때만 추가
+        if (optionComponents.length < 3) {
             setOptionComponents([...optionComponents, optionComponents.length + 1]);
         } else {
             alert('옵션은 최대 3개까지만 추가할 수 있습니다.');
         }
     };
 
-    // render: 사용자 추가 옵션 리스트 렌더링 //
     return (
         <div>
-            <div>{optionComponents.map((_, index) => (<NewOption key={index} />))}</div>
+            <div>{optionComponents.map((_, index) => (
+                <NewOption key={index} product={product} onOptionsChange={onOptionsChange} />
+            ))}</div>
             <div className='option-add-box'>
                 <div className='plus-button-option' onClick={handleAddNewOption}>옵션 추가</div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-// component: 이미지 파일 선택 컴포넌트 //
-function Pictures() {
+// component: NewOption 컴포넌트 //
+const NewOption = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
+    const [newInputValue, setNewInputValue] = useState<string>('');
+    const [inputDetailValue, setInputDetailValue] = useState<string>('');
+    const [newOptionAdditionalPrice, setNewOptionAdditionalPrice] = useState<string>('');   
 
-    // state: file 선택 관련 상태, 변수 //
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    // function: 이미지 파일 선택창 열기 //
-    const openFileDialog = () => {
-        fileInputRef.current?.click();
+    const onChangeNewOptionHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        setNewInputValue(event.target.value);
     };
 
-    // event handler: 파일 선택 시 호출되는 핸들러 //
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            const newFiles = Array.from(event.target.files);
-            const allFiles = [...selectedFiles, ...newFiles].slice(0, 5); // 최대 5장까지 유지
-            setSelectedFiles(allFiles);
+    const onNewOptionDetailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        setInputDetailValue(event.target.value);
+    };
+
+    const onNewOptionAdditionalPriceChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        setNewOptionAdditionalPrice(event.target.value);
+    };
+
+    const onNewOptionDetailKeyPressHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter' && inputDetailValue.trim() !== '') {
+            const newOption = {
+                productOptionName: newInputValue,
+                optionDetails: [{ productCategory: inputDetailValue, productOptionPrice: Number(newOptionAdditionalPrice) || 0 }]
+            };
+            const updatedOptions = [...product.options, newOption];
+            onOptionsChange(updatedOptions); // 상위 컴포넌트에 옵션 전달
+            setInputDetailValue('');
+            setNewOptionAdditionalPrice('');
         }
     };
 
-    // event handler: 초기화 버튼 클릭 이벤트 핸들러 //
-    const onResetImagesHandler = () => {
-        setSelectedFiles([]);
-    }
+    const handleRemoveButtonClick = (indexToRemove: number) => {
+        const updatedOptions = product.options.filter((_, index) => index !== indexToRemove);
+        onOptionsChange(updatedOptions); // 상위 컴포넌트에 업데이트된 옵션 전달
+    };
 
-    // render: 이미지 파일 선택 렌더링 //
     return (
-        <div>
-            <div className='arrange'>
-                <div className='notice' style={{ textAlign: "left" }}>* 첫 번째 사진은 대표 사진입니다.</div>
-                <div className='remove-pics' onClick={onResetImagesHandler}>초기화</div>
-            </div>
+        <div className='option-box' style={{ marginBottom: "20px" }}>
+            <input className='new-option-name' placeholder='옵션을 입력하세요.(ex: 색상)' onKeyPress={onNewOptionDetailKeyPressHandler} 
+                onChange={onChangeNewOptionHandler} />
 
-            <div className='images-box'>
-                <div className='add-button' onClick={openFileDialog}>
-                    <div className='circle'>+</div>
-                    <div className='add-text'>사진 추가</div>
-                </div>
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    style={{ display: 'none' }}
-                    onChange={handleFileChange}
-                />
-
-                <div className='images-box'>
-                    {selectedFiles.map((file, index) => (
-                        <div key={index} className='legacy-product'
-                            style={{
-                                backgroundImage: `url(${URL.createObjectURL(file)})`,
-                                backgroundSize: "cover"
-                            }}
-                        />))}
+            <div className='radio-handler'>
+                <div className='detail-text'>
+                    {product.options.map((button, index) => (
+                        <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
+                            <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
+                            <input type="radio" id={`new-option-radio-${index}`} name="newOptionGroup" value={button.productOptionName} disabled />
+                            <label htmlFor={`new-option-radio-${index}`} style={{ marginLeft: "5px" }}>
+                                {button.productOptionName} (+{button.optionDetails[0].productOptionPrice}원)
+                            </label>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-// component: 상품 테마 컴포넌트 //
-function ProductTags() {
+// component: ProductTags 컴포넌트 //
+const ProductTags = ({ product, onTagsChange }: { product: PostProductRequestDto, onTagsChange: (tags: string[]) => void }) => {
+    
 
-    // state: 케이크 태그 상태 //
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-    // event handler: 태그 클릭 이벤트 핸들러 //
     const handleTagClick = (tag: string) => {
-        if (!selectedTags.includes(tag) && selectedTags.length < 5) { // 태그가 5개 미만일 때만 추가
-            setSelectedTags([...selectedTags, tag]);
-        } else if (selectedTags.length >= 5) {
+        if (!product.themes.includes(tag) && product.themes.length < 5) {
+            const updatedTags = [...product.themes, tag];
+            onTagsChange(updatedTags); // 상위 컴포넌트에 업데이트된 태그 전달
+        } else if (product.themes.length >= 5) {
             alert('상품 테마는 최대 5개까지만 선택할 수 있습니다.');
         }
     };
 
-    // event handler: 태그 삭제 이벤트 핸들러 //
     const handleTagRemove = (tag: string) => {
-        setSelectedTags(selectedTags.filter((selectedTag) => selectedTag !== tag));
+        const updatedTags = product.themes.filter((selectedTag) => selectedTag !== tag);
+        onTagsChange(updatedTags); // 상위 컴포넌트에 업데이트된 태그 전달
     };
 
-    // render: 상품 태그 화면 렌더링 //
     return (
         <div className='tag-select'>
             <div className='tag-chunks'>
@@ -463,17 +656,61 @@ function ProductTags() {
                 </div>
             </div>
             <div className='selected-tags'>
-                {selectedTags.length === 0 ? '상품 테마 최대 5개 선택' :
+                {product.themes.length === 0 ? '상품 테마 최대 5개 선택' :
                     <div>
-                        <div style={{ display: "flex", flexDirection: "row" }}> {selectedTags.map(tag => (<SelectedTags key={tag} content={tag}
-                            onRemove={() => handleTagRemove(tag)} />))}</div>
+                        <div style={{ display: "flex", flexDirection: "row" }}>
+                            {product.themes.map(tag => (
+                                <SelectedTags key={tag} content={tag} onRemove={() => handleTagRemove(tag)} />
+                            ))}
+                        </div>
                     </div>
                 }
             </div>
         </div>
-    )
-}
+    );
+};
 
+// component: Tags 컴포넌트 //
+const Tags = ({ content }: { content: string }) => {
+    return (
+        <div id='tags'>{content}</div>
+    );
+};
+
+// component: SelectedTags 컴포넌트 //
+const SelectedTags = ({ content, onRemove }: { content: string; onRemove: () => void }) => {
+    return (
+        <div className='no-select'>
+            <div className='x-sign' onClick={onRemove}>X</div>
+            <div id='tags'>{content}</div>
+        </div>
+    );
+};
+
+// component: ProductThema 컴포넌트 //
+const ProductThema = ({ product, onTagChange }: { product: PostProductRequestDto, onTagChange: (tag: string) => void }) => {
+    
+    const onTagClickHandler = (tag: string) => {
+        onTagChange(tag); // 상위 컴포넌트에 선택된 태그 전달
+    };
+
+    return (
+        <div className='store-filter' style={{ marginBottom: "30px" }}>
+            <div className='filter-box' >
+                <CakeComponent imageUrl="/photo.png" context="포토" isSelected={product.productTag === "포토"} onClick={() => onTagClickHandler("포토")} />
+                <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={product.productTag === "레터링"} onClick={() => onTagClickHandler("레터링")} />
+                <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={product.productTag === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")} />
+                <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={product.productTag === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")} />
+                <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={product.productTag === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")} />
+                <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={product.productTag === "비건 케이크"} onClick={() => onTagClickHandler("비건 케이크")} />
+                <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={product.productTag === "떡 케이크"} onClick={() => onTagClickHandler("떡 케이크")} />
+            </div>
+        </div>
+    );
+};
+
+
+// component: CakeComponent 컴포넌트 //
 interface CakeComponentProps {
     imageUrl: string;
     context: string;
@@ -482,9 +719,7 @@ interface CakeComponentProps {
 }
 
 // component: 케이크 태그 컴포넌트 //
-function CakeComponent({ imageUrl, context, isSelected, onClick }: CakeComponentProps) {
-
-    // render: 케이크 태그 렌더링 //
+const CakeComponent = ({ imageUrl, context, isSelected, onClick }: CakeComponentProps) => {
     return (
         <div className='filter-cake' onClick={onClick}
             style={{
@@ -498,133 +733,13 @@ function CakeComponent({ imageUrl, context, isSelected, onClick }: CakeComponent
             <div className='context' style={{ fontSize: "18px" }}>{context}</div>
         </div>
     );
-}
+};
 
-// component: 상품 태그 컴포넌트 //
-function ProductThema() {
-
-    // state: 선택된 태그를 저장하는 상태
-    const [selectedTag, setSelectedTag] = useState<string | null>(null);
-
-    // event handler: 태그 클릭 이벤트 핸들러
-    const onTagClickHandler = (tag: string) => {
-        setSelectedTag(tag); // 클릭된 태그를 상태로 저장
-    };
-
-    // render: 상품 태그 렌더링 //
-    return (
-        <div className='store-filter' style={{ marginBottom: "30px" }}>
-            <div className='filter-box'>
-                <CakeComponent imageUrl="/photo.png" context="포토" isSelected={selectedTag === "포토"} onClick={() => onTagClickHandler("포토")} />
-                <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={selectedTag === "레터링"} onClick={() => onTagClickHandler("레터링")} />
-                <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={selectedTag === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")} />
-                <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={selectedTag === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")} />
-                <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={selectedTag === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")} />
-                <CakeComponent imageUrl="/today.png" context="당일 케이크" isSelected={selectedTag === "당일 케이크"} onClick={() => onTagClickHandler("당일 케이크")} />
-                <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={selectedTag === "비건 케이크"} onClick={() => onTagClickHandler("비건 케이크")} />
-                <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={selectedTag === "떡 케이크"} onClick={() => onTagClickHandler("떡 케이크")} />
-            </div>
-        </div>
-    )
-}
-
-// component: 상품 추가 화면 컴포넌트 //
-function Add() {
-
-    // state: 상품 상태 //
-    const [productName, setProductName] = useState<string>('');
-    const [productExplain, setProductExplain] = useState<string>('');
-    const [defaultPrice, setDefaultPrice] = useState<number>(0);
-    const [onedayCake, setOnedayCake] = useState<boolean | null>(null);
-
-    // function: 네비게이터 //
-    const navigator = useNavigate();
-
-    // event handler: 메뉴 이름 변경 이벤트 핸들러 //
-    const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        setProductName(value);
-    }
-
-    // event handler: 메뉴 설명 변경 이벤트 핸들러 //
-    const onExplainChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        const { value } = event.target;
-        setProductExplain(value);
-    }
-
-    // event handler: 메뉴 기본 가격 변경 이벤트 핸들러 //
-    const onDefaultPriceChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-
-        const pattern = /^[0-9]{6}$/;
-        const isTrue = pattern.test(value);
-
-        if (isTrue) setDefaultPrice(parseInt(value, 10));
-        else return;
-    }
-
-    // event handler: 당일 케이크 여부 선택 이벤트 핸들러 //
-    const selectedOnedayClickHandler = (onedayCheck: boolean) => {
-        setOnedayCake(onedayCheck);
-        console.log(onedayCheck);
-    }
-
-    // event handler: 취소 버튼 클릭 이벤트 핸들러 //
-    const onCancleClickHandler = () => {
-        navigator(MY_PRODUCT_ABSOLUTE_PATH);
-    }
-
-    // event handler: 등록 버튼 클릭 이벤트 핸들러 //
-    const onRegisterClickHandler = () => {
-        // 등록 api
-        navigator(MY_PRODUCT_ABSOLUTE_PATH);
-    }
-
-    // render: 상품 추가/수정 화면 렌더링 //
-    return (
-        <div id='add-product'>
-            <div className='title'>상품 관리</div>
-            <hr className='custom-hr' />
-
-            <Pictures />
-
-            <div className='product-info'>
-                <input className='product-name' placeholder='메뉴 이름' onChange={onNameChangeHandler} />
-                <textarea className='product-explain' placeholder='메뉴 설명' onChange={onExplainChangeHandler} />
-                <input className='product-price' placeholder='메뉴 최소 가격 (ex: 30000)' onChange={onDefaultPriceChangeHandler} />
-
-                <div className='oneday-cake'>
-                    <div onClick={() => { selectedOnedayClickHandler(true) }}
-                        className={onedayCake === true ? 'possible' :
-                            onedayCake === null ? 'impossible' : 'impossible'}>당일 케이크 가능</div>
-                    <div onClick={() => { selectedOnedayClickHandler(false) }}
-                        className={onedayCake === false ? 'possible' :
-                            onedayCake === null ? 'impossible' : 'impossible'}>당일 케이크 불가능</div>
-                </div>
-
-                <div style={{ fontSize: "20px", fontWeight: "700", marginTop: "30px" }}>
-                    케이크 종류를 하나 선택해 주세요.
-                </div>
-                <ProductThema />
-                <SizeOption />
-                <FlavorOption />
-                <OptionList />
-                <ProductTags />
-            </div>
-
-            <div className='button-box'>
-                <div className='button-cancle' onClick={onCancleClickHandler}>취소</div>
-                <div className='button-register' onClick={onRegisterClickHandler}>등록</div>
-            </div>
-        </div>
-    )
-}
-
-// component: 상품 추가/수정 화면 컴포넌트 //
-export default function Update() {
-
-    // render: 상품 추가/수정 화면 렌더링 //
+const Update = () => {
     return (
         <Add />
-    )
-}
+    );
+};
+
+export default Update;
+

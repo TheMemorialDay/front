@@ -209,6 +209,8 @@ export default function MyStore() {
         setFriday({ start: fridayOpen, end: fridayLast });
         setSaturday({ start: saturdayOpen, end: saturdayLast });
         setSunday({ start: sundayOpen, end: sundayLast });
+
+        
     };
 
 

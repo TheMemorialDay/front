@@ -169,19 +169,15 @@ export default function Qa() {
                     <div className="dropdown-container">
                         <div onClick={toggleDropdown} className="dropdown-button">
                             <div>{selectedOption}</div>
-                            <div className='arrow-image'></div>
+                            <div className={isOpen ? 'arrow-image-down' : 'arrow-image-up'}></div>
                         </div>
-                            {isOpen && (
-                                <div className="dropdown-menu">
-                                    {options.map((option, index) => (
-                                        <div key={index} className='dropdown-item' onClick={() => handleOptionSelect(option)}>
-                                            {option}
-                                        </div>
-                                    ))}
-                                    {/* <div className="dropdown-item">제목</div>
-                                    <div className="dropdown-item">작성자</div> */}
-                                </div>
-                            )}
+                        {isOpen && (
+                            <div className="dropdown-menu">
+                                {options.map((option, index) => (
+                                    <div key={index} className='dropdown-item' onClick={() => handleOptionSelect(option)}>{option}</div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                     <input className="search-input" value={searchWords} placeholder="내용을 입력하세요." onChange={onSearchChangeHandler} onKeyDown={handleKeyDown}/>
                     <div className="button search-button" onClick={onSearchButtonHandler}>검색</div>
