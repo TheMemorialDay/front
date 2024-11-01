@@ -8,6 +8,11 @@ import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/sto
 import { GetSignInResponseDto } from "./dto/response/auth";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
+import { PatchStoreRequestDto } from "./dto/request/store";
+import BusinessCheckRequestDto from "./dto/request/join/business-check.request.dto";
+import ApiResponseDto from "./dto/response/join/api-response.dto";
+import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
+import { access } from 'fs';
 
 // variable: API URL 상수 //
 
@@ -18,19 +23,23 @@ const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
 const POST_PRODUCT_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_LIST_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
-// const PATCH_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
+//const PATCH_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 // const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
+const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
 
 const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 
 const PATCH_JOIN_URL = (userId: string | null) => `${MEMORIALDAY_API_DOMAIN}/join/${userId}`;
 
 const POST_STORE_API_MODULE = `${MYPAGE_STORE_MODULE}`;
-const GET_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+const GET_MYPAGE_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+const PATCH_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+
+const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}`
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
 
@@ -59,11 +68,20 @@ const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
 //     return responseBody;
 // };
 
+// function: get store number 요청 함수 //
+export const getStoreNumberRequest = async(userId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_STORE_NUMBER_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetStoreNumber>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+
 // function: post product 요청 함수 //                              토큰 인증 관련 지우고 임의로 진행(원래는 위와 같이 작성)
-export const postProductRequest = async (storeNumber: number | string, requestBody: PostProductRequestDto) => {
+export const postProductRequest = async (requestBody: PostProductRequestDto, storeNumber: number | string, accessToken: string) => {
     try {
         // const response = await axios.post(POST_PRODUCT_API_URL, requestBody);
-        const response = await axios.post(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${storeNumber}`, requestBody);
+        const response = await axios.post(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${storeNumber}`, requestBody, bearerAuthorization(accessToken));
 
         return responseDataHandler<ResponseDto>(response);
     } catch (error) {
@@ -107,9 +125,22 @@ export const patchProductRequest = async (productNumber: number | string, data: 
         return null;
     }
 };
-const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
 
-const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
+
+const responseDataHandler2 = <T extends ApiResponseDto>(response: AxiosResponse<T, any>) => {
+  const {data} = response;
+  if (data.status_code !== "OK") {
+    return data.status_code; 
+  }
+
+  // data 배열 내의 각 항목에 대해 valid 값 체크
+  for (const item of data.data) {
+    return item.valid;  
+  }
+
+  // 위 조건에 해당하지 않는 경우 빈 문자열 반환
+  return null; // string, null
+};
 
 // function: response data 처리 함수 //
 const responseDataHandler3 = <T extends BusinessNumCheckResponseDto>(response: AxiosResponse<T, any>) => {
@@ -170,19 +201,27 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
 };
 
 // function: post Store 요청 함수 //
-export const postStoreRequest = async (requestBody: PostStoreRequestDto) => {
-    const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody)
-        .then(responseDataHandler<ResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
+export const postStoreRequest = async (requestBody: PostStoreRequestDto, accessToken: string) => {
+  const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
+
+// function: patch Store 요청 함수 //
+export const patchStoreRequest = async (requestBody: PatchStoreRequestDto, storeNumber: number | string, accessToken: string) => {
+  const responseBody = await axios.patch(PATCH_STORE_API_URL(storeNumber), requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
 
 // function: get Store 요청 함수 //
 export const getStoreRequest = async (storeNumber: number | string) => {
-    const responseBody = await axios.get(GET_STORE_API_URL(storeNumber))
-        .then(responseDataHandler<GetStoreResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
+  const responseBody = await axios.get(GET_STORE_API_URL(storeNumber))
+    .then(responseDataHandler<GetStoreResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
 }
 
 // function: get sign in 요청 함수 //
@@ -195,23 +234,46 @@ export const GetSignInRequest = async (accessToken: string) => {
 
 // function: get Store List 요청 함수 //
 export const getStoreListRequest = async () => {
-    const responseBody = await axios.get(GET_STORE_LIST_API_URL)
-        .then(responseDataHandler<GetStoreListResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
+  const responseBody = await axios.get(GET_STORE_LIST_API_URL)
+    .then(responseDataHandler<GetStoreListResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
+// function: get MyPage Store 요청 함수 //
+export const getMyPageStoreRequest = async (storeNumber: number | string, accessToken: string) => {
+  const responseBody = await axios.get(GET_MYPAGE_STORE_API_URL(storeNumber), bearerAuthorization(accessToken))
+    .then(responseDataHandler<GetStoreResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
 }
 
 // function: patch join 요청 함수 //
 export const patchJoinRequest = async (requestBody: PatchJoinRequestDto, userId: string, accessToken: string) => {
-    const responseBody = await axios.patch(PATCH_JOIN_URL(userId), requestBody, bearerAuthorization(accessToken))
-        .then(responseDataHandler<ResponseDto>)
-        .catch(responseErrorHandler);
+  const responseBody = await axios.patch(PATCH_JOIN_URL(userId), requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
     return responseBody;
 }
 
 // API 요청 URL 및 serviceKey 설정
+const apiUrl2 = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
 const apiUrl = "http://api.odcloud.kr/api/nts-businessman/v1/status";
-const serviceKey = "9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==";
+const serviceKey = process.env.BUSINESS_API_SERVICE_KEY;
+
+const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
+const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
+
+// function: 사업자 등록증 진위 확인 api 요청 함수1 //
+export const checkBusinessRequest = async(accessToken: string, requestBody: BusinessCheckRequestDto) => {
+  const responseBody = await axios.post(`${apiUrl2}?serviceKey=${serviceKey}`, requestBody, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(responseDataHandler2<ApiResponseDto>)
+      .catch(responseErrorHandler);
+  return responseBody;
+}
 
 // function: 사업자 등록증 진위 확인 api 요청 함수2 //
 export const checkBusinessNumRequest = async (requestBody: BusinessNumCheckRequestDto) => {

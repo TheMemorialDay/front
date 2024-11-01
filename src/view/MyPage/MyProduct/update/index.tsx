@@ -1,13 +1,16 @@
 import React, { useState, ChangeEvent, useRef, KeyboardEvent, useEffect } from 'react';
 import './style.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fileUploadRequest, getProductRequest, patchProductRequest, postProductRequest } from '../../../../apis';
+import { fileUploadRequest, getProductRequest, getStoreNumberRequest, patchProductRequest, postProductRequest } from '../../../../apis';
 import { PostProductOptionRequestDto, PostProductRequestDto } from '../../../../apis/dto/request/product';
 import { GetProductResponseDto } from '../../../../apis/dto/response/product';
 import { PatchProductRequestDto } from '../../../../apis/dto/request/product/patch-product.request.dto';
 import { convertUrlToFile } from '../../../../util';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN } from '../../../../constants';
+import { useSignInUserStore } from '../../../../stores';
+import GetStoreNumber from '../../../../apis/dto/response/product/get-store-number-response.dto';
+import { ResponseDto } from '../../../../apis/dto/response';
 
 
 
@@ -40,7 +43,9 @@ const defaultProductData: PostProductRequestDto = {
 // component: Add 컴포넌트 //
 const Add = () => {
     const { productNumber } = useParams<{ productNumber?: string }>();
-    const { storeNumber } = useParams<{ storeNumber?: string }>();
+    //const {storeNumber} = useParams<{storeNumber?: string}>();
+    const [storeNumber, setStoreNumber] = useState<string | number>();
+    const {signInUser} = useSignInUserStore();
     const [productData, setProductData] = useState<PostProductRequestDto | PatchProductRequestDto>(defaultProductData);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [cookies] = useCookies();
@@ -50,7 +55,8 @@ const Add = () => {
         if (productNumber) {
             const loadProduct = async () => {
                 try {
-                    const accessToken = cookies[ACCESS_TOKEN]
+                    const accessToken = cookies[ACCESS_TOKEN];
+                    if(!accessToken) return;
                     const response = await getProductRequest(productNumber, accessToken);
                     if (response) {
                         const product = response as GetProductResponseDto;
@@ -117,8 +123,8 @@ const Add = () => {
         // navigator('../');
     };
 
-// 상품 등록 핸들러 수정
-const onRegisterClickHandler = async () => {
+    // 상품 등록 핸들러 수정
+    const onRegisterClickHandler = async () => {
     console.log('입력된 데이터:', productData);
 
     let urls: string[] = [];
@@ -176,17 +182,59 @@ const onRegisterClickHandler = async () => {
         themes: productData.themes, // 선택된 테마
     };
 
+    // function: get store number response 처리 //
+    const getStoreNumberResponse = (responseBody: GetStoreNumber | ResponseDto | null) => {
+        const message = 
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : responseBody.code;
+            
+        //alert(message);
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if(!isSuccessed) {
+            alert(message);
+            return;
+        }
+        const storeNum = responseBody as GetStoreNumber;
+        console.log(storeNum.storeNumber);
+        setStoreNumber(storeNum.storeNumber);
+        //return storeNum.storeNumber;
+    }
+
+    
+
     try {
         let response;
-        const accessToken = cookies[ACCESS_TOKEN]
+        
+        const accessToken = cookies[ACCESS_TOKEN];
+        console.log("액세스 토큰: " + accessToken + ", 스토어 넘버: " + storeNumber);
+        if(!accessToken) return;
         if (productNumber) {
             // 수정 요청
             response = await patchProductRequest(productNumber, patchRequestBody, accessToken); // 수정 API 호출
         } else {
             // 추가 요청
-            if (storeNumber) {
-            response = await postProductRequest(storeNumber, requestBody); // 추가 API 호출
+            // if(signInUser) {
+            //     getStoreNumberRequest(signInUser.userId, accessToken).then(getStoreNumberResponse);
+            //     if(storeNumber) {
+            //         response = await postProductRequest(requestBody, storeNumber, accessToken); // 추가 API 호출
+            //     }
+            // }
+            if (signInUser) {
+                const storeNumberResponse = await getStoreNumberRequest(signInUser.userId, accessToken);
+                if (storeNumberResponse && storeNumberResponse.code === 'SU') {
+                    const storeNum = storeNumberResponse as GetStoreNumber;
+                    console.log("스토어 넘버:", storeNum.storeNumber);
+                    setStoreNumber(storeNum.storeNumber); // 스토어 번호 설정
+
+                    // 설정된 storeNumber를 사용해 상품 등록 API 호출
+                    response = await postProductRequest(requestBody, storeNum.storeNumber, accessToken);
+                } else {
+                    alert(storeNumberResponse?.message || '스토어 번호를 가져오는 중 문제가 발생했습니다.');
+                    return;
+                }
             }
+            
         }
         console.log('상품 등록/수정 성공:', response);
         navigator('../');

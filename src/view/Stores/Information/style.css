@@ -13,10 +13,13 @@
 }
 
 .information .shop-locate {
-  width: 400px;
-  height: 400px;
+  width: 360px;
+  height: 360px;
   border: 2px solid #000000;
   border-radius: 15px;
+
+  font-size: 20px;
+  padding: 20px;
 }
 
 .menu-bar-information .shop-information {

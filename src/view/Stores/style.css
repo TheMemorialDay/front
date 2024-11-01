@@ -144,7 +144,7 @@
   background-color: #fff7e6;
 }
 
-.dropdown-container {
+#store-wrapper .dropdown-container {
   margin-top: 20px;
   display: flex;
   gap: 10px;
@@ -220,13 +220,19 @@ select {
 .shop-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 14px;
-  padding: 16px;
+  align-items: center;
+  
+  /* justify-content: space-around; */
+  justify-content: center;
+  gap: 16px;
+  /* padding: 16px; */
 }
 
 .store-card {
+  flex: 1 1 calc(25%, -32px);
   width: 300px;
+  
+  /* width: calc(25% - 16px); */
   height: 350px;
   border: 1px solid #ddd;
   border-radius: 15px;
@@ -389,6 +395,7 @@ select {
   border-radius: 15px;
   width: 4px;
   background-color: rgba(138, 146, 166, 1);
+  overflow-x: hidden;
 }
 
 .dropdown-container .selector .selector-option {
@@ -513,8 +520,7 @@ select {
 }
 
 .dropdown-container .selectors .selector-box::-webkit-scrollbar {
-  width: 4px;
-  background: none;
+  width: 13px;
 }
 
 .dropdown-container .selectors .selector-box::-webkit-scrollbar-thumb {
@@ -522,6 +528,17 @@ select {
   border-radius: 15px;
   width: 4px;
   background-color: rgba(138, 146, 166, 1);
+  border: 2px solid rgba(255, 255, 255, 1);
+}
+
+.dropdown-container .selectors .selector-box::-webkit-scrollbar-button {
+  display: block;
+  height: 5px;
+
+}
+
+.dropdown-container .selectors .selector-box::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .dropdown-container .selectors .selector-option {
@@ -548,7 +565,7 @@ select {
   justify-content: center;
 
   font-family: Inter;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bolder;
   line-height: 175%;
 
@@ -589,16 +606,22 @@ select {
   overflow-y: auto;
 }
 
-.dropdown-container .selectors .selector-tag-box::-webkit-scrollbar {
-  width: 4px;
-  background: none;
+.dropdown-container .selector .selector-tag-box::-webkit-scrollbar {
+  width: 13px;
 }
 
-.dropdown-container .selectors .selector-tag-box::-webkit-scrollbar-thumb {
+.dropdown-container .selector .selector-tag-box::-webkit-scrollbar-button {
+  display: block;
+  height: 5px;
+
+}
+
+.dropdown-container .selector .selector-tag-box::-webkit-scrollbar-thumb {
   margin: 4px;
   border-radius: 15px;
   width: 4px;
   background-color: rgba(138, 146, 166, 1);
+  border: 2px solid rgba(255, 255, 255, 1);
 }
 
 .selected-tag-item {
@@ -626,4 +649,12 @@ select {
   padding: 10px 12px;
   cursor: pointer;
   margin-right: 5px;
+}
+
+.store-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 20px;
 }

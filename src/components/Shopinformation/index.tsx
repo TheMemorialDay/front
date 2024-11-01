@@ -4,6 +4,8 @@ import { getStoreRequest } from '../../apis';
 import { Outlet, useNavigate, useParams } from 'react-router';
 import { GetStoreResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
+import { useCookies } from 'react-cookie';
+import { ACCESS_TOKEN } from '../../constants';
 
 
 export default function ShopMain() {
@@ -11,9 +13,13 @@ export default function ShopMain() {
   // function: 네비게이터 함수 //
   const navigate = useNavigate();
 
+  // state: cookie 상태 //
+  const [cookies] = useCookies();
+
   // state: 가게 번호 경로 변수 상태 //
   const { storeNumber } = useParams();
   const [store, setStore] = useState<GetStoreResponseDto | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
 
   // state: 가게 정보
   const [storeName, setStoreName] = useState<string>('');
@@ -29,6 +35,7 @@ export default function ShopMain() {
   const [storeLatitude, setStoreLatitude] = useState<string>('');
   const [storeLongtitude, setStoreLongtitude] = useState<string>('');
   const [storeRating, setStoreRating] = useState<number>();
+  const [storeDetailAddress, setStoreDetailAddress] = useState<string>('');
 
   // state: 각 요일별 픽업시간 상태 //
   const [monday, setMonday] = useState({ start: '00:00', end: '00:00' });
@@ -54,16 +61,17 @@ export default function ShopMain() {
       return;
     }
 
-    const { storeName, storeIntroduce, storeParticular, storeContact, storeCaution, storeAddress, storeGugun, storeDong, storeLatitude, storeLongtitude, storeRating, storeImageUrl,
+    const { storeName, storeIntroduce, storeParticular, storeContact, storeCaution, storeAddress, storeDetailAddress, storeGugun, storeDong, storeLatitude, storeLongtitude, storeRating, storeImageUrl,
       mondayOpen, mondayLast, tuesdayOpen, tuesdayLast, wednesdayOpen, wednesdayLast, thursdayOpen, thursdayLast, fridayOpen, fridayLast, saturdayOpen, saturdayLast, sundayOpen, sundayLast
     } = responseBody as GetStoreResponseDto;
     setStoreName(storeName);
-    setStoreImageUrl(storeImageUrl);
+    setPreviewUrl(storeImageUrl);
     setStoreIntroduce(storeIntroduce);
     setStoreParticular(storeParticular);
     setStoreContact(storeContact);
     setStoreCaution(storeCaution);
     setStoreAddress(storeAddress);
+    setStoreDetailAddress(storeDetailAddress);
     setStoreGugun(storeGugun);
     setStoreDong(storeDong);
     setStoreLatitude(storeLatitude);
@@ -86,6 +94,7 @@ export default function ShopMain() {
       console.log('가게 번호가 없습니다. 등록페이지로 이동합니다.');
       return;
     }
+    console.log("스토어 넘버: " + storeNumber);
 
     getStoreRequest(storeNumber).then(getStoreResponse);
   }, [storeNumber])
@@ -93,10 +102,10 @@ export default function ShopMain() {
   return (
     <div id='store-detail-wrapper'>
       <div className='shop-infor'>
-        <div className='shop-image' style={{ backgroundImage: `url(${storeImageUrl})` }}></div>
+        <div className='shop-image' style={{ backgroundImage: `url(${previewUrl})` }}></div>
         <div className='shop-comment'>
           <h2 className='shop-ment'>{storeName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating}</h2>
-          <h2 className='shop-ment'>{storeGugun}{storeDong} 9번길 53 1층</h2>
+          <h2 className='shop-ment'>{storeGugun}&nbsp;{storeDong}&nbsp;{storeDetailAddress}</h2>
           <h2 className='shop-ment'>매일 11:00 ~ 19:00</h2>
           <h2 className='shop-ment'>{storeIntroduce}</h2>
         </div>

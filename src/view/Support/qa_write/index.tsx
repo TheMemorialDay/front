@@ -49,7 +49,7 @@ export default function QaWrite() {
     };
 
     // event handler: 내용 입력 상태 //
-    const onquestionContentsChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onquestionContentsChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const { value } = event.target;
         setquestionContents(value);
     };
@@ -96,9 +96,8 @@ export default function QaWrite() {
             </div>
             <div className='main'>
                 <div className='questionContents'>내용</div>
-                <input
+                <textarea
                     value={questionContents}
-                    type='text'
                     placeholder='내용(공백 포함 최소 15글자 입니다.)'
                     onChange={onquestionContentsChangeHandler}
                     minLength={15}
