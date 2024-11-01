@@ -6,6 +6,7 @@ import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/sto
 import { GetSignInResponseDto } from "./dto/response/auth";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
+import { PatchStoreRequestDto } from "./dto/request/store";
 
 
 
@@ -21,7 +22,10 @@ const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 const PATCH_JOIN_URL = (userId: string | null) => `${MEMORIALDAY_API_DOMAIN}/join/${userId}`;
 
 const POST_STORE_API_MODULE = `${MYPAGE_STORE_MODULE}`;
-const GET_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+const GET_MYPAGE_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+const PATCH_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+
+const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}`
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
 
@@ -45,8 +49,8 @@ const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
 // function: response data 처리 함수 //
 const responseDataHandler3 = <T extends BusinessNumCheckResponseDto>(response: AxiosResponse<T, any>) => {
   const { data } = response;
-  if(data.status_code === 'OK') {
-    const b_stt_cd = data.data[0].b_stt_cd; 
+  if (data.status_code === 'OK') {
+    const b_stt_cd = data.data[0].b_stt_cd;
     return b_stt_cd;
   }
   return data.status_code;
@@ -101,21 +105,25 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
 };
 
 // function: post Store 요청 함수 //
-export const postStoreRequest = async (requestBody: PostStoreRequestDto) => {
-  const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody)
+export const postStoreRequest = async (requestBody: PostStoreRequestDto, accessToken: string) => {
+  const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody, bearerAuthorization(accessToken))
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 };
 
+// function: patch Store 요청 함수 //
+export const patchStoreRequest = async (requestBody: PatchStoreRequestDto, storeNumber: number | string, accessToken: string) => {
+  const responseBody = await axios.patch(PATCH_STORE_API_URL(storeNumber), requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
 // function: get Store 요청 함수 //
 export const getStoreRequest = async (storeNumber: number | string) => {
   const responseBody = await axios.get(GET_STORE_API_URL(storeNumber))
     .then(responseDataHandler<GetStoreResponseDto>)
-// function: get sign in 요청 함수 //
-export const GetSignInRequest = async(accessToken: string) => {
-  const responseBody = await axios.get(GET_SIGN_IN_API_URL, bearerAuthorization(accessToken))
-    .then(responseDataHandler<GetSignInResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 }
@@ -124,8 +132,28 @@ export const GetSignInRequest = async(accessToken: string) => {
 export const getStoreListRequest = async () => {
   const responseBody = await axios.get(GET_STORE_LIST_API_URL)
     .then(responseDataHandler<GetStoreListResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
+// function: get MyPage Store 요청 함수 //
+export const getMyPageStoreRequest = async (storeNumber: number | string, accessToken: string) => {
+  const responseBody = await axios.get(GET_MYPAGE_STORE_API_URL(storeNumber), bearerAuthorization(accessToken))
+    .then(responseDataHandler<GetStoreResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
+// function: get sign in 요청 함수 //
+export const GetSignInRequest = async (accessToken: string) => {
+  const responseBody = await axios.get(GET_SIGN_IN_API_URL, bearerAuthorization(accessToken))
+    .then(responseDataHandler<GetSignInResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
 // function: patch join 요청 함수 //
-export const patchJoinRequest = async(requestBody: PatchJoinRequestDto, userId: string, accessToken: string) => {
+export const patchJoinRequest = async (requestBody: PatchJoinRequestDto, userId: string, accessToken: string) => {
   const responseBody = await axios.patch(PATCH_JOIN_URL(userId), requestBody, bearerAuthorization(accessToken))
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
@@ -137,7 +165,7 @@ const apiUrl = "http://api.odcloud.kr/api/nts-businessman/v1/status";
 const serviceKey = "9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==";
 
 // function: 사업자 등록증 진위 확인 api 요청 함수2 //
-export const checkBusinessNumRequest = async(requestBody: BusinessNumCheckRequestDto) => {
+export const checkBusinessNumRequest = async (requestBody: BusinessNumCheckRequestDto) => {
   const responseBody = await axios.post(`${apiUrl}?serviceKey=${serviceKey}`, requestBody, {
     headers: {
       'Content-Type': 'application/json'
@@ -146,15 +174,13 @@ export const checkBusinessNumRequest = async(requestBody: BusinessNumCheckReques
     .catch(responseErrorHandler);
   return responseBody;
 }
-
-
 const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
-const multipart = {headers: {'Content-Type': 'multipart/form-data'}};
+const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 // function: file upload 요청 함수 //
-export const fileUploadRequest = async(requestBody: FormData) => {
-    const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart)
-        .then(responseDataHandler<string>)
-        .catch(error => null);
-    return url;
+export const fileUploadRequest = async (requestBody: FormData) => {
+  const url = await axios.post(FILE_UPLOAD_URL, requestBody, multipart)
+    .then(responseDataHandler<string>)
+    .catch(error => null);
+  return url;
 };

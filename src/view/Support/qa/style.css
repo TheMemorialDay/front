@@ -47,7 +47,7 @@
 
 /* DropdownMenu.css */
 
-.dropdown-container {
+.search-box .dropdown-container {
     display: flex;
     border-radius: 6px;
     border: 1px solid lightgray;

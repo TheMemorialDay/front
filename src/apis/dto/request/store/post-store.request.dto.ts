@@ -7,6 +7,7 @@ export default interface PostStoreRequestDto {
   storeContact: string | null;
   storeCaution: string | null;
   storeAddress: string;
+  storeDetailAddress: string;
   storeGugun: string;
   storeDong: string;
   storeLatitude: string;
