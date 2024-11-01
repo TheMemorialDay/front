@@ -1,23 +1,30 @@
 //# userId Search result store
+// 이름, 전화번호 인증 ->
+// 전화번호, 인증번호 인증 ->
+// 이름, 아이디, 전화번호 결과
 
 import { create } from "zustand";
 
 interface IdSearchResult {
-	zusName: String;
-	setZusName: (zusName: String) => void;
-	zusTelNumber: String;
-	setZusTelNumber: (zusTelNumber: String) => void;
-	zusUserId: String;
-	setZusUserId: (zusUserId: String) => void 
+	name: string;
+	userId: string;
+	telNumber: string;
+	telAuthNumber: string;
+	setName: (name: string) => void;
+	setUserId: (userId: string) => void 
+	setTelNumber: (telNumber: string) => void;
+	setTelAuthNumber: (telAuthNumber: string) => void;
 }
 
 const useIdSearchResultZustand = create<IdSearchResult>(set => ({
-	zusName: '',
-	zusTelNumber: '',
-	zusUserId: '',
-	setZusName: (zusName: String) => set(state => ({...state, zusName})),
-	setZusTelNumber: (zusTelNumber: String) => set(state => ({...state, zusTelNumber})),
-	setZusUserId: (zusUserId: String) => set(state => ({...state, zusUserId}))
+	name: '',
+	userId: '',
+	telNumber: '',
+	telAuthNumber: '',
+	setName: (name: string) => set(state => ({...state, name})),
+	setUserId: (userId: string) => set(state => ({...state, userId})),
+	setTelNumber: (telNumber: string) => set(state => ({...state, telNumber})),
+	setTelAuthNumber: (telAuthNumber: string) => set(state => ({...state, telAuthNumber}))
 }))
 
 export default useIdSearchResultZustand;

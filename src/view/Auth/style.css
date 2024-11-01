@@ -189,13 +189,19 @@
     height: 25px;
     border-radius: 6px;
     border: 1px solid darkgray;
-    margin-bottom: 20px;
+    margin-bottom: 2px;
     padding: 10px;
 }
 
 #find-id .tel {
     display: flex;
     gap: 10px;
+    margin-top: 20px;
+}
+
+#find-id .name {
+    display: flex;
+    flex-direction: column;
 }
 
 #find-id .tel-number {

@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { ResponseDto } from "./dto/response";
-import { IdCheckRequestDto, IdSearchAfterRequestDto, IdSearchBeforeRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { IdCheckRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import { GetOnlyPasswordResponseDto, IdSearchResponseDto } from "./dto/response/auth";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
@@ -14,6 +14,8 @@ import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/sto
 import BusinessCheckRequestDto from "./dto/request/join/business-check.request.dto";
 import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
+import IdSearchNameTelNumberRequestDto from "./dto/request/auth/Id-search-name-tel-number.request.dto";
+import IdSearchTelAndAuthRequestDto from "./dto/request/auth/Id-search-tel-and-auth.request.dto";
 
 // variable: API URL 상수 //
 
@@ -57,8 +59,11 @@ const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
-const ID_SEARCH_BEFORE_API_URL = `${AUTH_MODULE_URL}/id-search`;
-const ID_SEARCH_AFTER_API_URL = `${AUTH_MODULE_URL}/id-search-result`;
+//* ====================== 아이디 찾기
+const ID_SEARCH_NAME_TEL_API_URL = `${AUTH_MODULE_URL}/id-search-first`;
+const ID_SEARCH_TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/id-search-middle`;
+const ID_SEARCH_RESULT_API_URL = `${AUTH_MODULE_URL}/id-search-result`;
+//* ====================== 아이디 찾기
 const PASSWORD_SEARCH_API_URL = `${AUTH_MODULE_URL}/password-search`;
 const PASSWORD_SEARCH_AND_GET_PASSWORD_API_URL = (userId: string) => `${AUTH_MODULE_URL}/password-search/${userId}`;
 const PASSWORD_SEARCH_TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-tel-auth-check`;
@@ -258,25 +263,25 @@ export const passwordCheckOfUserUpdateRequest = async (requestBody: PasswordChec
   return responseBody;
 }
 
-// function: id search before 요청 함수 (name + telNumber) //
-export const idSearchBeforeRequest = async (requestBody: IdSearchBeforeRequestDto) => {
-  const responseBody = await axios.post(ID_SEARCH_BEFORE_API_URL, requestBody)
+// function: id search first 요청 함수 (name + telNumber) //
+export const idSearchNameTelNumberRequest = async (requestBody: IdSearchNameTelNumberRequestDto) => {
+  const responseBody = await axios.post(ID_SEARCH_NAME_TEL_API_URL, requestBody)
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 };
 
-// function: tel auth api 요청 함수 //
-export const idSearchTelAuthRequest = async (requestBody: TelAuthRequestDto) => {
-  const responseBody = await axios.post(TEL_AUTH_API_URL, requestBody)
+// function: id search middle (전화번호 + 인증번호) 요청 함수 //
+export const idSearchTelAuthRequest = async (requestBody: IdSearchTelAndAuthRequestDto) => {
+  const responseBody = await axios.post(ID_SEARCH_TEL_AUTH_API_URL, requestBody)
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 };
 
-// function: id search after 요청 함수 //
-export const idSearchAfterRequest = async (requestBody: IdSearchAfterRequestDto) => {
-  const responseBody = await axios.post(ID_SEARCH_AFTER_API_URL, requestBody)
+// function: get id search result 요청 함수 //
+export const getIdSearchRequest = async (name: string, telNumber: string) => {
+  const responseBody = await axios.get(ID_SEARCH_RESULT_API_URL)
     .then(responseDataHandler<IdSearchResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;

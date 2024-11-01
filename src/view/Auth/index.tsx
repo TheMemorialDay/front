@@ -6,9 +6,8 @@ import { useCookies } from 'react-cookie';
 import SnsContainer from '../../components/sns_login_sign_up';
 import { GetOnlyPasswordResponseDto, IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { idSearchAfterRequest, idSearchBeforeRequest, passwordSearchRequest, passwordSearchTelAuthCheckRequest, patchPasswordRequest, signInRequest } from '../../apis';
-import { IdSearchAfterRequestDto, IdSearchBeforeRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto } from '../../apis/dto/request/auth';
-import useIdSearchResult from '../../stores/id-search-result-store';
+import { getIdSearchRequest, idSearchNameTelNumberRequest, idSearchTelAuthRequest, passwordSearchRequest, passwordSearchTelAuthCheckRequest, patchPasswordRequest, signInRequest } from '../../apis';
+import { IdSearchNameTelNumberRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, TelAuthCheckRequestDto } from '../../apis/dto/request/auth';
 import usePatchPasswordZustand from '../../stores/patch-password.store';
 import useIdSearchResultZustand from '../../stores/id-search-result-store';
 
@@ -127,44 +126,38 @@ function SignIn({ onPathChange }: AuthComponentProps) {
 
 // component: 아이디 찾기 화면 컴포넌트 //
 function FindId({ onPathChange }: AuthComponentProps) {
-
-    // state: 변수 상태 //
-    const [name, setName] = useState<string>('');
-    const [telNumber, setTelNumber] = useState<string>('');
-    const [telAuthNumber, setTelAuthNumber] = useState<string>('');
-
-    const [isSend, setSend] = useState<boolean>(false);
-    const [isAuth, setAuth] = useState<boolean>(false);
-
+    
     // state: 메시지 상태 //
+    const [nameMessage, setNameMessage] = useState<string>('');
     const [telMessage, setTelMessage] = useState<string>('');
     const [authMessage, setAuthMessage] = useState<string>('');
+    
+    // state: 메시지 에러 상태 //
+    const [isNameMessageError, setNameMessageError] = useState<boolean>(false);
     const [isTelMessageError, setTelMessageError] = useState<boolean>(false);
     const [isAuthMessageError, setAuthMessageError] = useState<boolean>(false);
-
-    // state: 매칭 상태 //
-    const [isMatched1, setIsMatched1] = useState<boolean>(false);
-    const [isMatched2, setIsMatched2] = useState<boolean>(false);
-
+    
     // state: 아이디 찾기 입력값 검증 상태 //
+    const [isSend, setSend] = useState<boolean>(false);
     const [isName, setIsName] = useState<boolean>(false);
     const [isTelNumber, setIsTelNumber] = useState<boolean>(false);
-    const [isTelAuthNumber, setIsTelAuthNumber] = useState<boolean>(false);
+    const [isCheckedTelAuthNumber, setIsCheckedTelAuthNumber] = useState<boolean>(false);
+    const [isIdAndTelNumberMatched, setIdAndTelNumberMatched] = useState<boolean>(false);
+    const [isTelNumberAndTelAuthNumberMatched, setTelNumberAndTelAuthNumberMatched] = useState<boolean>(false);
 
     // state: zustand 상태 //
-    const { setZusName, setZusTelNumber, setZusUserId } = useIdSearchResultZustand();
+    const { name, telNumber, userId, telAuthNumber, 
+        setName, setTelNumber, setUserId, setTelAuthNumber
+    } = useIdSearchResultZustand();
 
     // variable: 아이디 찾기 가능 상태 확인 //
-    const isIdSearchPossible = isName && isTelNumber && isTelAuthNumber;
-
-    // variable: 변수 선언 //
-    const isPossible = isName && isMatched1 && isMatched2;
+    const isIdSearchPossible = name && telNumber && telAuthNumber && isSend && isName && isTelNumber && isCheckedTelAuthNumber;
 
     // function: 네비게이터 //
     const navigator = useNavigate();
 
-    // function: 아이디 찾기 before Response 처리 함수 //
-    const idSearchBeforeResponse = (responseBody: ResponseDto | null) => {
+    // function: 아이디 찾기 name + telNumber 1차 Response 처리 함수 //
+    const idSearchNameTelNumberResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
             responseBody.code === 'NF' ? '존재하지 않는 정보입니다.' :
@@ -173,17 +166,30 @@ function FindId({ onPathChange }: AuthComponentProps) {
             responseBody.code === 'SU' ? '정보가 확인되었습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
-
         setTelMessage(message);
         setTelMessageError(!isSuccessed);
         setSend(isSuccessed);
-
-        if (!isSuccessed) return;
         
     };
 
+    // function: 아이디 찾기에서 전화번호 + 인증번호 확인 Response 처리 함수 //
+    const idSearchtelAuthCheckResponse = (responseBody: ResponseDto | null) => {
+        const message = 
+        !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
+        responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'SU' ? '인증번호가 확인되었습니다.' : '';
+
+        const isSuccessed = responseBody != null && responseBody.code === 'SU';
+
+        setAuthMessage(message);
+        setAuthMessageError(!isSuccessed);
+        setIsCheckedTelAuthNumber(isSuccessed)
+    };
+
     // function: 아이디 찾기 after Response 처리 함수 //
-    const idSearchAfterResponse = (responseBody: IdSearchResponseDto | ResponseDto | null) => {
+    const idSearchResultResponse = (responseBody: IdSearchResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
             responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
@@ -191,66 +197,68 @@ function FindId({ onPathChange }: AuthComponentProps) {
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
 
-        setAuthMessage(message);
-        setAuthMessageError(!isSuccessed);
-        setAuth(isSuccessed);
+        if (!isSuccessed) return;
 
         const idCheckResult = responseBody as IdSearchResponseDto;
-        setZusName(idCheckResult.name);
-        setZusTelNumber(idCheckResult.telNumber);
-        setZusUserId(idCheckResult.userId);
+        setName(idCheckResult.name);
+        setTelNumber(idCheckResult.telNumber);
+        setUserId(idCheckResult.userId);
     };
 
     // event handler: 이름 변경 이벤트 핸들러 //
     const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setName(value);
-        setIsName(true);
+
+        const name = value;
+
+        const message = value ? '' : '이름을 입력해주세요.';
+        setNameMessage(message);
+        setNameMessageError(true);
     }
 
     // event Handler: 전화번호 변경 이벤트 처리 //
     const onTelNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setTelNumber(value);
-        setIsTelNumber(true);
+
+        setSend(false);
+        setTelMessage('');
     };
 
-    // event handler: 전화번호 인증번호 변경 이벤트 핸들러 //
+    // event handler: 인증번호 변경 이벤트 핸들러 //
     const onAuthNumberChangeHandler = (evnet: ChangeEvent<HTMLInputElement>) => {
         const { value } = evnet.target;
         setTelAuthNumber(value);
-        setIsTelAuthNumber(true);
+
+        setAuthMessage('');
     };
 
     // event handler: 아이디 찾기 이름 & 전화번호 입력 후 전송 버튼 클릭 이벤트 핸들러 //
     const onSendClickHandler = () => {
-        if (!telNumber) return;
+        if (!name || !telNumber) return;
 
         const pattern = /^[0-9]{11}$/;
-        const isTrue = pattern.test(telNumber);
-        setIsMatched1(isTrue);
+        const isMatched = pattern.test(telNumber);
 
-        if (isTrue) {
-            setTelMessage('인증번호가 전송되었습니다.');
-            const requestBody: IdSearchBeforeRequestDto = { name, telNumber };
-            idSearchBeforeRequest(requestBody).then(idSearchBeforeResponse);
+        if (!isMatched) {
+            setTelMessage('숫자 11자 입력해주세요.');
+            setTelMessageError(true);
+            return;
         }
+
+        const requestBody: IdSearchNameTelNumberRequestDto = { name, telNumber };
+        idSearchNameTelNumberRequest(requestBody).then(idSearchNameTelNumberResponse);
     }
 
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
     const onCheckClickHandler = () => {
         if (!telAuthNumber) {
-            setAuthMessage('인증번호가 일치하지 않습니다.');
             return;
         }
 
-        // 랜덤 생성한 인증 번호 4자리와 일치하다면
-        const isTrue = true;
-        // setIsMatched2(isTrue);
-        setAuth(isTrue);
-
-        if (isTrue) setAuthMessage('인증번호가 일치합니다.');
-        else setAuthMessage('인증번호가 일치하지 않습니다.');
+        const requestBody: TelAuthCheckRequestDto = {telNumber, telAuthNumber};
+        idSearchTelAuthRequest(requestBody).then(idSearchtelAuthCheckResponse);
     }
 
     // event handler: 엔터키로 전송 버튼 동작 //
@@ -276,8 +284,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
         
         onPathChange('findIdResult');
 
-        const requestBody: IdSearchAfterRequestDto = { telNumber, telAuthNumber };
-        idSearchAfterRequest(requestBody).then(idSearchAfterResponse);
+        getIdSearchRequest(name, telNumber).then(idSearchResultResponse);
     };
 
     //render: 아이디 찾기 화면 렌더링 //
@@ -285,7 +292,10 @@ function FindId({ onPathChange }: AuthComponentProps) {
         <div id='find-id'>
             <div className='auth-title'>아이디 찾기</div>
             <div className='login-box'>
-                <input className='input-id' placeholder='이름' value={name} onChange={onNameChangeHandler}></input>
+                <div className='name'>
+                    <input className='input-id' placeholder='이름' value={name} onChange={onNameChangeHandler} />
+                    <div className={`name-message message ${isNameMessageError ? 'false' : 'true'}`}>{nameMessage}</div>
+                </div>
                 <div className='tel'>
                     <input className='tel-number' placeholder='전화번호 – 빼고 입력해주세요.' value={telNumber} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
                     <div className='send-button' onClick={onSendClickHandler}>전송</div>
@@ -298,7 +308,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
                             <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
                             <div className='send-button' onClick={onCheckClickHandler}>확인</div>
                         </div>
-                        <div className={`message ${isAuth ? 'false' : 'true' }`}>{authMessage}</div>
+                        <div className={`message ${isAuthMessageError ? 'false' : 'true' }`}>{authMessage}</div>
                     </div>
                 }
 
@@ -317,14 +327,14 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
     const [isName, setIsName] = useState<boolean>(false);
     const [isTelNumber, setIsTelNumber] = useState<boolean>(false);
     const [isTelAuthNumber, setIsTelAuthNumber] = useState<boolean>(false);
-
-    const [telAuthNumber, setTelAuthNumber] = useState<string>('');
     
     // state: 아이디 찾기 상태 //
     const [idSearchMessage, setIdSearchMessage] = useState<string>('');
 
     // state: zustand 만든 거 가져오기 //
-    const { zusName, setZusName, zusTelNumber, setZusTelNumber, zusUserId, setZusUserId } = useIdSearchResult();
+    const { name, telNumber, userId, telAuthNumber, 
+        setName, setTelNumber, setUserId, setTelAuthNumber
+    } = useIdSearchResultZustand();
 
     // variable: 아이디 찾기 가능 상태 확인 //
     const isIdSearchPossible = isName && isTelNumber && isTelAuthNumber;
@@ -339,15 +349,15 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
             <div className='login-box'>
                 <div className='one-line'>
                     <div className='name'>이름</div>
-                    <div className='name-result'>{zusName}</div>
+                    <div className='name-result'>{name}</div>
                 </div>
                 <div className='one-line'>
                     <div className='telNumber'>전화번호</div>
-                    <div className='telNumber-result'>{zusTelNumber}</div>
+                    <div className='telNumber-result'>{telNumber}</div>
                 </div>
                 <div className='one-line'>
                     <div className='id'>아이디</div>
-                    <div className='id-result'>{zusUserId}</div>
+                    <div className='id-result'>{userId}</div>
                 </div>
             </div>
             <div className='login-button' onClick={() => onPathChange('logIn')}>로그인</div>
