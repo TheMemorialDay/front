@@ -1,6 +1,9 @@
+import ResponseDto from "../response.dto";
 
-export default interface StoreInfor {
+
+export default interface GetStoreResponseDto extends ResponseDto {
   storeNumber: number;
+  userId: string;
   storeName: string;
   storeIntroduce: string | null;
   storeParticular: string | null;
@@ -11,10 +14,9 @@ export default interface StoreInfor {
   storeDong: string;
   storeLatitude: string;
   storeLongtitude: string;
+  storeRating: number;
   storeTel: string | null;
-  storeImageUrl: string;
-  reviewCount: number;
-  likeCount: number;
+  storeImageUrl: File;
   mondayOpen: string;
   mondayLast: string;
   tuesdayOpen: string;

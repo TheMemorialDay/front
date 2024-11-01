@@ -21,7 +21,7 @@ export default function CartBox() {
 
     // render: 장바구니 상자 컴포넌트 렌더링 //
     return (
-        <div className='cart-box' onClick={() => onItemDetailClickHandler(ST_ABSOLUTE_ORDER_DETAIL_PATH)}>
+        <div className='cart-box' >
             <div className='image'></div>
             <div className='cart-info'>
                 <div className='product-name'>부산 케이크</div>

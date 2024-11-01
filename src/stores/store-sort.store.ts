@@ -1,16 +1,17 @@
 import { create } from "zustand";
 import StoreInfor from "../types/store-infor.interface";
+import { StoreComponentProps } from "../types";
 
 
 interface StoreState {
-  stores: StoreInfor[]; // stores 배열
+  stores: StoreComponentProps[]; // stores 배열
   sortBy: string; // 정렬 기준
-  sortedStores: StoreInfor[]; // 정렬된 stores 배열
-  setStores: (newStores: StoreInfor[]) => void; // stores 설정 함수
+  sortedStores: StoreComponentProps[]; // 정렬된 stores 배열
+  setStores: (newStores: StoreComponentProps[]) => void; // stores 설정 함수
   setSortBy: (sortBy: string) => void; // 정렬 기준 설정 함수
 }
 
-const sortStores = (stores: StoreInfor[], sortBy: string) => {
+const sortStores = (stores: StoreComponentProps[], sortBy: string) => {
   switch (sortBy) {
     case 'review': // 리뷰 순
       return [...stores].sort((a, b) => b.reviewCount - a.reviewCount);
@@ -27,12 +28,12 @@ const sortStores = (stores: StoreInfor[], sortBy: string) => {
 }
 
 const useSortStore = create<StoreState>((set) => ({
-  stores: [] as StoreInfor[], // 상점 리스트
+  stores: [] as StoreComponentProps[], // 상점 리스트
   sortBy: 'none',
-  sortedStores: [] as StoreInfor[], // 정렬된 상점 리스트
-
+  sortedStores: [] as StoreComponentProps[], // 정렬된 상점 리스트
+  // 
   // 상점 데이터 설정 함수
-  setStores: (newStores: StoreInfor[]) => set((state) => ({
+  setStores: (newStores: StoreComponentProps[]) => set((state) => ({
     stores: newStores,
     sortedStores: sortStores(newStores, state.sortBy),
   })),

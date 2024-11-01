@@ -1,7 +1,15 @@
-import React, { useState } from 'react'
+import React, { MouseEvent, useEffect, useState } from 'react'
 import './style.css';
 import StoreComponent from '../../components/storeThumbnail';
 import { useSortStore } from '../../stores';
+import { GetStoreListResponseDto } from '../../apis/dto/response/stores';
+import { ResponseDto } from '../../apis/dto/response';
+import { getStoreListRequest } from '../../apis';
+import { StoreComponentProps } from '../../types';
+import { useNavigate } from 'react-router';
+import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
+import { usePagination } from '../../hooks';
+import Pagination from '../../components/Pagination';
 
 interface CakeComponentProps {
   imageUrl: string;
@@ -43,6 +51,48 @@ function CakeSorting() {
       </optgroup>
     </select>
   );
+}
+
+interface StoreRowProps {
+  store: StoreComponentProps,
+  getStoreList: () => void;
+}
+
+// component: 스토어 리스트 아이템 컴포넌트 //
+function StoreRow({ store, getStoreList }: StoreRowProps) {
+
+  const navigator = useNavigate();
+
+  const onPostButtonClickHandler = () => {
+    navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH(store.storeNumber));
+  };
+
+  const [checked, setChecked] = useState<boolean>(false);
+
+  const onHeartClickHandler = (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    checked ? setChecked(false) : setChecked(true);
+  };
+
+  // render: 스토어 리스트 컴포넌트 렌더링 //
+  return (
+    <div id="store-component-wrapper">
+      <div className='store-card' onClick={onPostButtonClickHandler}>
+        <div className='shop-image' style={{ backgroundImage: `url(${store.storeImageUrl})` }}></div>
+        <div className='shop-info'>
+          <div className='liked'>
+            <h2 className="shop-name">{store.storeName}</h2>
+            <div onClick={onHeartClickHandler} className={checked ? 'red-heart' : 'white-heart'}></div>
+          </div>
+
+
+          <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
+          <p className="shop-rating">별점 {store.reviewRating}</p>
+          <p className="shop-reviews">리뷰 {store.reviewCount}</p>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 interface TagProps {
@@ -124,6 +174,9 @@ export default function Stores() {
 
   // state: 당일 케이크 가능 여부 상태 //
   const [productToday, setProductToday] = useState<boolean>(false);
+
+  // state: 가게 리스트 상태 //
+  const [storeList, setStoreList] = useState<StoreComponentProps[]>([]);
 
   // event handler: 테마 클릭 이벤트 핸들러 //
   const onThemaClickHandler = (thema: string) => {
@@ -218,9 +271,55 @@ export default function Stores() {
     setProductToday(!productToday);
   }
 
+  // event handler: 초기화 버튼 클릭 이벤트 //
+  const onResetClickHandler = () => {
+    setSelectedTags([]);
+  }
+
+  // event handler: 선택된 옵션 삭제 클릭 이벤트 //
   const handleTagRemove = (tag: string) => {
     setSelectedTags(selectedTags.filter((selectedTag) => selectedTag !== tag));
   };
+
+  // function: store list 불러오기 함수 //
+  const getStoreList = () => {
+    getStoreListRequest().then(getStoreListResponse);
+  }
+
+  // function: get store list 불러오기 //
+  const getStoreListResponse = (responseBody: GetStoreListResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { stores } = responseBody as GetStoreListResponseDto;
+    setStoreList(stores);
+    setTotalList(stores);
+  }
+
+  // 커스텀 훅 가져오기
+  const {
+    currentPage,
+    totalPage,
+    totalCount,
+    viewList,
+    pageList,
+    setTotalList,
+    initViewList,
+    onPageClickHandler,
+    onPreSectionClickHandler,
+    onNextSectionClickHandler,
+  } = usePagination<StoreComponentProps>();
+
+  // effect: 로드시 상점 리스트 불러오기 함수 //
+  useEffect(getStoreList, []);
 
   return (
     <div id='store-wrapper'>
@@ -246,7 +345,6 @@ export default function Stores() {
               <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={selectedThema === "한입 케이크"} onClick={() => onThemaClickHandler("한입 케이크")} />
               <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={selectedThema === "도시락 케이크"} onClick={() => onThemaClickHandler("도시락 케이크")} />
               <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={selectedThema === "이단 케이크"} onClick={() => onThemaClickHandler("이단 케이크")} />
-              <CakeComponent imageUrl="/today.png" context="당일 케이크" isSelected={selectedThema === "당일 케이크"} onClick={() => onThemaClickHandler("당일 케이크")} />
               <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={selectedThema === "비건 케이크"} onClick={() => onThemaClickHandler("비건 케이크")} />
               <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={selectedThema === "떡 케이크"} onClick={() => onThemaClickHandler("떡 케이크")} />
             </div>
@@ -255,7 +353,7 @@ export default function Stores() {
       </div>
       <div className='store-box'>
         <div className="sorting-header">
-          <div className="item-count">전체 100개 중 21개</div>
+          <div className="item-count">전체 {totalCount}개</div>
           <div className="sorting-dropdown">
             <CakeSorting />
           </div>
@@ -368,14 +466,28 @@ export default function Stores() {
               </div>
             }
           </div>
-          <button className="reset-button">초기화 ↻</button>
+          <button className="reset-button" onClick={onResetClickHandler}>초기화 ↻</button>
         </div>
         <div className='shop-list'>
-          <StoreComponent storeImageUrl="/picture1.png" storeName="이도씨 베이킹" location="금정구 부곡동" reviewRating={4.5} reviews={127} />
+          {/* <StoreComponent storeImageUrl="https://i.ibb.co/7Qg0CTF/ready-To-Image.png" storeName="이도씨 베이킹" location="금정구 부곡동" reviewRating={4.5} reviews={127} />
           <StoreComponent storeImageUrl="/picture12.png" storeName="어스 베이킹" location="금정구 장전동" reviewRating={4.3} reviews={291} />
           <StoreComponent storeImageUrl="/picture13.png" storeName="바닐바닐" location="금정구 장전동" reviewRating={3.8} reviews={83} />
-          <StoreComponent storeImageUrl="/picture14.png" storeName="온도 케이크" location="동래구 명륜동" reviewRating={4.0} reviews={333} />
+          <StoreComponent storeImageUrl="/picture14.png" storeName="온도 케이크" location="동래구 명륜동" reviewRating={4.0} reviews={333} /> */}
+          {
+            storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList} />)
+          }
         </div>
+
+          {/* <div className='store-bottom'>
+            <Pagination
+              pageList={pageList}
+              currentPage={currentPage}
+              onPageClickHandler={onPageClickHandler}
+              onPreSectionClickHandler={onPreSectionClickHandler}
+              onNextSectionClickHandler={onNextSectionClickHandler}
+            />
+          </div> */}
+
       </div>
     </div >
   )

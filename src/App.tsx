@@ -4,15 +4,17 @@ import './App.css';
 import MainLayout from './layouts/MainLayout';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import { JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH, 
-  ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH, 
-  SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, SHOPPING_CART_PATH, MY_PATH, 
-  MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_LIKE_PATH, MY_STORE_PATH, MY_PRODUCT_PATH, 
-  MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PASSWORD_CHECK_PATH, MY_PRODUCT_ADD_PATH, 
+import {
+  JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH,
+  ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH,
+  SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, SHOPPING_CART_PATH, MY_PATH,
+  MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_LIKE_PATH, MY_STORE_PATH, MY_PRODUCT_PATH,
+  MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PASSWORD_CHECK_PATH, MY_PRODUCT_ADD_PATH,
   MY_PRODUCT_UPDATE_PATH,
   ST_PRODUCT_ORDER_PATH,
   ST_ORDER_DONE_PATH,
-  ACCESS_TOKEN,
+  MY_STORE_DETAIL_PATH,
+  ST_NUMBER_PATH,ACCESS_TOKEN,
   ROOT_PATH,
   SIGN_IN_ABSOLUTE_PATH,
   JO_USER_PATH} from './constants';
@@ -42,16 +44,19 @@ import QaWrite from './view/Support/qa_write';
 import QaDetail from './view/Support/qa_detail';
 import OkayScreen from './view/Join/okScreen';
 import ShoppingCart from './view/shopping_cart';
+import Add from './view/MyPage/MyProduct/update';
 import Update from './view/MyPage/MyProduct/update';
 import MyPasswordCheck from './view/MyPage/MyInfo/MyPasswordCheck';
 import { useCookies } from 'react-cookie';
 import NotMember from './components/Modal/NotMember';
 import Order from './view/Stores/Order/detail';
 import DoneScreen from './view/Stores/Order/done';
+import ShopMain from './components/Shopinformation';
 import { GetSignInRequest } from './apis';
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
 import { useSignInUserStore } from './stores';
+
 
 // component: root path 컴포넌트 //
 function Index() {
@@ -86,12 +91,12 @@ export default function TheMemorialDay() {
   const navigator = useNavigate();
 
   const handleNotMemberModalClose = () => {
-      setShowNotMemberModal(false);
+    setShowNotMemberModal(false);
   };
 
   const handleNotMemberModalConfirm = () => {
     setShowNotMemberModal(false);
-      navigator(LOGIN_PATH); // 로그인 페이지로 이동
+    navigator(LOGIN_PATH); // 로그인 페이지로 이동
   };
 
   // function: get sign in response 처리 함수 //
@@ -119,7 +124,7 @@ export default function TheMemorialDay() {
   useEffect(() => {
     const accessToken = cookies[ACCESS_TOKEN];
     if(accessToken) {
-	    GetSignInRequest(accessToken).then(getSignInResponse);
+       GetSignInRequest(accessToken).then(getSignInResponse);
     } else {
       setSignInUser(null);
     }
@@ -128,31 +133,42 @@ export default function TheMemorialDay() {
 
   return (
     <>
-    <Routes>
-      <Route element={<MainLayout />}>
-        <Route index element={<Index />} />
-      </Route>
-      <Route path={ST_PATH} element={<MainLayout />}>
-        <Route index element={<Stores />} />
-        <Route path={ST_PATH} element={<Stores />} />
-        <Route path={ST_ORDER_DETAIL_PATH} >
-          <Route index element={<ShopOrder />} />
-          <Route path={ST_PRODUCT_ORDER_PATH} element={<Order/>}/>
-          <Route path={ST_ORDER_DONE_PATH} element={<DoneScreen/>}/>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route index element={<Index />} />
         </Route>
-        <Route path={ST_INFORMATION_DETAIL_PATH} element={<ShopInformation />} />
-        <Route path={ST_CONTACT_DETAIL_PATH} element={<ShopContact />} />
-        <Route path={ST_REVIEW_DETAIL_PATH} element={<ShopReview />} />
-      </Route>
+
+        <Route path={ST_PATH} element={<MainLayout />}>
+          <Route index element={<Stores />} />
+
+          <Route path={ST_NUMBER_PATH(':storeNumber')} element={<ShopMain />}>
+            <Route path={ST_ORDER_DETAIL_PATH}>
+              <Route index element={<ShopOrder />} />
+            </Route>
+            <Route path={ST_INFORMATION_DETAIL_PATH} element={<ShopInformation />} />
+            <Route path={ST_CONTACT_DETAIL_PATH} element={<ShopContact />} />
+            <Route path={ST_REVIEW_DETAIL_PATH} element={<ShopReview />} />
+          </Route>
+
+          <Route path={ST_NUMBER_PATH(':storeNumber')}>
+            <Route path={ST_ORDER_DETAIL_PATH}>
+              <Route path={ST_PRODUCT_ORDER_PATH} element={<Order />} />
+              <Route path={ST_ORDER_DONE_PATH} element={<DoneScreen />} />
+            </Route>
+          </Route>
+        </Route>
+
       <Route path={OTHERS_PATH} element={<Index />} />
       <Route path={LOGIN_PATH} element={<MainLayout />} >
         <Route path={LOGIN_PATH} element={<Auth />} />
         <Route path={SIGN_UP_PATH} element={<SignUp />} />
       </Route>
+
       <Route path={JO_PATH} element={<MainLayout />}  >
         <Route path={JO_USER_PATH(':userId')} element={<Join />} />
         <Route path={JOIN_OKAY_PATH} element={<OkayScreen />} />
       </Route>
+
       <Route path={SU_PATH} element={<MainLayout />}  >
         <Route path={SU_PATH} element={<Support />} />
         <Route path={SU_NOTICE_DETAIL_PATH(':noticeNumber')} element={<NoticeDetail />} />
@@ -160,38 +176,35 @@ export default function TheMemorialDay() {
         <Route path={SU_QA_WRITE_PATH} element={<QaWrite />} />
         <Route path={SU_QA_DETAIL_PATH(':questionNumber')} element={<QaDetail />} />
       </Route>
-      <Route path={SHOPPING_CART_PATH} element={<MainLayout />} >
-        <Route path={SHOPPING_CART_PATH} element={<ShoppingCart />} />
-      </Route>
+      
       <Route path={MY_PATH} element={<MainLayout />}  >
         <Route path={MY_PATH} element={<MyPage />} />
         <Route path={MY_INFO_PATH} >
           <Route index element={<InfoUpdate />} />
-        <Route path={MY_PASSWORD_CHECK_PATH} element={<MyPasswordCheck />} />
+          <Route path={MY_PASSWORD_CHECK_PATH} element={<MyPasswordCheck />} />
         </Route>
         <Route path={MY_REVIEW_PATH} element={<MyReview />} />
         <Route path={MY_ORDER_DETAIL_PATH} element={<MyOrder />} />
         <Route path={MY_LIKE_PATH} element={<MyLike />} />
-        <Route path={MY_STORE_PATH} element={<MyStore />} />
+        <Route path={MY_STORE_PATH} element={<MyStore />} >
+          <Route path={MY_STORE_DETAIL_PATH(':storeNumber')} element={<MyStore />} />
+        </Route>
 
         <Route path={MY_PRODUCT_PATH}>
           <Route index element={<MyProduct />} />
-          <Route path={MY_PRODUCT_ADD_PATH} element={<Update/>} /> 
+          <Route path={MY_PRODUCT_ADD_PATH} element={<Add/>} /> 
           <Route path={MY_PRODUCT_UPDATE_PATH} element={<Update />} />
         </Route>
-
-        <Route path={MY_ORDER_MANAGE_PATH} element={<MyOrderManage />} />
-        <Route path={MY_SALES_PATH} element={<MySales />} />
       </Route>
     </Routes>
-    {showNotMemberModal && (
-                <NotMember
-                    onClose={handleNotMemberModalClose}
-                    onConfirm={handleNotMemberModalConfirm}
-                />
-            )}
+      {showNotMemberModal && (
+        <NotMember
+          onClose={handleNotMemberModalClose}
+          onConfirm={handleNotMemberModalConfirm}
+        />
+      )}
     </>
-    
+
   );
 
 }

@@ -40,7 +40,7 @@ export default function Home() {
             <section ref={readerRef} className="reader" id="read">
                 <div className="content">
                     <div data-split aria-hidden="true">
-                        <h1  style={{fontSize: '54px'}} className='reader-content-comment'>
+                        <h1  style={{fontSize: '50px'}} className='reader-content-comment'>
                             당신의 특별한 일상이 더욱 특별해지길
                         </h1>
                     </div>
