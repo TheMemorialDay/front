@@ -10,13 +10,14 @@ export default interface GetStoreResponseDto extends ResponseDto {
   storeContact: string | null;
   storeCaution: string | null;
   storeAddress: string;
+  storeDetailAddress: string;
   storeGugun: string;
   storeDong: string;
   storeLatitude: string;
   storeLongtitude: string;
   storeRating: number;
   storeTel: string | null;
-  storeImageUrl: File;
+  storeImageUrl: string;
   mondayOpen: string;
   mondayLast: string;
   tuesdayOpen: string;

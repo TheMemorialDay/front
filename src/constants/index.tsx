@@ -23,7 +23,7 @@ export const SHOPPING_CART_PATH = '/shopping-cart';
 
 
 export const JO_PATH = '/join';
-export const JO_USER_PATH = (userId: string) =>  `${userId}`;
+export const JO_USER_PATH = (userId: string) => `${userId}`;
 export const JOIN_OKAY_PATH = 'okay';
 
 export const OTHERS_PATH = '*';

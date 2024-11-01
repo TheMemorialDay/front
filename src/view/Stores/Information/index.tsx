@@ -48,7 +48,13 @@ export default function ShopInformation() {
         }
 
         <div className='line'></div>
-        <div className='shop-locate'>위치설명</div>
+        <div className='shop-locate'>
+          {
+            store?.storeParticular?.split('\\n').map((line, index) => (
+              <div key={index}>{line}</div>
+            ))
+          }
+        </div>
       </div>
     </div>
   )

@@ -42,9 +42,11 @@ export default function ShopContact() {
         <div className='shop-review' onClick={onReviewButtonClickHandler}>리뷰</div>
       </div>
       <div className='contact'>
-        <h2>인스타그램  @abc_cake53 </h2>
-        <h2>오픈채팅  https://open.kakao.com/o/s6738n2f</h2>
-        <h2>* 마이페이지 – 가게 관리, 문의하기에서 적은 글</h2>
+        {
+          store?.storeContact?.split('\\n').map((line, index) => (
+            <h2 style={{ margin: 10 }} key={index}>{line}</h2>
+          ))
+        }
       </div>
     </div>
   )
