@@ -47,6 +47,7 @@ const MyPage = () => {
         return undefined;
     }
 
+
     // event handler: 가게등록 유무 핸들러 //
     const handleStoreNavigation = async () => {
         try {
@@ -104,7 +105,7 @@ const MyPage = () => {
                     <div className='category-title'>찜한 가게</div>
                 </div>
             </div>
-            {permission === '사장' ? 
+            {permission === '사장' ?
                 <div id='ceo'>
                     <div className='store' onClick={handleStoreNavigation}>
                         <div className='category-icon store'></div>
@@ -123,8 +124,8 @@ const MyPage = () => {
                         <div className='category-title'>매출 관리</div>
                     </div>
                 </div>
-            :
-            ''
+                :
+                ''
             }
             
         </div>

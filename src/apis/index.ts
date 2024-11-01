@@ -285,8 +285,8 @@ export const idSearchTelAuthRequest = async (requestBody: IdSearchTelAndAuthRequ
 };
 
 // function: get id search result 요청 함수 //
-export const getIdSearchRequest = async (name: string, telNumber: string, userId: string) => {
-  const responseBody = await axios.get(ID_SEARCH_RESULT_API_URL)
+export const getIdSearchRequest = async (requestBody: IdSearchNameTelNumberRequestDto) => {
+  const responseBody = await axios.post(ID_SEARCH_RESULT_API_URL, requestBody)
     .then(responseDataHandler<IdSearchResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;

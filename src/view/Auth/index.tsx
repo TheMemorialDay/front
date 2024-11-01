@@ -286,7 +286,11 @@ function FindId({ onPathChange }: AuthComponentProps) {
         
         onPathChange('findIdResult');
 
-        getIdSearchRequest(name, telNumber, userId).then(idSearchResultResponse);
+        const requestBody: IdSearchNameTelNumberRequestDto = {
+            name, telNumber
+        }
+
+        getIdSearchRequest(requestBody).then(idSearchResultResponse);
     };
 
     //render: 아이디 찾기 화면 렌더링 //
@@ -520,14 +524,14 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 function ChangePassword({ onPathChange }: AuthComponentProps) {
 
     // state: zustand 상태 //
-    const { userId, zusTelNumber, telAuthNumber, zusPassword, setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword} = usePatchPasswordZustand();
+    const { userId, zusTelNumber, telAuthNumber, zusPassword, 
+        setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword} 
+        = usePatchPasswordZustand();
 
     // state: 새 비밀번호 상태 //
     const [newPassword, setNewPassword] = useState<string>('');
 
     // state: 변수 상태 //
-    // const [password, setPassword] = useState<string>('');
-
     const [passwordCheck, setPasswordCheck] = useState<string>('');
     const [pwCheckMsg, setPwCheckMsg] = useState<string>('');
     const [isMatched1, setIsMatched1] = useState<boolean>(false);
