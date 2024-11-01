@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { ResponseDto } from "./dto/response";
-import { IdCheckRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
-import { GetOnlyPasswordResponseDto, IdSearchResponseDto } from "./dto/response/auth";
+import { IdCheckRequestDto, PasswordResettinIdTelRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { IdSearchResponseDto } from "./dto/response/auth";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
 import GetSignInResponseDto from "./dto/response/auth/get-sign-in-response.dto";
@@ -63,15 +63,20 @@ const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
+
 //* ====================== 아이디 찾기
 const ID_SEARCH_NAME_TEL_API_URL = `${AUTH_MODULE_URL}/id-search-first`;
 const ID_SEARCH_TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/id-search-middle`;
 const ID_SEARCH_RESULT_API_URL = `${AUTH_MODULE_URL}/id-search-result`;
 //* ====================== 아이디 찾기
-const PASSWORD_SEARCH_API_URL = `${AUTH_MODULE_URL}/password-search`;
-const PASSWORD_SEARCH_AND_GET_PASSWORD_API_URL = (userId: string) => `${AUTH_MODULE_URL}/password-search/${userId}`;
-const PASSWORD_SEARCH_TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-tel-auth-check`;
+
+//* ================== 비밀번호 재설정
+const PASSWORD_RESETTING_ID_TEL_API_URL = `${AUTH_MODULE_URL}/password-search`;
+// const PASSWORD_SEARCH_AND_GET_PASSWORD_API_URL = (userId: string) => `${AUTH_MODULE_URL}/password-search/${userId}`;
+const PASSWORD_RESETTING_TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-tel-auth-check`;
 const PATCH_PASSWORD_API_URL = `${AUTH_MODULE_URL}/password-resetting`;
+//* ================== 비밀번호 재설정
+
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/get-sign-in`;
 
 // function: Authorizarion Bearer 헤더 //
@@ -280,24 +285,24 @@ export const idSearchTelAuthRequest = async (requestBody: IdSearchTelAndAuthRequ
 };
 
 // function: get id search result 요청 함수 //
-export const getIdSearchRequest = async (name: string, telNumber: string) => {
+export const getIdSearchRequest = async (name: string, telNumber: string, userId: string) => {
   const responseBody = await axios.get(ID_SEARCH_RESULT_API_URL)
     .then(responseDataHandler<IdSearchResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 };
 
-// function: password search (userId + telNumber) 요청 함수 //
-export const passwordSearchRequest = async (requestBody: PasswordSearchRequestDto) => {
-  const responseBody = await axios.post(PASSWORD_SEARCH_API_URL, requestBody)
-    .then(responseDataHandler<GetOnlyPasswordResponseDto>)
+// function: password resetting (userId + telNumber) 요청 함수 //
+export const passwordResettingIdTelRequest = async (requestBody: PasswordResettinIdTelRequestDto) => {
+  const responseBody = await axios.post(PASSWORD_RESETTING_ID_TEL_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
 };
 
-// function: password search tel-auth check (telNumber + telAuthNumber) 요청 함수 //
-export const passwordSearchTelAuthCheckRequest = async (requestBody: PasswordSearchTelAuthCheckRequestDto) => {
-  const responseBody = await axios.post(PASSWORD_SEARCH_TEL_AUTH_CHECK_API_URL, requestBody)
+// function: password RESETTING tel-auth check (telNumber + telAuthNumber) 요청 함수 //
+export const passwordResettingTelAuthCheckRequest = async (requestBody: PasswordSearchTelAuthCheckRequestDto) => {
+  const responseBody = await axios.post(PASSWORD_RESETTING_TEL_AUTH_CHECK_API_URL, requestBody)
     .then(responseDataHandler<ResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;

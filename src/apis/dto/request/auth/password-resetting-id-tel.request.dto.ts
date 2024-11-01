@@ -1,5 +1,5 @@
 // interface: 비밀번호 찾기 (아이디, 전화번호) 확인 요청 dto //
-export default interface PasswordSearchRequestDto {
+export default interface PasswordResettinIdTelRequestDto {
 	userId: string;
 	telNumber: string;
 }

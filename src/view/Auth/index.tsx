@@ -4,12 +4,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACCESS_TOKEN, ROOT_PATH, SIGN_UP_ABSOLUTE_PATH } from '../../constants';
 import { useCookies } from 'react-cookie';
 import SnsContainer from '../../components/sns_login_sign_up';
-import { GetOnlyPasswordResponseDto, IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
+import { IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { getIdSearchRequest, idSearchNameTelNumberRequest, idSearchTelAuthRequest, passwordSearchRequest, passwordSearchTelAuthCheckRequest, patchPasswordRequest, signInRequest } from '../../apis';
-import { IdSearchNameTelNumberRequestDto, PasswordSearchRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, TelAuthCheckRequestDto } from '../../apis/dto/request/auth';
+import { getIdSearchRequest, idSearchNameTelNumberRequest, idSearchTelAuthRequest, passwordResettingIdTelRequest, passwordResettingTelAuthCheckRequest, patchPasswordRequest, signInRequest } from '../../apis';
+import { IdSearchNameTelNumberRequestDto, PasswordResettinIdTelRequestDto, PatchPasswordRequestDto, SignInRequestDto, TelAuthCheckRequestDto } from '../../apis/dto/request/auth';
 import usePatchPasswordZustand from '../../stores/patch-password.store';
 import useIdSearchResultZustand from '../../stores/id-search-result-store';
+import PasswordResettingTelAuthCheckRequestDto from '../../apis/dto/request/auth/password-search-tel-auth-check.request.dto';
 
 
 type AuthPath = 'logIn' | 'findId' | 'findIdResult' | 'findPassword' | 'changePassword';
@@ -151,7 +152,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
     } = useIdSearchResultZustand();
 
     // variable: 아이디 찾기 가능 상태 확인 //
-    const isIdSearchPossible = name && telNumber && telAuthNumber && isSend && isName && isTelNumber && isCheckedTelAuthNumber;
+    const isIdSearchPossible = name && telNumber && telAuthNumber && isSend && isCheckedTelAuthNumber;
 
     // function: 네비게이터 //
     const navigator = useNavigate();
@@ -278,13 +279,14 @@ function FindId({ onPathChange }: AuthComponentProps) {
     // event handler: 최종 아이디 찾기 버튼 클릭 //
     const onIdSearchClickHandler = () => {
         if (!isIdSearchPossible) {
+            console.log(name, telNumber, telAuthNumber, isSend, isCheckedTelAuthNumber)
             alert('정확하게 입력해주세요.');
             return;
         }
         
         onPathChange('findIdResult');
 
-        getIdSearchRequest(name, telNumber).then(idSearchResultResponse);
+        getIdSearchRequest(name, telNumber, userId).then(idSearchResultResponse);
     };
 
     //render: 아이디 찾기 화면 렌더링 //
@@ -377,21 +379,20 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
     // state: 메세지 상태 //
     const [telMessage, setTelMessage] = useState<string>('');
     const [authMessage, setAuthMessage] = useState<string>('');
-
+    
     // state: 메세지 에러 상태 //
     const [isTelMessageError, setTelMessageError] = useState<boolean>(false);
     const [isAuthMessageError, setAuthMessageError] = useState<boolean>(false);
-
-    // state: 인증 번호 전송여부 상태 //
+    
+    // state: 검증 상태 //
     const [isSend, setSend] = useState<boolean>(false);
-    // state: 전화번호 인증 여부 //
-    const [isAuth, setAuth] = useState<boolean>(false);
+    const [userIdCheck, setUserIdCheck] = useState<boolean>(false);
 
     // variable: 비밀번호 재설정 가능 검증 //
-    const isPatchPasswordPossible = userId && isSend && isAuth;
+    const isPatchPasswordPossible = userId && zusTelNumber && isSend;
 
     // function: 비밀번호 찾기 (userId + telNumber) Response 처리 함수 //
-    const passwordSearchResponse = (responseBody: GetOnlyPasswordResponseDto |ResponseDto | null) => {
+    const passwordSearchResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
             responseBody.code === 'NF' ? '존재하지 않는 정보입니다.' :
@@ -404,11 +405,6 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         setTelMessage(message);
         setTelMessageError(!isSuccessed);
         setSend(isSuccessed);
-
-        if (!isSuccessed) return;
-
-        const { password } = responseBody as GetOnlyPasswordResponseDto;
-        console.log(password);
     };
 
     // function: 비밀번호 찾기 (인증번호 telAuthNumber 확인) Response 처리 함수 //
@@ -422,7 +418,6 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         setAuthMessage(message);
         setAuthMessageError(!isSuccessed);
-        setAuth(isSuccessed);
     };
 
     // event handler: 아이디 변경 이벤트 핸들러 //
@@ -456,8 +451,8 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
             return;
         }
 
-        const requestBody: PasswordSearchRequestDto = { userId, telNumber: zusTelNumber};
-        passwordSearchRequest(requestBody).then(passwordSearchResponse);
+        const requestBody: PasswordResettinIdTelRequestDto = { userId, telNumber: zusTelNumber};
+        passwordResettingIdTelRequest(requestBody).then(passwordSearchResponse);
     }
 
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
@@ -468,8 +463,8 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
             return;
         }
 
-        const requestBody: PasswordSearchTelAuthCheckRequestDto = { telNumber: zusTelNumber, telAuthNumber };
-        passwordSearchTelAuthCheckRequest(requestBody).then(passwordTelAuthCheckResponse);
+        const requestBody: PasswordResettingTelAuthCheckRequestDto = { telNumber: zusTelNumber, telAuthNumber };
+        passwordResettingTelAuthCheckRequest(requestBody).then(passwordTelAuthCheckResponse);
     }
 
     // event handler: 비밀번호 재설정 버튼 클릭 핸들러 //
@@ -498,7 +493,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         <div id='find-password'>
             <div className='auth-title'>비밀번호 찾기</div>
             <div className='login-box'>
-                <input className='input-id' placeholder='아이디' value={userId} onChange={onIdChangeHandler} />
+                    <input className='input-id' placeholder='아이디' value={userId} onChange={onIdChangeHandler} />
                 <div className='tel'>
                     <input className='tel-number' placeholder='전화번호 – 빼고 입력해주세요.' value={zusTelNumber} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
                     <div className='send-button' onClick={onSendClickHandler}>전송</div>
@@ -511,7 +506,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
                         <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
                         <div className='send-button' onClick={onCheckClickHandler}>확인</div>
                     </div>
-                    <div className={`message ${isAuth ? 'true' : 'false' }`}>{authMessage}</div>
+                    <div className={`message ${isAuthMessageError ? 'false' : 'true' }`}>{authMessage}</div>
                 </div>
                 }
 
