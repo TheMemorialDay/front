@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 #manage-product .title {
@@ -23,76 +24,40 @@
     flex-direction: column;
     justify-items: center;
 }
-
+/* 지금부터 수정 */
 #manage-product .product-box {
     display: flex;
-    flex-direction: row;
-    width: 80vw;
-    height: 330px;
-    gap: 50px;
-    justify-content: space-around;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 35px;
+    width: 60vw;
 }
 
 #manage-product .add-button {
-    width: 240px;
-    height: 300px;
+    width: 260px;
+    height: 320px;
     border: 1px solid #ddd;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     background-color: #fff;
-    margin-top: -20px;
-    margin-bottom: 20px;
     transition: transform 0.3s ease;
-    z-index: 1;
-
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    position: relative;
+    cursor: pointer;
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    cursor: pointer;
-}
-
-#manage-product .add-button:hover {
-    transform: translateY(-10px);
-}
-
-#manage-product .add-button .circle {
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    z-index: 2;
-    background-color: black;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-
-    font-size: 25px;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 10px;
-}
-
-#manage-product .add-button .add-text {
-    font-size: 22px;
-    font-weight: 600;
 }
 
 #manage-product .legacy-product {
-    width: 240px;
-    height: 300px;
+    width: 260px;
+    height: 320px;
     border: 1px solid #ddd;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    /* background-color: #fff; 이미지 안 보여서 이게 문제인가 싶어 주석처리 */
-    margin-top: -20px;
-    margin-bottom: 20px;
     transition: transform 0.3s ease;
     z-index: 1;
 
@@ -109,27 +74,46 @@
     position: relative;
 }
 
-.close-button {
-    display: none;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(255, 255, 255, 0.8); /* 반투명 배경 */
-    color: black;
-    padding: 5px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-weight: bold;
-}
-
+#manage-product .add-button:hover,
 #manage-product .legacy-product:hover {
     transform: translateY(-10px);
 }
 
-#manage-product .legacy-product:hover .close-button {
-    display: block;
+#manage-product .add-button .circle {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    z-index: 2;
+    background-color: black;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+
+    font-size: 25px;
+    font-weight: 500;
+    color: white;
+    margin-bottom: 10px;
 }
 
-.cake-item:hover {
-    transform: scale(1.05);
+#manage-product .add-button .add-text {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+
+.close-button {
+    display: none;
+    position: absolute;
+    font-size: 14px;
+    top: 12px;
+    right: 12px;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: black;
+    padding: 3px 6px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#manage-product .legacy-product:hover .close-button {
+    display: block;
 }
