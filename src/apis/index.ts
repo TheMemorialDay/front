@@ -11,7 +11,7 @@ import { GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
 import { PostProductRequestDto } from './dto/request/product/post-product-request.dto'; // DTO import
 import { GetProductListResponseDto, GetProductResponseDto } from './dto/response/product';
 import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
-import { PatchStoreRequestDto } from "./dto/request/store";
+import { PatchStoreRequestDto, PostStoreMainSearchRequestDto, PostStoresByProductNameSearchRequestDto, PostStoresByStoreNameSearchRequestDto } from "./dto/request/store";
 import BusinessCheckRequestDto from "./dto/request/join/business-check.request.dto";
 import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
@@ -30,7 +30,12 @@ const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODUL
 //const PATCH_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 // const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 
+//* ========================= stores
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
+// const GET_STORE_LIST_BY_STORE_NAME_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-by-store-name`;
+// const GET_STORE_LIST_BY_PRODUCT_NAME_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-by-product-name`;
+const GET_STORE_LIST_TOTAL_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-main`;
+//* ========================= stores
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
 // MyPage UserInfo
@@ -87,14 +92,6 @@ const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
     const { data } = response;
     return data;
 };
-
-// // function: post product 요청 함수 //
-// export const postProductRequest = async (requestBody: PostProductRequestDto, accessToken: string) => {
-//     const responseBody = await axios.post(POST_PRODUCT_API_URL, requestBody, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
 
 // function: get store number 요청 함수 //
 export const getStoreNumberRequest = async(userId: string, accessToken: string) => {
@@ -402,3 +399,27 @@ export const fileUploadRequest = async (requestBody: FormData) => {
         .catch(error => null);
     return url;
 }
+
+// function: stores main search by store name 요청 함수 //
+// export const postStoresByStoreNameSearchRequest = async (requestBody: PostStoresByStoreNameSearchRequestDto) => {
+//   const responseBody = await axios.post(GET_STORE_LIST_BY_STORE_NAME_SEARCH_API_URL, requestBody)
+//     .then(responseDataHandler<GetStoreListResponseDto>)
+//     .catch(responseErrorHandler);
+//   return responseBody;
+// };
+
+// function: stores main search by product name 요청 함수 //
+// export const postStoresByProductNameSearchRequest = async (requestBody: PostStoresByProductNameSearchRequestDto) => {
+//   const responseBody = await axios.post(GET_STORE_LIST_BY_PRODUCT_NAME_SEARCH_API_URL, requestBody)
+//     .then(responseDataHandler<GetStoreListResponseDto>)
+//     .catch(responseErrorHandler);
+//   return responseBody;
+// };
+
+// function: store main search 병합 버전 요청 함수 //
+export const getStoreMainSearchRequest = async (storeName: string, productName: string) => {
+  const responseBody = await axios.get(GET_STORE_LIST_TOTAL_SEARCH_API_URL, { params: { storeName, productName } })
+    .then(responseDataHandler<GetStoreListResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};

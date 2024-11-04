@@ -1,15 +1,14 @@
-import React, { MouseEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
 import './style.css';
-import StoreComponent from '../../components/storeThumbnail';
 import { useSortStore } from '../../stores';
 import { GetStoreListResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
-import { getStoreListRequest } from '../../apis';
+import { getStoreListRequest, getStoreMainSearchRequest } from '../../apis';
 import { StoreComponentProps } from '../../types';
 import { useNavigate } from 'react-router';
 import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
 import { usePagination } from '../../hooks';
-import Pagination from '../../components/Pagination';
+import { PostStoreMainSearchRequestDto, PostStoresByProductNameSearchRequestDto, PostStoresByStoreNameSearchRequestDto } from '../../apis/dto/request/store';
 
 interface CakeComponentProps {
   imageUrl: string;
@@ -178,6 +177,9 @@ export default function Stores() {
   // state: 가게 리스트 상태 //
   const [storeList, setStoreList] = useState<StoreComponentProps[]>([]);
 
+  // state: 메인 검색창 입력 상태 //
+  const [mainSearch, setMainSearch] = useState<string>('');
+
   // event handler: 테마 클릭 이벤트 핸들러 //
   const onThemaClickHandler = (thema: string) => {
     setSelectedThema(thema); // 클릭된 태그를 상태로 저장
@@ -318,6 +320,47 @@ export default function Stores() {
     onNextSectionClickHandler,
   } = usePagination<StoreComponentProps>();
 
+  //* ======================================== store main search
+  // event handler: 검색어 입력 변경 이벤트 핸들러 //
+  const onMainSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value }  = event.target;
+    setMainSearch(value);
+  };
+
+  // event handler: 검색어 입력 후 요청하는 이벤트 핸들러 //
+  const onStoresSearchClickHandler = () => {
+    if (!mainSearch) return;
+
+      getStoreMainSearchRequest(mainSearch, mainSearch).then(getStoresMainSearchResponse);
+  };
+
+  
+  // event handler: 검색어 입력 후 요청할 때 키보드 핸들러 //
+  const onStoresSearchKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onStoresSearchClickHandler();
+    }
+  };
+
+  // function: 가게명 검색 시 response 응답 처리 함수 //
+  const getStoresMainSearchResponse = (responseBody: GetStoreListResponseDto | ResponseDto | null) => {
+    const message = 
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody != null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const { stores } = responseBody as GetStoreListResponseDto;
+    setStoreList(stores);
+    setTotalList(stores);
+  };
+  //* ======================================== store main search
+
   // effect: 로드시 상점 리스트 불러오기 함수 //
   useEffect(getStoreList, []);
 
@@ -331,7 +374,13 @@ export default function Stores() {
             <div>검색하세요 !</div>
           </div>
           <div className='search'>
-            <input className='store-search' placeholder='검색어 입력' />
+            <input
+              className='store-search' 
+              placeholder='검색어 입력' 
+              onChange={onMainSearchChangeHandler}
+              onClick={onStoresSearchClickHandler}
+              onKeyDown={onStoresSearchKeyDownHandler}
+            />
             <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
         </div>
