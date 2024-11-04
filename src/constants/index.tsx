@@ -57,7 +57,7 @@ export const ST_ABSOLUTE_ORDER_DETAIL_PATH = (storeNumber: string | number) => `
 //export const ST_PRODUCT_ORDER_ABSOLUTE_PATH = `${ST_ABSOLUTE_ORDER_DETAIL_PATH}/${ST_PRODUCT_ORDER_PATH}`;
 export const ST_PRODUCT_ORDER_ABSOLUTE_PATH = (storeNumber: string | number, productNumber: string | number) => 
     `${ST_PATH}/${storeNumber}/order/${productNumber}`;
-export const ST_ORDER_DONE_ABSOLUTE_PATH = `${ST_ABSOLUTE_ORDER_DETAIL_PATH}/${ST_ORDER_DONE_PATH}`;
+export const ST_ORDER_DONE_ABSOLUTE_PATH = (storeNumber: string | number) => `${ST_PATH}/${storeNumber}/${ST_ORDER_DETAIL_PATH}/${ST_ORDER_DONE_PATH}`;
 
 export const ST_ABSOLUTE_INFORMATION_DETAIL_PATH = (storeNumber: string | number) => `${ST_PATH}/${ST_NUMBER_PATH(storeNumber)}/${ST_INFORMATION_DETAIL_PATH}`;
 export const ST_ABSOLUTE_CONTACT_DETAIL_PATH = (storeNumber: string | number) => `${ST_PATH}/${ST_NUMBER_PATH(storeNumber)}/${ST_CONTACT_DETAIL_PATH}`;

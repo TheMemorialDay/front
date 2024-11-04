@@ -9,6 +9,10 @@ import SalesDateSelectProps from "./sales-date-select.interface";
 import Product from "./product.interface";
 import { OrderRejectReason } from "./orderreject.interface";
 import SignInUser from "./sign-in-user.interface";
+import OptionDetail from "./option-detail.interface";
+import Option from "./option.interface";
+import SelectedOptionInterface from "./selected-option.interface";
+import RunningHours from "./running-hour.interface";
 
 export type {
     Product,
@@ -21,5 +25,9 @@ export type {
     YearSelectProps,
     SalesDateSelectProps,
     OrderRejectReason,
-    SignInUser
+    SignInUser,
+    OptionDetail,
+    Option,
+    SelectedOptionInterface,
+    RunningHours
 }

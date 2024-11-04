@@ -153,8 +153,8 @@ export default function TheMemorialDay() {
 
           <Route path={ST_NUMBER_PATH(':storeNumber')}>
             <Route path={ST_ORDER_DETAIL_PATH}>
-            <Route path={ST_PRODUCT_ORDER_PATH(':productNumber')} element={<Order />} />
-            <Route path={ST_ORDER_DONE_PATH} element={<DoneScreen />} />
+              <Route path={ST_PRODUCT_ORDER_PATH(':productNumber')} element={<Order />} />
+              <Route path={ST_ORDER_DONE_PATH} element={<DoneScreen />} />
             </Route>
           </Route> 
 
