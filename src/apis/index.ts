@@ -24,7 +24,7 @@ const POST_PRODUCT_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_LIST_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 //const PATCH_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
-// const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
+const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 
@@ -126,24 +126,28 @@ export const patchProductRequest = async (productNumber: number | string, data: 
     }
 };
 
-const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
-
-const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
+// function: delete product 요청 함수 //
+export const deleteProductRequest = async (productNumber: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_PRODUCT_API_URL(productNumber), bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+    return responseBody;
+}
 
 
 const responseDataHandler2 = <T extends ApiResponseDto>(response: AxiosResponse<T, any>) => {
-  const {data} = response;
-  if (data.status_code !== "OK") {
-    return data.status_code; 
-  }
+    const { data } = response;
+    if (data.status_code !== "OK") {
+        return data.status_code;
+    }
 
-  // data 배열 내의 각 항목에 대해 valid 값 체크
-  for (const item of data.data) {
-    return item.valid;  
-  }
+    // data 배열 내의 각 항목에 대해 valid 값 체크
+    for (const item of data.data) {
+        return item.valid;
+    }
 
-  // 위 조건에 해당하지 않는 경우 빈 문자열 반환
-  return null; // string, null
+    // 위 조건에 해당하지 않는 경우 빈 문자열 반환
+    return null; // string, null
 };
 
 // function: response data 처리 함수 //

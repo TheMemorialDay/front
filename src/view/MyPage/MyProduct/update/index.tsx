@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, useRef, KeyboardEvent, useEffect } from '
 import './style.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fileUploadRequest, getProductRequest, getStoreNumberRequest, patchProductRequest, postProductRequest } from '../../../../apis';
-import { PostProductOptionRequestDto, PostProductRequestDto } from '../../../../apis/dto/request/product';
+import { PostProductOptionDetailRequestDto, PostProductOptionRequestDto, PostProductRequestDto } from '../../../../apis/dto/request/product';
 import { GetProductResponseDto } from '../../../../apis/dto/response/product';
 import { PatchProductRequestDto } from '../../../../apis/dto/request/product/patch-product.request.dto';
 import { convertUrlToFile } from '../../../../util';
@@ -16,18 +16,6 @@ import { ResponseDto } from '../../../../apis/dto/response';
 
 // variable: 기본 프로필 이미지 URL //
 const defaultImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q0oOxqQNdL6kZp0iSKLbV1/img.png';
-
-// DTO 정의
-// export interface PostProductRequestDto {
-//     productImages: string[];
-//     productName: string;
-//     productIntroduce: string;
-//     productPrice: number;
-//     productToday: boolean;
-//     productTag: string;
-//     options: PostProductOptionRequestDto[];
-//     themes: string[];
-// }
 
 const defaultProductData: PostProductRequestDto = {
     productImages: [],
@@ -120,7 +108,7 @@ const Add = () => {
     };
 
     const onCancleClickHandler = () => {
-        // navigator('../');
+        navigator('../');
     };
 
     // 상품 등록 핸들러 수정
@@ -242,7 +230,9 @@ const Add = () => {
         console.error('상품 등록/수정 실패:', error);
         alert('상품 등록/수정에 실패했습니다.');
     }
-    };
+};
+
+
     return (
         <div id='add-product'>
             <div className='title'>상품 관리</div>
@@ -334,8 +324,7 @@ const Pictures = ({ files, onImagesChange, onReset }: PicturesProps) => {
 
 
 // component: SizeOption 컴포넌트 //
-const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
-    
+const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestDto; onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
     const [inputValue, setInputValue] = useState<string>('');
     const [showInput, setShowInput] = useState<boolean>(false);
     const [additionalPrice, setAdditionalPrice] = useState<string>('');
@@ -361,7 +350,23 @@ const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestD
                     productOptionPrice: Number(additionalPrice) || 0
                 }]
             };
-            const updatedOptions = [...product.options, newOption];
+
+            // '크기' 옵션에 새 세부 사항 추가
+            const updatedOptions = product.options.map(option => {
+                if (option.productOptionName === '크기') {
+                    return {
+                        ...option,
+                        optionDetails: [...option.optionDetails, ...newOption.optionDetails]
+                    };
+                }
+                return option;
+            });
+
+            // '크기' 옵션이 없으면 새로 추가
+            if (!updatedOptions.find(option => option.productOptionName === '크기')) {
+                updatedOptions.push(newOption);
+            }
+
             onOptionsChange(updatedOptions); // 상위 컴포넌트에 옵션 전달
             setInputValue('');
             setAdditionalPrice('');
@@ -370,16 +375,22 @@ const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestD
     };
 
     const handleRemoveButtonClick = (indexToRemove: number) => {
-        const updatedButtons = product.options.filter((_, index) => index !== indexToRemove);
-        onOptionsChange(updatedButtons); // 상위 컴포넌트에 업데이트된 옵션 전달
+        const updatedOptions = product.options.map(option => {
+            if (option.productOptionName === '크기') {
+                return {
+                    ...option,
+                    optionDetails: option.optionDetails.filter((_, index) => index !== indexToRemove) // 해당 세부 사항만 삭제
+                };
+            }
+            return option;
+        });
+        onOptionsChange(updatedOptions); // 상위 컴포넌트에 업데이트된 옵션 전달
     };
 
     return (
         <div className='option-box'>크기
-            <div className='radio-handler'>
-                <div className='detail-text'>
                     {showInput && (
-                        <div>
+                        <div style={{marginTop: "10px", marginBottom:"10px"}}>
                             <input
                                 className='cake-size'
                                 type="text"
@@ -398,15 +409,18 @@ const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestD
                             />
                         </div>
                     )}
-
-                    {product.options.filter(item => item.productOptionName === "크기").map((option, index) => (
-                        <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
-                            <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
-                            <input type="radio" id={`radio-${index}`} name="radioGroup" value={option.productOptionName} disabled />
-                            <label htmlFor={`radio-${index}`} style={{ marginLeft: "5px" }}>
-                                {option.optionDetails[0].productCategory} (+{option.optionDetails[0].productOptionPrice}원)
-                            </label>
-                        </div>
+            <div className='radio-handler'>
+                <div className='detail-text' style={{ marginTop: '10px' }}>
+                    {product.options.filter(item => item.productOptionName === "크기").map((option, optionIndex) => (
+                        option.optionDetails.map((detail, detailIndex) => (
+                            <div key={`${optionIndex}-${detailIndex}`} style={{ display: "flex", flexDirection: "row", padding: "5px" }}>
+                                <div className='xx-sign' onClick={() => handleRemoveButtonClick(detailIndex)}>x</div>
+                                <input type="radio" id={`radio-${optionIndex}-${detailIndex}`} name="radioGroup" value={option.productOptionName} disabled />
+                                <label htmlFor={`radio-${optionIndex}-${detailIndex}`} style={{ marginLeft: "5px" }}>
+                                    {detail.productCategory} (+{detail.productOptionPrice}원)
+                                </label>
+                            </div>
+                        ))
                     ))}
                 </div>
                 <div className='plus-button' onClick={handlePlusButtonClick}>추가</div>
@@ -416,7 +430,7 @@ const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestD
 };
 
 // component: FlavorOption 컴포넌트 //
-const FlavorOption = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
+const FlavorOption = ({ product, onOptionsChange }: { product: PostProductRequestDto; onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
     const [inputFlavorValue, setInputFlavorValue] = useState<string>('');
     const [showFlavorInput, setShowFlavorInput] = useState<boolean>(false);
     const [flavorAdditionalPrice, setFlavorAddtionalPrice] = useState<string>('');
@@ -426,8 +440,7 @@ const FlavorOption = ({ product, onOptionsChange }: { product: PostProductReques
     };
 
     const handleFlavorInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        setInputFlavorValue(value);
+        setInputFlavorValue(event.target.value);
     };
 
     const flavorPriceChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -443,7 +456,23 @@ const FlavorOption = ({ product, onOptionsChange }: { product: PostProductReques
                     productOptionPrice: Number(flavorAdditionalPrice) || 0
                 }]
             };
-            const updatedFlavors = [...product.options, newFlavor];
+
+            // '맛' 옵션에 새 세부 사항 추가
+            const updatedFlavors = product.options.map(option => {
+                if (option.productOptionName === '맛') {
+                    return {
+                        ...option,
+                        optionDetails: [...option.optionDetails, ...newFlavor.optionDetails]
+                    };
+                }
+                return option;
+            });
+
+            // '맛' 옵션이 없으면 새로 추가
+            if (!updatedFlavors.find(option => option.productOptionName === '맛')) {
+                updatedFlavors.push(newFlavor);
+            }
+
             onOptionsChange(updatedFlavors); // 상위 컴포넌트에 옵션 전달
             setInputFlavorValue('');
             setFlavorAddtionalPrice('');
@@ -452,43 +481,52 @@ const FlavorOption = ({ product, onOptionsChange }: { product: PostProductReques
     };
 
     const handleRemoveButtonClick = (indexToRemove: number) => {
-        const updatedButtons = product.options.filter((_, index) => index !== indexToRemove);
+        const updatedButtons = product.options.map(option => {
+            if (option.productOptionName === '맛') {
+                return {
+                    ...option,
+                    optionDetails: option.optionDetails.filter((_, index) => index !== indexToRemove) // 해당 세부 사항만 삭제
+                };
+            }
+            return option;
+        });
         onOptionsChange(updatedButtons); // 상위 컴포넌트에 업데이트된 옵션 전달
     };
 
     return (
         <div className='option-box'>맛
+            {showFlavorInput && (
+                <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+                    <input
+                        className='cake-size'
+                        type="text"
+                        value={inputFlavorValue}
+                        onChange={handleFlavorInputChange}
+                        placeholder="맛 입력"
+                        autoFocus
+                    />
+                    <input
+                        className='cake-size-price'
+                        type="text"
+                        value={flavorAdditionalPrice}
+                        onChange={flavorPriceChangeHandler}
+                        onKeyPress={handleFlavorKeyPress}
+                        placeholder="추가 금액(ex: 5000) 없으면 0, 입력 후 엔터"
+                    />
+                </div>
+            )}
             <div className='radio-handler'>
-                <div className='detail-text'>
-                    {showFlavorInput && (
-                        <div>
-                            <input
-                                className='cake-flavor'
-                                type="text"
-                                value={inputFlavorValue}
-                                onChange={handleFlavorInputChange}
-                                placeholder="맛 입력"
-                                autoFocus
-                            />
-                            <input
-                                className='cake-flavor-price'
-                                type="text"
-                                value={flavorAdditionalPrice}
-                                onChange={flavorPriceChangeHandler}
-                                onKeyPress={handleFlavorKeyPress}
-                                placeholder="추가 금액(ex: 5000) 없으면 0, 입력 후 엔터"
-                            />
-                        </div>
-                    )}
-
-                    {product.options.filter(item => item.productOptionName === "맛").map((option, index) => (
-                        <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
-                            <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
-                            <input type="radio" id={`flavor-radio-${index}`} name="flavorGroup" value={option.productOptionName} disabled />
-                            <label htmlFor={`flavor-radio-${index}`} style={{ marginLeft: "5px" }}>
-                                {option.optionDetails[0].productCategory} (+{option.optionDetails[0].productOptionPrice}원)
-                            </label>
-                        </div>
+                <div className='detail-text' style={{ marginTop: '10px' }}>
+                    {product.options.filter(item => item.productOptionName === "맛").map((option, optionIndex) => (
+                        option.optionDetails.map((detail, detailIndex) => (
+                            <div key={`${optionIndex}-${detailIndex}`} style={{ display: "flex", flexDirection: "row", padding: "5px" }}>
+                                <div className='xx-sign' onClick={() => handleRemoveButtonClick(detailIndex)}>x</div>
+                                <input type="radio" id={`flavor-radio-${optionIndex}-${detailIndex}`} name="flavorGroup" value={option.productOptionName} disabled />
+                                <label htmlFor={`flavor-radio-${optionIndex}-${detailIndex}`} style={{ marginLeft: "5px" }}>
+                                    {detail.productCategory} (+{detail.productOptionPrice}원)
+                                </label>
+                            </div>
+                        ))
                     ))}
                 </div>
                 <div className='plus-button' onClick={handleFlavorPlusButtonClick}>추가</div>
@@ -497,13 +535,29 @@ const FlavorOption = ({ product, onOptionsChange }: { product: PostProductReques
     );
 };
 
+
 // component: OptionList 컴포넌트 //
-const OptionList = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
-    const [optionComponents, setOptionComponents] = useState<number[]>([]);
+const OptionList = ({ product, onOptionsChange }: { product: PostProductRequestDto; onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
+    const [optionComponents, setOptionComponents] = useState<{ name: string; details: PostProductOptionDetailRequestDto[] }[]>([]);
+
+    useEffect(() => {
+        const filteredOptions = product.options
+            .filter(option => option.productOptionName !== '맛' && option.productOptionName !== '크기')
+            .map(option => ({
+                name: option.productOptionName,
+                details: option.optionDetails
+            }));
+
+        const uniqueOptions = Array.from(new Set(filteredOptions.map(option => option.name)))
+            .map(name => filteredOptions.find(option => option.name === name))
+            .filter((option): option is { name: string; details: PostProductOptionDetailRequestDto[] } => option !== undefined);
+
+        setOptionComponents(uniqueOptions);
+    }, [product.options]);
 
     const handleAddNewOption = () => {
         if (optionComponents.length < 3) {
-            setOptionComponents([...optionComponents, optionComponents.length + 1]);
+            setOptionComponents([...optionComponents, { name: '', details: [] }]);
         } else {
             alert('옵션은 최대 3개까지만 추가할 수 있습니다.');
         }
@@ -511,9 +565,45 @@ const OptionList = ({ product, onOptionsChange }: { product: PostProductRequestD
 
     return (
         <div>
-            <div>{optionComponents.map((_, index) => (
-                <NewOption key={index} product={product} onOptionsChange={onOptionsChange} />
-            ))}</div>
+            {optionComponents.map((option, index) => (
+                <NewOption
+                    key={index}
+                    product={product}
+                    onOptionsChange={onOptionsChange}
+                    option={option}
+                    setOptionName={(name: string) => {
+                        const updatedOptions = [...optionComponents];
+                        updatedOptions[index].name = name;
+                        setOptionComponents(updatedOptions);
+                    }}
+                    removeOption={() => {
+                        const updatedOptions = optionComponents.filter((_, i) => i !== index);
+                        setOptionComponents(updatedOptions);
+                        onOptionsChange([
+                            ...product.options.filter(opt => opt.productOptionName === '맛' || opt.productOptionName === '크기'),
+                            ...updatedOptions.map(opt => ({ productOptionName: opt.name, optionDetails: opt.details })),
+                        ]);
+                    }}
+                    addDetail={(category: string, price: number) => {
+                        const updatedOptions = [...optionComponents];
+                        updatedOptions[index].details.push({ productCategory: category, productOptionPrice: price });
+                        setOptionComponents(updatedOptions);
+                        onOptionsChange([
+                            ...product.options.filter(opt => opt.productOptionName === '맛' || opt.productOptionName === '크기'),
+                            ...updatedOptions.map(opt => ({ productOptionName: opt.name, optionDetails: opt.details })),
+                        ]);
+                    }}
+                    removeDetail={(detailIndex: number) => {
+                        const updatedOptions = [...optionComponents];
+                        updatedOptions[index].details.splice(detailIndex, 1);
+                        setOptionComponents(updatedOptions);
+                        onOptionsChange([
+                            ...product.options.filter(opt => opt.productOptionName === '맛' || opt.productOptionName === '크기'),
+                            ...updatedOptions.map(opt => ({ productOptionName: opt.name, optionDetails: opt.details })),
+                        ]);
+                    }}
+                />
+            ))}
             <div className='option-add-box'>
                 <div className='plus-button-option' onClick={handleAddNewOption}>옵션 추가</div>
             </div>
@@ -522,62 +612,96 @@ const OptionList = ({ product, onOptionsChange }: { product: PostProductRequestD
 };
 
 // component: NewOption 컴포넌트 //
-const NewOption = ({ product, onOptionsChange }: { product: PostProductRequestDto, onOptionsChange: (options: PostProductOptionRequestDto[]) => void }) => {
-    const [newInputValue, setNewInputValue] = useState<string>('');
-    const [inputDetailValue, setInputDetailValue] = useState<string>('');
-    const [newOptionAdditionalPrice, setNewOptionAdditionalPrice] = useState<string>('');   
+const NewOption = ({ product, onOptionsChange, option, setOptionName, removeOption, addDetail, removeDetail }: {
+    product: PostProductRequestDto,
+    onOptionsChange: (options: PostProductOptionRequestDto[]) => void,
+    option: { name: string; details: PostProductOptionDetailRequestDto[] },
+    setOptionName: (name: string) => void,
+    removeOption: () => void,
+    addDetail: (category: string, price: number) => void,
+    removeDetail: (detailIndex: number) => void
+}) => {
+    const [showInput, setShowInput] = useState<boolean>(false);
+    const [inputDetailValue, setInputDetailValue] = useState<string>(''); // 카테고리
+    const [newOptionAdditionalPrice, setNewOptionAdditionalPrice] = useState<string>(''); // 추가 금액
+    const [isNameFixed, setIsNameFixed] = useState<boolean>(false);
 
-    const onChangeNewOptionHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setNewInputValue(event.target.value);
-    };
-
-    const onNewOptionDetailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setInputDetailValue(event.target.value);
-    };
-
-    const onNewOptionAdditionalPriceChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setNewOptionAdditionalPrice(event.target.value);
-    };
-
-    const onNewOptionDetailKeyPressHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter' && inputDetailValue.trim() !== '') {
-            const newOption = {
-                productOptionName: newInputValue,
-                optionDetails: [{ productCategory: inputDetailValue, productOptionPrice: Number(newOptionAdditionalPrice) || 0 }]
-            };
-            const updatedOptions = [...product.options, newOption];
-            onOptionsChange(updatedOptions); // 상위 컴포넌트에 옵션 전달
-            setInputDetailValue('');
-            setNewOptionAdditionalPrice('');
+    const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (!isNameFixed) {
+            setOptionName(event.target.value);
         }
     };
 
-    const handleRemoveButtonClick = (indexToRemove: number) => {
-        const updatedOptions = product.options.filter((_, index) => index !== indexToRemove);
-        onOptionsChange(updatedOptions); // 상위 컴포넌트에 업데이트된 옵션 전달
+    const handleKeyPressForName = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter' && option.name.trim() !== '') {
+            setIsNameFixed(true);
+        }
+    };
+
+    const handleKeyPressForDetail = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter' && inputDetailValue.trim() !== '') {
+            const price = Number(newOptionAdditionalPrice) || 0;
+            addDetail(inputDetailValue, price);
+            setInputDetailValue('');
+            setNewOptionAdditionalPrice('');
+            setShowInput(false);
+        }
     };
 
     return (
-        <div className='option-box' style={{ marginBottom: "20px" }}>
-            <input className='new-option-name' placeholder='옵션을 입력하세요.(ex: 색상)' onKeyPress={onNewOptionDetailKeyPressHandler} 
-                onChange={onChangeNewOptionHandler} />
+        <div className='option-box' style={{ marginBottom: "20px", minHeight: 'auto' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <input
+                    className='new-option-name'
+                    placeholder='옵션명 입력 (ex: 색상, 초 등)'
+                    value={option.name}
+                    onChange={handleNameChange}
+                    onKeyPress={handleKeyPressForName}
+                    disabled={isNameFixed}
+                />
+                <div className='xx-sign' onClick={removeOption} style={{marginRight: "8px"}}>X</div>
+            </div>
+
+            {showInput && (
+                <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+                    <input
+                        className='cake-size'
+                        type='text'
+                        placeholder='카테고리 입력'
+                        value={inputDetailValue}
+                        onChange={(e) => setInputDetailValue(e.target.value)}
+                        onKeyPress={handleKeyPressForDetail}
+                        autoFocus
+                    />
+                    <input
+                        className='cake-size-price'
+                        type='text'
+                        placeholder='추가 금액(ex: 5000) 없으면 0, 입력 후 엔터'
+                        value={newOptionAdditionalPrice}
+                        onChange={(e) => setNewOptionAdditionalPrice(e.target.value)}
+                        onKeyPress={handleKeyPressForDetail}
+                    />
+                </div>
+            )}
 
             <div className='radio-handler'>
                 <div className='detail-text'>
-                    {product.options.map((button, index) => (
-                        <div key={index} style={{ display: "flex", flexDirection: "row", marginRight: "20px" }}>
-                            <div className='xx-sign' onClick={() => handleRemoveButtonClick(index)}>X</div>
-                            <input type="radio" id={`new-option-radio-${index}`} name="newOptionGroup" value={button.productOptionName} disabled />
-                            <label htmlFor={`new-option-radio-${index}`} style={{ marginLeft: "5px" }}>
-                                {button.productOptionName} (+{button.optionDetails[0].productOptionPrice}원)
+                    {option.details.map((detail, detailIndex) => (
+                        <div key={detailIndex} style={{ display: "flex", flexDirection: "row", padding: "5px" }}>
+                            <div className='xx-sign' onClick={() => removeDetail(detailIndex)}>x</div>
+                            <input type="radio" id={`radio-${detailIndex}`} name="radioGroup" value={detail.productCategory} disabled />
+                            <label htmlFor={`radio-${detailIndex}`} style={{ marginLeft: "5px" }}>
+                                {detail.productCategory} (+{detail.productOptionPrice}원)
                             </label>
                         </div>
                     ))}
                 </div>
+                <div className='plus-button' onClick={() => setShowInput(true)}>추가</div>
             </div>
         </div>
     );
 };
+
 
 // component: ProductTags 컴포넌트 //
 const ProductTags = ({ product, onTagsChange }: { product: PostProductRequestDto, onTagsChange: (tags: string[]) => void }) => {
@@ -742,4 +866,3 @@ const Update = () => {
 };
 
 export default Update;
-
