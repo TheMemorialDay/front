@@ -2,34 +2,56 @@ import React, { useEffect, useState } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, MY_PRODUCT_ADD_ABSOLUTE_PATH, MY_PRODUCT_UPDATE_ABSOLUTE_PATH } from '../../../constants';
-import { getProductListRequest } from '../../../apis';
+import { deleteProductRequest, getProductListRequest } from '../../../apis';
 import { Product } from '../../../types';
 import { GetProductListResponseDto } from '../../../apis/dto/response/product';
 import { ProductResponse } from '../../../apis/dto/response/product/get-product-list-response.dto';
 import { useSignInUserStore } from '../../../stores';
 import { useCookies } from 'react-cookie';
+import { ResponseDto } from '../../../apis/dto/response';
 
 const defaultProfileImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q0oOxqQNdL6kZp0iSKLbV1/img.png';
 
 // component: 기존 상품 박스 컴포넌트
-function Legacy({ product, onEdit }: { product: Product; onEdit: (productNumber: number) => void }) {
-    const onDeleteButtonClickHandler = () => {
-        const isConfirm = window.confirm("정말 삭제하시겠습니까?");
-        if (!isConfirm) return;
+function Legacy({ product, onEdit, getProductList }: { product: Product; onEdit: (productNumber: number) => void; getProductList: () => void; }) {
 
-        // 삭제 처리 로직 추가 필요
-        console.log(`Deleting product with ID: ${product.productNumber}`);
+    
+    // state: cookie 상태 //
+    const [cookies] = useCookies();
+
+    // function: delete product response 처리 함수 //
+    const deleteProductResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'NT' ? '존재하지 않는 용품입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        getProductList();
+    };
+
+    const onDeleteButtonClickHandler = (event: React.MouseEvent) => {
+        event.stopPropagation();
+        const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
+        if(!isConfirm) return false;
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
+        deleteProductRequest(product.productNumber, accessToken).then(deleteProductResponse);
     };
 
     return (
-        <div className='legacy-product' onClick={() => onEdit(product.productNumber)}>
-            <div className='images-box'>
-                <div className='legacy-product'
+        <div className='legacy-product' onClick={() => onEdit(product.productNumber)}
                     style={{
                         backgroundImage: `url(${product.productImageUrl || defaultProfileImageUrl})`,
                     }}
-                />
-            </div>
+                >
             <div className="close-button" onClick={onDeleteButtonClickHandler}>X</div>
         </div>
     );
@@ -115,7 +137,12 @@ export default function MyProduct() {
                         <div className='add-text'>상품 추가</div>
                     </div>
                     {products.map((product) => (
-                        <Legacy key={product.productNumber} product={product} onEdit={onEditProduct} />
+                        <Legacy 
+                            key={product.productNumber} 
+                            product={product} 
+                            onEdit={onEditProduct} 
+                            getProductList={loadProducts} // loadProducts 함수 전달
+                        />
                     ))}
                 </div>
             </div>
