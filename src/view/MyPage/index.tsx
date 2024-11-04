@@ -13,15 +13,7 @@ const MyPage = () => {
     // function: 네비게이터 함수 //
     const navigate = useNavigate();
 
-    // function: 쿠키에서 accessToken을 추출하는 함수 //
-    function getCookie(name: string): string | undefined {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            return parts.pop()?.split(';').shift();
-        }
-        return undefined;
-    }
+    
 
 
     // state: cookie 상태 //
