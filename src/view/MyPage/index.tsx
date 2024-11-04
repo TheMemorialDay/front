@@ -48,6 +48,17 @@ const MyPage = () => {
         }
     }, [signInUser, storeNumber]);
 
+    // 쿠키에서 accessToken을 추출하는 함수 (TypeScript와 호환되는 코드)
+    function getCookie(name: string): string | undefined {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            return parts.pop()?.split(';').shift();
+        }
+        return undefined;
+    }
+
+
     // event handler: 가게등록 유무 핸들러 //
     const handleStoreNavigation = async () => {
         //navigate(MY_STORE_ABSOLUTE_PATH);
@@ -62,7 +73,6 @@ const MyPage = () => {
                     'Cache-Control': 'no-cache', // 캐시 무효화
                 },
             });
-            console.log("error: " + response);
             if (response.status === 401) {
                 console.error('인증 오류: 액세스 토큰이 유효하지 않음');
                 console.log(token);
@@ -86,7 +96,6 @@ const MyPage = () => {
             console.error('API 요청 실패:', error);
         }
     };
-
     return (
         <div id='myPage'>
             <span className='myPage-title'>MY PAGE</span>

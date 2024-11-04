@@ -36,7 +36,7 @@
 
 #add-product .remove-pics {
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 400;
     width: 100px;
     background-color: black;
     color: white;
@@ -130,7 +130,7 @@
 
 #add-product .add-button .add-text {
     font-size: 22px;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 #add-product .legacy-product {
@@ -194,23 +194,26 @@
 .option-box {
     border: 1px solid darkgray;
     border-radius: 6px;
-    padding: 10px 15px;
-    font-size: 20px;
-    font-weight: 700;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    overflow: hidden;
 }
 
 #add-product .product-info .radio-handler {
     display: flex;
     gap: 10px;
-    flex-direction: row; 
-    margin-top: 15px;
+    flex-direction: row;
 }
 
 #add-product .detail-text {
-    display: flex;
+    /* display: flex; */
     flex: 1;
     width: 200px;
-    height: 47px;
+    height: auto;
     font-size: 16px;
     font-weight: 300;
     color: darkgray;
@@ -229,6 +232,7 @@
 }
 
 #add-product .cake-size-price {
+    margin-left: 10px;
     border-radius: 6px;
     border: 1px solid lightgray;
     padding: 10px;
@@ -236,14 +240,13 @@
 }
 
 #add-product .plus-button {
-    width: 100px;
+    width: 70px;
     height: 45px;
     border-radius: 6px;
-    border: 1px solid black;
     background-color: black;
     color: white;
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 400;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -251,8 +254,7 @@
 }
 
 #add-product .plus-button:hover {
-    background-color: rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 #add-product .plus-button-two {
@@ -279,12 +281,12 @@
 .plus-button-option {
     width: 150px;
     height: 45px;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid black;
     background-color: black;
     color: white;
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 400;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -354,6 +356,10 @@
     display: flex;
 }
 
+#add-product .tag-chunks .five div {
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
 #add-product .selected-tags {
     height: 47px;
     font-size: 16px;
@@ -383,12 +389,12 @@
 #add-product .button-cancle {
     width: 100px;
     height: 45px;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid black;
     background-color: white;
     color: black;
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 500;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -398,12 +404,12 @@
 #add-product .button-register {
     width: 100px;
     height: 45px;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid black;
     background-color: black;
     color: white;
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 500;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -464,6 +470,20 @@
     margin-right: -5px;
 }
 
+.new-option-name-box {
+    justify-content: space-between;
+    margin-right: 5px;
+}
+
+.new-option-xx-sign {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    margin-right: -5px;
+}
+
 .no-select #tags {
     display: inline-flex;
     align-items: center;
@@ -478,7 +498,7 @@
 }
 
 #add-product .possible {
-    width: 250px;
+    width: 200px;
     height: 25px;
     padding: 10px;
     border-radius: 6px;
@@ -486,8 +506,8 @@
     background-color: black;
     color: white;
 
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 500;
 
     display: flex;
     justify-content: center;
@@ -497,14 +517,14 @@
 }
 
 #add-product .impossible {
-    width: 250px;
+    width: 200px;
     height: 25px;
     padding: 10px;
     border-radius: 6px;
     border: 1px solid black;
 
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 500;
 
     display: flex;
     justify-content: center;
