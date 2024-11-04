@@ -1,13 +1,17 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import './style.css'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ST_ORDER_DONE_ABSOLUTE_PATH } from '../../../../constants';
+import { getProductDetailRequest } from '../../../../apis';
+import { GetProductDetailResponseDto } from '../../../../apis/dto/response/stores';
+import { ResponseDto } from '../../../../apis/dto/response';
 
 
 interface PreviewUrlProps {
   imageUrl: string;
+  onClick: () => void;
 }
 
 interface ThemaProps {
@@ -16,7 +20,7 @@ interface ThemaProps {
 
 interface SizeProps {
   size: string;
-  addPrice: string | number;
+  addPrice: number;
 }
 
 interface FlavorProps {
@@ -25,11 +29,11 @@ interface FlavorProps {
 }
 
 // component: 사진 미리보기 컴포넌트 //
-function Previews({imageUrl}: PreviewUrlProps) {
+function Previews({imageUrl, onClick}: PreviewUrlProps) {
 
   //render: 사진 미리보기 렌더링 //
   return (
-    <div id='preview' style={{backgroundImage: `url(${imageUrl})`}}></div>
+    <div id='preview' style={{backgroundImage: `url(${imageUrl})`}} onClick={onClick}></div>
   )
 }
 
@@ -84,7 +88,7 @@ function RadioButtonGroupSize({size, addPrice}: SizeProps) {
             fontWeight: "500"
           }}
         />
-        {size}{addPrice? `(+${addPrice})`: ''}
+        {size}{addPrice? `(+ ${addPrice.toLocaleString()}원)` : ''}
       </label>
   );
 };
@@ -113,13 +117,32 @@ function RadioButtonGroupFlavor({flavor, addPrice}: FlavorProps) {
             fontWeight: "500"
           }}
         />
-        {flavor}{addPrice? `(+${addPrice})`: ''}
+        {flavor}{addPrice? `(+ ${addPrice.toLocaleString()}원)` : ''}
       </label>
   );
 };
 
 // component: 상품 상세 페이지(주문 페이지)
 export default function Order() {
+
+  // state: 가게, 상품 정보 //
+  const {storeNumber, productNumber} = useParams();
+
+  // state: 상품 정보 //
+  const [cakeName, setCakeName] = useState<string>('');
+  const [caution, setCaution] = useState<string>('');
+  const [introduce, setIntroduce] = useState<string>('');
+  const [price, setPrice] = useState<number>(0);
+  const [themaList, setThemaList] = useState<string[]>([]);
+  const [imageList, setImageList] = useState<string[]>([]);
+  const [cakeToday, setCakeToday] = useState<boolean>(false);
+
+  // state: 옵션 라디오 버튼 상태 //
+  const [sizeOptions, setSizeOptions] = useState<{ size: string; addPrice: number }[]>([]);
+  const [flavorOptions, setFlavorOptions] = useState<{ flavor: string; addPrice: number }[]>([]);
+
+  // state: 사진 미리보기 상태 //
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
   // state: 케이크 주문 관련 상태 //
   const [cakeSize, setCakeSize] = useState<string>('');
@@ -133,6 +156,95 @@ export default function Order() {
 
   // function: navigator //
   const navigator = useNavigate();
+
+  // function: 숫자 쉼표 찍어주는 함수 //
+  function formatNumberWithCommas(number: number): string {
+    return new Intl.NumberFormat('en-US').format(number);
+  }
+
+  // function: get product detail 함수 //
+  const getProductDetail = () => {
+    if(storeNumber && productNumber) getProductDetailRequest(storeNumber, productNumber).then(getProductDetailRespone);
+    else {
+      alert("잘못된 접근입니다.");
+      return;
+    }
+  }
+
+  // function: get product detail response 처리 //
+  const getProductDetailRespone = (responseBody: GetProductDetailResponseDto | ResponseDto | null) => { 
+    //console.log(responseBody);
+    const message = 
+      !responseBody ? "서버에 문제가 있습니다." :
+      responseBody.code === 'NS' ? '존재하지 않는 가게입니다.' :
+      responseBody.code === 'NP' ? '존재하지 않는 상품입니다.' : 
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if(!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    const {orderProductDetails} = responseBody as GetProductDetailResponseDto;
+    setCakeName(orderProductDetails.productName);
+    setPrice(orderProductDetails.productPrice);
+    setCaution(orderProductDetails.storeCaution);
+    setIntroduce(orderProductDetails.productIntroduce);
+    setThemaList(orderProductDetails.themes);
+    setImageList(orderProductDetails.productImages);
+    setCakeToday(orderProductDetails.productToday);
+
+    // options 배열 확인
+    // orderProductDetails.options.forEach((option, index) => {
+    //   console.log(`Option ${index + 1}: ${option.productOptionName}`);
+
+    //   // optionDetails 확인
+    //   option.optionDetails.forEach((detail) => {
+    //     console.log(`  Category: ${detail.productCategory}, Price: ${detail.productOptionPrice}`);
+    //   });
+    // });
+
+    const filteredSizeOptions = orderProductDetails.options
+        .filter(option => option.productOptionName === "크기")
+        .flatMap(option => option.optionDetails.map(detail => ({
+            size: detail.productCategory,
+            addPrice: detail.productOptionPrice,
+        })));
+    setSizeOptions(filteredSizeOptions);
+
+    const filteredFlavorOptions = orderProductDetails.options
+    .filter(option => option.productOptionName === "맛")
+    .flatMap(option => option.optionDetails.map(detail => ({
+        flavor: detail.productCategory,
+        addPrice: detail.productOptionPrice,
+    })));
+    setFlavorOptions(filteredFlavorOptions);
+  }
+
+  // event handler: 현재 이미지 인덱스에 따른 이미지 변경 //
+  const showCurrentImage = () => {
+    return imageList.length > 0 ? imageList[currentImageIndex] : '';
+  };
+
+  // event handler: 다음 이미지로 이동 //
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === imageList.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  // event handler: 이전 이미지로 이동 //
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? imageList.length - 1 : prevIndex - 1
+    );
+  };
+
+  // event handler: 특정 이미지로 이동 (Previews 클릭 시) //
+  const handlePreviewClick = (index: number) => {
+    setCurrentImageIndex(index);
+  };
 
   // event handler: 케이크 수량 up 버튼 클릭 핸들러 //
   const onPlusClickHandler = () => {
@@ -165,96 +277,83 @@ export default function Order() {
     navigator(ST_ORDER_DONE_ABSOLUTE_PATH);
   }
 
+  // effect: 상품 상세 정보 가져오기 //
+  useEffect(getProductDetail, []);
+
   // render: 주문 상세 페이지 렌더링 //
-    return (
-        <div id='product-order'>
-            <div className='photo-zone'>
-                <div className='arrow-left'></div>
-                <div className='image-box' style={{display: "flex", flexDirection: "column"}}>
-                  <div className='images'></div>
-                  <div className='preview-box'>
-                    <Previews imageUrl='/star.png' />
-                    <Previews imageUrl='/star.png' />
-                    <Previews imageUrl='/star.png' />
-                    <Previews imageUrl='/star.png' />
-                  </div>
-                </div>
-                
-                <div className='arrow-right'></div>
+  return (
+      <div id='product-order'>
+        <div className='photo-zone'>
+          <div className='arrow-left' onClick={handlePrevImage}></div>
+          <div className='image-box' style={{display: "flex", flexDirection: "column"}}>
+            <div className='images' style={{ backgroundImage: `url(${showCurrentImage()})`, backgroundSize: 'cover', backgroundRepeat: "no-repeat" }}></div>
+            <div className='preview-box'>
+              {imageList.length > 0 ? imageList.map((image, index) => <Previews key={index} imageUrl={image} onClick={() => handlePreviewClick(index)}/>) : '' }
+            </div>
+          </div>
+          <div className='arrow-right' onClick={handleNextImage}></div>
+        </div>
+
+        <div className='order-page'>
+            <div>
+              <div className='text'>케이크 주문서 작성</div>
+              <hr className='custom-hr'/>
+              <div className='cake-name'>{cakeName}</div>
+              <div className='thema-zone'>
+                {themaList.length > 0 ?  themaList.map((thema, index) => <Tags key={index} contents={thema} />) : '' }
+              </div>
+              <div className='cake-introduce'>{introduce}</div>
+              <div className='cake-price'>가격 {formatNumberWithCommas(price)}</div>
+            </div>
+              
+            <div className='pickup-date'>
+              <div className='option-title'>픽업 일시 선택<span style={{color: "red"}}>*</span></div>
+              <CalendarInput />
             </div>
 
-            <div className='order-page'>
-              <div>
-                <div className='text'>케이크 주문서 작성</div>
-                <hr className='custom-hr'/>
-                <div className='cake-name'>보라빛 생화를 이용한 케이크</div>
-                <div className='thema-zone'>
-                    <Tags contents='#효도'/>
-                    <Tags contents='#화려함'/>
-                    <Tags contents='#신년'/>
-                </div>
-                <div className='cake-introduce'>
-                  보라색 빛을 띄는 다양한 꽃들과 진주 모양을 한 초코 크런치로<br/>
-                  고급스럽고 우아한 분위기를 연출한 케이크입니다.<br/>
-                  30대 중반 이후로 인기가 많습니다.
-                </div>
-                <div className='cake-price'>가격 43,000</div>
+            <div className='pick-size'>
+              <div className='option-title'>사이즈 선택<span style={{color: "red"}}>*</span></div>
+              <div className='radio-group' style={{marginTop: "15px"}}>
+                {sizeOptions.map((option, index) => ( <RadioButtonGroupSize key={index} size={option.size} addPrice={option.addPrice} />))}
               </div>
-                
-              <div className='pickup-date'>
-                <div className='option-title'>1. 픽업 일시 선택<span style={{color: "red"}}>*</span></div>
-                <CalendarInput />
-              </div>
+            </div>
 
-              <div className='pick-size'>
-                <div className='option-title'>2. 사이즈 선택<span style={{color: "red"}}>*</span></div>
-                <div className='radio-group' style={{marginTop: "15px"}}>
-                  <RadioButtonGroupSize size='도시락 케이크' addPrice={''}/>
-                  <RadioButtonGroupSize size='1호' addPrice={'5000'}/>
-                  <RadioButtonGroupSize size='2호' addPrice={'10000'}/>
-                  <RadioButtonGroupSize size='2단 케이크' addPrice={'20000'}/>
-                </div>
+            <div className='pick-size' style={{marginTop: "30px"}}>
+              <div className='option-title'>맛 선택<span style={{color: "red"}}>*</span></div>
+              <div className='radio-group' style={{marginTop: "15px"}}>
+                {flavorOptions.map((option, index) => (<RadioButtonGroupFlavor key={index} flavor={option.flavor} addPrice={option.addPrice}/>) )}
               </div>
+            </div>
 
-              <div className='pick-size' style={{marginTop: "30px"}}>
-                <div className='option-title'>3. 맛 선택<span style={{color: "red"}}>*</span></div>
-                <div className='radio-group' style={{marginTop: "15px"}}>
-                  <RadioButtonGroupFlavor flavor='생크림' addPrice={''}/>
-                  <RadioButtonGroupFlavor flavor='초코' addPrice={''}/>
-                  <RadioButtonGroupFlavor flavor='쿠앤크' addPrice={''}/>
-                  <RadioButtonGroupFlavor flavor='제철과일' addPrice={'5000'}/>
-                </div>
+            <div className='pickup-date'>
+              <div className='option-title'>수량 입력<span style={{color: "red"}}>*</span></div>
+              <div className='count-handler'>
+                <div className='count-up' onClick={onPlusClickHandler}></div>
+                <div style={{fontSize: "16px", cursor:"pointer"}}>{cakeCount}</div>
+                <div className='count-down' onClick={onMinusClickHandler}></div>
               </div>
+            </div>
 
-              <div className='pickup-date'>
-                <div className='option-title'>4. 수량 입력<span style={{color: "red"}}>*</span></div>
-                <div className='count-handler'>
-                  <div className='count-up' onClick={onPlusClickHandler}></div>
-                  <div style={{fontSize: "16px", cursor:"pointer"}}>{cakeCount}</div>
-                  <div className='count-down' onClick={onMinusClickHandler}></div>
-                </div>
-              </div>
+            <div>
+              <div className='option-title'>요청사항</div>
+              <textarea className='textarea' placeholder='자유롭게 입력하세요.' onChange={onRequestChangeHandler}/>
+            </div>
 
-              <div>
-                <div className='option-title'>5. 요청사항</div>
-                <textarea className='textarea' placeholder='자유롭게 입력하세요.' onChange={onRequestChangeHandler}/>
-              </div>
+            <div style={{display:"flex", flexDirection:"column", marginTop: "20px"}}>
+              <div className='option-title'>유의사항 확인<span style={{color: "red"}}>*</span></div>
+              <div style={{marginTop: "20px"}}>{caution}</div>
+              <label className='checkbox'>
+                <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange}/>
+                상기의 내용을 확인하였으며, 불이익시 가게가 책임지지 않음에 동의합니다.
+                </label>
+            </div>
 
-              <div style={{display:"flex", flexDirection:"column", marginTop: "20px"}}>
-                <div className='option-title'>6. 유의사항 확인<span style={{color: "red"}}>*</span></div>
-                <div style={{marginTop: "20px"}}>사장님이 적은 내용..~</div>
-                <label className='checkbox'>
-                  <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange}/>
-                  상기의 내용을 확인하였으며, 불이익시 가게가 책임지지 않음에 동의합니다.
-                  </label>
-              </div>
+            <div className='total-price'>최종 금액 {formatNumberWithCommas(10000)} 원</div>
 
-              <div className='total-price'>최종 금액 {43000} 원</div>
-
-              <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "35px"}}>
-                <div className='order-button' onClick={onOrderClickHandler}>주문하기</div>
-              </div>
-        </div>
-    </div>
-  )
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "35px"}}>
+              <div className='order-button' onClick={onOrderClickHandler}>주문하기</div>
+            </div>
+      </div>
+  </div>
+  ) 
 }
