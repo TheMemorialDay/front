@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router';
 import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
 import { usePagination } from '../../hooks';
 import { PostStoreMainSearchRequestDto, PostStoresByProductNameSearchRequestDto, PostStoresByStoreNameSearchRequestDto } from '../../apis/dto/request/store';
+import Day from 'react-datepicker/dist/day';
 
 interface CakeComponentProps {
   imageUrl: string;
@@ -141,11 +142,11 @@ export default function Stores() {
 
   }
 
-  // state: 선택된 태그를 저장하는 상태 //
+  // state: 선택된 태그를 저장하는 상태 // 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  // state: 태그가 선택되었는지 확인하는 상태 //
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+  // state: 요일이 선택되었는지 확인하는 상태 //
+  const [isWeekDayChecked, setIsWeekDayChecked] = useState<boolean>(false);
 
   // state: 태그 선택 셀렉터 오픈 여부 상태 //
   const [showTagSelector, setShowTagSelector] = useState<boolean>(false);
@@ -205,8 +206,10 @@ export default function Stores() {
 
   // event handler: 태그 클릭 이벤트 핸들러 //
   const checkTagHandler = (event: React.ChangeEvent<HTMLInputElement>, value: string) => {
-    setIsChecked(!isChecked);
+    setIsWeekDayChecked(!isWeekDayChecked);
     onTagClickHandler(value, event.target.checked);
+
+    onStoresSeletedWeeksHandler();
   };
 
   // event handler: 태그 셀렉터 오픈 이벤트 처리 //
@@ -334,7 +337,6 @@ export default function Stores() {
       getStoreMainSearchRequest(mainSearch, mainSearch).then(getStoresMainSearchResponse);
   };
 
-  
   // event handler: 검색어 입력 후 요청할 때 키보드 핸들러 //
   const onStoresSearchKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -360,6 +362,126 @@ export default function Stores() {
     setTotalList(stores);
   };
   //* ======================================== store main search
+
+  //* ======================================== store weekend selected 
+  // state: 선택된 요일을 저장하는 상태 //
+  const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
+  // state: 선택된 요일 가게 원본 리스트 상태 //
+  const [weeksOriginalList, setWeeksOriginalList] = useState<StoreComponentProps[]>([]);
+
+  // event handler: 선택된 요일로 가게 불러오기 //
+  const onStoresSeletedWeeksHandler = () => {
+    const filteredWeeksList = weeksOriginalList.filter(day => {
+      let existed = false;
+
+      for (const selectedWeekday of selectedWeekdays) {
+        if (selectedWeekday === '월요일') {
+          if (day.mondayOpen !== '휴무일') {
+            existed = true;
+            break;
+          }
+        }
+
+        if (selectedWeekday === '화요일') {
+          if (day.tuesdayOpen !== '휴무일') {
+            existed = true;
+            break;
+          }
+        }
+
+        if (selectedWeekday === '수요일') {
+          if (day.wednesdayOpen !== '휴무일') {
+            existed = true;
+            break;
+          }
+        }
+
+        if (selectedWeekday === '목요일') {
+          if (day.thursdayOpen !== '휴무일') {
+            existed = true;
+            break;
+          }
+        }
+
+        if (selectedWeekday === '금요일') {
+          if (day.fridayOpen !== '휴무일') {
+            existed = true;
+            break;
+          }
+        }
+
+        if (selectedWeekday === '토요일') {
+          if (day.saturdayOpen !== '휴무일') {
+            existed = true;
+            break;
+          }
+        }
+
+        if (selectedWeekday === '일요일') {
+          if (day.sundayOpen !== '휴무일') {
+            existed = true;
+            break;
+          }
+        }
+      }
+      return existed;
+    })
+
+    setWeeksOriginalList(filteredWeeksList);
+    setStoreList(filteredWeeksList);
+  };
+  //* ======================================== store weekend selected 
+
+  //* ========================================== store main address selected
+  // state: 선택된 구 가게 원본 리스트 상태 //
+  const [gugunOriginalList, setGugunOriginalList] = useState<StoreComponentProps[]>([]);
+  // state: 선택된 동 가게 원본 리스트 상태 //
+  const [dongOriginalList, setDongOriginalList] = useState<StoreComponentProps[]>([]);
+
+  // event handler: 선택된 구군으로 가게 불러오기 //
+  // const guGunSelectHandle = (gu: string) => {
+  //   setSelectGu(gu);
+  //   onGugunSeletedClickHandler();
+
+  //   console.log(selectedGu); // 값은 나옴,,
+  // };
+
+  // event handler: 구군 배열 돌면서 해당되는 구군의 값으로 필터링해서 리스트 상태 바꿔주기 //
+  // const onGugunSeletedClickHandler = () => {
+  //   const filteredGugunList = gugunOriginalList.filter(gugun => {
+  //     if (selectedGu === null) return;
+  //     else selectedGu.includes(selectedGu);
+  //   })
+
+  //   setGugunOriginalList(filteredGugunList);
+  //   setStoreList(filteredGugunList);
+  // };
+
+  // event handler: 선택된 구에서 동 선택해서 가게 불러오기 //
+  // const dongSelectHandle = (dong: string) => {
+  //   setSelectedDong(dong);
+  //   onDongSelectedClickHandler();
+
+  //   console.log(selectedDong)
+  // };
+
+  // event handler: 동 배열 돌면서 해당되는 동의 값으로 필터링해서 리스트 상태 바꿔주기 //
+  // const onDongSelectedClickHandler = () => {
+  //   const filteredDongList = dongOriginalList.filter(dong => {
+  //     if (selectedGu === null) return;
+  //     for (const gu of selectedGu) {
+  //       if (selectedGu === '강서구') {
+  //         if (selectedDong === null) return;
+  //         else selectedDong.includes(selectedDong);
+  //       }
+  //     }
+  //   })
+
+  //   setDongOriginalList(filteredDongList);
+  //   setStoreList(filteredDongList);
+  // };
+
+  //* ========================================== store main address selected
 
   // effect: 로드시 상점 리스트 불러오기 함수 //
   useEffect(getStoreList, []);
@@ -441,8 +563,8 @@ export default function Stores() {
                   <div className='selector-cake-tag'>
                     {Day.map((item, idx) => (
                       <div className='checkbox' key={idx}>
-                        <input type='checkbox' id={item} checked={selectedTags.includes(item)}
-                          onChange={(event) => checkTagHandler(event, item)} />
+                        <input type='checkbox' id={item} checked={selectedWeekdays.includes(item)}
+                          onChange={(event) => checkTagHandler(event, item)} onClick={onStoresSeletedWeeksHandler} />
                         <label htmlFor={item}>{item}</label>
                       </div>
                     ))}
@@ -476,7 +598,7 @@ export default function Stores() {
             </div>
 
             <div className='label'>
-              {showDongSelector ?
+              {showDongSelector ? // 나중에 선택된 구가 있을 때로
                 <div className='selectors open'>
                   <div className='selected-item'>{selectedDong ? selectedDong : '동/읍/면 선택'}</div>
                   <div className='arrow-up-button' onClick={onDongSelectorClickHandler}></div>
