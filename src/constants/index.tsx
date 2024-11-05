@@ -3,7 +3,7 @@ export const ROOT_PATH = '/';
 
 export const ST_PATH = '/stores';
 export const ST_NUMBER_PATH = (storeNumber: number | string) => `${storeNumber}`;
-export const ST_PRODUCT_ORDER_PATH = '1';
+export const ST_PRODUCT_ORDER_PATH = (productNumber: number | string) => `${productNumber}`;
 export const ST_ORDER_DONE_PATH = 'done';
 
 export const ST_ORDER_DETAIL_PATH = `order`;
@@ -54,8 +54,10 @@ export const ROOT_ABSOLUTE_PATH = ROOT_PATH;
 
 export const ST_ABSOLUTE_PATH = ST_PATH;
 export const ST_ABSOLUTE_ORDER_DETAIL_PATH = (storeNumber: string | number) => `${ST_PATH}/${ST_NUMBER_PATH(storeNumber)}/${ST_ORDER_DETAIL_PATH}`;
-export const ST_PRODUCT_ORDER_ABSOLUTE_PATH = `${ST_ABSOLUTE_ORDER_DETAIL_PATH}/${ST_PRODUCT_ORDER_PATH}`;
-export const ST_ORDER_DONE_ABSOLUTE_PATH = `${ST_ABSOLUTE_ORDER_DETAIL_PATH}/${ST_ORDER_DONE_PATH}`;
+//export const ST_PRODUCT_ORDER_ABSOLUTE_PATH = `${ST_ABSOLUTE_ORDER_DETAIL_PATH}/${ST_PRODUCT_ORDER_PATH}`;
+export const ST_PRODUCT_ORDER_ABSOLUTE_PATH = (storeNumber: string | number, productNumber: string | number) => 
+    `${ST_PATH}/${storeNumber}/order/${productNumber}`;
+export const ST_ORDER_DONE_ABSOLUTE_PATH = (storeNumber: string | number) => `${ST_PATH}/${storeNumber}/${ST_ORDER_DETAIL_PATH}/${ST_ORDER_DONE_PATH}`;
 
 export const ST_ABSOLUTE_INFORMATION_DETAIL_PATH = (storeNumber: string | number) => `${ST_PATH}/${ST_NUMBER_PATH(storeNumber)}/${ST_INFORMATION_DETAIL_PATH}`;
 export const ST_ABSOLUTE_CONTACT_DETAIL_PATH = (storeNumber: string | number) => `${ST_PATH}/${ST_NUMBER_PATH(storeNumber)}/${ST_CONTACT_DETAIL_PATH}`;
