@@ -85,7 +85,7 @@ const MyPage = () => {
             console.error('API 요청 실패:', error);
         }
     };
-  
+
     // event handler: 찜목록 핸들러 //
     const handleLikeNavigation = async () => {
         try {
@@ -122,7 +122,7 @@ const MyPage = () => {
             console.error('API 요청 실패:', error);
         }
     };
-  
+
     return (
         <div id='myPage'>
             <span className='myPage-title'>MY PAGE</span>
