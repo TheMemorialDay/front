@@ -193,39 +193,38 @@ export default function Join() {
             setSendUrl(url);
         }
 
-        // if(signInUser?.userId && url) {
-        //     const requestBody: BusinessCheckRequestDto = {
-        //         businesses: [
-        //             {
-        //                 b_no: businessNumber,
-        //                 start_dt: openDate,
-        //                 p_nm: signInUser.name,
-        //                 p_nm2: "",
-        //                 b_nm: "",
-        //                 corp_no: "",
-        //                 b_sector: "",
-        //                 b_type: ""
-        //             }
-        //         ]
-        //     }
-        //     const accessToken = cookies[ACCESS_TOKEN];
-        //     if(!accessToken) return;
-        //     checkBusinessRequest(requestBody).then(businessCheckResponse);
-        // }
-
-        if(signInUser?.userId && url) {
-            const requestBody: BusinessNumCheckRequestDto = {
-                b_no: [businessNumber]
+        if(signInUser && url) {
+            console.log(signInUser);
+            const requestBody: BusinessCheckRequestDto = {
+                businesses: [
+                    {
+                        b_no: businessNumber,
+                        start_dt: openDate,
+                        p_nm: signInUser.name,
+                        p_nm2: "",
+                        b_nm: "",
+                        corp_no: "",
+                        b_sector: "",
+                        b_type: ""
+                    }
+                ]
             }
-            checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
-        }else {
-            alert('사업자 등록증 PDF 파일을 등록하여 주세요.');
-            return;
+            console.log(requestBody);
+            const accessToken = cookies[ACCESS_TOKEN];
+            if(!accessToken) return;
+            checkBusinessRequest(requestBody).then(businessCheckResponse);
         }
+
+        // if(signInUser?.userId && url) {
+        //     const requestBody: BusinessNumCheckRequestDto = {
+        //         b_no: [businessNumber]
+        //     }
+        //     checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
+        // }else {
+        //     alert('사업자 등록증 PDF 파일을 등록하여 주세요.');
+        //     return;
+        // }
     }
-
-    useEffect(() => console.log(process.env.BUSINESS_API_SERVICE_KEY), [process.env.BUSINESS_API_SERVICE_KEY]);
-
 
     // render: 사장 권한 등록 조인 화면 렌더링 //
     return (

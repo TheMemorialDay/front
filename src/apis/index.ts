@@ -18,6 +18,7 @@ import GetOrderDetailResponseDto from './dto/response/get-order-detail-response-
 import GetOrderDetailListResponseDto from './dto/response/get-order-detail-list.response.dto';
 import { URL } from 'url';
 
+
 // variable: API URL 상수 //
 
 const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
@@ -147,7 +148,7 @@ export const deleteProductRequest = async (productNumber: number | string, acces
     return responseBody;
 }
 
-
+// function: response data 처리 함수 validate //
 const responseDataHandler2 = <T extends ApiResponseDto>(response: AxiosResponse<T, any>) => {
     const { data } = response;
     if (data.status_code !== "OK") {
@@ -163,14 +164,18 @@ const responseDataHandler2 = <T extends ApiResponseDto>(response: AxiosResponse<
     return null; // string, null
 };
 
-// function: response data 처리 함수 //
+// function: response data 처리 함수 status //
 const responseDataHandler3 = <T extends BusinessNumCheckResponseDto>(response: AxiosResponse<T, any>) => {
     const { data } = response;
     if (data.status_code === 'OK') {
         const b_stt_cd = data.data[0].b_stt_cd;
-        return b_stt_cd;
-    }
-    return data.status_code;
+        if(b_stt_cd == null) {
+            const message = data.data[0].tax_type;
+            console.log("메시지: " + message);
+            return message;
+        }else return b_stt_cd;
+    }else return null;
+    //return data.status_code;
 };
 
 // function: response error 처리 함수 //
@@ -334,19 +339,14 @@ export const getProductDetailRequest = async(storeNumber: string | number, produ
 }
 
 // API 요청 URL 및 serviceKey 설정
-const serviceKey = process.env.BUSINESS_API_SERVICE_KEY;
-const apiUrl2 = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
-const apiUrl = "http://api.odcloud.kr/api/nts-businessman/v1/status";
-//const url1 = new URL(`${apiUrl}?serviceKey=${serviceKey}`);
-//url1.searchParams.append("serviceKey", serviceKey);
+const serviceKey = '9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==';
+const validateURL = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
+const statusURL = "http://api.odcloud.kr/api/nts-businessman/v1/status";
 
 
-const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
-const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
-
-// function: 사업자 등록증 진위 확인 api 요청 함수1 //
+// function: 사업자 등록증 진위 확인 api 요청 함수 validate //
 export const checkBusinessRequest = async(requestBody: BusinessCheckRequestDto) => {
-  const responseBody = await axios.post(`${apiUrl}?serviceKey=${serviceKey}`, requestBody, {
+    const responseBody = await axios.post(`${validateURL}?serviceKey=${serviceKey}`, requestBody, {
         headers: {
             'Content-Type': 'application/json'
         }
@@ -355,17 +355,19 @@ export const checkBusinessRequest = async(requestBody: BusinessCheckRequestDto) 
     return responseBody;
 }
 
-// function: 사업자 등록증 진위 확인 api 요청 함수2 //
+// function: 사업자 등록증 진위 확인 api 요청 함수 status //
 export const checkBusinessNumRequest = async (requestBody: BusinessNumCheckRequestDto) => {
-    const responseBody = await axios.post(`${apiUrl}?serviceKey=${serviceKey}`, requestBody, {
+    const responseBody = await axios.post(`${statusURL}?serviceKey=${serviceKey}`, requestBody, {
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(responseDataHandler3<BusinessNumCheckResponseDto>)
-        .catch(responseErrorHandler);
+      .catch(responseErrorHandler);
     return responseBody;
 }
 
+const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
+const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 // function: file upload 요청 함수 //
 export const fileUploadRequest = async (requestBody: FormData) => {
