@@ -7,7 +7,9 @@
 #qa-wrapper,
 #notice-detail-wrapper,
 #qa-write-wrapper {
-    width: 1545px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 #notice-wrapper,
@@ -21,6 +23,7 @@
 #notice-wrapper,
 #qa-wrapper {
     gap: 10px;
+    width: 80%;
 }
 
 #qa-wrapper .top {

@@ -126,8 +126,8 @@ export default function TheMemorialDay() {
   // effect: cookie의 accessToken값이 변경될 때 마다 로그인 유저 정보 요청 함수 //
   useEffect(() => {
     const accessToken = cookies[ACCESS_TOKEN];
-    if(accessToken) {
-        GetSignInRequest(accessToken).then(getSignInResponse);
+    if (accessToken) {
+      GetSignInRequest(accessToken).then(getSignInResponse);
     } else {
       setSignInUser(null);
     }
@@ -158,7 +158,7 @@ export default function TheMemorialDay() {
               <Route path={ST_PRODUCT_ORDER_PATH(':productNumber')} element={<Order />} />
               <Route path={ST_ORDER_DONE_PATH} element={<DoneScreen />} />
             </Route>
-          </Route> 
+          </Route>
 
           {/* <Route path={`${ST_NUMBER_PATH(':storeNumber')}/order/${ST_PRODUCT_ORDER_PATH(':productNumber')}`} element={<Order />} />
           <Route path={`${ST_NUMBER_PATH(':storeNumber')}/order/${ST_ORDER_DONE_PATH}`} element={<DoneScreen />} />

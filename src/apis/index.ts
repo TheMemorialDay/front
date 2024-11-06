@@ -17,6 +17,8 @@ import { PostOrderRequestDto } from './dto/request/order';
 import GetMyPageLikeStoreListResponseDto from './dto/response/like/get-mypage-likestore-list.response.dto';
 import GetOrderDetailResponseDto from './dto/response/get-order-detail-response-dto';
 import GetOrderDetailListResponseDto from './dto/response/get-order-detail-list.response.dto';
+import { GetNoticeDetailResponseDto, GetNoticeListResponseDto, GetQnADetailResponseDto, GetQnAListResponseDto } from './dto/response/support';
+import { PostQnARequestDto } from './dto/request/support';
 import { URL } from 'url';
 
 
@@ -66,6 +68,15 @@ const ID_SEARCH_API_URL = `${AUTH_MODULE_URL}/id-search`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/get-sign-in`;
 
 const POST_PAYMENT_API_URL = `${MYPAGE_MODULE_URL}/order-detail`;
+
+const SUPPORT_API_URL = `${MEMORIALDAY_API_DOMAIN}/support`;
+const SUPPORT_NOTICE_API_URL = `${SUPPORT_API_URL}/notice`;
+const NOTICE_DETAIL_API_URL = (noticeNumber: string | number) => `${SUPPORT_NOTICE_API_URL}/${noticeNumber}`;
+
+const SUPPORT_QNA_API_URL = `${SUPPORT_NOTICE_API_URL}/question`;
+const QNA_DETAIL_API_URL = (questionNumber: number | string) => `${SUPPORT_QNA_API_URL}/${questionNumber}`;
+const QNA_WRITE_API_URL = `${SUPPORT_QNA_API_URL}/write`;
+const QNA_DELETE_API_URL = (questionNumber: number | string) => `${SUPPORT_QNA_API_URL}/${questionNumber}`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -357,6 +368,7 @@ const validateURL = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
 const statusURL = "http://api.odcloud.kr/api/nts-businessman/v1/status";
 
 
+
 // function: 사업자 등록증 진위 확인 api 요청 함수 validate //
 export const checkBusinessRequest = async(requestBody: BusinessCheckRequestDto) => {
     const responseBody = await axios.post(`${validateURL}?serviceKey=${serviceKey}`, requestBody, {
@@ -388,4 +400,52 @@ export const fileUploadRequest = async (requestBody: FormData) => {
         .then(responseDataHandler<string>)
         .catch(error => null);
     return url;
+}
+
+// function: get notice list 요청 함수 //
+export const getNoticeListRequest = async () => {
+    const responseBody = await axios.get(SUPPORT_NOTICE_API_URL)
+        .then(responseDataHandler<GetNoticeListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get notice detail 요청 함수 //
+export const getNoticeDetailRequest = async (noticeNumber: number | string) => {
+    const responseBody = await axios.get(NOTICE_DETAIL_API_URL(noticeNumber))
+        .then(responseDataHandler<GetNoticeDetailResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get qna list 요청 함수 //
+export const getQnAListRequest = async () => {
+    const responseBody = await axios.get(SUPPORT_QNA_API_URL)
+        .then(responseDataHandler<GetQnAListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get qna detail 요청 함수 //
+export const getQnADetailRequest = async (questionNumber: number | string) => {
+    const responseBody = await axios.get(QNA_DETAIL_API_URL(questionNumber))
+        .then(responseDataHandler<GetQnADetailResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: post QnA 요청 함수 //
+export const PostQnARequest = async (requestBody: PostQnARequestDto, accessToken: string) => {
+    const responseBody = await axios.post(QNA_WRITE_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: delete QnA 요청 함수 //
+export const deleteQnARequest = async (questionNumber: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(QNA_DELETE_API_URL(questionNumber), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
