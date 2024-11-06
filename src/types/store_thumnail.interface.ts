@@ -24,4 +24,7 @@ export default interface StoreComponentProps {
 	sundayOpen: string;
 	sundayLast: string;
 	likeList: string[];
+	productToday: string[];
+	productTag: string[];
+	themes: string[][];
 }

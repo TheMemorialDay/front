@@ -428,9 +428,9 @@ export default function Stores() {
       return;
     }
 
-    const { stores } = responseBody as GetStoreListResponseDto;
-    setStoreList(stores);
-    setTotalList(stores);
+    const { storeDetails } = responseBody as GetStoreListResponseDto;
+    setStoreList(storeDetails);
+    setTotalList(storeDetails);
   }
 
   // 커스텀 훅 가져오기
