@@ -36,6 +36,7 @@
     "run": "^1.5.0",
     "styled-components": "^6.1.13",
     "typescript": "^4.9.5",
+    "url": "^0.11.4",
     "web-vitals": "^2.1.4",
     "zustand": "^5.0.0"
   },

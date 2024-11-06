@@ -13,9 +13,6 @@ const MyPage = () => {
     // function: 네비게이터 함수 //
     const navigate = useNavigate();
 
-    
-
-
     // state: cookie 상태 //
     const [cookies] = useCookies();
 
@@ -50,7 +47,6 @@ const MyPage = () => {
         }
         return undefined;
     }
-
 
     // event handler: 가게등록 유무 핸들러 //
     const handleStoreNavigation = async () => {
