@@ -218,22 +218,35 @@ select {
 }
 
 .shop-list {
-  display: flex;
+  /* display: flex;
   flex-wrap: wrap;
   align-items: center;
-  
-  /* justify-content: space-around; */
+
+  /* justify-content: space-around;
   justify-content: center;
-  gap: 16px;
-  /* padding: 16px; */
+  gap: 16px; 
+  padding: 16px; */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+#store-component-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .store-card {
   flex: 1 1 calc(25%, -32px);
   width: 300px;
-  
+
   /* width: calc(25% - 16px); */
-  height: 350px;
+  height: 380px;
   border: 1px solid #ddd;
   border-radius: 15px;
   overflow: hidden;
@@ -249,13 +262,14 @@ select {
 }
 
 .shop-image {
-  width: 100%;
-  height: 63%;
+  height: 65%;
   background-image: url(/public/picture1.png);
 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  border: 0.5px solid gray;
+  border-radius: 15px;
 }
 
 .shop-info {
@@ -274,6 +288,7 @@ select {
   display: flex;
   justify-content: space-between;
   /* 양 끝으로 요소 배치 */
+
 }
 
 .red-heart {
@@ -281,6 +296,14 @@ select {
   background-size: 100% 100%;
   width: 17px;
   height: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.like-count {
+  margin-top: 15px;
 }
 
 .white-heart {
@@ -288,6 +311,10 @@ select {
   background-size: 100% 100%;
   width: 17px;
   height: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .shop-location,
