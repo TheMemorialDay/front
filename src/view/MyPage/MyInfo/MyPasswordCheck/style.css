@@ -6,7 +6,7 @@
     margin-top: 250px;
 }
 
-#check-info .-title {
+#check-info .title {
     margin-top: 0;
     display: flex;
     font-size: 30px;
