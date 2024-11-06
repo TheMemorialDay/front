@@ -13,6 +13,7 @@ import BusinessCheckRequestDto from "./dto/request/join/business-check.request.d
 import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
 import { access } from 'fs';
+import { URL } from 'url';
 
 // variable: API URL 상수 //
 
@@ -283,16 +284,19 @@ export const getProductDetailRequest = async(storeNumber: string | number, produ
 }
 
 // API 요청 URL 및 serviceKey 설정
+const serviceKey = process.env.BUSINESS_API_SERVICE_KEY;
 const apiUrl2 = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
 const apiUrl = "http://api.odcloud.kr/api/nts-businessman/v1/status";
-const serviceKey = process.env.BUSINESS_API_SERVICE_KEY;
+//const url1 = new URL(`${apiUrl}?serviceKey=${serviceKey}`);
+//url1.searchParams.append("serviceKey", serviceKey);
+
 
 const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
 const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 // function: 사업자 등록증 진위 확인 api 요청 함수1 //
 export const checkBusinessRequest = async(requestBody: BusinessCheckRequestDto) => {
-  const responseBody = await axios.post(`${apiUrl2}?serviceKey=${serviceKey}`, requestBody, {
+  const responseBody = await axios.post(`${apiUrl}?serviceKey=${serviceKey}`, requestBody, {
         headers: {
             'Content-Type': 'application/json'
         }

@@ -224,6 +224,8 @@ export default function Join() {
         }
     }
 
+    useEffect(() => console.log(process.env.BUSINESS_API_SERVICE_KEY), [process.env.BUSINESS_API_SERVICE_KEY]);
+
 
     // render: 사장 권한 등록 조인 화면 렌더링 //
     return (
