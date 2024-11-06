@@ -17,7 +17,7 @@ export default function ShopMain() {
   const [cookies] = useCookies();
 
   // state: 가게 번호 경로 변수 상태 //
-  const { storeNumber } = useParams();
+  const { storeNumber} = useParams();
   const [store, setStore] = useState<GetStoreResponseDto | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
 
@@ -100,19 +100,19 @@ export default function ShopMain() {
   }, [storeNumber])
 
   return (
-    <div id='store-detail-wrapper'>
-      <div className='shop-infor'>
-        <div className='shop-image' style={{ backgroundImage: `url(${previewUrl})` }}></div>
-        <div className='shop-comment'>
-          <h2 className='shop-ment'>{storeName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating}</h2>
-          <h2 className='shop-ment'>{storeGugun}&nbsp;{storeDong}&nbsp;{storeDetailAddress}</h2>
-          <h2 className='shop-ment'>매일 11:00 ~ 19:00</h2>
-          <h2 className='shop-ment'>{storeIntroduce}</h2>
+      <div id='store-detail-wrapper'>
+        <div className='shop-infor'>
+          <div className='shop-image' style={{ backgroundImage: `url(${previewUrl})` }}></div>
+          <div className='shop-comment'>
+            <h2 className='shop-ment'>{storeName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating}</h2>
+            <h2 className='shop-ment'>{storeGugun}&nbsp;{storeDong}&nbsp;{storeDetailAddress}</h2>
+            <h2 className='shop-ment'>매일 11:00 ~ 19:00</h2>
+            <h2 className='shop-ment'>{storeIntroduce}</h2>
+          </div>
         </div>
-      </div>
-      <hr className='hr' />
-      <Outlet context={{ store }} />
-    </div>
-
+        <hr className='hr' />
+        <Outlet context={{ store }} />
+      </div>  
+    
   )
 }

@@ -13,6 +13,9 @@ const MyPage = () => {
     // function: 네비게이터 함수 //
     const navigate = useNavigate();
 
+    
+
+
     // state: cookie 상태 //
     const [cookies] = useCookies();
 
@@ -50,8 +53,10 @@ const MyPage = () => {
 
     // event handler: 가게등록 유무 핸들러 //
     const handleStoreNavigation = async () => {
+        //navigate(MY_STORE_ABSOLUTE_PATH);
         try {
             const token = getCookie('accessToken');
+
             const response = await fetch(`http://localhost:4000/mypage/store/?userId=${userId}`, {
                 method: 'GET',
                 headers: {

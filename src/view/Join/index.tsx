@@ -32,30 +32,27 @@ export default function Join() {
     const [businessFile, setBusinessFile] = useState<File | null>(null);
     const [sendUrl, setSendUrl] = useState<string | null>('');
 
-    // effect: sendUrl 업데이트 //
-    useEffect(() => {
-        if (sendUrl && signInUser?.name) {
-            // const requestBody: BusinessNumCheckRequestDto = {
-            //     b_no: [businessNumber]
-            // };
-            // checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
-            const requestBody: BusinessCheckRequestDto = {
-                businesses: [{
-                    b_no: businessNumber,
-                    start_dt: openDate,
-                    p_nm: signInUser.name,
-                    p_nm2: "",
-                    b_nm: "",
-                    corp_no: "",
-                    b_sector: "",
-                    b_type: ""
-                }]
-            }
-            const accessToken = cookies[ACCESS_TOKEN];
-            if(!accessToken) return;
-            checkBusinessRequest(accessToken, requestBody).then(businessCheckResponse);
-        }
-    }, [sendUrl]);
+    // // effect: sendUrl 업데이트 //
+    // useEffect(() => {
+    //     if (sendUrl && signInUser?.name) {
+    //         // const requestBody: BusinessNumCheckRequestDto = {
+    //         //     b_no: [businessNumber]
+    //         // };
+    //         // checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
+    //         const requestBody: BusinessCheckRequestDto = {
+    //             businesses: [{
+    //                 b_no: businessNumber,
+    //                 start_dt: openDate,
+    //                 p_nm: signInUser.name,
+    //                 p_nm2: "",
+    //                 b_nm: "",
+    //                 corp_no: "",
+    //                 b_sector: "",
+    //                 b_type: ""
+    //             }]
+    //         }
+    //     }
+    // }, [sendUrl]);
 
     // function: business check response 함수 //
     const businessCheckResponse = (responseBody: string | null | ResponseDto) => {
@@ -197,14 +194,34 @@ export default function Join() {
         }
 
         // if(signInUser?.userId && url) {
-        //     const requestBody: BusinessNumCheckRequestDto = {
-        //         b_no: [businessNumber]
+        //     const requestBody: BusinessCheckRequestDto = {
+        //         businesses: [
+        //             {
+        //                 b_no: businessNumber,
+        //                 start_dt: openDate,
+        //                 p_nm: signInUser.name,
+        //                 p_nm2: "",
+        //                 b_nm: "",
+        //                 corp_no: "",
+        //                 b_sector: "",
+        //                 b_type: ""
+        //             }
+        //         ]
         //     }
-        //     checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
-        // }else {
-        //     alert('사업자 등록증 PDF 파일을 등록하여 주세요.');
-        //     return;
+        //     const accessToken = cookies[ACCESS_TOKEN];
+        //     if(!accessToken) return;
+        //     checkBusinessRequest(requestBody).then(businessCheckResponse);
         // }
+
+        if(signInUser?.userId && url) {
+            const requestBody: BusinessNumCheckRequestDto = {
+                b_no: [businessNumber]
+            }
+            checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
+        }else {
+            alert('사업자 등록증 PDF 파일을 등록하여 주세요.');
+            return;
+        }
     }
 
 
