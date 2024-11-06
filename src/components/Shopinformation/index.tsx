@@ -18,7 +18,7 @@ export default function ShopMain() {
   const [cookies] = useCookies();
 
   // state: 가게 번호 경로 변수 상태 //
-  const { storeNumber } = useParams();
+  const { storeNumber} = useParams();
   const [store, setStore] = useState<GetStoreResponseDto | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
 

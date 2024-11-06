@@ -4,7 +4,7 @@ import ResponseDto from './dto/response/response.dto';
 import { GetProductListResponseDto, GetProductResponseDto } from './dto/response/product';
 import { IdCheckRequestDto, PostLikeStoreRequestDto, PostPayMentRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
-import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
+import { GetProductDetailResponseDto, GetProductPreviewListResponseDto, GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
 import { GetSignInResponseDto } from "./dto/response/auth";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
@@ -27,11 +27,13 @@ const POST_PRODUCT_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_LIST_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 //const PATCH_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
-// const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
+const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 const POST_LIKE_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 const DELETE_LIKE_API_URL = (userId: string, storeNumber: number | string) => `${POST_LIKE_API_URL}?userId=${userId}&storeNumber=${storeNumber}`;
+const GET_PRODUCT_PREVIEW_LIST_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/list`
+const GET_PRODUCT_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}`; 
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
 const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
@@ -136,6 +138,13 @@ export const patchProductRequest = async (productNumber: number | string, data: 
     }
 };
 
+// function: delete product 요청 함수 //
+export const deleteProductRequest = async (productNumber: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_PRODUCT_API_URL(productNumber), bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+    return responseBody;
+}
 
 
 const responseDataHandler2 = <T extends ApiResponseDto>(response: AxiosResponse<T, any>) => {
@@ -307,6 +316,22 @@ export const getOrderDetailRequest = async (userId: string, accessToken: string)
     return responseBody;
 }
 
+// function: get product list preview 요청 함수 //
+export const getProductPreviewListRequest = async(storeNumber: string | number) => {
+    const responseBody = await axios.get(GET_PRODUCT_PREVIEW_LIST_API_URL(storeNumber))
+        .then(responseDataHandler<GetProductPreviewListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get product detail 요청 함수 //
+export const getProductDetailRequest = async(storeNumber: string | number, productNumber: string | number) => {
+    const responseBody = await axios.get(GET_PRODUCT_DETAIL_API_URL(storeNumber, productNumber))
+        .then(responseDataHandler<GetProductDetailResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // API 요청 URL 및 serviceKey 설정
 const apiUrl2 = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
 const apiUrl = "http://api.odcloud.kr/api/nts-businessman/v1/status";
@@ -316,13 +341,13 @@ const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
 const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 // function: 사업자 등록증 진위 확인 api 요청 함수1 //
-export const checkBusinessRequest = async (accessToken: string, requestBody: BusinessCheckRequestDto) => {
-    const responseBody = await axios.post(`${apiUrl2}?serviceKey=${serviceKey}`, requestBody, {
+export const checkBusinessRequest = async(requestBody: BusinessCheckRequestDto) => {
+  const responseBody = await axios.post(`${apiUrl2}?serviceKey=${serviceKey}`, requestBody, {
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(responseDataHandler2<ApiResponseDto>)
-        .catch(responseErrorHandler);
+      .catch(responseErrorHandler);
     return responseBody;
 }
 

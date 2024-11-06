@@ -7,7 +7,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import {
   JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH,
   ST_INFORMATION_DETAIL_PATH, ST_ORDER_DETAIL_PATH, ST_PATH, ST_REVIEW_DETAIL_PATH, SU_PATH, SU_QA_PATH,
-  SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, SHOPPING_CART_PATH, MY_PATH,
+  SU_NOTICE_DETAIL_PATH, SU_QA_WRITE_PATH, SU_QA_DETAIL_PATH, JOIN_OKAY_PATH, MY_PATH,
   MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_LIKE_PATH, MY_STORE_PATH, MY_PRODUCT_PATH,
   MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PASSWORD_CHECK_PATH, MY_PRODUCT_ADD_PATH,
   MY_PRODUCT_UPDATE_PATH,
@@ -125,8 +125,8 @@ export default function TheMemorialDay() {
   // effect: cookie의 accessToken값이 변경될 때 마다 로그인 유저 정보 요청 함수 //
   useEffect(() => {
     const accessToken = cookies[ACCESS_TOKEN];
-    if (accessToken) {
-      GetSignInRequest(accessToken).then(getSignInResponse);
+    if(accessToken) {
+        GetSignInRequest(accessToken).then(getSignInResponse);
     } else {
       setSignInUser(null);
     }
@@ -154,10 +154,22 @@ export default function TheMemorialDay() {
 
           <Route path={ST_NUMBER_PATH(':storeNumber')}>
             <Route path={ST_ORDER_DETAIL_PATH}>
-              <Route path={ST_PRODUCT_ORDER_PATH} element={<Order />} />
+              <Route path={ST_PRODUCT_ORDER_PATH(':productNumber')} element={<Order />} />
               <Route path={ST_ORDER_DONE_PATH} element={<DoneScreen />} />
             </Route>
-          </Route>
+          </Route> 
+
+          {/* <Route path={`${ST_NUMBER_PATH(':storeNumber')}/order/${ST_PRODUCT_ORDER_PATH(':productNumber')}`} element={<Order />} />
+          <Route path={`${ST_NUMBER_PATH(':storeNumber')}/order/${ST_ORDER_DONE_PATH}`} element={<DoneScreen />} />
+          <Route path={ST_NUMBER_PATH(':storeNumber')} element={<ShopMain />}>
+            <Route path={ST_ORDER_DETAIL_PATH}>
+              <Route index element={<ShopOrder />} />
+            </Route>
+            <Route path={ST_INFORMATION_DETAIL_PATH} element={<ShopInformation />} />
+            <Route path={ST_CONTACT_DETAIL_PATH} element={<ShopContact />} />
+            <Route path={ST_REVIEW_DETAIL_PATH} element={<ShopReview />} />
+          </Route> */}
+
         </Route>
         <Route path={OTHERS_PATH} element={<Index />} />
         <Route path={LOGIN_PATH} element={<MainLayout />} >
