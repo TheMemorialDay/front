@@ -310,25 +310,59 @@ export default function Order() {
     setSelectedOptions(newSelectedOptions);
   };
 
+  const formatPickupTime = (isoString: string): string => {
+    return dayjs(isoString).format('YYYY.MM.DD HH:mm');
+  };
+
   // event handler: 주문하기 버튼 클릭 이벤트 핸들러 //
-  const onOrderClickHandler = async () => {
+const onOrderClickHandler = async () => {
+  const accessToken = cookies[ACCESS_TOKEN];
 
-    const accessToken = cookies[ACCESS_TOKEN];
-
-    if(!accessToken) {
-      alert("로그인이 필요한 서비스 입니다.");
-      navigator(LOGIN_PATH);
-    }
-
-    const allFull = selectedOptions.every(item => item.value !== null || item.value !== "");
-
-    if(selectedDate === null || !allFull || !isChecked) {
-      alert("모두 입력해주세요.");
-      return;
-    }
-    //console.log("주문 완료");
-    if(storeNumber) navigator(ST_ORDER_DONE_ABSOLUTE_PATH(storeNumber));
+  if (!accessToken) {
+    alert("로그인이 필요한 서비스입니다.");
+    navigator(LOGIN_PATH);
+    return;
   }
+
+  const userId = signInUser?.userId;
+  if (!userId) {
+    alert("사용자 정보가 확인되지 않습니다.");
+    return;
+  }
+
+  if (!selectedDate || !isChecked || selectedOptions.some(item => !item.value)) {
+    alert("모든 항목을 입력해주세요.");
+    return;
+  }
+  
+  const pickupTime = formatPickupTime(selectedDate.toISOString());
+
+  const orderRequestBody: PostOrderRequestDto = {
+    pickupTime,
+    productCount: cakeCount,
+    productContents: request,
+    totalPrice: finalPrice,
+    options: selectedOptions.map(option => ({
+      optionCategoryNumber: option.optionCategoryNumber
+    }))
+  };
+
+  try {
+    // 주문 요청 전송
+    if (storeNumber && productNumber && userId) {
+      const response = await postOrderRequest(orderRequestBody, userId, storeNumber, productNumber, accessToken);
+      if (response.code === 'SU') {
+        alert("주문이 완료되었습니다.");
+        if (storeNumber) navigator(ST_ORDER_DONE_ABSOLUTE_PATH(storeNumber));
+      } else {
+        alert(response.message || "주문에 실패했습니다.");
+      }
+    }
+  } catch (error) {
+    console.error("주문 요청 오류:", error); // 오류 로그
+    alert("서버 오류로 주문을 처리할 수 없습니다.");
+  }
+};
 
   // effect: 상품 상세 정보 가져오기 //
   useEffect(getProductDetail, []);

@@ -340,7 +340,7 @@ export const getProductDetailRequest = async (storeNumber: string | number, prod
     return responseBody;
 }
 
-// function: post product 요청 함수 //                              토큰 인증 관련 지우고 임의로 진행(원래는 위와 같이 작성)
+// function: post order 요청 함수 //
 export const postOrderRequest = async (requestBody: PostOrderRequestDto, userId: string, storeNumber: number | string, productNumber: number | string, accessToken: string) => {
     try {
         const response = await axios.post(POST_ORDER_DETAIL_API_URL(storeNumber, productNumber, userId), requestBody, bearerAuthorization(accessToken));

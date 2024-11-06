@@ -2,8 +2,7 @@
 
 // 주문 옵션 요청 DTO
 export interface PostOrderSelectOptionRequestDto {
-    optionNumber: number;
-    orderCategoryNumber: number;
+    optionCategoryNumber: number;
 }
 
 // 주문 요청 DTO
