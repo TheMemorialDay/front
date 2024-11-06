@@ -1,7 +1,7 @@
 #mypage-like-wrapper {
 	display: flex;
 	flex-direction: column;
-
+	align-items: center;
 	width: 1350px;
 	margin-top: 60px;
 }
@@ -12,8 +12,12 @@
 	font-weight: 600;
 }
 
-#mypage-like-wrapper .main {
-	display: flex;
-	justify-content: space-between;
-	flex-wrap: wrap;
+#mypage-like-wrapper .like-main {
+	margin-top: 60px;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+
+	max-width: 1300px;
+	width: 100%;
 }

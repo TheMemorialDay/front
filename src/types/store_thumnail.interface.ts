@@ -24,4 +24,5 @@ export default interface StoreComponentProps {
 	sundayOpen: string;
 	sundayLast: string;
 	// 테마 태그 들고오기 -> back에 store back 관련 자료에 추가해서 들고오기.
+	likeList: string[];
 }

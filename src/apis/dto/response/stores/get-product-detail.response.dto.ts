@@ -32,11 +32,13 @@ interface OrderProductDetails {
 }
 
 interface ProductOption {
+    optionNumber: any;
     productOptionName: string;
     optionDetails: OptionDetail[];
 }
 
 interface OptionDetail {
+    optionCategoryNumber: number;
     productCategory: string;
     productOptionPrice: number;
 }

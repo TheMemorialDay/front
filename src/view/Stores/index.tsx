@@ -1,14 +1,16 @@
 import React, { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
-import { useSortStore } from '../../stores';
+import { getStoreMainSearchRequest } from '../../apis';
+import { useSignInUserStore, useSortStore } from '../../stores';
 import { GetStoreListResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
-import { getStoreListRequest, getStoreMainSearchRequest } from '../../apis';
+import { deleteLikeStoreRequest, getStoreListRequest, postLikeStoreRequest } from '../../apis';
 import { StoreComponentProps } from '../../types';
 import { useNavigate } from 'react-router';
-import { ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
-import { usePagination } from '../../hooks';
-import { add } from 'lodash';
+import { ACCESS_TOKEN, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
+import { PostLikeStoreRequestDto } from '../../apis/dto/request';
+import { useCookies } from 'react-cookie';
+import axios from 'axios';
 
 interface CakeComponentProps {
   imageUrl: string;
@@ -62,16 +64,141 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
 
   const navigator = useNavigate();
 
+  // state: cookie 상태 //
+  const [cookies] = useCookies();
+
+  // state: 로그인 유저 상태 //
+  const { signInUser } = useSignInUserStore();
+
+  // State: 찜 상태 //
+  const [likeCount, setLikeCount] = useState(store.likeList.length);
+  const userId = signInUser?.userId;
+
   const onPostButtonClickHandler = () => {
     navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH(store.storeNumber));
   };
 
   const [checked, setChecked] = useState<boolean>(false);
 
-  const onHeartClickHandler = (event: MouseEvent<HTMLDivElement>) => {
+  const onHeartClickHandler = async (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-    checked ? setChecked(false) : setChecked(true);
+    if (checked) {
+      await onStoreLikeDeleteButtonClickHandler();
+      setLikeCount(likeCount - 1);
+    } else {
+      await onStoreLikeAddButtonClickHandler();
+      setLikeCount(likeCount + 1);
+    }
   };
+
+  // event handler: 가게 찜 버튼 등록 이벤트 처리 //
+  const onStoreLikeAddButtonClickHandler = async () => {
+    if (!store.storeNumber) {
+      alert('가게에 문제가 있습니다 !');
+      return;
+    }
+
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) {
+      console.log('토큰 오류');
+      return;
+    }
+
+    if (signInUser?.userId == null) {
+      alert('유저 정보가 존재하지 않습니다!');
+      return;
+    }
+
+    const requestBody: PostLikeStoreRequestDto = {
+      userId: signInUser.userId,
+      storeNumber: store.storeNumber
+    };
+
+    postLikeStoreRequest(requestBody, accessToken).then(postLikeStoreResponse);
+  }
+
+  // event handler: 가게 찜 버튼 삭제 이벤트 처리 //
+  const onStoreLikeDeleteButtonClickHandler = async () => {
+
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) {
+      alert('접근 권한이 없습니다');
+      return;
+    }
+
+    const storeNumber = store.storeNumber;
+    if (!store.storeNumber) {
+      alert('가게에 문제가 있습니다 !');
+      return;
+    }
+
+    const userId = signInUser?.userId;
+    if (!userId) {
+      alert('유저 정보가 존재하지 않습니다!');
+      return;
+    }
+
+    deleteLikeStoreRequest(userId, storeNumber.toString(), accessToken).then(deleteLikeStoreResponse);
+  }
+
+  // function: post Like Store Response 처리 함수 //
+  const postLikeStoreResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NS' ? '존재하지 않는 가게 입니다' :
+              responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    if (store.storeNumber == null) {
+      alert('가게정보가 존재하지 않습니다');
+      return;
+    }
+    setChecked(true);
+  }
+
+  // function: delete Like Store Response 처리 함수 //
+  const deleteLikeStoreResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+        responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+          responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NS' ? '존재하지 않는 가게 입니다' :
+              responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+
+    if (store.storeNumber == null) {
+      alert('가게정보가 존재하지 않습니다');
+      return;
+    }
+    setChecked(false);
+  }
+
+  // effect: 찜 상태 들고오기 //
+  useEffect(() => {
+    if (userId != null) {
+      axios.get(`http://localhost:4000/stores/like?userId=${userId}`)
+        .then(response => {
+          const likedStores = response.data.likes.map((store: { storeNumber: any; }) => store.storeNumber);
+          if (likedStores.includes(store.storeNumber)) {
+            setChecked(true);
+          }
+        })
+        .catch(error => console.error(error));
+    }
+
+  }, [store.storeNumber, userId]);
 
   // render: 스토어 리스트 컴포넌트 렌더링 //
   return (
@@ -81,9 +208,10 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
         <div className='shop-info'>
           <div className='liked'>
             <h2 className="shop-name">{store.storeName}</h2>
-            <div onClick={onHeartClickHandler} className={checked ? 'red-heart' : 'white-heart'}></div>
+            <div onClick={onHeartClickHandler} className={checked ? 'red-heart' : 'white-heart'}>
+              <div className='like-count'>{likeCount}</div>
+            </div>
           </div>
-
 
           <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
           <p className="shop-rating">별점 {store.reviewRating}</p>
@@ -671,14 +799,20 @@ export default function Stores() {
           <button className="reset-button" onClick={onResetClickHandler}>초기화 ↻</button>
         </div>
         <div className='shop-list'>
-          {/* <StoreComponent storeImageUrl="https://i.ibb.co/7Qg0CTF/ready-To-Image.png" storeName="이도씨 베이킹" location="금정구 부곡동" reviewRating={4.5} reviews={127} />
-          <StoreComponent storeImageUrl="/picture12.png" storeName="어스 베이킹" location="금정구 장전동" reviewRating={4.3} reviews={291} />
-          <StoreComponent storeImageUrl="/picture13.png" storeName="바닐바닐" location="금정구 장전동" reviewRating={3.8} reviews={83} />
-          <StoreComponent storeImageUrl="/picture14.png" storeName="온도 케이크" location="동래구 명륜동" reviewRating={4.0} reviews={333} /> */}
           {
             storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList} />)
           }
         </div>
+
+        {/* <div className='store-bottom'>
+            <Pagination
+              pageList={pageList}
+              currentPage={currentPage}
+              onPageClickHandler={onPageClickHandler}
+              onPreSectionClickHandler={onPreSectionClickHandler}
+              onNextSectionClickHandler={onNextSectionClickHandler}
+            />
+          </div> */}
 
       </div>
     </div >

@@ -1,27 +1,102 @@
-import React, { KeyboardEventHandler, useRef, useState } from 'react'
+import React, { KeyboardEventHandler, useEffect, useRef, useState } from 'react'
 import './style.css';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 import styled from "styled-components";
-import { useOrderReject, useOrderStore } from '../../../stores';
+import { useOrderReject, useOrderStore, useSignInUserStore } from '../../../stores';
+import { Rating } from '@mui/material';
+import { RequestPayParams, RequestPayResponse } from '../../../types/portone';
+import { useCookies } from 'react-cookie';
+import { ACCESS_TOKEN } from '../../../constants';
+import { PostPayMentRequestDto } from '../../../apis/dto/request';
+import { getOrderDetailRequest, postPayMentRequest } from '../../../apis';
+import { ResponseDto } from '../../../apis/dto/response';
+import GetOrderDetailResponseDto from '../../../apis/dto/response/get-order-detail-response-dto';
+import GetOrderDetailListResponseDto from '../../../apis/dto/response/get-order-detail-list.response.dto';
+import { OrderDetailsProps } from '../../../types';
 
 // interface: 주문 내역 컴포넌트 Properties //
-interface MyOrderDetailComponentProps {
-    orderStatus: string;
-    orderCode: string;
-    orderImage: string;
-    orderProduct: string;
-    optionSelect: string;
-    pickupTime: string;
-    totalPrice: string;
-}
+interface OrderDetailProps {
+    orderdetail: OrderDetailsProps,
+    getOrderDetailList: () => void;
+};
 
 // component: 주문 내역 컴포넌트 //
-function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSelect, pickupTime, totalPrice }: MyOrderDetailComponentProps) {
+function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetailProps) {
 
     const { orderMessage, orderStatus, setOrderMessage, setOrderStatus } = useOrderStore();
     const { orderReject, setOrderRejectStatus, cancelReason, setCancelReason } = useOrderReject();
+    const { signInUser } = useSignInUserStore();
+    const [userId, setUserId] = useState<string>('');
+    const [userName, setUserName] = useState<string>('');
 
+    const [cookies] = useCookies();
 
+    // component: 결제창 //
+    const onClickPayment = () => {
+        if (!window.IMP) return;
+        /* 1. 가맹점 식별하기 */
+        const { IMP } = window;
+        IMP.init("imp84260646"); // 가맹점 식별코드
+
+        /* 2. 결제 데이터 정의하기 */
+        const data: RequestPayParams = {
+            pg: "html5_inicis", // PG사 : https://developers.portone.io/docs/ko/tip/pg-2 참고
+            pay_method: "card", // 결제수단
+            merchant_uid: `2024110500002`, // 주문번호
+            amount: 10, // 결제금액
+            name: "아임포트 결제 데이터 분석", // 주문명 (제품명 Order에서 받기)
+            buyer_name: `${userName}`, // 구매자 이름 (userName)
+            buyer_email: ``,
+            buyer_tel: `${signInUser?.telNumber}`, // 구매자 전화번호 (signInUser.telNumber)
+        };
+
+        /* 4. 결제 창 호출하기 */
+        IMP.request_pay(data, callback);
+    };
+
+    // component: 결제창 콜백 함수 //
+    function callback(response: RequestPayResponse) {
+        const { success, error_msg, paid_amount, merchant_uid } = response;
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) return;
+
+        const onPostPayMentEvent = () => {
+            const requestBody: PostPayMentRequestDto = {
+                orderCode: merchant_uid,
+                userId: userId,
+                success: success,
+                paidAmount: paid_amount
+            };
+
+            postPayMentRequest(requestBody, accessToken).then(postPayMentResponse);
+        }
+
+        // function: post PayMEnt response 처리 함수 //
+        const postPayMentResponse = (responseBody: ResponseDto | null) => {
+            const message =
+                !responseBody ? '서버에 문제가 있습니다.' :
+                    responseBody.code === 'VF' ? '유효하지 않은 데이터입니다.' :
+                        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+            const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+            if (!isSuccessed) {
+                alert(message);
+                return;
+            }
+        }
+
+        if (success) {
+            setOrderMessage('finishedPay');
+            setOrderStatus('결제 완료');
+            onPostPayMentEvent();
+        } else {
+            alert(`결제 실패: ${error_msg}`);
+        }
+    };
+
+    // component: 승인 대기중 //
     function ReadyAccept() {
         return (
             <div className='my-order-status'>
@@ -30,15 +105,18 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSel
         );
     };
 
+    // component: 결제 대기중 //
     function ReadyPay() {
         return (
             <div className='my-order-payed-status'>
-                <div className='go-payed' onClick={() => { setOrderMessage('finishedPay'); setOrderStatus('결제 완료'); }}>결제</div>
+                {/* onClick={() => { setOrderMessage('finishedPay'); setOrderStatus('결제 완료'); onClickPayment }} */}
+                <div className='go-payed' onClick={onClickPayment}>결제</div>
                 <div className='order-payed-cancle' onClick={() => { setOrderMessage('cancelOrder'); setOrderStatus('주문 취소'); }}>주문 취소</div>
             </div>
         );
     };
 
+    // component: 결제 완료 //
     function FinishedPay() {
         return (
             <div className='my-order-status'>
@@ -47,6 +125,7 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSel
         );
     }
 
+    // component: 주문 완료 //
     function FinishedOrder() {
         return (
             <div className='my-order-status-finished'>
@@ -94,6 +173,7 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSel
         const modalBackground = useRef<HTMLDivElement | null>(null);
         const fileInputRef = useRef<HTMLInputElement | null>(null);
         const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+        const [value, setValue] = React.useState<number | null>(2);
 
         const openFileDialog = () => {
             fileInputRef.current?.click();
@@ -115,38 +195,6 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSel
 
         // component: 별 표기 //
 
-        const StarSection = styled('div')`
-        .star {
-            color : rgba(250, 237, 30, 1);
-            font-size : 22px;
-            cursor:pointer;
-        }`;
-
-        const StarRating = () => {
-            const [starScore, setStarScore] = useState<number>(0);
-
-            const ratingStarHandler = (): any[] => {
-                let result: any[] = [];
-                for (let i: number = 0; i < 5; i++) {
-                    result.push(
-                        <span key={i + 1} onClick={() => setStarScore(i + 1)}>
-                            {
-                                i + 1 <= starScore ?
-                                    <FaStar className="star" />
-                                    :
-                                    <FaRegStar className="star" />
-                            }
-                        </span>);
-                }
-                return result;
-            }
-
-            return (
-                <StarSection>
-                    {ratingStarHandler()}
-                </StarSection>
-            )
-        }
         return (
             <>
                 <div className='write-review' onClick={() => setModalOpen(true)}>리뷰 쓰기</div>
@@ -188,7 +236,13 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSel
                             <div className='review-inform'>
                                 <p>가게명 : 부산케이크</p>
                                 <p>상품 : 부드러운 초코 케이크</p>
-                                <p className='review-star'>별점 : &nbsp; <StarRating /></p>
+                                <p className='review-star'>별점 : &nbsp; <Rating
+                                    name="simple-controlled"
+                                    value={value}
+                                    onChange={(event, newValue) => {
+                                        setValue(newValue);
+                                    }}
+                                /></p>
                             </div>
                             <textarea className='review-content' placeholder='리뷰를 작성해주세요. 최대(100자)' maxLength={100} />
                             <div className='review-bottom'>
@@ -201,6 +255,20 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSel
             </>
         );
     };
+
+    // effect: 유저 정보 불러오기 함수 //
+    useEffect(() => {
+        if (signInUser) {
+            setUserId(signInUser.userId);
+            setUserName(signInUser.name);
+        }
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) {
+            console.log('접근 권한이 없습니다.');
+            return;
+        }
+    }, [signInUser]);
 
     // component: 주문내역 컴포넌트 반환 //
     return (
@@ -218,19 +286,19 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSel
                                                     orderStatus === '주문 거부' ? '주문 거부' : ''
                         }
                     </div>
-                    <div>주문 코드 - {orderCode}</div>
+                    <div>주문 코드 - {orderdetail.orderCode}</div>
                 </div>
                 <hr />
                 <div className='order-box-bottom'>
                     <div className="order-image">
-                        <div className='order-image-list' style={{ backgroundImage: `url(${orderImage})` }}></div>
+                        <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail})` }}></div>
                     </div>
                     <div className="order-details">
-                        <p className="order-product">{orderProduct}</p>
-                        <p className="order-option">{optionSelect}</p>
-                        <p className="order-plan">픽업일시 {pickupTime}</p>
+                        <p className="order-product">{orderdetail.productNumber}</p>
+                        <p className="order-option">{orderdetail.optionSelect}</p>
+                        <p className="order-plan">픽업일시 {orderdetail.pickUpTime}</p>
                     </div>
-                    <div className="order-value">금액 : {totalPrice}원</div>
+                    <div className="order-value">금액 : {orderdetail.totalPrice}원</div>
                 </div>
             </div>
             {
@@ -239,13 +307,63 @@ function MyOrderDetailComponent({ orderCode, orderImage, orderProduct, optionSel
                         orderMessage === 'finishedPay' ? <FinishedPay /> :
                             orderMessage === 'finishedOrder' ? <FinishedOrder /> :
                                 orderMessage === 'rejectOrder' ? <OrderReject /> : ''
-
             }
         </div >
     );
+
 };
 
 export default function MyOrderDetail() {
+
+    const [userId, setUserId] = useState<string>('');
+    const { signInUser } = useSignInUserStore();
+
+    // state: 주문 정보 상태 //
+    const [orderDetailList, setOrderDetailList] = useState<OrderDetailsProps[]>([]);
+
+    // state: cookie 상태 //
+    const [cookies] = useCookies();
+
+    // function: get Order Detail Response 처리 함수 //
+    const getOrderDetailResponse = (responseBody: GetOrderDetailListResponseDto | ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+        const { orderdetails } = responseBody as GetOrderDetailListResponseDto;
+        setOrderDetailList(orderdetails);
+    }
+
+    // function: order detail list 불러오기 함수 //
+    const getOrderDetailList = () => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) {
+            console.log('접근 권한이 없습니다.');
+            return;
+        }
+        getOrderDetailRequest(userId, accessToken).then(getOrderDetailResponse);
+    }
+
+    // effect: 유저 정보 불러오기 함수 //
+    useEffect(() => {
+        if (signInUser) {
+            setUserId(signInUser.userId);
+        }
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) {
+            console.log('접근 권한이 없습니다.');
+            return;
+        }
+        getOrderDetailList();
+    }, [signInUser]);
 
     // render: 주문 내역 컴포넌트 렌더링 //
     return (
@@ -253,8 +371,9 @@ export default function MyOrderDetail() {
             <div className='order-history-h2'>주문 내역</div>
             <div className='order-day'>2024. 11. 01</div>
             <div className='my-order-list'>
-                <MyOrderDetailComponent orderStatus='승인' orderCode='20241021000001' orderImage='/picture12.png' orderProduct='딸기 케이크' optionSelect='2호, 빨강, 요청사항: 이쁘게 해주세요' pickupTime='2024. 11. 10' totalPrice='35000' />
-
+                {
+                    orderDetailList.map((orderdetail) => <MyOrderDetailComponent key={orderdetail.orderCode} orderdetail={orderdetail} getOrderDetailList={getOrderDetailList} />)
+                }
             </div>
             <div></div>
         </div>

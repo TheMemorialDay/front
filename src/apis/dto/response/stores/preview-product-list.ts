@@ -3,5 +3,6 @@ export default interface PreviewProduct {
     productName: string;
     productPrice: number;
     productImage: string;
+    productToday: boolean;
     themes: [];
 }

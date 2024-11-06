@@ -4,11 +4,15 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, useParams } from 'react-router-dom';
 import { ACCESS_TOKEN, LOGIN_PATH, ST_ORDER_DONE_ABSOLUTE_PATH } from '../../../../constants';
-import { getProductDetailRequest } from '../../../../apis';
+import { getProductDetailRequest, postOrderRequest } from '../../../../apis';
 import { GetProductDetailResponseDto } from '../../../../apis/dto/response/stores';
 import { ResponseDto } from '../../../../apis/dto/response';
 import { Option, RunningHours, SelectedOptionInterface } from '../../../../types';
 import { useCookies } from 'react-cookie';
+import { PostOrderRequestDto } from '../../../../apis/dto/request/order';
+import { useSignInUserStore } from '../../../../stores';
+
+import dayjs from 'dayjs';
 
 
 interface PreviewUrlProps {
@@ -25,10 +29,9 @@ interface RadioProps {
   value: string; 
   price: number;
   selectedOptions: SelectedOptionInterface[],
-  onSelect: (name: string, value: string, price: number) => void;
+  optionCategoryNumber: number;
+  onSelect: (name: string, value: string, price: number, optionCategoryNumber: number) => void;
 }
-
-
 
 // component: 사진 미리보기 컴포넌트 //
 function Previews({imageUrl, onClick}: PreviewUrlProps) {
@@ -48,24 +51,12 @@ function Tags({contents}: ThemaProps) {
   )
 }
 
-// // component: 픽업 날짜 선택 컴포넌트 //
-// function CalendarInput({mondayOpen, mondayLast, tuesdayOpen, tuesdayLast, wednesdayOpen, wednesdayLast, thursdayOpen, thursdayLast,
-//   fridayOpen, fridayLast, saturdayOpen, saturdayLast, sundayOpen, sundayLast, selectedDate, setSelectedDate,
-//   }: RunningHours) {
-  
-
-
-// return (
-  
-// );
-// }
-
 // component: 옵션 라디오 버튼 컴포넌트 //
-function RadioButtonGroup({name, value, price, selectedOptions, onSelect}: RadioProps) {
+function RadioButtonGroup({name, value, price, selectedOptions, onSelect, optionCategoryNumber}: RadioProps) {
   
   // event handler: 라디오 버튼 선택 핸들러 //
   const handleOptionChange = () => {
-    onSelect(name, value, price);
+    onSelect(name, value, price, optionCategoryNumber);
   };
 
   const isChecked = selectedOptions.some(item => item.name === name && item.value === value);
@@ -90,6 +81,9 @@ function RadioButtonGroup({name, value, price, selectedOptions, onSelect}: Radio
 
 // component: 상품 상세 페이지(주문 페이지)
 export default function Order() {
+  
+  // state: 로그인 유저 상태 //
+  const { signInUser } = useSignInUserStore();
 
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
@@ -126,6 +120,7 @@ export default function Order() {
   const [cakeCount, setCakeCount] = useState<number>(1);
   const [request, setRequest] = useState<string>('');
   const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string>('');
 
   // state: 선택 옵션 리스트 상태 //
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptionInterface[]>([]);
@@ -240,33 +235,19 @@ export default function Order() {
     setSundayLast(parseTime(orderProductDetails.sundayLast));
 
     // options 배열 확인
-    // orderProductDetails.options.forEach((option, index) => {
-    //   console.log(`Option ${index + 1}: ${option.productOptionName}`);
+    orderProductDetails.options.forEach((option, index) => {
+      console.log(`Option ${index + 1}: ${option.productOptionName}`);
 
-    //   // optionDetails 확인
-    //   option.optionDetails.forEach((detail) => {
-    //     console.log(`  Category: ${detail.productCategory}, Price: ${detail.productOptionPrice}`);
-    //   });
-    // });
+      // optionDetails 확인
+      option.optionDetails.forEach((detail) => {
+        console.log(`Category: ${detail.productCategory}, Price: ${detail.productOptionPrice}, optionCategoryNumber: ${detail.optionCategoryNumber}`);
+      });
+    });
 
-    // const filteredSizeOptions = orderProductDetails.options
-    //     .filter(option => option.productOptionName === "크기")
-    //     .flatMap(option => option.optionDetails.map(detail => ({
-    //         size: detail.productCategory,
-    //         addPrice: detail.productOptionPrice,
-    //     })));
-    // setSizeOptions(filteredSizeOptions);
-
-    // const filteredFlavorOptions = orderProductDetails.options
-    //   .filter(option => option.productOptionName === "맛")
-    //   .flatMap(option => option.optionDetails.map(detail => ({
-    //     flavor: detail.productCategory,
-    //     addPrice: detail.productOptionPrice,
-    // })));
-    // setFlavorOptions(filteredFlavorOptions);
     setOptions(orderProductDetails.options);
-    const initSelectedOptions = orderProductDetails.options.map(option => ({ name: option.productOptionName, value: '', price: 0 }));
+    const initSelectedOptions = orderProductDetails.options.map(option => ({ name: option.productOptionName, value: '', price: 0, optionCategoryNumber: 0 }));
     setSelectedOptions(initSelectedOptions);
+    setOptions(orderProductDetails.options);
   }
 
   // event handler: 현재 이미지 인덱스에 따른 이미지 변경 //
@@ -320,35 +301,73 @@ export default function Order() {
   };
 
   // event handler: 옵션 선택 변경 핸들러 //
-  const onOptionSelectHandler = (name: string, value: string, price: number) => {
+  const onOptionSelectHandler = (name: string, value: string, price: number, optionCategoryNumber: number) => {
     const newSelectedOptions = [...selectedOptions];
     const index = newSelectedOptions.findIndex(option => option.name === name);
+    newSelectedOptions[index].optionCategoryNumber = optionCategoryNumber;
     newSelectedOptions[index].value = value;
     newSelectedOptions[index].price = price;
     setSelectedOptions(newSelectedOptions);
   };
 
+  const formatPickupTime = (isoString: string): string => {
+    return dayjs(isoString).format('YYYY.MM.DD HH:mm');
+  };
+
   // event handler: 주문하기 버튼 클릭 이벤트 핸들러 //
-  const onOrderClickHandler = () => {
-    const accessToken = cookies[ACCESS_TOKEN];
-    if(!accessToken) {
-      alert("로그인이 필요한 서비스 입니다.");
-      navigator(LOGIN_PATH);
-    }
+const onOrderClickHandler = async () => {
+  const accessToken = cookies[ACCESS_TOKEN];
 
-    const allFull = selectedOptions.every(item => item.value !== null || item.value !== "");
-
-    if(selectedDate === null || !allFull || !isChecked) {
-      alert("모두 입력해주세요.");
-      return;
-    }
-    //console.log("주문 완료");
-    if(storeNumber) navigator(ST_ORDER_DONE_ABSOLUTE_PATH(storeNumber));
+  if (!accessToken) {
+    alert("로그인이 필요한 서비스입니다.");
+    navigator(LOGIN_PATH);
+    return;
   }
+
+  const userId = signInUser?.userId;
+  if (!userId) {
+    alert("사용자 정보가 확인되지 않습니다.");
+    return;
+  }
+
+  if (!selectedDate || !isChecked || selectedOptions.some(item => !item.value)) {
+    alert("모든 항목을 입력해주세요.");
+    return;
+  }
+  
+  const pickupTime = formatPickupTime(selectedDate.toISOString());
+
+  const orderRequestBody: PostOrderRequestDto = {
+    pickupTime,
+    productCount: cakeCount,
+    productContents: request,
+    totalPrice: finalPrice,
+    options: selectedOptions.map(option => ({
+      optionCategoryNumber: option.optionCategoryNumber
+    }))
+  };
+
+  try {
+    // 주문 요청 전송
+    if (storeNumber && productNumber && userId) {
+      const response = await postOrderRequest(orderRequestBody, userId, storeNumber, productNumber, accessToken);
+      if (response.code === 'SU') {
+        alert("주문이 완료되었습니다.");
+        if (storeNumber) navigator(ST_ORDER_DONE_ABSOLUTE_PATH(storeNumber));
+      } else {
+        alert(response.message || "주문에 실패했습니다.");
+      }
+    }
+  } catch (error) {
+    console.error("주문 요청 오류:", error); // 오류 로그
+    alert("서버 오류로 주문을 처리할 수 없습니다.");
+  }
+};
 
   // effect: 상품 상세 정보 가져오기 //
   useEffect(getProductDetail, []);
-  useEffect(() =>  console.log(selectedOptions), [selectedOptions]);
+
+  useEffect(() => console.log(selectedOptions), [selectedOptions]);
 
   // effect: 상품 최종 금액 업데이트 //
   useEffect(() => {
@@ -385,11 +404,6 @@ export default function Order() {
               
             <div className='pickup-date'>
               <div className='option-title'>픽업 일시 선택<span style={{color: "red"}}>*</span></div>
-              {/* <CalendarInput mondayOpen={mondayOpen} mondayLast={mondayLast} tuesdayOpen={tuesdayOpen} tuesdayLast={tuesdayLast} 
-              wednesdayOpen={wednesdayOpen} wednesdayLast={wednesdayLast} thursdayOpen={thursdayOpen} thursdayLast={thursdayLast} 
-              fridayOpen={fridayOpen} fridayLast={fridayLast} saturdayOpen={saturdayOpen} saturdayLast={saturdayLast} 
-              sundayOpen={sundayOpen} sundayLast={sundayLast} selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}/> */}
               <DatePicker
                 selected={selectedDate}
                 onChange={(date: Date | null) => setSelectedDate(date)}
@@ -404,11 +418,12 @@ export default function Order() {
             </div>
 
             {options.map((option, index) => 
-            <div className='pick-size' style={{marginBottom: "25px"}}>
+            <div key={index} className='pick-size' style={{marginBottom: "25px"}}>
               <div className='option-title'>{option.productOptionName} 선택{(option.productOptionName === '맛' || option.productOptionName === '크기') &&<span style={{color: "red"}}>*</span>}</div>
               <div className='radio-group' style={{marginTop: "15px"}}>
                 {option.optionDetails.map((optionDetail, index) => 
-                <RadioButtonGroup key={index} name={option.productOptionName} value={optionDetail.productCategory} price={optionDetail.productOptionPrice} selectedOptions={selectedOptions} onSelect={onOptionSelectHandler} />
+                <RadioButtonGroup key={index} name={option.productOptionName} value={optionDetail.productCategory} price={optionDetail.productOptionPrice} 
+                selectedOptions={selectedOptions} onSelect={onOptionSelectHandler} optionCategoryNumber={optionDetail.optionCategoryNumber} />
                 )}
               </div>
             </div>

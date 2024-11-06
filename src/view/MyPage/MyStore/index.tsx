@@ -210,7 +210,6 @@ export default function MyStore() {
         setSaturday({ start: saturdayOpen, end: saturdayLast });
         setSunday({ start: sundayOpen, end: sundayLast });
 
-        
     };
 
 
@@ -307,6 +306,11 @@ export default function MyStore() {
             return;
         }
 
+        if (!storeDetailAddress) {
+            alert('가게 상세주소를 작성해주세요 !');
+            return;
+        }
+
         let url: string | null = null;
         if (storeImageUrl) {
             const formData = new FormData();
@@ -381,6 +385,11 @@ export default function MyStore() {
 
         if (!storeAddress) {
             alert('가게 주소를 작성해주세요 !');
+            return;
+        }
+
+        if (!storeDetailAddress) {
+            alert('가게 상세주소를 작성해주세요 !');
             return;
         }
 

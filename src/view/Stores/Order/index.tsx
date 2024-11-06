@@ -67,7 +67,8 @@ export default function ShopOrder() {
       title: product.productName,
       price: `${product.productPrice}`, // Ensure price is a string
       hashtags: product.themes.join(' '), // Join themes into a single string for display
-      onDetailClickHandler: () => onProductClickHandler(product.productNumber)
+      onDetailClickHandler: () => onProductClickHandler(product.productNumber),
+      productToday: product.productToday
     }));
   
     setProductList(formattedProducts);
@@ -92,9 +93,10 @@ export default function ShopOrder() {
     price: string;
     hashtags: string;
     onDetailClickHandler: (productNumber: number | string) => void;
+    productToday: boolean;
   };
 
-  function ShopComponent({productNumber, imageUrl, title, price, hashtags, onDetailClickHandler }: ShopComponentProps) {
+  function ShopComponent({productNumber, imageUrl, title, price, hashtags, onDetailClickHandler, productToday }: ShopComponentProps) {
 
     const [hover, setHover] = useState(false);
 
@@ -110,6 +112,7 @@ export default function ShopOrder() {
             <h2>{title}</h2>
             <p className='hashtags' style={{fontSize:"13px", fontWeight: "400"}}>{hashtags}</p>
             <p className='price'>{price}원</p>
+            {productToday ? <p>당일 케이크 가능</p> : ''}
           </div>
         )}
       </div>
@@ -135,8 +138,8 @@ export default function ShopOrder() {
             title={product.title}
             price={product.price}
             hashtags={product.hashtags}
-            onDetailClickHandler={product.onDetailClickHandler}      
-          />
+            onDetailClickHandler={product.onDetailClickHandler} 
+            productToday={product.productToday}          />
         ))
       }
         {/* <ShopComponent imageUrl="/picture1.png" title="케이크1" price="35000" hashtags='#깔끔함 #달달함 #꽃케잌' onDetailClickHandler={onProductClickHandler} /> */}

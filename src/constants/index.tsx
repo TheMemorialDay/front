@@ -37,6 +37,7 @@ export const MY_PASSWORD_CHECK_PATH = `password-check`;
 export const MY_ORDER_DETAIL_PATH = `order-detail`;
 export const MY_REVIEW_PATH = `review`;
 export const MY_LIKE_PATH = `like`;
+export const MY_LIKE_DETAIL_PATH = (userId: string) => `${userId}`;
 export const MY_STORE_PATH = `store`;
 export const MY_STORE_DETAIL_PATH = (storeNumber: string | number) => `${storeNumber}`;
 
