@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { PostProductRequestDto, PostProductOptionDetailRequestDto, PostProductOptionRequestDto } from './dto/request/product/post-product-request.dto'; // DTO import
 import ResponseDto from './dto/response/response.dto';
 import { GetProductListResponseDto, GetProductResponseDto } from './dto/response/product';
-import { IdCheckRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request";
+import { IdCheckRequestDto, PostLikeStoreRequestDto, PostPayMentRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { GetProductDetailResponseDto, GetProductPreviewListResponseDto, GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
 import { GetSignInResponseDto } from "./dto/response/auth";
@@ -14,6 +14,9 @@ import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
 import { access } from 'fs';
 import { PostOrderRequestDto } from './dto/request/order';
+import GetMyPageLikeStoreListResponseDto from './dto/response/like/get-mypage-likestore-list.response.dto';
+import GetOrderDetailResponseDto from './dto/response/get-order-detail-response-dto';
+import GetOrderDetailListResponseDto from './dto/response/get-order-detail-list.response.dto';
 
 // variable: API URL 상수 //
 
@@ -28,6 +31,8 @@ const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODUL
 const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
+const POST_LIKE_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
+const DELETE_LIKE_API_URL = (userId: string, storeNumber: number | string) => `${POST_LIKE_API_URL}?userId=${userId}&storeNumber=${storeNumber}`;
 const GET_PRODUCT_PREVIEW_LIST_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/list`
 const GET_PRODUCT_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}`;
 const POST_ORDER_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string, userId: string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}/${userId}`;
@@ -41,9 +46,12 @@ const PATCH_JOIN_URL = (userId: string | null) => `${MEMORIALDAY_API_DOMAIN}/joi
 
 const POST_STORE_API_MODULE = `${MYPAGE_STORE_MODULE}`;
 const GET_MYPAGE_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+const GET_MYPAGE_LIKE_STORE_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/like/${userId}`;
 const PATCH_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
 
 const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}`
+
+const GET_ORDER_DETAIL_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/order-detail/${userId}`;
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
 
@@ -54,6 +62,8 @@ const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
 const ID_SEARCH_API_URL = `${AUTH_MODULE_URL}/id-search`;
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/get-sign-in`;
+
+const POST_PAYMENT_API_URL = `${MYPAGE_MODULE_URL}/order-detail`;
 
 // function: Authorizarion Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorization': `Bearer ${accessToken}` } })
@@ -260,10 +270,50 @@ export const getMyPageStoreRequest = async (storeNumber: number | string, access
     return responseBody;
 }
 
+// function: get MyPage Like Store 요청 함수 //
+export const getMyPageLikeStoreRequest = async (userId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_MYPAGE_LIKE_STORE_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetMyPageLikeStoreListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function: patch join 요청 함수 //
 export const patchJoinRequest = async (requestBody: PatchJoinRequestDto, userId: string, accessToken: string) => {
     const responseBody = await axios.patch(PATCH_JOIN_URL(userId), requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: post Like Store 요청 함수 //
+export const postLikeStoreRequest = async (requestBody: PostLikeStoreRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_LIKE_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: delete Like Store 요청 함수 //
+export const deleteLikeStoreRequest = async (userId: string, storeNumber: number | string, accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_LIKE_API_URL(userId, storeNumber), bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: post Pay 요청 함수 //
+export const postPayMentRequest = async (requestBody: PostPayMentRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_PAYMENT_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get Order Detail 요청 함수 //
+export const getOrderDetailRequest = async (userId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_ORDER_DETAIL_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetOrderDetailListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
