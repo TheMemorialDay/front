@@ -4,13 +4,13 @@ import './style.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ACCESS_TOKEN, SU_ABSOLUTE_QA_PATH } from '../../../constants';
 import { QaList } from '../../../types';
-import { deleteQnARequest, getQnADetailRequest } from '../../../apis/dto';
 import { GetQnADetailResponseDto } from '../../../apis/dto/response/support';
 import { ResponseDto } from '../../../apis/dto/response';
 import maskString from '../../../components/maskingString/MaskingString';
 import formatDate from '../../../components/dateChange/DateChange';
 import { useSignInUserStore } from '../../../stores';
 import { useCookies } from 'react-cookie';
+import { deleteQnARequest, getQnADetailRequest } from '../../../apis';
 
 // component: Q&A Detail 컴포넌트 //
 export default function QaDetail() {
@@ -19,10 +19,10 @@ export default function QaDetail() {
     const [cookies] = useCookies();
 
     // state: 로그인 유저 상태 //
-    const {signInUser} = useSignInUserStore();
+    const { signInUser } = useSignInUserStore();
 
     // state: 질문 번호 //
-    const {questionNumber} = useParams<{ questionNumber: string }>();
+    const { questionNumber } = useParams<{ questionNumber: string }>();
 
     // state: qna 관련 변수 상태 //
     const [writerId, setWriterId] = useState<string>('');
@@ -47,40 +47,40 @@ export default function QaDetail() {
 
     // function: get notice detail response 처리 함수 //
     const getQnADetailResponse = (responseBody: GetQnADetailResponseDto | ResponseDto | null) => {
-        const message = 
+        const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'DBE'? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
             return;
         }
-        const {questionTitle, questionDay, questionContents, userId, answerContents, questionStatus} = responseBody as GetQnADetailResponseDto;
+        const { questionTitle, questionDay, questionContents, userId, answerContents, questionStatus } = responseBody as GetQnADetailResponseDto;
         setTitle(questionTitle);
         setWriterId(userId);
         setQuestionContents(questionContents);
         setWriteDay(questionDay);
         setQuestionStatus(questionStatus);
 
-        if(questionStatus === '미응답'){
+        if (questionStatus === '미응답') {
             setHasAnswer(false);
-        } else{
+        } else {
             setHasAnswer(true);
             setAnswerContents(answerContents);
-        } 
+        }
     };
 
     // function: delete QnA response 처리 함수 //
     const deleteQnAResponse = (responseBody: ResponseDto | null) => {
-        const message = 
+        const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'AF' ? '접근 권한이 없습니다.' :
-            responseBody.code === 'NP' ? '접근 권한이 없습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 'SU';
+                responseBody.code === 'AF' ? '접근 권한이 없습니다.' :
+                    responseBody.code === 'NP' ? '접근 권한이 없습니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 'SU';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
             return;
         }
@@ -92,7 +92,7 @@ export default function QaDetail() {
         if (!isConfirm) return;
 
         const accessToken = cookies[ACCESS_TOKEN];
-        if(!accessToken) return;
+        if (!accessToken) return;
 
         if (!questionNumber) {
             alert('유효한 질문 번호가 없습니다.');
@@ -145,15 +145,15 @@ export default function QaDetail() {
                 </div>
             }
 
-            {isUser ? 
+            {isUser ?
                 <div className='button-box'>
                     <div className='button delete-button' onClick={onDeleteButtonHandler}>삭제</div>
                 </div>
-            :
+                :
                 ''
             }
 
-            
+
         </div>
     )
 }

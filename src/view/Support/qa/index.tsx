@@ -7,25 +7,25 @@ import './style.css';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, SU_ABSOLUTE_QA_WRITE_PATH, SU_QA_DETAIL_PATH } from '../../../constants';
 import QaRow from '../../../components/qa_row';
-import { getQnAListRequest } from '../../../apis/dto';
 import { GetQnAListResponseDto } from '../../../apis/dto/response/support';
 import { ResponseDto } from '../../../apis/dto/response';
 import { useSignInUserStore } from '../../../stores';
 import { useCookies } from 'react-cookie';
 import { Node } from 'typescript';
+import { getQnAListRequest } from '../../../apis';
 
 // component: support qa 컴포넌트 //
 export default function Qa() {
 
     // state: 로그인 유저 상태 //
-    const {signInUser} = useSignInUserStore();
+    const { signInUser } = useSignInUserStore();
 
     // state: 쿠키 상태 //
     const [cookies] = useCookies();
 
     // state: 검색 입력 창 상태 //
     const [searchWords, setSearchWords] = useState<string>('');
-    
+
     // state: 검색어 입력 종류 상태 //
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string>('선택');
@@ -44,17 +44,17 @@ export default function Qa() {
 
     // function: getNoticeList response 처리 함수 //
     const getQnAListResponse = (responseBody: GetQnAListResponseDto | ResponseDto | null) => {
-        const message = 
+        const message =
             responseBody === null ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 'SU';
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 'SU';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
-            return ;
+            return;
         }
 
-        const {qnas} = responseBody as GetQnAListResponseDto;
+        const { qnas } = responseBody as GetQnAListResponseDto;
         setTotalList(qnas);
         setOriginalList(qnas);
     };
@@ -83,24 +83,24 @@ export default function Qa() {
 
     // event handler: 큐엔에이 검색 버튼 //
     const onSearchButtonHandler = () => {
-        if(selectedOption === '제목') {
+        if (selectedOption === '제목') {
             const searchedList = originalList.filter(qnas => (qnas.questionTitle).includes(searchWords));
             setTotalList(searchedList);
             initViewList(searchedList);
-        }else if(selectedOption === '작성자') {
+        } else if (selectedOption === '작성자') {
             const searchedList = originalList.filter(qnas => (qnas.userId).includes(searchWords));
             setTotalList(searchedList);
             initViewList(searchedList);
-        }else {
+        } else {
             alert('검색할 범위를 선택해주세요.');
             return;
         }
-    }; 
+    };
 
     // event handler: 큐엔에이 작성 페이지 이동 //
     const onQaWriteButtonHandler = () => {
         const accessToken = cookies[ACCESS_TOKEN];
-        if(!accessToken) return;
+        if (!accessToken) return;
         navigator(SU_ABSOLUTE_QA_WRITE_PATH);
     };
 
@@ -151,8 +151,8 @@ export default function Qa() {
                         </div>
                     </div>
 
-                    {viewList.map((qna, index) => <QaRow key={index} qnas={qna} getQnAList={getQnAList} onDetailClickHandler={onDetailButtonHandler}/> )}
-                    
+                    {viewList.map((qna, index) => <QaRow key={index} qnas={qna} getQnAList={getQnAList} onDetailClickHandler={onDetailButtonHandler} />)}
+
 
                 </div>
             </div>
@@ -179,7 +179,7 @@ export default function Qa() {
                             </div>
                         )}
                     </div>
-                    <input className="search-input" value={searchWords} placeholder="내용을 입력하세요." onChange={onSearchChangeHandler} onKeyDown={handleKeyDown}/>
+                    <input className="search-input" value={searchWords} placeholder="내용을 입력하세요." onChange={onSearchChangeHandler} onKeyDown={handleKeyDown} />
                     <div className="button search-button" onClick={onSearchButtonHandler}>검색</div>
                 </div>
             </div>

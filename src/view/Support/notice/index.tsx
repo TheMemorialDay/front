@@ -6,10 +6,10 @@ import './style.css';
 import SupportNavi from "../../../components/support_navi";
 import { ChangeEvent, useEffect, useState } from "react";
 import { SU_ABSOLUTE_NOTICE_DETAIL_PATH } from "../../../constants";
-import { getNoticeListRequest } from "../../../apis/dto";
 import GetNoticeListResponseDto from "../../../apis/dto/response/support/get-notice-list-response.dto";
 import { ResponseDto } from "../../../apis/dto/response";
 import formatDate from "../../../components/dateChange/DateChange";
+import { getNoticeListRequest } from "../../../apis";
 
 
 // interface: 공지사항 리스트 아이템 //
@@ -21,8 +21,8 @@ interface TableRowProps {
 
 // component: NoticeRow 컴포넌트 //
 
-export function NoticeRow({notice, getNoticeList, onDetailClickHandler}: TableRowProps) {
-    
+export function NoticeRow({ notice, getNoticeList, onDetailClickHandler }: TableRowProps) {
+
     // render: NoticeRow 컴포넌트 렌더링 //
     return (
         <div className="tr" onClick={() => onDetailClickHandler(notice.noticeNumber)}>
@@ -51,17 +51,17 @@ export default function Notice() {
 
     // function: getNoticeList response 처리 함수 //
     const getNoticeListResponse = (responseBody: GetNoticeListResponseDto | ResponseDto | null) => {
-        const message = 
+        const message =
             responseBody === null ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 'SU';
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 'SU';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
-            return ;
+            return;
         }
 
-        const {notices} = responseBody as GetNoticeListResponseDto;
+        const { notices } = responseBody as GetNoticeListResponseDto;
         setTotalList(notices);
         setOriginalList(notices);
     };
@@ -124,7 +124,7 @@ export default function Notice() {
                         <div className="td-title">Title</div>
                         <div className="td-date">Date</div>
                     </div>
-                    {viewList.map((notice, index) => <NoticeRow key={index} notice={notice} getNoticeList={getNoticeList} onDetailClickHandler={onTrClickHandler}/> )}
+                    {viewList.map((notice, index) => <NoticeRow key={index} notice={notice} getNoticeList={getNoticeList} onDetailClickHandler={onTrClickHandler} />)}
                 </div>
             </div>
 
@@ -137,7 +137,7 @@ export default function Notice() {
                     onNextSectionClickHandler={onNextSectionClickHandler}
                 />
                 <div className="search-box">
-                    <input value={searchWords} placeholder="제목을 입력하세요" onChange={onSearchChangeHandler} onKeyDown={handleKeyDown}/>
+                    <input value={searchWords} placeholder="제목을 입력하세요" onChange={onSearchChangeHandler} onKeyDown={handleKeyDown} />
                     <div className="button search-button" onClick={onSearchButtonHandler}>검색</div>
                 </div>
             </div>

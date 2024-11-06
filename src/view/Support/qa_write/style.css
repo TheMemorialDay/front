@@ -14,28 +14,32 @@
 #qa-write-wrapper .main,
 #qa-write-wrapper .bottom {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
 }
 
-#qa-write-wrapper .main input {
+#qa-write-wrapper .main textarea {
     height: 400px;
 }
 
 #qa-write-wrapper .subject,
 #qa-write-wrapper .script {
     width: 100px;
-    
+
     text-align: center;
     font-size: 18px;
     font-weight: 700;
 }
 
-#qa-write-wrapper input {
+#qa-write-wrapper input,
+#qa-write-wrapper .main textarea {
     flex: 0.95;
     border-radius: 5px;
     padding: 8px 10px;
-    
+
     border: 2px solid rgba(219, 219, 219, 1);
-    
+
     outline: none;
 }
 

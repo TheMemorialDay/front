@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, SU_ABSOLUTE_QA_PATH } from '../../../constants';
 import { ResponseDto } from '../../../apis/dto/response';
 import { PostQnARequestDto } from '../../../apis/dto/request/support';
-import { PostQnARequest } from '../../../apis/dto';
 import { useCookies } from 'react-cookie';
 import { useSignInUserStore } from '../../../stores';
+import { PostQnARequest } from '../../../apis';
 
 export default function QaWrite() {
 
@@ -15,7 +15,7 @@ export default function QaWrite() {
     const [cookies] = useCookies();
 
     // state: 로그인 유저 상태 //
-    const {signInUser} = useSignInUserStore();
+    const { signInUser } = useSignInUserStore();
 
     // state: 제목 상태 //
     const [questionTitle, setSubjact] = useState<string>('');
@@ -27,14 +27,14 @@ export default function QaWrite() {
 
     // function: post QnA response 처리 함수 //
     const postQnAResponse = (responseBody: ResponseDto | null) => {
-        const message = 
-        !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '모두 입력해주세요.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-        responseBody?.code === 'AF' ? '잘못된 접근입니다.' : 'SU';
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '모두 입력해주세요.' :
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                        responseBody?.code === 'AF' ? '잘못된 접근입니다.' : 'SU';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
             return;
         }
@@ -62,7 +62,7 @@ export default function QaWrite() {
     // event handler: 큐엔에이 등록 버튼 //
     const onWriteRegisterButtonHandler = () => {
         const accessToken = cookies[ACCESS_TOKEN];
-        if(!accessToken) return;
+        if (!accessToken) return;
 
         if (!questionTitle || !questionContents) {
             alert("모두 입력해주세요.");
@@ -72,19 +72,19 @@ export default function QaWrite() {
         const questionDay = Date.now().toString();
         const userId = signInUser?.userId;
         const questionStatus = '미응답';
-        const answerContents = ''; 
+        const answerContents = '';
 
-        if(userId !== undefined) {
+        if (userId !== undefined) {
             const requestBody: PostQnARequestDto = {
                 questionTitle, questionContents, questionDay, userId, questionStatus, answerContents
             };
-    
+
             PostQnARequest(requestBody, accessToken).then(postQnAResponse);
         } else {
             alert('로그인 정보가 없습니다.');
             return;
         }
-        
+
     };
 
     return (

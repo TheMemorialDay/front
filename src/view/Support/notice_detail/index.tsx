@@ -4,7 +4,8 @@ import { useParams } from 'react-router-dom';
 import { ResponseDto } from '../../../apis/dto/response';
 import { GetNoticeDetailResponseDto } from '../../../apis/dto/response/support';
 import formatDate from '../../../components/dateChange/DateChange';
-import { getNoticeDetailRequest } from '../../../apis/dto';
+import { getNoticeDetailRequest } from '../../../apis';
+import SupportNavi from '../../../components/support_navi';
 
 // component: NoticeDetail 컴포넌트 //
 export default function NoticeDetail() {
@@ -27,16 +28,16 @@ export default function NoticeDetail() {
     // function: get notice detail response 처리 함수 //
     const getNoticeDetailResponse = (responseBody: GetNoticeDetailResponseDto | ResponseDto | null) => {
         console.log('Response received:', responseBody);
-        const message = 
+        const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'DBE'? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
             return;
         }
-        const {noticeTitle, noticeContents, noticeDay} = responseBody as GetNoticeDetailResponseDto;
+        const { noticeTitle, noticeContents, noticeDay } = responseBody as GetNoticeDetailResponseDto;
         setTitle(noticeTitle);
         setContents(noticeContents);
         setWriteDay(formatDate(noticeDay));
@@ -51,7 +52,7 @@ export default function NoticeDetail() {
     // render: NoticeDetail 컴포넌트 렌더링 //
     return (
         <div id='notice-detail-wrapper'>
-            <div className='title'>SUPPORT</div>
+            <SupportNavi />
             <div className='top'>
                 <div className='detail-title'>
                     <div className='detail-title-main'>제목</div>
