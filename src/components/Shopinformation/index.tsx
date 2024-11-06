@@ -6,6 +6,7 @@ import { GetStoreResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN } from '../../constants';
+import { Tooltip, tooltipClasses, Zoom } from '@mui/material';
 
 
 export default function ShopMain() {
@@ -106,13 +107,49 @@ export default function ShopMain() {
         <div className='shop-comment'>
           <h2 className='shop-ment'>{storeName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating}</h2>
           <h2 className='shop-ment'>{storeGugun}&nbsp;{storeDong}&nbsp;{storeDetailAddress}</h2>
-          <h2 className='shop-ment'>매일 11:00 ~ 19:00</h2>
+          <h2 className='shop-ment-day'>
+            {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => {
+              const dayState = [monday, tuesday, wednesday, thursday, friday, saturday, sunday][index];
+              const isClosed = dayState.start === '휴무일' || dayState.end === '휴무일';
+              return (
+                <Tooltip TransitionComponent={Zoom} title={isClosed ? '휴무일' : `${dayState.start} ~ ${dayState.end}`} arrow
+                  slotProps={{
+                    popper: {
+                      sx: {
+                        [`&.${tooltipClasses.popper}[data-popper-placement*="bottom"] .${tooltipClasses.tooltip}`]:
+                        {
+                          marginTop: '3px',
+                        },
+                        [`&.${tooltipClasses.popper}[data-popper-placement*="top"] .${tooltipClasses.tooltip}`]:
+                        {
+                          marginBottom: '0px',
+                        },
+                        [`&.${tooltipClasses.popper}[data-popper-placement*="right"] .${tooltipClasses.tooltip}`]:
+                        {
+                          marginLeft: '0px',
+                        },
+                        [`&.${tooltipClasses.popper}[data-popper-placement*="left"] .${tooltipClasses.tooltip}`]:
+                        {
+                          marginRight: '0px',
+                        },
+                      },
+                    },
+                  }}>
+                  <div
+                    key={day}
+                    className={isClosed ? 'closed-day' : 'open-day'}>
+                    {day}
+                  </div>
+                </Tooltip>
+              );
+            })}
+          </h2>
           <h2 className='shop-ment'>{storeIntroduce}</h2>
         </div>
       </div>
       <hr className='hr' />
       <Outlet context={{ store }} />
-    </div>
+    </div >
 
   )
 }

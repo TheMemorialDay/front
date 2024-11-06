@@ -3,12 +3,13 @@ import QaList from "./qa.interface";
 import ReviewComponentPros from "./review.interface";
 import ShoppingCartList from "./shopping-cart.interface";
 import StoreComponentProps from "./store_thumnail.interface";
-import CompletedOrderProps from "./completed-order.interface";
+import CompletedOrderProps from "./order-details.interface";
 import YearSelectProps from "./sales-date-select.interface";
 import SalesDateSelectProps from "./sales-date-select.interface";
 import Product from "./product.interface";
 import { OrderRejectReason } from "./orderreject.interface";
 import SignInUser from "./sign-in-user.interface";
+import OrderDetailsProps from "./order-details.interface";
 
 export type {
     Product,
@@ -21,5 +22,6 @@ export type {
     YearSelectProps,
     SalesDateSelectProps,
     OrderRejectReason,
-    SignInUser
+    SignInUser,
+    OrderDetailsProps
 }
