@@ -10,12 +10,14 @@
 
 #store-detail-wrapper .shop-ment {
   font-size: 24px;
+  font-weight: 500;
 }
 
 #store-detail-wrapper .shop-infor {
   width: 80%;
   height: 100%;
   margin-top: 30px;
+  margin-bottom: -20px;
 
   display: flex;
   flex-direction: row;
@@ -40,4 +42,34 @@
   width: 80%;
   height: 2px;
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+#store-detail-wrapper .shop-ment-day {
+  display: flex;
+  font-size: 24px;
+  gap: 10px;
+}
+
+.open-day {
+  color: black;
+  cursor: pointer;
+  position: relative;
+}
+
+.open-day:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -20px;
+  background: #000;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 15px;
+  width: 100px;
+  text-align: center;
+  left: -40px;
+}
+
+.closed-day {
+  color: gray;
+  cursor: default;
 }
