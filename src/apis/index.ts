@@ -507,22 +507,6 @@ export const fileUploadRequest = async (requestBody: FormData) => {
     return url;
 }
 
-// function: stores main search by store name 요청 함수 //
-// export const postStoresByStoreNameSearchRequest = async (requestBody: PostStoresByStoreNameSearchRequestDto) => {
-//   const responseBody = await axios.post(GET_STORE_LIST_BY_STORE_NAME_SEARCH_API_URL, requestBody)
-//     .then(responseDataHandler<GetStoreListResponseDto>)
-//     .catch(responseErrorHandler);
-//   return responseBody;
-// };
-
-// function: stores main search by product name 요청 함수 //
-// export const postStoresByProductNameSearchRequest = async (requestBody: PostStoresByProductNameSearchRequestDto) => {
-//   const responseBody = await axios.post(GET_STORE_LIST_BY_PRODUCT_NAME_SEARCH_API_URL, requestBody)
-//     .then(responseDataHandler<GetStoreListResponseDto>)
-//     .catch(responseErrorHandler);
-//   return responseBody;
-// };
-
 // function: store main search 병합 버전 요청 함수 //
 export const getStoreMainSearchRequest = async (storeName: string, productName: string) => {
   const responseBody = await axios.get(GET_STORE_LIST_TOTAL_SEARCH_API_URL, { params: { storeName, productName } })

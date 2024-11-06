@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import StoreInfor from "../types/store-infor.interface";
 import { StoreComponentProps } from "../types";
 
 
