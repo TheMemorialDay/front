@@ -51,16 +51,6 @@ const MyPage = () => {
         return undefined;
     }
 
-    // 쿠키에서 accessToken을 추출하는 함수 (TypeScript와 호환되는 코드)
-    function getCookie(name: string): string | undefined {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            return parts.pop()?.split(';').shift();
-        }
-        return undefined;
-    }
-
 
     // event handler: 가게등록 유무 핸들러 //
     const handleStoreNavigation = async () => {
