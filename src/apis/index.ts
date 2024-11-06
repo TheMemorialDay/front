@@ -387,7 +387,7 @@ export const checkBusinessNumRequest = async (requestBody: BusinessNumCheckReque
             'Content-Type': 'application/json'
         }
     }).then(responseDataHandler3<BusinessNumCheckResponseDto>)
-      .catch(responseErrorHandler);
+        .catch(responseErrorHandler);
     return responseBody;
 }
 
