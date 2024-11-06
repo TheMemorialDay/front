@@ -37,6 +37,7 @@ interface ProductOption {
 }
 
 interface OptionDetail {
+    optionCategoryNumber: number;
     productCategory: string;
     productOptionPrice: number;
 }

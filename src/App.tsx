@@ -103,6 +103,7 @@ export default function TheMemorialDay() {
 
   // function: get sign in response 처리 함수 //
   const getSignInResponse = (responseBody: GetSignInResponseDto | ResponseDto | null) => {
+    console.log(responseBody);
     const message =
       !responseBody ? '로그인 유저 정보를 불러오는데 문제가 발생하였습니다.' :
         responseBody.code === 'NI' ? '로그인 유저가 존재하지 않습니다.' :
@@ -118,9 +119,8 @@ export default function TheMemorialDay() {
       return;
     }
 
-    const { userId, name, telNumber, permission } = responseBody as GetSignInResponseDto;
-    setSignInUser({ userId, name, telNumber, permission });
-    console.log(signInUser);
+    const {userId, name, telNumber, permission} = responseBody as GetSignInResponseDto;
+    setSignInUser({userId, name, telNumber, permission});
   }
 
   // effect: cookie의 accessToken값이 변경될 때 마다 로그인 유저 정보 요청 함수 //

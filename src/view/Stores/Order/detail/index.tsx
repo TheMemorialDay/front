@@ -25,10 +25,9 @@ interface RadioProps {
   value: string; 
   price: number;
   selectedOptions: SelectedOptionInterface[],
-  onSelect: (name: string, value: string, price: number) => void;
+  optionCategoryNumber: number;
+  onSelect: (name: string, value: string, price: number, optionCategoryNumber: number) => void;
 }
-
-
 
 // component: 사진 미리보기 컴포넌트 //
 function Previews({imageUrl, onClick}: PreviewUrlProps) {
@@ -48,24 +47,12 @@ function Tags({contents}: ThemaProps) {
   )
 }
 
-// // component: 픽업 날짜 선택 컴포넌트 //
-// function CalendarInput({mondayOpen, mondayLast, tuesdayOpen, tuesdayLast, wednesdayOpen, wednesdayLast, thursdayOpen, thursdayLast,
-//   fridayOpen, fridayLast, saturdayOpen, saturdayLast, sundayOpen, sundayLast, selectedDate, setSelectedDate,
-//   }: RunningHours) {
-  
-
-
-// return (
-  
-// );
-// }
-
 // component: 옵션 라디오 버튼 컴포넌트 //
-function RadioButtonGroup({name, value, price, selectedOptions, onSelect}: RadioProps) {
+function RadioButtonGroup({name, value, price, selectedOptions, onSelect, optionCategoryNumber}: RadioProps) {
   
   // event handler: 라디오 버튼 선택 핸들러 //
   const handleOptionChange = () => {
-    onSelect(name, value, price);
+    onSelect(name, value, price, optionCategoryNumber);
   };
 
   const isChecked = selectedOptions.some(item => item.name === name && item.value === value);
@@ -240,32 +227,17 @@ export default function Order() {
     setSundayLast(parseTime(orderProductDetails.sundayLast));
 
     // options 배열 확인
-    // orderProductDetails.options.forEach((option, index) => {
-    //   console.log(`Option ${index + 1}: ${option.productOptionName}`);
+    orderProductDetails.options.forEach((option, index) => {
+      console.log(`Option ${index + 1}: ${option.productOptionName}`);
 
-    //   // optionDetails 확인
-    //   option.optionDetails.forEach((detail) => {
-    //     console.log(`  Category: ${detail.productCategory}, Price: ${detail.productOptionPrice}`);
-    //   });
-    // });
+      // optionDetails 확인
+      option.optionDetails.forEach((detail) => {
+        console.log(`Category: ${detail.productCategory}, Price: ${detail.productOptionPrice}, optionCategoryNumber: ${detail.optionCategoryNumber}`);
+      });
+    });
 
-    // const filteredSizeOptions = orderProductDetails.options
-    //     .filter(option => option.productOptionName === "크기")
-    //     .flatMap(option => option.optionDetails.map(detail => ({
-    //         size: detail.productCategory,
-    //         addPrice: detail.productOptionPrice,
-    //     })));
-    // setSizeOptions(filteredSizeOptions);
-
-    // const filteredFlavorOptions = orderProductDetails.options
-    //   .filter(option => option.productOptionName === "맛")
-    //   .flatMap(option => option.optionDetails.map(detail => ({
-    //     flavor: detail.productCategory,
-    //     addPrice: detail.productOptionPrice,
-    // })));
-    // setFlavorOptions(filteredFlavorOptions);
     setOptions(orderProductDetails.options);
-    const initSelectedOptions = orderProductDetails.options.map(option => ({ name: option.productOptionName, value: '', price: 0 }));
+    const initSelectedOptions = orderProductDetails.options.map(option => ({ name: option.productOptionName, value: '', price: 0, optionCategoryNumber: 0 }));
     setSelectedOptions(initSelectedOptions);
   }
 
@@ -320,9 +292,10 @@ export default function Order() {
   };
 
   // event handler: 옵션 선택 변경 핸들러 //
-  const onOptionSelectHandler = (name: string, value: string, price: number) => {
+  const onOptionSelectHandler = (name: string, value: string, price: number, optionCategoryNumber: number) => {
     const newSelectedOptions = [...selectedOptions];
     const index = newSelectedOptions.findIndex(option => option.name === name);
+    newSelectedOptions[index].optionCategoryNumber = optionCategoryNumber;
     newSelectedOptions[index].value = value;
     newSelectedOptions[index].price = price;
     setSelectedOptions(newSelectedOptions);
@@ -342,13 +315,13 @@ export default function Order() {
       alert("모두 입력해주세요.");
       return;
     }
-    //console.log("주문 완료");
     if(storeNumber) navigator(ST_ORDER_DONE_ABSOLUTE_PATH(storeNumber));
   }
 
   // effect: 상품 상세 정보 가져오기 //
   useEffect(getProductDetail, []);
-  useEffect(() =>  console.log(selectedOptions), [selectedOptions]);
+
+  useEffect(() => console.log(selectedOptions), [selectedOptions]);
 
   // effect: 상품 최종 금액 업데이트 //
   useEffect(() => {
@@ -385,11 +358,6 @@ export default function Order() {
               
             <div className='pickup-date'>
               <div className='option-title'>픽업 일시 선택<span style={{color: "red"}}>*</span></div>
-              {/* <CalendarInput mondayOpen={mondayOpen} mondayLast={mondayLast} tuesdayOpen={tuesdayOpen} tuesdayLast={tuesdayLast} 
-              wednesdayOpen={wednesdayOpen} wednesdayLast={wednesdayLast} thursdayOpen={thursdayOpen} thursdayLast={thursdayLast} 
-              fridayOpen={fridayOpen} fridayLast={fridayLast} saturdayOpen={saturdayOpen} saturdayLast={saturdayLast} 
-              sundayOpen={sundayOpen} sundayLast={sundayLast} selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}/> */}
               <DatePicker
                 selected={selectedDate}
                 onChange={(date: Date | null) => setSelectedDate(date)}
@@ -408,7 +376,8 @@ export default function Order() {
               <div className='option-title'>{option.productOptionName} 선택{(option.productOptionName === '맛' || option.productOptionName === '크기') &&<span style={{color: "red"}}>*</span>}</div>
               <div className='radio-group' style={{marginTop: "15px"}}>
                 {option.optionDetails.map((optionDetail, index) => 
-                <RadioButtonGroup key={index} name={option.productOptionName} value={optionDetail.productCategory} price={optionDetail.productOptionPrice} selectedOptions={selectedOptions} onSelect={onOptionSelectHandler} />
+                <RadioButtonGroup key={index} name={option.productOptionName} value={optionDetail.productCategory} price={optionDetail.productOptionPrice} 
+                selectedOptions={selectedOptions} onSelect={onOptionSelectHandler} optionCategoryNumber={optionDetail.optionCategoryNumber} />
                 )}
               </div>
             </div>
