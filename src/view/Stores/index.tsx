@@ -467,9 +467,9 @@ export default function Stores() {
       return;
     }
 
-    const { stores } = responseBody as GetStoreListResponseDto;
-    setStoreList(stores);
-    originalList.current = stores;
+    const { storeDetails } = responseBody as GetStoreListResponseDto;
+    setStoreList(storeDetails);
+    originalList.current = storeDetails;
   }
 
   //* ======================================== store main search
@@ -506,9 +506,9 @@ export default function Stores() {
       return;
     }
 
-    const { stores } = responseBody as GetStoreListResponseDto;
-    setStoreList(stores);
-    originalList.current = stores;
+    const { storeDetails } = responseBody as GetStoreListResponseDto;
+    setStoreList(storeDetails);
+    originalList.current = storeDetails;
   };
   //* ======================================== store main search
 
