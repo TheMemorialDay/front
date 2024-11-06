@@ -367,7 +367,7 @@ select {
   line-height: 175%;
 }
 
-.dropdown-container .selector .selector-box {
+.dropdown-container .selector .selector-theme-box {
   z-index: 9999;
 
   position: absolute;
@@ -386,17 +386,22 @@ select {
   overflow-y: auto;
 }
 
-.dropdown-container .selector .selector-box::-webkit-scrollbar {
-  width: 4px;
-  background: none;
+.dropdown-container .selector .selector-theme-box::-webkit-scrollbar {
+  width: 13px;
 }
 
-.dropdown-container .selector .selector-box::-webkit-scrollbar-thumb {
+.dropdown-container .selector .selector-theme-box::-webkit-scrollbar-button {
+  display: block;
+  height: 5px;
+
+}
+
+.dropdown-container .selector .selector-theme-box::-webkit-scrollbar-thumb {
   margin: 4px;
   border-radius: 15px;
   width: 4px;
   background-color: rgba(138, 146, 166, 1);
-  overflow-x: hidden;
+  border: 2px solid rgba(255, 255, 255, 1);
 }
 
 .dropdown-container .selector .selector-option {
@@ -588,7 +593,8 @@ select {
   user-select: none;
 }
 
-.dropdown-container .selector .selector-tag-box {
+/*  이름 수정 중 */
+.dropdown-container .selector .selector-week-box {
   z-index: 9999;
 
   position: absolute;
@@ -607,17 +613,17 @@ select {
   overflow-y: auto;
 }
 
-.dropdown-container .selector .selector-tag-box::-webkit-scrollbar {
+.dropdown-container .selector .selector-week-box::-webkit-scrollbar {
   width: 13px;
 }
 
-.dropdown-container .selector .selector-tag-box::-webkit-scrollbar-button {
+.dropdown-container .selector .selector-week-box::-webkit-scrollbar-button {
   display: block;
   height: 5px;
 
 }
 
-.dropdown-container .selector .selector-tag-box::-webkit-scrollbar-thumb {
+.dropdown-container .selector .selector-week-box::-webkit-scrollbar-thumb {
   margin: 4px;
   border-radius: 15px;
   width: 4px;
@@ -625,7 +631,7 @@ select {
   border: 2px solid rgba(255, 255, 255, 1);
 }
 
-.selected-tag-item {
+.selected-theme-item {
   display: flex;
   flex-direction: row;
   margin-right: 10px;
@@ -633,7 +639,7 @@ select {
   background-color: black;
 }
 
-.selected-tag-item .x-sign {
+.selected-theme-item .x-sign {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -643,7 +649,7 @@ select {
   color: white;
 }
 
-.selected-tag-item #tags-item {
+.selected-theme-item #tags-item {
   color: white;
   font-size: 15px;
   font-weight: 800;
