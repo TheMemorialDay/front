@@ -13,6 +13,7 @@ import BusinessCheckRequestDto from "./dto/request/join/business-check.request.d
 import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
 import { access } from 'fs';
+import { PostOrderRequestDto } from './dto/request/order';
 
 // variable: API URL 상수 //
 
@@ -28,7 +29,8 @@ const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MO
 
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 const GET_PRODUCT_PREVIEW_LIST_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/list`
-const GET_PRODUCT_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}`; 
+const GET_PRODUCT_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}`;
+const POST_ORDER_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string, userId: string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}/${userId}`;
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
 const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
@@ -71,7 +73,7 @@ const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
 // };
 
 // function: get store number 요청 함수 //
-export const getStoreNumberRequest = async(userId: string, accessToken: string) => {
+export const getStoreNumberRequest = async (userId: string, accessToken: string) => {
     const responseBody = await axios.get(GET_STORE_NUMBER_API_URL(userId), bearerAuthorization(accessToken))
         .then(responseDataHandler<GetStoreNumber>)
         .catch(responseErrorHandler);
@@ -131,8 +133,8 @@ export const patchProductRequest = async (productNumber: number | string, data: 
 // function: delete product 요청 함수 //
 export const deleteProductRequest = async (productNumber: number | string, accessToken: string) => {
     const responseBody = await axios.delete(DELETE_PRODUCT_API_URL(productNumber), bearerAuthorization(accessToken))
-    .then(responseDataHandler<ResponseDto>)
-    .catch(responseErrorHandler);
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
     return responseBody;
 }
 
@@ -212,26 +214,26 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
 
 // function: post Store 요청 함수 //
 export const postStoreRequest = async (requestBody: PostStoreRequestDto, accessToken: string) => {
-  const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody, bearerAuthorization(accessToken))
-    .then(responseDataHandler<ResponseDto>)
-    .catch(responseErrorHandler);
-  return responseBody;
+    const responseBody = await axios.post(POST_STORE_API_MODULE, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
 // function: patch Store 요청 함수 //
 export const patchStoreRequest = async (requestBody: PatchStoreRequestDto, storeNumber: number | string, accessToken: string) => {
-  const responseBody = await axios.patch(PATCH_STORE_API_URL(storeNumber), requestBody, bearerAuthorization(accessToken))
-    .then(responseDataHandler<ResponseDto>)
-    .catch(responseErrorHandler);
-  return responseBody;
+    const responseBody = await axios.patch(PATCH_STORE_API_URL(storeNumber), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 // function: get Store 요청 함수 //
 export const getStoreRequest = async (storeNumber: number | string) => {
-  const responseBody = await axios.get(GET_STORE_API_URL(storeNumber))
-    .then(responseDataHandler<GetStoreResponseDto>)
-    .catch(responseErrorHandler);
-  return responseBody;
+    const responseBody = await axios.get(GET_STORE_API_URL(storeNumber))
+        .then(responseDataHandler<GetStoreResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 // function: get sign in 요청 함수 //
@@ -244,30 +246,30 @@ export const GetSignInRequest = async (accessToken: string) => {
 
 // function: get Store List 요청 함수 //
 export const getStoreListRequest = async () => {
-  const responseBody = await axios.get(GET_STORE_LIST_API_URL)
-    .then(responseDataHandler<GetStoreListResponseDto>)
-    .catch(responseErrorHandler);
-  return responseBody;
+    const responseBody = await axios.get(GET_STORE_LIST_API_URL)
+        .then(responseDataHandler<GetStoreListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 // function: get MyPage Store 요청 함수 //
 export const getMyPageStoreRequest = async (storeNumber: number | string, accessToken: string) => {
-  const responseBody = await axios.get(GET_MYPAGE_STORE_API_URL(storeNumber), bearerAuthorization(accessToken))
-    .then(responseDataHandler<GetStoreResponseDto>)
-    .catch(responseErrorHandler);
-  return responseBody;
+    const responseBody = await axios.get(GET_MYPAGE_STORE_API_URL(storeNumber), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetStoreResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 }
 
 // function: patch join 요청 함수 //
 export const patchJoinRequest = async (requestBody: PatchJoinRequestDto, userId: string, accessToken: string) => {
-  const responseBody = await axios.patch(PATCH_JOIN_URL(userId), requestBody, bearerAuthorization(accessToken))
-    .then(responseDataHandler<ResponseDto>)
-    .catch(responseErrorHandler);
+    const responseBody = await axios.patch(PATCH_JOIN_URL(userId), requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
     return responseBody;
 }
 
 // function: get product list preview 요청 함수 //
-export const getProductPreviewListRequest = async(storeNumber: string | number) => {
+export const getProductPreviewListRequest = async (storeNumber: string | number) => {
     const responseBody = await axios.get(GET_PRODUCT_PREVIEW_LIST_API_URL(storeNumber))
         .then(responseDataHandler<GetProductPreviewListResponseDto>)
         .catch(responseErrorHandler);
@@ -275,12 +277,23 @@ export const getProductPreviewListRequest = async(storeNumber: string | number) 
 }
 
 // function: get product detail 요청 함수 //
-export const getProductDetailRequest = async(storeNumber: string | number, productNumber: string | number) => {
+export const getProductDetailRequest = async (storeNumber: string | number, productNumber: string | number) => {
     const responseBody = await axios.get(GET_PRODUCT_DETAIL_API_URL(storeNumber, productNumber))
         .then(responseDataHandler<GetProductDetailResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+// function: post product 요청 함수 //                              토큰 인증 관련 지우고 임의로 진행(원래는 위와 같이 작성)
+export const postOrderRequest = async (requestBody: PostOrderRequestDto, userId: string, storeNumber: number | string, productNumber: number | string, accessToken: string) => {
+    try {
+        const response = await axios.post(POST_ORDER_DETAIL_API_URL(storeNumber, productNumber, userId), requestBody, bearerAuthorization(accessToken));
+        return responseDataHandler<ResponseDto>(response);
+    } catch (error) {
+        const errorData = responseErrorHandler(error);
+        throw errorData;
+    }
+};
 
 // API 요청 URL 및 serviceKey 설정
 const apiUrl2 = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
@@ -291,13 +304,13 @@ const FILE_UPLOAD_URL = `${MEMORIALDAY_API_DOMAIN}/file/upload`;
 const multipart = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 // function: 사업자 등록증 진위 확인 api 요청 함수1 //
-export const checkBusinessRequest = async(requestBody: BusinessCheckRequestDto) => {
-  const responseBody = await axios.post(`${apiUrl2}?serviceKey=${serviceKey}`, requestBody, {
+export const checkBusinessRequest = async (requestBody: BusinessCheckRequestDto) => {
+    const responseBody = await axios.post(`${apiUrl2}?serviceKey=${serviceKey}`, requestBody, {
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(responseDataHandler2<ApiResponseDto>)
-      .catch(responseErrorHandler);
+        .catch(responseErrorHandler);
     return responseBody;
 }
 
