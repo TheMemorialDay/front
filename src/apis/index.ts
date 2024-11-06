@@ -13,6 +13,7 @@ import BusinessCheckRequestDto from "./dto/request/join/business-check.request.d
 import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
 import { access } from 'fs';
+import { PostOrderRequestDto } from './dto/request/order';
 import GetMyPageLikeStoreListResponseDto from './dto/response/like/get-mypage-likestore-list.response.dto';
 import GetOrderDetailResponseDto from './dto/response/get-order-detail-response-dto';
 import GetOrderDetailListResponseDto from './dto/response/get-order-detail-list.response.dto';
@@ -38,6 +39,7 @@ const POST_LIKE_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 const DELETE_LIKE_API_URL = (userId: string, storeNumber: number | string) => `${POST_LIKE_API_URL}?userId=${userId}&storeNumber=${storeNumber}`;
 const GET_PRODUCT_PREVIEW_LIST_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/list`
 const GET_PRODUCT_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}`;
+const POST_ORDER_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string, userId: string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}/${userId}`;
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
 const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
@@ -349,6 +351,17 @@ export const getProductDetailRequest = async (storeNumber: string | number, prod
     return responseBody;
 }
 
+// function: post order 요청 함수 //
+export const postOrderRequest = async (requestBody: PostOrderRequestDto, userId: string, storeNumber: number | string, productNumber: number | string, accessToken: string) => {
+    try {
+        const response = await axios.post(POST_ORDER_DETAIL_API_URL(storeNumber, productNumber, userId), requestBody, bearerAuthorization(accessToken));
+        return responseDataHandler<ResponseDto>(response);
+    } catch (error) {
+        const errorData = responseErrorHandler(error);
+        throw errorData;
+    }
+};
+
 // API 요청 URL 및 serviceKey 설정
 const serviceKey = '9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==';
 const validateURL = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
@@ -374,7 +387,7 @@ export const checkBusinessNumRequest = async (requestBody: BusinessNumCheckReque
             'Content-Type': 'application/json'
         }
     }).then(responseDataHandler3<BusinessNumCheckResponseDto>)
-      .catch(responseErrorHandler);
+        .catch(responseErrorHandler);
     return responseBody;
 }
 
