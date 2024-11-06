@@ -32,6 +32,7 @@ interface OrderProductDetails {
 }
 
 interface ProductOption {
+    optionNumber: any;
     productOptionName: string;
     optionDetails: OptionDetail[];
 }

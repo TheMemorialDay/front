@@ -5,7 +5,6 @@ import { Outlet, useNavigate, useParams } from 'react-router';
 import { GetStoreResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN } from '../../constants';
 import { Tooltip, tooltipClasses, Zoom } from '@mui/material';
 
 

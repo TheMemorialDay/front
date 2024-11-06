@@ -1,24 +1,29 @@
-import axios, { AxiosResponse } from 'axios';
-import { PostProductRequestDto, PostProductOptionDetailRequestDto, PostProductOptionRequestDto } from './dto/request/product/post-product-request.dto'; // DTO import
-import ResponseDto from './dto/response/response.dto';
-import { GetProductListResponseDto, GetProductResponseDto } from './dto/response/product';
-import { IdCheckRequestDto, PostLikeStoreRequestDto, PostPayMentRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request";
+import axios, { AxiosResponse } from "axios";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
-import { GetProductDetailResponseDto, GetProductPreviewListResponseDto, GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
-import { GetSignInResponseDto } from "./dto/response/auth";
+import { ResponseDto } from "./dto/response";
+import { IdCheckRequestDto, PasswordResettinIdTelRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { IdSearchResponseDto } from "./dto/response/auth";
+import { GetProductDetailResponseDto, GetProductPreviewListResponseDto } from "./dto/response/stores";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
+import GetSignInResponseDto from "./dto/response/auth/get-sign-in-response.dto";
+import { PasswordCheckOfUserUpdateRequestDto, PatchUserInfoRequestDto } from "./dto/request/mypage_user_info";
+import { GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
+import { PostProductRequestDto } from './dto/request/product/post-product-request.dto'; // DTO import
+import { GetProductListResponseDto, GetProductResponseDto } from './dto/response/product';
+import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
 import { PatchStoreRequestDto } from "./dto/request/store";
 import BusinessCheckRequestDto from "./dto/request/join/business-check.request.dto";
 import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
-import { access } from 'fs';
+import IdSearchNameTelNumberRequestDto from "./dto/request/auth/Id-search-name-tel-number.request.dto";
+import IdSearchTelAndAuthRequestDto from "./dto/request/auth/Id-search-tel-and-auth.request.dto";
+import { PostOrderRequestDto } from './dto/request/order';
 import GetMyPageLikeStoreListResponseDto from './dto/response/like/get-mypage-likestore-list.response.dto';
-import GetOrderDetailResponseDto from './dto/response/get-order-detail-response-dto';
 import GetOrderDetailListResponseDto from './dto/response/get-order-detail-list.response.dto';
 import { GetNoticeDetailResponseDto, GetNoticeListResponseDto, GetQnADetailResponseDto, GetQnAListResponseDto } from './dto/response/support';
 import { PostQnARequestDto } from './dto/request/support';
-import { URL } from 'url';
+import { PostLikeStoreRequestDto, PostPayMentRequestDto } from "./dto/request";
 
 
 // variable: API URL 상수 //
@@ -33,13 +38,29 @@ const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODUL
 //const PATCH_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 
+//* ========================= stores
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
+// const GET_STORE_LIST_BY_STORE_NAME_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-by-store-name`;
+// const GET_STORE_LIST_BY_PRODUCT_NAME_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-by-product-name`;
+const GET_STORE_LIST_TOTAL_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-main`;
+//* ========================= stores
 const POST_LIKE_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 const DELETE_LIKE_API_URL = (userId: string, storeNumber: number | string) => `${POST_LIKE_API_URL}?userId=${userId}&storeNumber=${storeNumber}`;
 const GET_PRODUCT_PREVIEW_LIST_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/list`
 const GET_PRODUCT_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}`;
+const POST_ORDER_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string, userId: string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}/${userId}`;
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
+// MyPage UserInfo
+const MYPAGE_USER_INFO_API_URL = `${MYPAGE_MODULE_URL}/user-info`;
+// 마이페이지 정보 수정 들어갈 때 비밀번호 확인 URL
+const MYPAGE_USER_UPDATE_PASSWORD_CHECK_API_URL = `${MYPAGE_USER_INFO_API_URL}/password-check`;
+// 마이페이지 정보 수정 중 전화번호 인증 URL
+const MYPAGE_PATCH_USER_INFO_TEL_AUTH_API_URL = `${MYPAGE_USER_INFO_API_URL}/tel-auth`;
+// 마이페이지 정보 수정 중 전화번호 + 인증번호 인증 URL
+const MYPAGE_PATCH_USER_INFO_TEL_AUTH_CHECK_API_URL = `${MYPAGE_USER_INFO_API_URL}/tel-auth-check`;
+// 마이페이지 최종 수정 URL
+const MYPAGE_PATCH_USER_COMPLETED_API_URL = `${MYPAGE_USER_INFO_API_URL}/patch-info`;
 const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
 
 const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
@@ -53,6 +74,7 @@ const PATCH_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MO
 
 const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}`
 
+//* Auth
 const GET_ORDER_DETAIL_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/order-detail/${userId}`;
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
@@ -62,7 +84,20 @@ const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
-const ID_SEARCH_API_URL = `${AUTH_MODULE_URL}/id-search`;
+
+//* ====================== 아이디 찾기
+const ID_SEARCH_NAME_TEL_API_URL = `${AUTH_MODULE_URL}/id-search-first`;
+const ID_SEARCH_TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/id-search-middle`;
+const ID_SEARCH_RESULT_API_URL = `${AUTH_MODULE_URL}/id-search-result`;
+//* ====================== 아이디 찾기
+
+//* ================== 비밀번호 재설정
+const PASSWORD_RESETTING_ID_TEL_API_URL = `${AUTH_MODULE_URL}/password-search`;
+// const PASSWORD_SEARCH_AND_GET_PASSWORD_API_URL = (userId: string) => `${AUTH_MODULE_URL}/password-search/${userId}`;
+const PASSWORD_RESETTING_TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-tel-auth-check`;
+const PATCH_PASSWORD_API_URL = `${AUTH_MODULE_URL}/password-resetting`;
+//* ================== 비밀번호 재설정
+
 const GET_SIGN_IN_API_URL = `${AUTH_MODULE_URL}/get-sign-in`;
 
 const POST_PAYMENT_API_URL = `${MYPAGE_MODULE_URL}/order-detail`;
@@ -84,14 +119,6 @@ const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
     const { data } = response;
     return data;
 };
-
-// // function: post product 요청 함수 //
-// export const postProductRequest = async (requestBody: PostProductRequestDto, accessToken: string) => {
-//     const responseBody = await axios.post(POST_PRODUCT_API_URL, requestBody, bearerAuthorization(accessToken))
-//         .then(responseDataHandler<ResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// };
 
 // function: get store number 요청 함수 //
 export const getStoreNumberRequest = async (userId: string, accessToken: string) => {
@@ -205,6 +232,14 @@ export const idCheckRequest = async (requestBody: IdCheckRequestDto) => {
     return responseBody;
 };
 
+// function: 회원 정보 수정 patch user info 요청 함수 //
+export const patchUserInfoRequest = async (requestBody: PatchUserInfoRequestDto, accessToken: string) => {
+  const responseBody = await axios.patch(MYPAGE_PATCH_USER_COMPLETED_API_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
 // function: tel auth api 요청 함수 //
 export const telAuthRequest = async (requestBody: TelAuthRequestDto) => {
     const responseBody = await axios.post(TEL_AUTH_API_URL, requestBody)
@@ -213,12 +248,28 @@ export const telAuthRequest = async (requestBody: TelAuthRequestDto) => {
     return responseBody;
 };
 
+// function: MYPAGE USER INFO tel auth api 요청 함수 //
+export const userInfoTelAuthReqeust = async (requestBody: TelAuthRequestDto, accessToken: string) => {
+  const responseBody = await axios.post(MYPAGE_PATCH_USER_INFO_TEL_AUTH_API_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
 // function: tel auth check api 요청 함수 //
 export const telAuthCheckRequest = async (requestBody: TelAuthCheckRequestDto) => {
     const responseBody = await axios.post(TEL_AUTH_CHECK_API_URL, requestBody)
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
+};
+
+// function: MYPAGE USER INFO tel auth check api 요청 함수 //
+export const userInfoTelAuthCheckRequest = async (requestBody: TelAuthCheckRequestDto, accessToken: string) => {
+  const responseBody = await axios.post(MYPAGE_PATCH_USER_INFO_TEL_AUTH_CHECK_API_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
 
 // function: sign up 요청 함수 //
@@ -244,6 +295,62 @@ export const postStoreRequest = async (requestBody: PostStoreRequestDto, accessT
         .catch(responseErrorHandler);
     return responseBody;
 };
+
+// function: 개인 정보 수정 비밀번호 확인 user update password check 요청 함수 //
+export const passwordCheckOfUserUpdateRequest = async (requestBody: PasswordCheckOfUserUpdateRequestDto, accessToken: string) => {
+  const responseBody = await axios.post(MYPAGE_USER_UPDATE_PASSWORD_CHECK_API_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseDataHandler<GetUserInfosResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+}
+
+// function: id search first 요청 함수 (name + telNumber) //
+export const idSearchNameTelNumberRequest = async (requestBody: IdSearchNameTelNumberRequestDto) => {
+  const responseBody = await axios.post(ID_SEARCH_NAME_TEL_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: id search middle (전화번호 + 인증번호) 요청 함수 //
+export const idSearchTelAuthRequest = async (requestBody: IdSearchTelAndAuthRequestDto) => {
+  const responseBody = await axios.post(ID_SEARCH_TEL_AUTH_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: get id search result 요청 함수 //
+export const getIdSearchRequest = async (requestBody: IdSearchNameTelNumberRequestDto) => {
+  const responseBody = await axios.post(ID_SEARCH_RESULT_API_URL, requestBody)
+    .then(responseDataHandler<IdSearchResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: password resetting (userId + telNumber) 요청 함수 //
+export const passwordResettingIdTelRequest = async (requestBody: PasswordResettinIdTelRequestDto) => {
+  const responseBody = await axios.post(PASSWORD_RESETTING_ID_TEL_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: password RESETTING tel-auth check (telNumber + telAuthNumber) 요청 함수 //
+export const passwordResettingTelAuthCheckRequest = async (requestBody: PasswordSearchTelAuthCheckRequestDto) => {
+  const responseBody = await axios.post(PASSWORD_RESETTING_TEL_AUTH_CHECK_API_URL, requestBody)
+    .then(responseDataHandler<ResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: 비밀번호 재설정 patch password 요청 함수 //
+export const patchPasswordRequest = async (requestBody: PatchPasswordRequestDto) => {
+  const responseBody = await axios.patch(PATCH_PASSWORD_API_URL, requestBody)
+  .then(responseDataHandler<ResponseDto>)
+  .catch(responseErrorHandler);
+  return responseBody;
+}
 
 // function: patch Store 요청 함수 //
 export const patchStoreRequest = async (requestBody: PatchStoreRequestDto, storeNumber: number | string, accessToken: string) => {
@@ -349,6 +456,17 @@ export const getProductDetailRequest = async (storeNumber: string | number, prod
     return responseBody;
 }
 
+// function: post order 요청 함수 //
+export const postOrderRequest = async (requestBody: PostOrderRequestDto, userId: string, storeNumber: number | string, productNumber: number | string, accessToken: string) => {
+    try {
+        const response = await axios.post(POST_ORDER_DETAIL_API_URL(storeNumber, productNumber, userId), requestBody, bearerAuthorization(accessToken));
+        return responseDataHandler<ResponseDto>(response);
+    } catch (error) {
+        const errorData = responseErrorHandler(error);
+        throw errorData;
+    }
+};
+
 // API 요청 URL 및 serviceKey 설정
 const serviceKey = '9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==';
 const validateURL = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
@@ -374,7 +492,7 @@ export const checkBusinessNumRequest = async (requestBody: BusinessNumCheckReque
             'Content-Type': 'application/json'
         }
     }).then(responseDataHandler3<BusinessNumCheckResponseDto>)
-      .catch(responseErrorHandler);
+        .catch(responseErrorHandler);
     return responseBody;
 }
 
@@ -389,6 +507,13 @@ export const fileUploadRequest = async (requestBody: FormData) => {
     return url;
 }
 
+// function: store main search 병합 버전 요청 함수 //
+export const getStoreMainSearchRequest = async (storeName: string, productName: string) => {
+  const responseBody = await axios.get(GET_STORE_LIST_TOTAL_SEARCH_API_URL, { params: { storeName, productName } })
+    .then(responseDataHandler<GetStoreListResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
 // function: get notice list 요청 함수 //
 export const getNoticeListRequest = async () => {
     const responseBody = await axios.get(SUPPORT_NOTICE_API_URL)
