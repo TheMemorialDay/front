@@ -38,7 +38,7 @@ function CakeComponent({ imageUrl, context, isSelected, onClick }: CakeComponent
   );
 }
 
-// component: 케이크 정렬 방식 //
+// component: 케이크 정렬 방식 // : 안 쓰는 걸로~
 function CakeSorting() {
 
   // state: 케이크 정렬 상태 //
@@ -320,8 +320,8 @@ export default function Stores() {
   // state: 가게 리스트 상태 //
   const [storeList, setStoreList] = useState<StoreComponentProps[]>([]);
 
-  // state: 찜 수 많은 순으로 정렬 상태를 저장하는 상태 //
-  // const [likeDescSortState, setLikeDescSortState] = useState<string[]>([]);
+  // state: 찜 수 많은 순으로 정렬된 상태를 저장하는 상태 //
+  const [likeDescSortState, setLikeDescSortState] = useState<string[]>([]);
 
   // event handler: 태그 클릭 이벤트 핸들러 //
   const onTagClickHandler = (tag: string) => {
@@ -545,10 +545,12 @@ export default function Stores() {
   };
 
   // event handler: 찜 수 선택했을 시 찜 수 많은 순으로 정렬 시키는 이벤트 핸들러 //
-  const onLikeDescSortClickHandler = () => {
-    const likeDescSortList = storeList.sort((a, b) => b.likeCount - a.likeCount);
-    setStoreList(likeDescSortList);
-  };
+  // const onLikeDescSortClickHandler = () => {
+  //   const likeDescSortList = storeList.sort((a, b) => b.likeCount - a.likeCount);
+  //   setStoreList(likeDescSortList);
+
+  //   console.log(likeCount); 이름을 찾을 수 없다..
+  // };
 
   //* ========================================== store main address selected
 
@@ -652,7 +654,10 @@ export default function Stores() {
     // }
 
 
+    // ! 찜 수 정렬
     storeList = storeList.sort((a, b) => b.likeCount - a.likeCount);
+    // const likeDescSortList = storeList.sort((a, b) => b.likeCount - a.likeCount);
+    // setStoreList(likeDescSortList);
 
     // storeList = storeList.sort((a, b) => b.reviewRating - a.reviewRating);
 
@@ -701,16 +706,18 @@ export default function Stores() {
       <div className='store-box'>
         <div className="sorting-header">
           <div className="item-count">전체 {storeList.length}개</div>
+
           {/* 정렬 */}
           <div className="sorting-dropdown">
           <select>
             <optgroup label="정렬 방식">
               <option value="popularity">인기순</option>
-              <option value="rating" onClick={onLikeDescSortClickHandler}>별점순</option>
+              <option value="rating">별점순</option>
               <option value="review">리뷰순</option>
             </optgroup>
           </select>
           </div>
+
         </div>
         <div className="dropdown-container">
           <div className='label'>
