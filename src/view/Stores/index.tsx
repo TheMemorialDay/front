@@ -467,8 +467,8 @@ export default function Stores() {
       return;
     }
 
-    const { stores } = responseBody as GetStoreListResponseDto;
-    setStoreList(stores);
+    const { storeDetails } = responseBody as GetStoreListResponseDto;
+    setStoreList(storeDetails);
     originalList.current = stores;
   }
 
