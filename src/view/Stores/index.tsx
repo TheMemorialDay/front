@@ -145,9 +145,6 @@ export default function Stores() {
   // state: 선택된 태그를 저장하는 상태 // 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  // state: 요일이 선택되었는지 확인하는 상태 //
-  const [isWeekDayChecked, setIsWeekDayChecked] = useState<boolean>(false);
-
   // state: 태그 선택 셀렉터 오픈 여부 상태 //
   const [showTagSelector, setShowTagSelector] = useState<boolean>(false);
 
@@ -174,12 +171,12 @@ export default function Stores() {
 
   // state: 당일 케이크 가능 여부 상태 //
   const [productToday, setProductToday] = useState<boolean>(false);
+  
+  // state: 메인 검색창 입력 상태 //
+  const [mainSearch, setMainSearch] = useState<string>('');
 
   // state: 가게 리스트 상태 //
   const [storeList, setStoreList] = useState<StoreComponentProps[]>([]);
-
-  // state: 메인 검색창 입력 상태 //
-  const [mainSearch, setMainSearch] = useState<string>('');
 
   // event handler: 테마 클릭 이벤트 핸들러 //
   const onThemaClickHandler = (thema: string) => {
@@ -206,7 +203,6 @@ export default function Stores() {
 
   // event handler: 태그 클릭 이벤트 핸들러 //
   const checkTagHandler = (event: React.ChangeEvent<HTMLInputElement>, value: string) => {
-    setIsWeekDayChecked(!isWeekDayChecked);
     onTagClickHandler(value, event.target.checked);
 
     onStoresSeletedWeeksHandler();
@@ -433,10 +429,13 @@ export default function Stores() {
   //* ======================================== store weekend selected 
 
   //* ========================================== store main address selected
-  // state: 선택된 구 가게 원본 리스트 상태 //
+  // state: 선택된 구군 가게 원본 리스트 상태 //
   const [gugunOriginalList, setGugunOriginalList] = useState<StoreComponentProps[]>([]);
+
   // state: 선택된 동 가게 원본 리스트 상태 //
   const [dongOriginalList, setDongOriginalList] = useState<StoreComponentProps[]>([]);
+
+  // state:  //
 
   // event handler: 선택된 구군으로 가게 불러오기 //
   // const guGunSelectHandle = (gu: string) => {
