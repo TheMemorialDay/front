@@ -87,7 +87,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     if (checked) {
       await onStoreLikeDeleteButtonClickHandler();
       setLikeCount(likeCount - 1);
-    } else {
+    } else if (!checked && userId !== undefined) {
       await onStoreLikeAddButtonClickHandler();
       setLikeCount(likeCount + 1);
     }
