@@ -93,7 +93,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     if (checked) {
       await onStoreLikeDeleteButtonClickHandler();
       setLikeCount(likeCount - 1);
-    } else {
+    } else if (!checked && userId !== undefined) {
       await onStoreLikeAddButtonClickHandler();
       setLikeCount(likeCount + 1);
     }
@@ -119,7 +119,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
 
     const requestBody: PostLikeStoreRequestDto = {
       userId: signInUser.userId,
-      storeNumber: store.storeNumber
+      storeNumber: store.storeNumber,
     };
 
     postLikeStoreRequest(requestBody, accessToken).then(postLikeStoreResponse);
@@ -289,7 +289,7 @@ export default function Stores() {
 
   // state: 테마 선택 셀렉터 오픈 여부 상태 //
   const [showThemeSelector, setShowThemeSelector] = useState<boolean>(false);
-  
+
   // state: 선택된 요일을 저장하는 상태 //
   const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
 
@@ -313,7 +313,7 @@ export default function Stores() {
 
   // state: 당일 케이크 가능 여부 상태 //
   const [productToday, setProductToday] = useState<boolean>(false);
-  
+
   // state: 메인 검색창 입력 상태 //
   const [mainSearch, setMainSearch] = useState<string>('');
 
@@ -458,8 +458,8 @@ export default function Stores() {
   const getStoreListResponse = (responseBody: GetStoreListResponseDto | ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -469,13 +469,13 @@ export default function Stores() {
 
     const { storeDetails } = responseBody as GetStoreListResponseDto;
     setStoreList(storeDetails);
-    originalList.current = stores;
+    originalList.current = storeDetails;
   }
 
   //* ======================================== store main search
   // event handler: 검색어 입력 변경 이벤트 핸들러 //
   const onMainSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value }  = event.target;
+    const { value } = event.target;
     setMainSearch(value);
   };
 
@@ -483,7 +483,7 @@ export default function Stores() {
   const onStoresSearchClickHandler = () => {
     if (!mainSearch) return;
 
-      getStoreMainSearchRequest(mainSearch, mainSearch).then(getStoresMainSearchResponse);
+    getStoreMainSearchRequest(mainSearch, mainSearch).then(getStoresMainSearchResponse);
   };
 
   // event handler: 검색어 입력 후 요청할 때 키보드 핸들러 //
@@ -495,10 +495,10 @@ export default function Stores() {
 
   // function: 가게명 검색 시 response 응답 처리 함수 //
   const getStoresMainSearchResponse = (responseBody: GetStoreListResponseDto | ResponseDto | null) => {
-    const message = 
+    const message =
       !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody != null && responseBody.code === 'SU';
     if (!isSuccessed) {
@@ -506,15 +506,15 @@ export default function Stores() {
       return;
     }
 
-    const { stores } = responseBody as GetStoreListResponseDto;
-    setStoreList(stores);
-    originalList.current = stores;
+    const { storeDetails } = responseBody as GetStoreListResponseDto;
+    setStoreList(storeDetails);
+    originalList.current = storeDetails;
   };
   //* ======================================== store main search
 
   // event handler: 선택된 구군으로 주소 불러오기 //
-  const onStoresSeletedGugunHandler = (gugun:string) => {
-    
+  const onStoresSeletedGugunHandler = (gugun: string) => {
+
     let selectedSize = selectedThemes.length + selectedWeekdays.length;
     if (selectedGugun) selectedSize++;
     if (selectedDong) selectedSize++;
@@ -531,7 +531,7 @@ export default function Stores() {
 
   // event handler: 선택된 동으로 주소 불러오기 //
   const onStoresSeletedDongHandler = (dong: string) => {
-    
+
     let selectedSize = selectedThemes.length + selectedWeekdays.length;
     if (selectedGugun) selectedSize++;
     if (selectedDong) selectedSize++;
@@ -581,7 +581,7 @@ export default function Stores() {
     if (selectedWeekdays.length) {
       storeList = storeList.filter(itme => {
         let existed = false;
-  
+
         for (const selectedWeekday of selectedWeekdays) {
           if (selectedWeekday === '월요일') {
             if (itme.mondayOpen !== '휴무일') {
@@ -589,42 +589,42 @@ export default function Stores() {
               break;
             }
           }
-  
+
           if (selectedWeekday === '화요일') {
             if (itme.tuesdayOpen !== '휴무일') {
               existed = true;
               break;
             }
           }
-  
+
           if (selectedWeekday === '수요일') {
             if (itme.wednesdayOpen !== '휴무일') {
               existed = true;
               break;
             }
           }
-  
+
           if (selectedWeekday === '목요일') {
             if (itme.thursdayOpen !== '휴무일') {
               existed = true;
               break;
             }
           }
-  
+
           if (selectedWeekday === '금요일') {
             if (itme.fridayOpen !== '휴무일') {
               existed = true;
               break;
             }
           }
-  
+
           if (selectedWeekday === '토요일') {
             if (itme.saturdayOpen !== '휴무일') {
               existed = true;
               break;
             }
           }
-  
+
           if (selectedWeekday === '일요일') {
             if (itme.sundayOpen !== '휴무일') {
               existed = true;
@@ -657,10 +657,10 @@ export default function Stores() {
     // storeList = storeList.sort((a, b) => b.reviewRating - a.reviewRating);
 
     // storeList = storeList.sort((a, b) => b.reviewCount - a.reviewCount);
-    
+
     setStoreList(storeList);
 
-  }, [selectedTags, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, ]);
+  }, [selectedTags, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday,]);
 
   return (
     <div id='store-wrapper'>
@@ -673,8 +673,8 @@ export default function Stores() {
           </div>
           <div className='search'>
             <input
-              className='store-search' 
-              placeholder='검색어 입력' 
+              className='store-search'
+              placeholder='검색어 입력'
               onChange={onMainSearchChangeHandler}
               onClick={onStoresSearchClickHandler}
               onKeyDown={onStoresSearchKeyDownHandler}
@@ -703,13 +703,13 @@ export default function Stores() {
           <div className="item-count">전체 {storeList.length}개</div>
           {/* 정렬 */}
           <div className="sorting-dropdown">
-          <select>
-            <optgroup label="정렬 방식">
-              <option value="popularity">인기순</option>
-              <option value="rating" onClick={onLikeDescSortClickHandler}>별점순</option>
-              <option value="review">리뷰순</option>
-            </optgroup>
-          </select>
+            <select>
+              <optgroup label="정렬 방식">
+                <option value="popularity">인기순</option>
+                <option value="rating" onClick={onLikeDescSortClickHandler}>별점순</option>
+                <option value="review">리뷰순</option>
+              </optgroup>
+            </select>
           </div>
         </div>
         <div className="dropdown-container">
@@ -770,7 +770,7 @@ export default function Stores() {
                   <div className='arrow-up-button' onClick={onGuSelectorClickHandler}></div>
                   <div className='selector-box'>
                     {Object.keys(address).map(gu => (
-                      <div key={gu} className='selector-option' onClick={()=>onStoresSeletedGugunHandler(gu)}>{gu}</div>
+                      <div key={gu} className='selector-option' onClick={() => onStoresSeletedGugunHandler(gu)}>{gu}</div>
                     ))}
                   </div>
                 </div> :
@@ -815,7 +815,7 @@ export default function Stores() {
         <div className="tag-container">
           <div className="tags-container">
             {selectedThemes.map(tag => <SelectedTags key={tag} content={tag} onRemove={() => handleThemeRemove(tag)} />)}
-            {selectedWeekdays.map(weekday => <SelectedTags key={weekday} content={weekday} onRemove={() => handleThemeRemove(weekday)} />)} 
+            {selectedWeekdays.map(weekday => <SelectedTags key={weekday} content={weekday} onRemove={() => handleThemeRemove(weekday)} />)}
             {selectedGugun !== '' && <SelectedTags content={selectedGugun} onRemove={handleGugunRemove} />}
             {selectedDong !== '' && <SelectedTags content={selectedDong} onRemove={handleDongRemove} />}
           </div>
