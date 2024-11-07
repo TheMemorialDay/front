@@ -31,6 +31,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     const { signInUser } = useSignInUserStore();
     const [userId, setUserId] = useState<string>('');
     const [userName, setUserName] = useState<string>('');
+    const [orderTime, setOrderTime] = useState<string>('');
 
     const [cookies] = useCookies();
 
@@ -98,6 +99,11 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             alert(`결제 실패: ${error_msg}`);
         }
     };
+
+    // function: 숫자 쉼표 찍어주는 함수 //
+    function formatNumberWithCommas(number: number): string {
+        return new Intl.NumberFormat('en-US').format(number);
+    }
 
     // component: 승인 대기중 //
     function ReadyAccept() {
@@ -275,6 +281,8 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
     // component: 주문내역 컴포넌트 반환 //
     return (
+        <>
+        <div className='order-day'>{orderdetail.orderTime.split("T")[0]}</div>
         <div className='order-list-component'>
             <div className='my-order-order'>
                 <div className='order-box-top'>
@@ -294,7 +302,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                 <hr />
                 <div className='order-box-bottom'>
                     <div className="order-image">
-                        <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail})` }}></div>
+                        <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail.productImageUrl})` }}></div>
                     </div>
                     <div className="order-details">
                         <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
@@ -302,7 +310,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                         <div className="order-productCategory-productContents">
                             <div>
                                 {options.map((option, index) => (
-                                    <span key={index} className="order-option">{option.productCategory}{index < options.length ? ', ' : ',   '} </span>     // css 조금 수정할 예정입니다.
+                                    <span key={index} className="order-option">{orderdetail.productContents ? orderdetail.productContents : '없음'}{index < options.length ? ', ' : ',   '} </span>     // css 조금 수정할 예정입니다.
                                 ))}
                             </div>
                             <div>
@@ -311,7 +319,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                         </div>
                         <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
                     </div>
-                    <div className="order-value">금액 : {orderdetail.totalPrice}원</div>
+                    <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
                 </div>
             </div>
             {
@@ -322,6 +330,8 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                 orderMessage === 'rejectOrder' ? <OrderReject /> : ''
             }
         </div >
+        </>
+        
     );
 
 };
@@ -352,6 +362,7 @@ export default function MyOrderDetail() {
         }
         const { orders } = responseBody as GetOrderDetailListResponseDto;
         setOrderDetailList(orders);
+        
     }
 
     // function: order detail list 불러오기 함수 //
@@ -382,7 +393,7 @@ export default function MyOrderDetail() {
     return (
         <div className='order-history'>
             <div className='order-history-h2'>주문 내역</div>
-            <div className='order-day'>2024. 11. 01</div>
+            
             <div className='my-order-list'>
                 {
                     orderDetailList.map((orderdetail) => <MyOrderDetailComponent key={orderdetail.orderCode} orderdetail={orderdetail} getOrderDetailList={getOrderDetailList} />)
