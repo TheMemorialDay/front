@@ -22,6 +22,9 @@ interface OrderDetailProps {
 
 // component: 주문 내역 컴포넌트 //
 function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetailProps) {
+    console.log(orderdetail); 
+
+    const { options } = orderdetail;
 
     const { orderMessage, orderStatus, setOrderMessage, setOrderStatus } = useOrderStore();
     const { orderReject, setOrderRejectStatus, cancelReason, setCancelReason } = useOrderReject();
@@ -294,9 +297,19 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                         <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail})` }}></div>
                     </div>
                     <div className="order-details">
-                        <p className="order-product">{orderdetail.productNumber}</p>
-                        <p className="order-option">{orderdetail.optionSelect}</p>
-                        <p className="order-plan">픽업일시 {orderdetail.pickUpTime}</p>
+                        <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
+                        {/* <p className="order-option">{option.productCategory}</p> */}
+                        <div className="order-productCategory-productContents">
+                            <div>
+                                {options.map((option, index) => (
+                                    <span key={index} className="order-option">{option.productCategory}{index < options.length ? ', ' : ',   '} </span>     // css 조금 수정할 예정입니다.
+                                ))}
+                            </div>
+                            <div>
+                                요청사항: {orderdetail.productContents}
+                            </div>
+                        </div>
+                        <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
                     </div>
                     <div className="order-value">금액 : {orderdetail.totalPrice}원</div>
                 </div>
@@ -337,18 +350,18 @@ export default function MyOrderDetail() {
             alert(message);
             return;
         }
-        const { orderdetails } = responseBody as GetOrderDetailListResponseDto;
-        setOrderDetailList(orderdetails);
+        const { orders } = responseBody as GetOrderDetailListResponseDto;
+        setOrderDetailList(orders);
     }
 
     // function: order detail list 불러오기 함수 //
     const getOrderDetailList = () => {
         const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken) {
+        if (!accessToken || !signInUser) {
             console.log('접근 권한이 없습니다.');
             return;
         }
-        getOrderDetailRequest(userId, accessToken).then(getOrderDetailResponse);
+        getOrderDetailRequest(signInUser.userId, accessToken).then(getOrderDetailResponse);
     }
 
     // effect: 유저 정보 불러오기 함수 //
