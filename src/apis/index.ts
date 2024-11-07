@@ -3,7 +3,7 @@ import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { ResponseDto } from "./dto/response";
 import { IdCheckRequestDto, PasswordResettinIdTelRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import { IdSearchResponseDto } from "./dto/response/auth";
-import { GetProductDetailResponseDto, GetProductPreviewListResponseDto } from "./dto/response/stores";
+import { GetProductDetailResponseDto, GetProductPreviewListResponseDto, GetReviewListResponseDto } from "./dto/response/stores";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
 import { BusinessNumCheckResponseDto } from "./dto/response/join";
 import GetSignInResponseDto from "./dto/response/auth/get-sign-in-response.dto";
@@ -24,6 +24,7 @@ import GetOrderDetailListResponseDto from './dto/response/get-order-detail-list.
 import { GetNoticeDetailResponseDto, GetNoticeListResponseDto, GetQnADetailResponseDto, GetQnAListResponseDto } from './dto/response/support';
 import { PostQnARequestDto } from './dto/request/support';
 import { PostLikeStoreRequestDto, PostPayMentRequestDto } from "./dto/request";
+import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
 
 
 // variable: API URL 상수 //
@@ -49,6 +50,7 @@ const DELETE_LIKE_API_URL = (userId: string, storeNumber: number | string) => `$
 const GET_PRODUCT_PREVIEW_LIST_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/list`
 const GET_PRODUCT_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}`;
 const POST_ORDER_DETAIL_API_URL = (storeNumber: number | string, productNumber: number | string, userId: string) => `${GET_STORE_LIST_API_URL}/${storeNumber}/order/${productNumber}/${userId}`;
+const GET_REVIEW_LIST_API_URL = (storeNumber: number | string) => `${POST_LIKE_API_URL}/${storeNumber}/review/list`;
 
 const MYPAGE_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage`;
 // MyPage UserInfo
@@ -62,6 +64,8 @@ const MYPAGE_PATCH_USER_INFO_TEL_AUTH_CHECK_API_URL = `${MYPAGE_USER_INFO_API_UR
 // 마이페이지 최종 수정 URL
 const MYPAGE_PATCH_USER_COMPLETED_API_URL = `${MYPAGE_USER_INFO_API_URL}/patch-info`;
 const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
+
+const GET_MY_REVIEW_LIST_API_URL = (userId: string) =>  `${MYPAGE_MODULE_URL}/review?userId=${userId}`;
 
 const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 
@@ -466,6 +470,22 @@ export const postOrderRequest = async (requestBody: PostOrderRequestDto, userId:
         throw errorData;
     }
 };
+
+// function: get review list 요청 함수 //
+export const getReviewListRequest = async(storeNumber: string | number) => {
+    const responseBody = await axios.get(GET_REVIEW_LIST_API_URL(storeNumber))
+        .then(responseDataHandler<GetReviewListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get my review list 요청 함수 //
+export const getMyReviewListRequest = async(userId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_MY_REVIEW_LIST_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetMyReviewListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
 
 // API 요청 URL 및 serviceKey 설정
 const serviceKey = '9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==';
