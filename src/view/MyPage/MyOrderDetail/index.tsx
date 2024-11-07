@@ -22,6 +22,9 @@ interface OrderDetailProps {
 
 // component: 주문 내역 컴포넌트 //
 function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetailProps) {
+    console.log(orderdetail); 
+
+    const { options } = orderdetail;
 
     const { orderMessage, orderStatus, setOrderMessage, setOrderStatus } = useOrderStore();
     const { orderReject, setOrderRejectStatus, cancelReason, setCancelReason } = useOrderReject();
@@ -303,10 +306,18 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                     </div>
                     <div className="order-details">
                         <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
-                        <p className="order-option">{orderdetail.optionSelect}</p>
-                        <p>요청사항: {orderdetail.productContents ? orderdetail.productContents : '없음'}</p>
+                        {/* <p className="order-option">{option.productCategory}</p> */}
+                        <div className="order-productCategory-productContents">
+                            <div>
+                                {options.map((option, index) => (
+                                    <span key={index} className="order-option">{orderdetail.productContents ? orderdetail.productContents : '없음'}{index < options.length ? ', ' : ',   '} </span>     // css 조금 수정할 예정입니다.
+                                ))}
+                            </div>
+                            <div>
+                                요청사항: {orderdetail.productContents}
+                            </div>
+                        </div>
                         <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
-                        
                     </div>
                     <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
                 </div>
