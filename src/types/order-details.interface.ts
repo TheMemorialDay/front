@@ -3,15 +3,18 @@
 export default interface OrderDetailsProps {
 	orderCode: string;
 	productNumber: number;
+	productName: string;
 	storeNumber: number;
+	storeName: string;
 	userId: string;
 	productContents: string | null;
-	pickUpTime: string;
+	pickupTime: string;
+	productImageUrl: string;
 	orderStatus: string;
 	productCount: number;
 	totalPrice: number;
 	orderTime: string;
 	cancelCode: string | null;
 	cancelReason: string | null;
-	optionSelect: string;
+	optionSelect: string | null;
 }
