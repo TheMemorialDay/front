@@ -1,7 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
 import { getStoreMainSearchRequest } from '../../apis';
-import { useSignInUserStore, useSortStore } from '../../stores';
+import { useSignInUserStore } from '../../stores';
 import { GetStoreListResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
 import { deleteLikeStoreRequest, getStoreListRequest, postLikeStoreRequest } from '../../apis';
@@ -38,30 +38,6 @@ function CakeComponent({ imageUrl, context, isSelected, onClick }: CakeComponent
   );
 }
 
-// component: 케이크 정렬 방식 // : 안 쓰는 걸로~
-function CakeSorting() {
-
-  // state: 케이크 정렬 상태 //
-  const { stores, sortBy, sortedStores, setStores, setSortBy } = useSortStore();
-  //     stores원본배열, 정렬기준, 정렬상태저장하는상태
-
-  // event handler: 찜 수 선택했을 시 찜 수 많은 순으로 정렬 시키는 이벤트 핸들러 //
-  const onLikeDescSortClickHandler = () => {
-    const likeDescSortList = stores.sort((a, b) => b.likeCount - a.likeCount);
-    setStores(likeDescSortList);
-  };
-
-  return (
-    <select>
-      <optgroup label="정렬 방식">
-        <option value="popularity">인기순</option>
-        <option value="rating" onClick={onLikeDescSortClickHandler}>별점순</option>
-        <option value="review">리뷰순</option>
-      </optgroup>
-    </select>
-  );
-}
-
 interface StoreRowProps {
   store: StoreComponentProps,
   getStoreList: () => void;
@@ -75,11 +51,10 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
+
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
-
-  // State: 찜 상태 //
-  const [likeCount, setLikeCount] = useState(store.likeList.length);
+  
   const userId = signInUser?.userId;
 
   const onPostButtonClickHandler = () => {
@@ -92,10 +67,8 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     event.stopPropagation();
     if (checked) {
       await onStoreLikeDeleteButtonClickHandler();
-      setLikeCount(likeCount - 1);
-    } else {
+    } else if (!checked && userId !== undefined) {
       await onStoreLikeAddButtonClickHandler();
-      setLikeCount(likeCount + 1);
     }
   };
 
@@ -169,6 +142,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
       return;
     }
     setChecked(true);
+    getStoreList()
   }
 
   // function: delete Like Store Response 처리 함수 //
@@ -217,12 +191,12 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
           <div className='liked'>
             <h2 className="shop-name">{store.storeName}</h2>
             <div onClick={onHeartClickHandler} className={checked ? 'red-heart' : 'white-heart'}>
-              <div className='like-count'>{likeCount}</div>
+              <div className='like-count'>{store.likeList.length}</div>
             </div>
           </div>
 
           <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
-          <p className="shop-rating">별점 {store.reviewRating}</p>
+          <p className="shop-rating">별점 {store.storeRating}</p>
           <p className="shop-reviews">리뷰 {store.reviewCount}</p>
         </div>
       </div>
@@ -230,19 +204,19 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
   )
 }
 
-interface TagProps {
+interface ThemeProps {
   content: string;
   onRemove?: () => void;
 }
 
-// component: 선택된 상품 태그 컴포넌트 //
-function SelectedTags({ content, onRemove }: TagProps) {
+// component: 선택된 상품 테마 컴포넌트 //
+function SelectedThemes({ content, onRemove }: ThemeProps) {
 
   // render: 선택된 상품 태그 렌더링 //
   return (
-    <div className='selected-tag-item'>
+    <div className='selected-theme-item'>
       <div className='x-sign' onClick={onRemove}>X</div>
-      <div id='tags-item'>{content}</div>
+      <div id='themes-item'>{content}</div>
     </div>
   )
 }
@@ -320,8 +294,8 @@ export default function Stores() {
   // state: 가게 리스트 상태 //
   const [storeList, setStoreList] = useState<StoreComponentProps[]>([]);
 
-  // state: 찜 수 많은 순으로 정렬된 상태를 저장하는 상태 //
-  const [likeDescSortState, setLikeDescSortState] = useState<string[]>([]);
+  // state: 정렬 상태 //
+  const [sortType, setSortType] = useState<string>('');
 
   // event handler: 태그 클릭 이벤트 핸들러 //
   const onTagClickHandler = (tag: string) => {
@@ -420,8 +394,8 @@ export default function Stores() {
     setShowDongSelector(false);
   }
 
-  // event handler: 당일 케이크 선택 이벤트 //
-  const onSelectedProductToday = () => {
+  // event handler: 당일 케이크 상태 토글 이벤트 //
+  const onToggledProductToday = () => {
     setProductToday(!productToday);
   }
 
@@ -438,6 +412,11 @@ export default function Stores() {
     setSelectedThemes(selectedThemes.filter(selectTheme => selectTheme !== theme));
   };
 
+  // event handler: 선택된 요일 삭제 클릭 이벤트 //
+  const handleWeekRemove = (weekday: string) => {
+    setSelectedWeekdays(selectedWeekdays.filter(selectedWeekday => selectedWeekday !== weekday));
+  };
+
   // event handler: 선택된 구군 삭제 클릭 이벤트 //
   const handleGugunRemove = () => {
     setSelectedGugun('');
@@ -450,7 +429,7 @@ export default function Stores() {
   };
 
   // function: store list 불러오기 함수 //
-  const getStoreList = () => {
+  const getStoreLists = () => {
     getStoreListRequest().then(getStoreListResponse);
   }
 
@@ -544,18 +523,17 @@ export default function Stores() {
     setShowDongSelector(false);
   };
 
-  // event handler: 찜 수 선택했을 시 찜 수 많은 순으로 정렬 시키는 이벤트 핸들러 //
-  // const onLikeDescSortClickHandler = () => {
-  //   const likeDescSortList = storeList.sort((a, b) => b.likeCount - a.likeCount);
-  //   setStoreList(likeDescSortList);
-
-  //   console.log(likeCount); 이름을 찾을 수 없다..
-  // };
+  // event handler: 정렬 선택 이벤트 처리 //
+  const onSortSelectHandler = (event: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    if (sortType === value) setSortType('');
+    else setSortType(value);
+  };
 
   //* ========================================== store main address selected
 
   // effect: 로드시 상점 리스트 불러오기 함수 //
-  useEffect(getStoreList, []);
+  useEffect(getStoreLists, []);
 
   // effect: 조건 변경시 실행할 함수 //
   useEffect(() => {
@@ -649,23 +627,18 @@ export default function Stores() {
     }
 
     // ! 당일 픽업 가능 필터링
-    // if (productToday) {
-    //   storeList = storeList.filter(item => item.productToday);
-    // }
-
+    if (productToday) {
+      storeList = storeList.filter(item => item.productToday.includes(true));
+    }
 
     // ! 찜 수 정렬
-    storeList = storeList.sort((a, b) => b.likeCount - a.likeCount);
-    // const likeDescSortList = storeList.sort((a, b) => b.likeCount - a.likeCount);
-    // setStoreList(likeDescSortList);
-
-    // storeList = storeList.sort((a, b) => b.reviewRating - a.reviewRating);
-
-    // storeList = storeList.sort((a, b) => b.reviewCount - a.reviewCount);
+    if (sortType === 'popularity') storeList = storeList.sort((a, b) => b.likeList.length - a.likeList.length);
+    if (sortType === 'rating') storeList = storeList.sort((a, b) => b.storeRating - a.storeRating);
+    if (sortType === 'review') storeList = storeList.sort((a, b) => b.reviewCount - a.reviewCount);
     
     setStoreList(storeList);
 
-  }, [selectedTags, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, ]);
+  }, [selectedTags, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType]);
 
   return (
     <div id='store-wrapper'>
@@ -709,7 +682,7 @@ export default function Stores() {
 
           {/* 정렬 */}
           <div className="sorting-dropdown">
-          <select>
+          <select onChange={onSortSelectHandler}>
             <optgroup label="정렬 방식">
               <option value="popularity">인기순</option>
               <option value="rating">별점순</option>
@@ -810,27 +783,27 @@ export default function Stores() {
           <div className='label'>
             {productToday ?
               <div className='selector open' style={{ backgroundColor: 'black' }}>
-                <div className='selected-today' onClick={onSelectedProductToday} style={{ color: 'white' }}>당일 케이크 가능</div>
+                <div className='selected-today' onClick={onToggledProductToday} style={{ color: 'white' }}>당일 케이크 가능</div>
               </div> :
               <div className='selector close'>
-                <div className='selected-today' onClick={onSelectedProductToday}>당일 케이크 불가능</div>
+                <div className='selected-today' onClick={onToggledProductToday}>당일 케이크 가능</div>
               </div>
             }
           </div>
 
         </div>
-        <div className="tag-container">
-          <div className="tags-container">
-            {selectedThemes.map(tag => <SelectedTags key={tag} content={tag} onRemove={() => handleThemeRemove(tag)} />)}
-            {selectedWeekdays.map(weekday => <SelectedTags key={weekday} content={weekday} onRemove={() => handleThemeRemove(weekday)} />)} 
-            {selectedGugun !== '' && <SelectedTags content={selectedGugun} onRemove={handleGugunRemove} />}
-            {selectedDong !== '' && <SelectedTags content={selectedDong} onRemove={handleDongRemove} />}
+        <div className="theme-container">
+          <div className="themes-container">
+            {selectedThemes.map(theme => <SelectedThemes key={theme} content={theme} onRemove={() => handleThemeRemove(theme)} />)}
+            {selectedWeekdays.map(weekday => <SelectedThemes key={weekday} content={weekday} onRemove={() => handleWeekRemove(weekday)} />)} 
+            {selectedGugun !== '' && <SelectedThemes content={selectedGugun} onRemove={handleGugunRemove} />}
+            {selectedDong !== '' && <SelectedThemes content={selectedDong} onRemove={handleDongRemove} />}
           </div>
           <button className="reset-button" onClick={onResetClickHandler}>초기화 ↻</button>
         </div>
         <div className='shop-list'>
           {
-            storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList} />)
+            storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreLists} />)
           }
         </div>
 
