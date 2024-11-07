@@ -65,6 +65,16 @@
   margin-bottom: 3px;
 }
 
+.order-productCategory-productContents {
+  display: flex;
+  flex: row;
+  font-size: 15px;
+  margin-left: 10px;
+}
+
+.order-plan {
+  font-size: 15px;
+}
 .order-box-top {
   margin-top: 8px;
   margin-bottom: 5px;
