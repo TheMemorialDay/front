@@ -90,12 +90,20 @@
     color: white;
 }
 
-#info-update .message-false {
+#info-update .message.false {
     font-size: 12px;
     font-weight: 200;
     color: red;
     /* margin-bottom: 20px; */
     margin-left: 11px;
+    align-self: stretch;
+}
+
+#info-update .message.true {
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(0, 128, 0, 0.7);
+    margin-bottom: 20px;
     align-self: stretch;
 }
 

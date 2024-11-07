@@ -43,6 +43,34 @@
     align-self: stretch;
 }
 
+#find-id .message.false {
+    font-size: 12px;
+    font-weight: 200;
+    color: red;
+    align-self: stretch;
+}
+
+#find-id .message.true {
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(0, 128, 0, 0.7);
+    align-self: stretch;
+}
+
+#find-password .message.false {
+    font-size: 12px;
+    font-weight: 200;
+    color: red;
+    align-self: stretch;
+}
+
+#find-password .message.true {
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(0, 128, 0, 0.7);
+    align-self: stretch;
+}
+
 #signIn .login-button {
     display: flex;
     justify-content: center; /* 버튼 안의 텍스트 수평 중앙 정렬 */
@@ -161,13 +189,19 @@
     height: 25px;
     border-radius: 6px;
     border: 1px solid darkgray;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     padding: 10px;
 }
 
 #find-id .tel {
     display: flex;
     gap: 10px;
+    margin-top: 20px;
+}
+
+#find-id .name {
+    display: flex;
+    flex-direction: column;
 }
 
 #find-id .tel-number {
