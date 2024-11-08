@@ -3,4 +3,5 @@ export default interface SignInUser {
     name: string;
     telNumber: string;
     permission: string;
+    storeNumber: number | null;
 }

@@ -6,4 +6,5 @@ export default interface GetSignInResponseDto extends ResponseDto {
     name: string;
     telNumber: string;
     permission: string;
+    storeNumber: number | null;
 }

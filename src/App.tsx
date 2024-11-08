@@ -119,8 +119,9 @@ export default function TheMemorialDay() {
       return;
     }
 
-    const {userId, name, telNumber, permission} = responseBody as GetSignInResponseDto;
-    setSignInUser({userId, name, telNumber, permission});
+    const { userId, name, telNumber, permission, storeNumber } = responseBody as GetSignInResponseDto;
+    setSignInUser({ userId, name, telNumber, permission, storeNumber });
+    console.log(signInUser);
   }
 
   // effect: cookie의 accessToken값이 변경될 때 마다 로그인 유저 정보 요청 함수 //
