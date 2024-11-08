@@ -221,7 +221,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
         const [value, setValue] = React.useState<number | null>(5);
         const [reviewContents, setReviewContents] = useState<string>('');
-        
+
         const today = new Date();
         const formattedDate: string = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
 
@@ -232,7 +232,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
         // event handler: 리뷰 내용 변경 이벤트 핸들러 //
         const onReviewContentsChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-            const {value} = event.target;
+            const { value } = event.target;
             setReviewContents(value);
         }
 
@@ -252,27 +252,30 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
         // function: post review response 처리 함수 //
         const postReviewResponse = (responseBody: ResponseDto | null) => {
-            const message = 
+            const message =
                 !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'AF' ? '잘못된 접근입니다.' : 
-                responseBody.code === 'VF' ? '잘못된 값입니다.' : '';
-            
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                        responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                            responseBody.code === 'VF' ? '잘못된 값입니다.' : '';
+
             const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-            if(isSuccessed) {
+            if (isSuccessed) {
                 alert(message);
                 return;
             }
-            
+
         }
 
         // event handler: 등록 버튼 클릭 이벤트 핸들러 //
-        const onRegisterClickHandler = async() => {
+        const onRegisterClickHandler = async () => {
 
             const accessToken = cookies[ACCESS_TOKEN];
             if (!accessToken) return;
-            
-            if(signInUser?.userId) {
+
+
+            if (signInUser?.userId !== null && signInUser?.userId !== undefined) {
+
+                const userId = signInUser?.userId;
 
                 let urls: string[] = [];
                 for (const file of selectedFiles) {
@@ -285,19 +288,19 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                 }
 
                 const requestBody: PostReviewRequestDto = {
-                    orderCode, 
-                    reviewRating: value, 
+                    orderCode,
+                    reviewRating: value,
                     reviewDay: today,
-                    reviewContents, 
-                    storeName: storeName.split(",")[1], 
-                    productName, 
-                    userId,
+                    reviewContents,
+                    storeName: storeName.split(",")[1],
+                    productName,
+                    userId: userId,
                     imageUrls: urls
                 };
                 console.log(requestBody);
                 postReviewRequest(requestBody, accessToken).then(postReviewResponse);
             }
-            setOrderStatus("리뷰작성 완료");
+            setOrderStatus('완료');
         }
 
         // component: 별 표기 //
@@ -352,8 +355,8 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                     }}
                                 /></p>
                             </div>
-                            <textarea className='review-content' placeholder='리뷰를 작성해주세요(최대 100자).' maxLength={100} 
-                                onChange={onReviewContentsChange}/>
+                            <textarea className='review-content' placeholder='리뷰를 작성해주세요(최대 100자).' maxLength={100}
+                                onChange={onReviewContentsChange} />
                             <div className='review-bottom'>
                                 <div className='button disable' onClick={() => setModalOpen(false)}>취소</div>
                                 <div className='button' onClick={onRegisterClickHandler}>등록</div>
