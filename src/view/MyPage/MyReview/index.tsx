@@ -59,9 +59,16 @@ export default function MyReview() {
     }
 
     // event handler: 상자 클릭 시 해당 가게 상세 페이지로 이동 //
-    const onItemDetailClickHandler = (path: string) => {
-        navigator(path);
+    const onItemDetailClickHandler = (path: number) => {
+        navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH(path));
     };
+
+    // function: 9시간 더하기 //
+    const addHoursToDate = (dateString: string, hours: number) => {
+        const date = new Date(dateString);
+        date.setHours(date.getHours() + hours);
+        return date.toISOString();
+  }
 
     // effect: my review list 불러오기 //
     useEffect(getMyReviewList, [])
@@ -74,11 +81,11 @@ export default function MyReview() {
 
                 {myReviewList.map((myReview, index) => 
                     <div style={{marginTop: "30px"}}>
-                        <div className='main-title'>{myReview.storeName}</div>
+                        <div className='main-title' onClick={() => onItemDetailClickHandler(myReview.storeNumber)}>{myReview.storeName}</div>
                         <div className='review-box'>
                             <ReviewComponent
                                 reviewRating={myReview.reviewRating.toFixed(1)}
-                                reviewDay={myReview.reviewDay.split("T")[0]}
+                                reviewDay={addHoursToDate(myReview.reviewDay, 9).split("T")[0]}
                                 reviewContents={myReview.reviewContents}
                                 productName={myReview.productName}
                                 reviewPhotoUrl={myReview.imageUrls}

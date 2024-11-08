@@ -105,8 +105,64 @@
     margin-bottom: 20px;
 }
 
+#product-order .productTag-icon-photo {
+    background-image: url('/public/photo.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 25px;
+    height: 25px;
+}
+
+#product-order .productTag-icon-letter {
+    background-image: url('/public/abc.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 25px;
+    height: 25px;
+}
+
+#product-order .productTag-icon-oneBite {
+    background-image: url('/public/piece.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 25px;
+    height: 25px;
+}
+
+#product-order .productTag-icon-obento {
+    background-image: url('/public/box.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 25px;
+    height: 25px;
+}
+
+#product-order .productTag-icon-twoFloor {
+    background-image: url('/public/level.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 25px;
+    height: 25px;
+}
+
+#product-order .productTag-icon-vegun {
+    background-image: url('/public/leaf.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 25px;
+    height: 25px;
+}
+
+#product-order .productTag-icon-riceCake {
+    background-image: url('/public/ricecake_final.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 25px;
+    height: 25px;
+}
+
 #product-order .cake-name {
-    font-size: 19px;
+    font-size: 20.4px;
     font-weight: 600;
 }
 

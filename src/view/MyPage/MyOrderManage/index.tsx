@@ -239,6 +239,11 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         onUpdateOrderStatus();
     }, [orderStatus])
 
+    // function: 숫자 쉼표 찍어주는 함수 //
+    function formatNumberWithCommas(number: number): string {
+        return new Intl.NumberFormat('en-US').format(number);
+    }
+
 
     // component: 주문내역 컴포넌트 반환 //
     return (
@@ -278,8 +283,9 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                             </div>
                             <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
                         </div>
-                        <div className="order-value">금액 : {orderdetail.totalPrice}원</div>
+                        <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
                     </div>
+                    
                 </div>
                 {
                     orderStatus === '승인 대기중' ? <RejectOrderReason /> :

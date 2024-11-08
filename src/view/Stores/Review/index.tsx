@@ -65,6 +65,13 @@ export default function ShopReview() {
     setTotalList(reviews);
   }
 
+  // function: 9시간 더하기 //
+  const addHoursToDate = (dateString: string, hours: number) => {
+    const date = new Date(dateString);
+    date.setHours(date.getHours() + hours);
+    return date.toISOString();
+  }
+
   //* 커스텀 훅 가져오기
   const {
     currentPage,
@@ -99,15 +106,11 @@ export default function ShopReview() {
         <div className='shop-review-bottom-list'>
           <div className='filter-left'></div>
           <div className='shop-review-list'>
-          {/* {viewList.map((notice, index) => <NoticeRow key={index} notice={notice} getNoticeList={getNoticeList} onDetailClickHandler={onTrClickHandler} />)} */}
-            {viewList.map((review, index) => <ReviewComponent reviewRating={review.reviewRating.toFixed(1)} reviewDay={review.reviewDay.split("T")[0]} 
+          
+            {viewList.map((review, index) => <ReviewComponent reviewRating={review.reviewRating.toFixed(1)} reviewDay={addHoursToDate(review.reviewDay, 9).split("T")[0]} 
                 reviewContents={review.reviewContents} productName={review.productName} reviewPhotoUrl={review.imageUrls}
                 imageCount={review.imageUrls.length} />)}
-            {/* {reviewList.map((review, index) => 
-              <ReviewComponent reviewRating={review.reviewRating.toFixed(1)} reviewDay={review.reviewDay.split("T")[0]} 
-                reviewContents={review.reviewContents} productName={review.productName} reviewPhotoUrl={review.imageUrls}
-                imageCount={review.imageUrls.length} />)
-            } */}
+            
           </div>
           <div className='filter-right'></div>
         </div>
