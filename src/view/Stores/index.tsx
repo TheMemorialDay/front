@@ -51,6 +51,8 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
+  // state: 좋아요 수 상태 //
+  const [likeCount, setLikeCount] = useState<number>(0);
 
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
@@ -67,10 +69,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     event.stopPropagation();
     if (checked) {
       await onStoreLikeDeleteButtonClickHandler();
-<<<<<<< HEAD
-=======
       setLikeCount(likeCount - 1);
->>>>>>> e63b9a9264c8d65c6d49907b2ff488ccb8acb642
     } else if (!checked && userId !== undefined) {
       await onStoreLikeAddButtonClickHandler();
     }
@@ -225,7 +224,7 @@ function SelectedThemes({ content, onRemove }: ThemeProps) {
   )
 }
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
+//% 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인
 // component: 가게 화면 //
 export default function Stores() {
 
@@ -391,13 +390,6 @@ export default function Stores() {
     }
   }
 
-
-  // event handler: 동 선택시 선택 업데이트 //
-  const onSelectedDong = (dong: string) => {
-    setSelectedDong(dong);
-    setShowDongSelector(false);
-  }
-
   // event handler: 당일 케이크 상태 토글 이벤트 //
   const onToggledProductToday = () => {
     setProductToday(!productToday);
@@ -551,11 +543,12 @@ export default function Stores() {
       storeList = storeList.filter(item => item.productTag.includes(selectedTag))
     }
 
-    if (selectedTag.length) {
+    // ! 테마 필터링
+    if (selectedThemes.length) {
       storeList = storeList.filter(item => {
         let existed = false;
-        for (const tag of item.productTag) {
-          if (selectedTag.includes(tag)) {
+        for (const theme of item.themes[0]) {
+          if (selectedThemes.includes(theme)) {
             existed = true;
             break;
           }
@@ -566,6 +559,7 @@ export default function Stores() {
 
     // ! 픽업 요일 필터링
     if (selectedWeekdays.length) {
+      
       storeList = storeList.filter(itme => {
         let existed = false;
 
