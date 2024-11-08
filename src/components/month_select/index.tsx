@@ -1,76 +1,57 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react';
 import './style.css';
-import { SalesDateSelectProps } from '../../types';
 
-// component: 월 선택 컴포넌트 //
-export default function MonthSelect() {
+interface MonthSelectProps {
+    setMonthSelected: (month: string | null) => void;
+    monthSelected: string | null; // 현재 선택된 월을 prop으로 전달
+}
 
-	// state: 월 셀렉터 오픈 상태 //
+export default function MonthSelect({ setMonthSelected, monthSelected }: MonthSelectProps) {
     const [monthSelectorOpen, setMonthSelectorOpen] = useState<boolean>(false);
+    const selectBoxRef = useRef<HTMLDivElement | null>(null);
 
-	// state: 월 선택 상태 //
-	const [monthSelected, setMonthSelected] = useState<SalesDateSelectProps | null>(null);
+    const onMonthSelectorToggleHandler = () => {
+        setMonthSelectorOpen(!monthSelectorOpen);
+    };
 
-	// state: 월 선택 셀렉터 참조 상태 //
-	const selectBoxRef = useRef<HTMLDivElement|null>(null);
+    const onMonthSelectButtonHandler = (month: string) => {
+        setMonthSelected(month);
+        setMonthSelectorOpen(false);
+    };
 
-	// state: 선택 가능한 월 리스트 상태 //
-	const [monthList, setMonthList] = useState<SalesDateSelectProps[]>([]);
+    const months = [
+        '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'
+    ]; // 월 목록
 
-	// event handler: 월 셀렉터 상태 토글 //
-	const onmonthSelectorToggleHandler = () => {
-		setMonthSelectorOpen(!monthSelectorOpen);
-	};
+    useEffect(() => {
+        const handleClick = (event: MouseEvent) => {
+            if (selectBoxRef.current && !selectBoxRef.current.contains(event.target as Node)) {
+                setMonthSelectorOpen(false);
+            }
+        };
+        window.addEventListener('mousedown', handleClick);
+        return () => window.removeEventListener('mousedown', handleClick);
+    }, []);
 
-	// event handler: 월 선택 //
-	const onYearSelectButtonHandler = (month: SalesDateSelectProps) => {
-		setMonthSelected(month);
-		if (!month) setMonthSelected(null);
-		setMonthSelectorOpen(false);
-	};
-
-	// effect: 외부 클릭 시 셀렉터 닫히기 //
-	useEffect(() => {
-		const handleClick = (event: MouseEvent) => {
-			if (selectBoxRef.current && !selectBoxRef.current.contains(event.target as Node)) {
-				setMonthSelectorOpen(false);
-			}
-		};
-		window.addEventListener('mousedown', handleClick);
-		return () => window.removeEventListener('mousedown', handleClick);
-	}, []);
-
-	// render: 월 선택 컴포넌트 렌더링 //
-	return (
-		<div ref={selectBoxRef} className='month-select-box'>
-			{monthSelectorOpen ?
-				<div className='month-input-box open' onClick={onmonthSelectorToggleHandler}>
-					<div className='selected-item'>월 선택</div>
-					<div className='arrow-up-button'></div>
-					<div className='selector-box month'>
-						{/* {monthList.map((month, index) => 
-							<div className='selector-option' onClick={() => onYearSelectButtonHandler(month)} key={index}>{month.month}</div>
-						)} */}
-						<div className='selector-option'>12</div>
-						<div className='selector-option'>11</div>
-						<div className='selector-option'>10</div>
-						<div className='selector-option'>9</div>
-						<div className='selector-option'>8</div>
-						<div className='selector-option'>7</div>
-						<div className='selector-option'>6</div>
-						<div className='selector-option'>5</div>
-						<div className='selector-option'>4</div>
-						<div className='selector-option'>3</div>
-						<div className='selector-option'>2</div>
-						<div className='selector-option'>1</div>
-					</div>
-				</div> :
-				<div className='month-input-box close' onClick={onmonthSelectorToggleHandler}>
-					<div className='selected-item'>월 선택</div>
-					<div className='arrow-down-button'></div>
-				</div>
-			}
-			<div className='month-text'>월</div>
-		</div>
-	)
+    return (
+        <div ref={selectBoxRef} className='month-select-box'>
+            <div className='month-input-box' onClick={onMonthSelectorToggleHandler}>
+                <div className='selected-item'>
+                    {monthSelected ? `${monthSelected}월` : '월 선택'} {/* 선택된 월 표시 */}
+                </div>
+                <div className='arrow-button'>
+                    {monthSelectorOpen ? '▲' : '▼'}
+                </div>
+            </div>
+            {monthSelectorOpen && (
+                <div className='selector-box'>
+                    {months.map((month, index) => (
+                        <div key={index} className='selector-option' onClick={() => onMonthSelectButtonHandler(month)}>
+                            {month}월
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
 }

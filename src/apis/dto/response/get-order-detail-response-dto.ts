@@ -14,4 +14,5 @@ export default interface GetOrderDetailResponseDto extends ResponseDto {
   cancelCode: string | null;
   cancelReason: string | null;
   optionSelect: string;
+  productImageUrl:string;
 }

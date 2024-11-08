@@ -76,6 +76,7 @@ const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_AP
 
 //* Auth
 const GET_ORDER_DETAIL_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/order-detail/${userId}`;
+const GET_SALES_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/sales?userId=${userId}`;
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
 
@@ -444,6 +445,23 @@ export const getOrderDetailRequest = async (userId: string, accessToken: string)
 export const getProductPreviewListRequest = async (storeNumber: string | number) => {
     const responseBody = await axios.get(GET_PRODUCT_PREVIEW_LIST_API_URL(storeNumber))
         .then(responseDataHandler<GetProductPreviewListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+
+// // function: get MyPage Store 요청 함수 //
+// export const getMyPageStoreRequest = async (storeNumber: number | string, accessToken: string) => {
+//     const responseBody = await axios.get(GET_MYPAGE_STORE_API_URL(storeNumber), bearerAuthorization(accessToken))
+//         .then(responseDataHandler<GetStoreResponseDto>)
+//         .catch(responseErrorHandler);
+//     return responseBody;
+// }
+
+// function: get Sales 요청 함수 //
+export const getSalesRequest = async (userId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_SALES_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetOrderDetailListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
