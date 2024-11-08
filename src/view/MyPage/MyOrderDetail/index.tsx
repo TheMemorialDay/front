@@ -3,7 +3,7 @@ import './style.css';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 import styled from "styled-components";
 import { useOrderReject, useSignInUserStore } from '../../../stores';
-import { Rating } from '@mui/material';
+import { Autocomplete, Rating, TextField } from '@mui/material';
 import { RequestPayParams, RequestPayResponse } from '../../../types/portone';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN } from '../../../constants';
@@ -25,18 +25,19 @@ interface OrderDetailProps {
 // component: 주문 내역 컴포넌트 //
 function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetailProps) {
 
-    type OrderStatus = '승인 대기중' | '결제 대기중' | '결제 완료' | '리뷰 쓰기' | '완료' | '주문 취소' | '주문 거부' | '픽업 완료' | '리뷰작성 완료';
+    type OrderStatus = '승인 대기중' | '결제 대기중' | '결제 완료' | '리뷰 쓰기' | '완료' | '주문 취소' | '주문 거부' | '픽업 완료';
 
     const { options } = orderdetail;
 
     // state: order 상태 관리 //
     const [orderStatus, setOrderStatus] = useState<OrderStatus>(orderdetail.orderStatus as OrderStatus);
 
-    const { orderReject, setOrderRejectStatus, cancelReason, setCancelReason } = useOrderReject();
     const { signInUser } = useSignInUserStore();
     const [userId, setUserId] = useState<string>('');
     const [userName, setUserName] = useState<string>('');
     const [orderTime, setOrderTime] = useState<string>('');
+    const [cancelCode, setCancelCode] = useState<string>('');
+    const [cancelReason, setCancelReason] = useState<string>('');
 
     const [cookies] = useCookies();
 
@@ -108,23 +109,6 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         return new Intl.NumberFormat('en-US').format(number);
     }
 
-    // function: 상태 변경 //
-    const onUpdateOrderStatus = () => {
-
-        const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken) {
-            console.log('토큰 오류');
-            return;
-        }
-
-        const requestBody: PatchOrderStatusReqeustDto = {
-            orderCode: orderdetail.orderCode,
-            orderStatus: orderStatus
-        };
-        patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
-
-    }
-
     // function: patch orderstatus response 처리 함수 //
     const patchOrderStatusResponse = (responseBody: ResponseDto | null) => {
 
@@ -141,11 +125,29 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         }
     }
 
+    // Function: 주문 취소 클릭 핸들러 //
+    const onAcccpetUpdateOrderStatus = () => {
+        setOrderStatus('주문 취소');
+
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) {
+            console.log('토큰 오류');
+            return;
+        }
+        console.log(orderStatus);
+
+        const requestBody: PatchOrderStatusReqeustDto = {
+            orderCode: orderdetail.orderCode,
+            orderStatus: '주문 취소'
+        };
+        patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
+    }
+
     // component: 승인 대기중 //
     function ReadyAccept() {
         return (
             <div className='my-order-status'>
-                <div className='order-cancle' onClick={() => setOrderStatus('주문 취소')}>주문 취소</div>
+                <div className='order-cancle' onClick={() => onAcccpetUpdateOrderStatus()}>주문 취소</div>
             </div >
         );
     };
@@ -155,19 +157,10 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         return (
             <div className='my-order-payed-status'>
                 <div className='go-payed' onClick={onClickPayment}>결제</div>
-                <div className='order-payed-cancle' onClick={() => setOrderStatus('주문 취소')}>주문 취소</div>
+                <div className='order-payed-cancle' onClick={() => onAcccpetUpdateOrderStatus()}>주문 취소</div>
             </div>
         );
     };
-
-    // component: 결제 완료 //
-    function FinishedPay() {
-        return (
-            <div className='my-order-status'>
-                <div className='order-cancle' onClick={() => { setOrderStatus('주문 취소'); }}>환불 요청</div>
-            </div>
-        );
-    }
 
     // component: 주문 완료 //
     function FinishedOrder() {
@@ -182,6 +175,14 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     function OrderReject() {
         const [modalOpen, setModalOpen] = useState(false);
         const modalBackground = useRef<HTMLDivElement | null>(null);
+
+        if (orderdetail.cancelCode) {
+            setCancelCode(orderdetail.cancelCode);
+        }
+
+        if (orderdetail.cancelReason) {
+            setCancelReason(orderdetail.cancelReason);
+        }
 
         return (
             <>
@@ -202,7 +203,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                             </div>
                             {
                                 cancelReason === '' ?
-                                    <div className='reject-reason'>{orderReject} 🤣</div> : <div className='reject-reason'>{cancelReason} 🤣</div>
+                                    <div className='reject-reason'>{cancelCode} 🤣</div> : <div className='reject-reason'>{cancelReason} 🤣</div>
                             }
                         </div>
                     </div >
@@ -291,7 +292,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                             <textarea className='review-content' placeholder='리뷰를 작성해주세요. 최대(100자)' maxLength={100} />
                             <div className='review-bottom'>
                                 <div className='button disable' onClick={() => setModalOpen(false)}>취소</div>
-                                <div className='button' onClick={() => setOrderStatus('리뷰작성 완료')}>등록</div>
+                                <div className='button' onClick={() => setOrderStatus('완료')}>등록</div>
                             </div>
                         </div>
                     </div >
@@ -299,26 +300,6 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             </>
         );
     };
-
-    // effect: 유저 정보 불러오기 함수 //
-    useEffect(() => {
-        if (signInUser) {
-            setUserId(signInUser.userId);
-            setUserName(signInUser.name);
-        }
-
-        const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken) {
-            console.log('접근 권한이 없습니다.');
-            return;
-        }
-        getOrderDetailList();
-
-    }, [signInUser]);
-
-    useEffect(() => {
-        onUpdateOrderStatus();
-    }, [orderStatus])
 
     // component: 주문내역 컴포넌트 반환 //
     return (
@@ -333,8 +314,8 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                     orderStatus === '주문 취소' ? '주문 취소' :
                                         orderStatus === '결제 대기중' ? '결제 대기중' :
                                             orderStatus === '결제 완료' ? '결제 완료' :
-                                                orderStatus === '리뷰작성 완료' ? '완료' :
-                                                    orderStatus === '완료' ? <WriteReview /> :
+                                                orderStatus === '완료' ? '완료' :
+                                                    orderStatus === '픽업 완료' ? <WriteReview /> :
                                                         orderStatus === '주문 거부' ? '주문 거부' : ''
                             }
                         </div>
@@ -367,9 +348,8 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
                     orderStatus === '승인 대기중' ? <ReadyAccept /> :
                         orderStatus === '결제 대기중' ? <ReadyPay /> :
-                            orderStatus === '결제 완료' ? <FinishedPay /> :
-                                orderStatus === '완료' ? <FinishedOrder /> :
-                                    orderStatus === '주문 거부' ? <OrderReject /> : ''
+                            orderStatus === '완료' ? <FinishedOrder /> :
+                                orderStatus === '주문 거부' ? <OrderReject /> : ''
                 }
             </div >
         </>
@@ -380,11 +360,33 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
 export default function MyOrderDetail() {
 
+    // state: 원본 리스트 상태 //
+    const originalList = useRef<OrderDetailsProps[]>([]);
+
     const [userId, setUserId] = useState<string>('');
     const { signInUser } = useSignInUserStore();
-
     // state: 주문 정보 상태 //
     const [orderDetailList, setOrderDetailList] = useState<OrderDetailsProps[]>([]);
+    const [selectedYear, setSelectedYear] = useState<string | null>();
+    const [selectedMonth, setSelectedMonth] = useState<string | null>();
+    const [selectedStatus, setSelectedStatus] = useState<string | null>();
+    const [selectedSort, setSelectedSort] = useState<string | null>();
+
+    const yearProps = {
+        options: ['2024', '2025', '2026']
+    };
+
+    const monthProps = {
+        options: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+    };
+
+    const statusProps = {
+        options: ['승인 대기중', '결제 대기중', '결제 완료', '픽업 완료', '완료', '주문 취소', '주문 거부']
+    };
+
+    const sortProps = {
+        options: ['빠른 주문일 순', '늦은 주문일 순', '가까운 픽업일 순', '먼 픽업일 순']
+    };
 
     // state: cookie 상태 //
     const [cookies] = useCookies();
@@ -404,6 +406,8 @@ export default function MyOrderDetail() {
         }
         const { orders } = responseBody as GetOrderDetailListResponseDto;
         setOrderDetailList(orders);
+        originalList.current = orders;
+        console.log(orders);
 
     }
 
@@ -431,11 +435,109 @@ export default function MyOrderDetail() {
         getOrderDetailList();
     }, [signInUser]);
 
+    // effect: 정렬 필터링 //
+    useEffect(() => {
+        let orderList = [...originalList.current];
+
+        if (selectedYear) {
+            orderList = originalList.current.filter(item => {
+                const year = item.orderTime.slice(0, 4);
+                return year === selectedYear;
+            });
+        }
+
+        if (selectedMonth) {
+            const selectedMonthNumber = String(monthProps.options.indexOf(selectedMonth) + 1).padStart(2, '0');
+            orderList = originalList.current.filter(item => {
+                const month = item.orderTime.slice(5, 7); // "2024-09-25T00:00" 에서 5~6번째 문자 가져오기
+                return month === selectedMonthNumber;
+            });
+        }
+
+        if (selectedYear == null) {
+            setSelectedMonth(null);
+        }
+
+        if (selectedStatus) {
+            orderList = originalList.current.filter(item => item.orderStatus === selectedStatus);
+        }
+
+        if (selectedSort === '빠른 주문일 순') {
+            orderList.sort((a, b) => new Date(a.orderTime.split("T")[0]).getTime() - new Date(b.orderTime.split("T")[0]).getTime());
+        } else if (selectedSort === '늦은 주문일 순') {
+            orderList.sort((a, b) => new Date(b.orderTime.split("T")[0]).getTime() - new Date(a.orderTime.split("T")[0]).getTime());
+        } else if (selectedSort === '가까운 픽업일 순') {
+            orderList.sort((a, b) => new Date(a.pickupTime).getTime() - new Date(b.pickupTime).getTime()
+            );
+        } else if (selectedSort === '먼 픽업일 순') {
+            orderList.sort((a, b) => new Date(b.pickupTime).getTime() - new Date(a.pickupTime).getTime()
+            );
+        }
+        setOrderDetailList(orderList);
+    }, [selectedYear, selectedMonth, selectedStatus, selectedSort]);
+
+    const handleYearOnChange = (event: any, newValue: string | null) => {
+        setSelectedYear(newValue); // 선택된 값을 상태에 저장
+    };
+    const handleMonthOnChange = (event: any, newValue: string | null) => {
+        setSelectedMonth(newValue); // 선택된 값을 상태에 저장
+    };
+
+    const handleStatusOnChange = (event: any, newValue: string | null) => {
+        setSelectedStatus(newValue); // 선택된 값을 상태에 저장
+    };
+
+    const handleSortOnChange = (event: any, newValue: string | null) => {
+        setSelectedSort(newValue); // 선택된 값을 상태에 저장
+    };
+
     // render: 주문 내역 컴포넌트 렌더링 //
     return (
         <div className='order-history'>
             <div className='order-history-h2'>주문 내역</div>
-
+            <div className='order-order'>
+                <Autocomplete
+                    {...yearProps}
+                    id="include-input-in-list"
+                    includeInputInList
+                    style={{ minWidth: 150 }}
+                    onChange={handleYearOnChange}
+                    renderInput={(params) => (
+                        <TextField {...params} label="년도 선택" variant="standard" />
+                    )}
+                />
+                <Autocomplete
+                    {...monthProps}
+                    id="include-input-in-list"
+                    includeInputInList
+                    style={{ minWidth: 150 }}
+                    onChange={handleMonthOnChange}
+                    value={selectedYear ? selectedMonth : null}
+                    renderInput={(params) => (
+                        <TextField {...params} label="월 선택" variant="standard" placeholder={selectedYear ? "월 선택" : " "} />
+                    )}
+                />
+                <Autocomplete
+                    {...statusProps}
+                    id="include-input-in-list"
+                    includeInputInList
+                    style={{ minWidth: 150 }}
+                    onChange={handleStatusOnChange}
+                    renderInput={(params) => (
+                        <TextField {...params} label="상태 선택" variant="standard" />
+                    )}
+                />
+                <Autocomplete
+                    {...sortProps}
+                    id="include-input-in-list"
+                    includeInputInList
+                    style={{ minWidth: 150 }}
+                    onChange={handleSortOnChange}
+                    renderInput={(params) => (
+                        <TextField {...params} label="정렬 방식" variant="standard" />
+                    )}
+                />
+            </div>
             <div className='my-order-list'>
                 {
                     orderDetailList.map((orderdetail) => <MyOrderDetailComponent key={orderdetail.orderCode} orderdetail={orderdetail} getOrderDetailList={getOrderDetailList} />)

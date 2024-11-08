@@ -23,7 +23,7 @@
 .my-order-list {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
   width: 95%;
   justify-content: center;
   align-items: center;
@@ -115,6 +115,9 @@
   font-size: 25px;
   font-weight: bolder;
   vertical-align: bottom;
+  width: 200px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .my-order-payed-status {
@@ -323,4 +326,11 @@ label {
   background-color: rgba(255, 255, 255, 1);
   color: black;
   border: 1px solid black;
+}
+
+.order-order {
+  width: 90%;
+  display: flex;
+  justify-content: right;
+  gap: 10px;
 }
