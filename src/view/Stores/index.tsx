@@ -255,9 +255,6 @@ export default function Stores() {
   // state: 원본 리스트 상태 //
   const originalList = useRef<StoreComponentProps[]>([]);
 
-  // state: 선택된 태그를 저장하는 상태 // 
-  const [selectedTags, setSelectedTags] = useState<string>('');
-
   // state: 선택된 테마를 저장하는 상태 //
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
 
@@ -297,10 +294,13 @@ export default function Stores() {
   // state: 정렬 상태 //
   const [sortType, setSortType] = useState<string>('');
 
+  // state: 선택된 태그 저장하는 상태 //
+	const [selectedTag, setSelectedTag] = useState<string>('');
+
   // event handler: 태그 클릭 이벤트 핸들러 //
   const onTagClickHandler = (tag: string) => {
-    if (selectedTags === tag) setSelectedTags('');
-    else setSelectedTags(tag); // 클릭된 태그를 상태로 저장
+    if (selectedTag === tag) setSelectedTag('');
+    else setSelectedTag(tag); // 클릭된 태그를 상태로 저장
   };
 
   // event handler: 테마 클릭 이벤트 핸들러 //
@@ -401,10 +401,12 @@ export default function Stores() {
 
   // event handler: 초기화 버튼 클릭 이벤트 //
   const onResetClickHandler = () => {
+    setSelectedTag('')
     setSelectedThemes([]);
     setSelectedWeekdays([]);
     setSelectedGugun('');
     setSelectedDong('');
+    setSortType('')
   }
 
   // event handler: 선택된 테마 삭제 클릭 이벤트 //
@@ -540,22 +542,23 @@ export default function Stores() {
 
     let storeList = [...originalList.current];
 
-    // if (selectedTag) {
-    //   storeList = storeList.filter(item => item.tags.includes(selectedTag))
-    // }
+    // ! 태그 필터링
+    if (selectedTag) {
+      storeList = storeList.filter(item => item.productTag.includes(selectedTag))
+    }
 
-    // if (selectedThemes.length) {
-    //   storeList = storeList.filter(item => {
-    //     let existed = false;
-    //     for (const theme of item.themes) {
-    //       if (selectedThemes.includes(theme)) {
-    //         existed = true;
-    //         break;
-    //       }
-    //     }
-    //     return existed;
-    //   });
-    // }
+    if (selectedTag.length) {
+      storeList = storeList.filter(item => {
+        let existed = false;
+        for (const tag of item.productTag) {
+          if (selectedTag.includes(tag)) {
+            existed = true;
+            break;
+          }
+        }
+        return existed;
+      });
+    }
 
     // ! 픽업 요일 필터링
     if (selectedWeekdays.length) {
@@ -638,7 +641,7 @@ export default function Stores() {
     
     setStoreList(storeList);
 
-  }, [selectedTags, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType]);
+  }, [selectedTag, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType]);
 
   return (
     <div id='store-wrapper'>
@@ -665,13 +668,13 @@ export default function Stores() {
         <div className='filter-box'>
           <div className='store-filter' style={{ marginBottom: "30px" }}>
             <div className='filter-box'>
-              <CakeComponent imageUrl="/photo.png" context="포토" isSelected={selectedTags === "포토"} onClick={() => onTagClickHandler("포토")} />
-              <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={selectedTags === "레터링"} onClick={() => onTagClickHandler("레터링")} />
-              <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={selectedTags === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")} />
-              <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={selectedTags === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")} />
-              <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={selectedTags === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")} />
-              <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={selectedTags === "비건 케이크"} onClick={() => onTagClickHandler("비건 케이크")} />
-              <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={selectedTags === "떡 케이크"} onClick={() => onTagClickHandler("떡 케이크")} />
+              <CakeComponent imageUrl="/photo.png" context="포토" isSelected={selectedTag === "포토"} onClick={() => onTagClickHandler("포토")} />
+              <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={selectedTag === "레터링"} onClick={() => onTagClickHandler("레터링")} />
+              <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={selectedTag === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")} />
+              <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={selectedTag === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")} />
+              <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={selectedTag === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")} />
+              <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={selectedTag === "비건 케이크"} onClick={() => onTagClickHandler("비건 케이크")} />
+              <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={selectedTag === "떡 케이크"} onClick={() => onTagClickHandler("떡 케이크")} />
             </div>
           </div>
         </div>
@@ -683,11 +686,10 @@ export default function Stores() {
           {/* 정렬 */}
           <div className="sorting-dropdown">
           <select onChange={onSortSelectHandler}>
-            <optgroup label="정렬 방식">
+              <option value="system">정렬방식</option>
               <option value="popularity">인기순</option>
               <option value="rating">별점순</option>
               <option value="review">리뷰순</option>
-            </optgroup>
           </select>
           </div>
 
