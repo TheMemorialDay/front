@@ -120,9 +120,9 @@ export default function Notice() {
             <div className="main">
                 <div className="table">
                     <div className="th">
-                        <div className="td-no">No.</div>
-                        <div className="td-title">Title</div>
-                        <div className="td-date">Date</div>
+                        <div className="td-no">NO</div>
+                        <div className="td-title">TITLE</div>
+                        <div className="td-date">DATE</div>
                     </div>
                     {viewList.map((notice, index) => <NoticeRow key={index} notice={notice} getNoticeList={getNoticeList} onDetailClickHandler={onTrClickHandler} />)}
                 </div>

@@ -5,6 +5,7 @@ export default interface GetProductDetailResponseDto extends ResponseDto {
 }
 
 interface OrderProductDetails {
+    productTag: string;
     productNumber: number;
     productName: string;
     productIntroduce: string;

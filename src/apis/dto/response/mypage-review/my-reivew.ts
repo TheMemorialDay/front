@@ -1,4 +1,5 @@
 export default interface MyReviews {
+    storeNumber: number;
     reviewRating: number;
     storeName: string;
     reviewDay: string;

@@ -142,12 +142,12 @@ export default function Qa() {
 
                 <div className="table">
                     <div className="th">
-                        <div className="td-no">No.</div>
-                        <div className="td-title">Title</div>
+                        <div className="td-no">NO</div>
+                        <div className="td-title">TITLE</div>
                         <div className='td-box'>
-                            <div className="td-writer">Writer</div>
-                            <div className="td-date">Date</div>
-                            <div className="td-status">Status</div>
+                            <div className="td-writer">WRITER</div>
+                            <div className="td-date">DATE</div>
+                            <div className="td-status">STATUS</div>
                         </div>
                     </div>
 
