@@ -341,7 +341,8 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
     const { name, telNumber, userId, telAuthNumber, 
         setName, setTelNumber, setUserId, setTelAuthNumber
     } = useIdSearchResultZustand();
-
+    
+    
     // variable: 아이디 찾기 가능 상태 확인 //
     const isIdSearchPossible = isName && isTelNumber && isTelAuthNumber;
 

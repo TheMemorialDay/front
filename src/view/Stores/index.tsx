@@ -257,15 +257,9 @@ export default function Stores() {
 
   // state: 원본 리스트 상태 //
   const originalList = useRef<StoreComponentProps[]>([]);
-
-  // state: 선택된 테마를 저장하는 상태 //
-  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
-
+  
   // state: 테마 선택 셀렉터 오픈 여부 상태 //
   const [showThemeSelector, setShowThemeSelector] = useState<boolean>(false);
-
-  // state: 선택된 요일을 저장하는 상태 //
-  const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
 
   // state: 픽업 가능 요일 셀렉터 오픈 여부 상태 //
   const [showPickUpSelector, setShowPickUpSelector] = useState<boolean>(false);
@@ -276,14 +270,23 @@ export default function Stores() {
   // state: 동 셀렉터 오픈 여부 상태 //
   const [showDongSelector, setShowDongSelector] = useState<boolean>(false);
 
-  // state: 선택된 구에 맞는 동 리스트 //
-  const [dongList, setDongList] = useState<string[]>([]);
+  // state: 선택된 태그 저장하는 상태 //
+	const [selectedTag, setSelectedTag] = useState<string>('');
 
+  // state: 선택된 테마를 저장하는 상태 //
+  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+  
+  // state: 선택된 요일을 저장하는 상태 //
+  const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
+  
   // state: 선택된 구군 저장하는 상태 //
   const [selectedGugun, setSelectedGugun] = useState<string>('');
 
   // state: 선택된 동 저장하는 상태 //
   const [selectedDong, setSelectedDong] = useState<string>('');
+
+  // state: 선택된 구에 맞는 동 리스트 //
+  const [dongList, setDongList] = useState<string[]>([]);
 
   // state: 당일 케이크 가능 여부 상태 //
   const [productToday, setProductToday] = useState<boolean>(false);
@@ -297,8 +300,6 @@ export default function Stores() {
   // state: 정렬 상태 //
   const [sortType, setSortType] = useState<string>('');
 
-  // state: 선택된 태그 저장하는 상태 //
-	const [selectedTag, setSelectedTag] = useState<string>('');
 
   // event handler: 태그 클릭 이벤트 핸들러 //
   const onTagClickHandler = (tag: string) => {

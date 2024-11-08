@@ -18,6 +18,8 @@
     overflow: auto;
     max-height: 480px;
     width: 100%;
+    display: flex;
+    gap: 10px;
 }
 
 #info-update .update-box::-webkit-scrollbar {
@@ -46,6 +48,15 @@
 }
 
 #info-update .inputs2 {
+    width: 380px;
+    margin: 10px 0px;
+    height: 15px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    padding: 15px 10px;
+}
+
+#info-update .inputs3 {
     width: 380px;
     margin: 10px 0px;
     height: 15px;
@@ -97,18 +108,22 @@
     /* margin-bottom: 20px; */
     margin-left: 11px;
     align-self: stretch;
+    padding-left: 13px;
 }
 
 #info-update .message.true {
     font-size: 12px;
     font-weight: 200;
     color: rgba(0, 128, 0, 0.7);
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     align-self: stretch;
+    padding-left: 22px;
 }
 
+#info-update .update-send-button,
 #info-update .send-button {
     width: 250px;
+    /* width: 100%; */
     height: 45px;
     margin: 10px 0px;
     border-radius: 6px;
@@ -123,7 +138,7 @@
     /* margin-top: 10px; */
 }
 
-#info-update .send-button:hover {
+#info-update .update-button:hover {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
@@ -162,7 +177,10 @@
     border: 1px solid;
 }
 
-#info-update .update-button {
+#info-update .update-button,
+#info-update .change-button,
+#info-update .update-send-button,
+#info-update .send-button {
     display: flex;
     justify-content: center; 
     align-items: center; 
@@ -190,16 +208,40 @@
     width: 100%;
 }
 
-#info-update .tel-number-box,
 #info-update .tel-auth-box {
     display: flex;
     max-width: 401.33px;
     gap: 10px;
+    align-items: center;
 }
 
 #info-update .cancel-update-button {
     display: flex;
     gap: 10px;
+}
+
+/* ======================== new ======================== */
+
+#info-update .change-button,
+#info-update .update-send-button {
+    width: 160px;
+    margin-top: 5px;
+}
+
+#info-update .tel-number-box,
+#info-update .tel-number-update-box {
+    display: flex;
+    gap: 10px;
+    max-width: 401.33px;
+}
+
+#info-update .inputs2,
+#info-update .inputs3 {
+    flex: 1;
+}
+
+#info-update .send-button {
+    margin-top: 10px;
 }
 
 
