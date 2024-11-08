@@ -23,7 +23,7 @@
 .my-order-list {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
   width: 95%;
   justify-content: center;
   align-items: center;
@@ -75,6 +75,7 @@
 .order-plan {
   font-size: 15px;
 }
+
 .order-box-top {
   margin-top: 8px;
   margin-bottom: 5px;
@@ -212,6 +213,8 @@
   font-size: 25px;
   font-weight: bolder;
   color: white;
+
+  cursor: pointer;
 }
 
 /** 모달 구현 부 **/
