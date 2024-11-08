@@ -18,6 +18,16 @@
     cursor: pointer;
 }
 
+#mypage-review-wrapper .main-title:hover {
+    font-size: 25px;
+    font-weight: 600;
+    
+    margin-bottom: 15px;
+
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 /** 모달 start ================================================================  */
 #mypage-review-wrapper .myreview-modal {
     position: fixed;
@@ -45,8 +55,8 @@
 }
 
 #mypage-review-wrapper .slider-image-container {
-    width: 550px;
-    height: 350px;
+    width: 500px;
+    height: 500px;
 
     background-color: thistle;
 }
