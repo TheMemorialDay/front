@@ -283,9 +283,9 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                             </div>
                             <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
                         </div>
-                        <div className="order-value">금액 : {orderdetail.totalPrice}원</div>
+                        <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
                     </div>
-                    <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
+                    
                 </div>
                 {
                     orderStatus === '승인 대기중' ? <RejectOrderReason /> :
