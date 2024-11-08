@@ -239,10 +239,19 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         onUpdateOrderStatus();
     }, [orderStatus])
 
+    // function: 숫자 쉼표 찍어주는 함수 //
+    function formatNumberWithCommas(number: number): string {
+        return new Intl.NumberFormat('en-US').format(number);
+    }
+
 
     // component: 주문내역 컴포넌트 반환 //
     return (
         <div className='order-list-component'>
+            <div style={{flexDirection: "row"}}>
+                <div className='order-day'>{orderdetail.orderTime.split("T")[0]}</div>
+            </div>
+            
             <div className='my-order-order'>
                 <div className='order-box-top'>
                     <div>
@@ -276,7 +285,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                         </div>
                         <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
                     </div>
-                    <div className="order-value">금액 : {orderdetail.totalPrice}원</div>
+                    <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
                 </div>
             </div>
             {
@@ -345,7 +354,7 @@ export default function MyOrderManage() {
     return (
         <div className='order-history'>
             <div className='order-history-h2'>주문 관리</div>
-            <div className='order-day'>2024. 11. 01</div>
+            
             <div className='my-order-list'>
                 {
                     orderDetailList.map((orderdetail) => <MyOrderDetailComponent key={orderdetail.orderCode} orderdetail={orderdetail} getOrderDetailList={getOrderDetailList} />)

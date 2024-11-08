@@ -138,11 +138,13 @@
   border-radius: 5px;
   background-color: #fff7e6;
   cursor: pointer;
+  
 }
 
 .sorting-dropdown select:focus {
   outline: none;
   background-color: #fff7e6;
+  border-radius: 6px;
 }
 
 #store-wrapper .dropdown-container {
@@ -304,7 +306,7 @@ select {
 }
 
 .like-count {
-  margin-top: 15px;
+  margin-top: 18px;
 }
 
 .white-heart {

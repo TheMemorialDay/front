@@ -100,18 +100,7 @@ export default function Order() {
   const [imageList, setImageList] = useState<string[]>([]);
   const [cakeToday, setCakeToday] = useState<boolean>(false);
   const [options, setOptions] = useState<Option[]>([]);
-
-  // state: 옵션 라디오 버튼 상태 //
-  // const fixedOptions = ["크기", "맛"];
-  // const [sizeOptions, setSizeOptions] = useState<{ size: string; addPrice: number }[]>([]);
-  // const [flavorOptions, setFlavorOptions] = useState<{ flavor: string; addPrice: number }[]>([]);
-  // const [customOptionName1, setCustomOptionName1] = useState<string>('');
-  // const [customOptionName2, setCustomOptionName2] = useState<string>('');
-  // const [customOptionName3, setCustomOptionName3] = useState<string>('');
-  // //const [setDynamicOptions, setDynamicOptions] = useState<{ dynamicOption: string; addPrice: number }[]>([]);
-  // const [customOption1, setCustomOption1] = useState<{ customOption1: string; addPrice: number }[]>([]);
-  // const [customOption2, setCustomOption2] = useState<{ customOption2: string; addPrice: number }[]>([]);
-  // const [customOption3, setCustomOption3] = useState<{ customOption3: string; addPrice: number }[]>([]);
+  const [productTag, setProductTag] = useState<string>('');
 
   // state: 사진 미리보기 상태 //
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
@@ -214,6 +203,7 @@ export default function Order() {
     setThemaList(orderProductDetails.themes);
     setImageList(orderProductDetails.productImages);
     setCakeToday(orderProductDetails.productToday);
+    setProductTag(orderProductDetails.productTag);
     
     const parseTime = (time: string) => {
       return time === "휴무일" ? null : parseInt(time.split(":")[0], 10);
@@ -394,12 +384,23 @@ const onOrderClickHandler = async () => {
             <div>
               <div className='text'>케이크 주문서 작성</div>
               <hr className='custom-hr'/>
-              <div className='cake-name'>{cakeName}</div>
+              <div style={{display: "flex", flexDirection: "row", gap:"12px"}}>
+                <div className={
+                  productTag === '포토' ? 'productTag-icon-photo' :
+                  productTag === '레터링' ? 'productTag-icon-letter' :
+                  productTag === '한입 케이크' ? 'productTag-icon-oneBite' :
+                  productTag === '도시락 케이크' ? 'productTag-icon-obento' :
+                  productTag === '이단 케이크' ? 'productTag-icon-twoFloor' :
+                  productTag === '비건 케이크' ? 'productTag-icon-vegun' :
+                  productTag === '떡 케이크' ? 'productTag-icon-riceCake' : ''
+                }></div>
+                <div className='cake-name'>{cakeName}</div>
+              </div>
               <div className='thema-zone'>
                 {themaList.length > 0 ?  themaList.map((thema, index) => <Tags key={index} contents={thema} />) : '' }
               </div>
               <div className='cake-introduce'>{introduce}</div>
-              <div className='cake-price'>가격 {formatNumberWithCommas(price)}</div>
+              <div className='cake-price'>가격 {formatNumberWithCommas(price)}원</div>
             </div>
               
             <div className='pickup-date'>

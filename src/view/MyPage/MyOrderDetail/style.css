@@ -266,6 +266,23 @@
 
   cursor: pointer;
 }
+/* 
+.reset-button {
+  background-color: black;
+  color: white;
+  border-radius: 6px;
+  
+  border: 1px solid black;
+  font-size: 16px;
+  padding: 8px 10px;
+
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+} */
 
 .review-photo-list {
   display: flex;
