@@ -278,8 +278,8 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                 ))}
                             </div>
                             <div className='review-inform'>
-                                <p>가게명 : 부산케이크</p>
-                                <p>상품 : 부드러운 초코 케이크</p>
+                                <p>가게명 : {orderdetail.storeName.split(",")[1]}</p>
+                                <p>상품 : {orderdetail.productName}</p>
                                 <p className='review-star'>별점 : &nbsp; <Rating
                                     name="simple-controlled"
                                     value={value}

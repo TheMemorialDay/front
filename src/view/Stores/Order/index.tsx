@@ -47,6 +47,11 @@ export default function ShopOrder() {
       navigator(ST_ABSOLUTE_REVIEW_DETAIL_PATH(store.storeNumber));
   };
 
+  // function: 숫자 쉼표 찍어주는 함수 //
+  function formatNumberWithCommas(number: number): string {
+    return new Intl.NumberFormat('en-US').format(number);
+  }
+
   // function: get product list preview respone 처리 //
   const getProductListPreviewResponse = (responseBody: ResponseDto | null | GetProductPreviewListResponseDto) => {
     const message = 
@@ -65,7 +70,7 @@ export default function ShopOrder() {
       productNumber: product.productNumber,
       imageUrl: product.productImage,
       title: product.productName,
-      price: `${product.productPrice}`, // Ensure price is a string
+      price: product.productPrice, // Ensure price is a string
       hashtags: product.themes.join(' '), // Join themes into a single string for display
       onDetailClickHandler: () => onProductClickHandler(product.productNumber),
       productToday: product.productToday
@@ -90,7 +95,7 @@ export default function ShopOrder() {
     productNumber: number;
     imageUrl: string;
     title: string;
-    price: string;
+    price: number;
     hashtags: string;
     onDetailClickHandler: (productNumber: number | string) => void;
     productToday: boolean;
@@ -111,7 +116,7 @@ export default function ShopOrder() {
           <div className="cake-overlay" onClick={() => onDetailClickHandler(productNumber)}>
             <h2>{title}</h2>
             <p className='hashtags' style={{fontSize:"13px", fontWeight: "400"}}>{hashtags}</p>
-            <p className='price'>{price}원</p>
+            <p className='price'>{formatNumberWithCommas(price)}원</p>
             {productToday ? <p>당일 케이크 가능</p> : ''}
           </div>
         )}
