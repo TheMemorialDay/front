@@ -242,50 +242,53 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
     // component: 주문내역 컴포넌트 반환 //
     return (
-        <div className='order-list-component'>
-            <div className='my-order-order'>
-                <div className='order-box-top'>
-                    <div>
-                        {
-                            orderStatus === '승인 대기중' ? '승인 대기중' :
-                                orderStatus === '결제 대기중' ? '결제 대기중' :
-                                    orderStatus === '결제 완료' ? '결제 완료 - 픽업 대기중' :
-                                        orderStatus === '리뷰작성 완료' ? '완료' :
-                                            orderStatus === '주문 취소' ? '주문 취소' :
-                                                orderStatus === '완료' ? '완료' : ''
-                        }
-                    </div>
-                    <div>주문 코드 - {orderdetail.orderCode}</div>
-                </div>
-                <hr />
-                <div className='order-box-bottom'>
-                    <div className="order-image">
-                        <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail.productImageUrl})` }}></div>
-                    </div>
-                    <div className="order-details">
-                        <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
-                        <div className="order-productCategory-productContents">
-                            <div>
-                                {options.map((option, index) => (
-                                    <span key={index} className="order-option">{orderdetail.productContents ? orderdetail.productContents : '없음'}{index < options.length ? ', ' : ',   '} </span>     // css 조금 수정할 예정입니다.
-                                ))}
-                            </div>
-                            <div>
-                                요청사항: {orderdetail.productContents}
-                            </div>
+        <>
+            <div className='order-day'>{orderdetail.pickupTime.split(" ")[0]}</div>
+            <div className='order-list-component'>
+                <div className='my-order-order'>
+                    <div className='order-box-top'>
+                        <div>
+                            {
+                                orderStatus === '승인 대기중' ? '승인 대기중' :
+                                    orderStatus === '결제 대기중' ? '결제 대기중' :
+                                        orderStatus === '결제 완료' ? '결제 완료 - 픽업 대기중' :
+                                            orderStatus === '리뷰작성 완료' ? '완료' :
+                                                orderStatus === '주문 취소' ? '주문 취소' :
+                                                    orderStatus === '완료' ? '완료' : ''
+                            }
                         </div>
-                        <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
+                        <div>주문 코드 - {orderdetail.orderCode}</div>
                     </div>
-                    <div className="order-value">금액 : {orderdetail.totalPrice}원</div>
+                    <hr />
+                    <div className='order-box-bottom'>
+                        <div className="order-image">
+                            <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail.productImageUrl})` }}></div>
+                        </div>
+                        <div className="order-details">
+                            <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
+                            <div className="order-productCategory-productContents">
+                                <div>
+                                    {options.map((option, index) => (
+                                        <span key={index} className="order-option">{orderdetail.productContents ? orderdetail.productContents : '없음'}{index < options.length ? ', ' : ',   '} </span>     // css 조금 수정할 예정입니다.
+                                    ))}
+                                </div>
+                                <div>
+                                    요청사항: {orderdetail.productContents}
+                                </div>
+                            </div>
+                            <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
+                        </div>
+                        <div className="order-value">금액 : {orderdetail.totalPrice}원</div>
+                    </div>
                 </div>
-            </div>
-            {
-                orderStatus === '승인 대기중' ? <RejectOrderReason /> :
-                    orderStatus === '결제 대기중' ? <ReadyPay /> :
-                        orderStatus === '결제 완료' ? <FinishedPay /> :
-                            orderStatus === '픽업 완료' ? <FinishedOrder /> : ''
-            }
-        </div >
+                {
+                    orderStatus === '승인 대기중' ? <RejectOrderReason /> :
+                        orderStatus === '결제 대기중' ? <ReadyPay /> :
+                            orderStatus === '결제 완료' ? <FinishedPay /> :
+                                orderStatus === '픽업 완료' ? <FinishedOrder /> : ''
+                }
+            </div >
+        </>
     );
 };
 
@@ -345,7 +348,6 @@ export default function MyOrderManage() {
     return (
         <div className='order-history'>
             <div className='order-history-h2'>주문 관리</div>
-            <div className='order-day'>2024. 11. 01</div>
             <div className='my-order-list'>
                 {
                     orderDetailList.map((orderdetail) => <MyOrderDetailComponent key={orderdetail.orderCode} orderdetail={orderdetail} getOrderDetailList={getOrderDetailList} />)
