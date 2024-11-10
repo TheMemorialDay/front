@@ -245,6 +245,8 @@ function FindId({ onPathChange }: AuthComponentProps) {
         if (!isMatched) {
             setTelMessage('숫자 11자 입력해주세요.');
             setTelMessageError(true);
+            setName('');
+            setTelNumber('');
             return;
         }
 
@@ -255,6 +257,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
     const onCheckClickHandler = () => {
         if (!telAuthNumber) {
+            setTelAuthNumber('');
             return;
         }
 
@@ -281,6 +284,9 @@ function FindId({ onPathChange }: AuthComponentProps) {
         if (!isIdSearchPossible) {
             console.log(name, telNumber, telAuthNumber, isSend, isCheckedTelAuthNumber)
             alert('정확하게 입력해주세요.');
+            setName('');
+            setTelNumber('');
+            setTelAuthNumber('');
             return;
         }
         
@@ -291,6 +297,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
         }
 
         getIdSearchRequest(requestBody).then(idSearchResultResponse);
+        
     };
 
     //render: 아이디 찾기 화면 렌더링 //
@@ -394,7 +401,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
     const [userIdCheck, setUserIdCheck] = useState<boolean>(false);
 
     // variable: 비밀번호 재설정 가능 검증 //
-    const isPatchPasswordPossible = userId && zusTelNumber && isSend;
+    const isPatchPasswordPossible = userId && zusTelNumber && telAuthNumber && isSend;
 
     // function: 비밀번호 찾기 (userId + telNumber) Response 처리 함수 //
     const passwordSearchResponse = (responseBody: ResponseDto | null) => {
@@ -445,7 +452,11 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
     // event handler: 전송 버튼 클릭 이벤트 핸들러 //
     const onSendClickHandler = () => {
-        if (!userId || !zusTelNumber) return;
+        if (!userId || !zusTelNumber) {
+            setUserId('');
+            setZusTelNumber('');
+            return;
+        }
 
         const pattern = /^[0-9]{11}$/;
         const isMatched = pattern.test(zusTelNumber);
@@ -453,6 +464,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         if (!isMatched) {
             setTelMessage('전화번호 11자 입력해주세요.');
             setTelMessageError(true);
+            setZusTelNumber('');
             return;
         }
 
@@ -465,6 +477,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         if (!telAuthNumber) {
             setAuthMessage('인증번호를 입력하세요.');
             setAuthMessageError(true);
+            setTelAuthNumber('');
             return;
         }
 
@@ -474,7 +487,12 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
     // event handler: 비밀번호 재설정 버튼 클릭 핸들러 //
     const onNextPatchPasswordClickHandler = () => {
-        if (!isPatchPasswordPossible) return;
+        if (!isPatchPasswordPossible) {
+            setUserId('');
+            setZusTelNumber('');
+            setTelAuthNumber('');
+            return;
+        }
 
         onPathChange('changePassword');
     };
