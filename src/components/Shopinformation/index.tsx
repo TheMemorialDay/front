@@ -104,7 +104,9 @@ export default function ShopMain() {
       <div className='shop-infor'>
         <div className='shop-image' style={{ backgroundImage: `url(${previewUrl})` }}></div>
         <div className='shop-comment'>
-          <h2 className='shop-ment'>{storeName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating}</h2>
+          <div>
+          <span className='shop-ment-name'>{storeName}</span>
+          <span className='shop-ment-rating'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating}</span>
           <h2 className='shop-ment'>{storeGugun}&nbsp;{storeDong}&nbsp;{storeDetailAddress}</h2>
           <h2 className='shop-ment-day'>
             {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => {
@@ -143,7 +145,8 @@ export default function ShopMain() {
               );
             })}
           </h2>
-          <h2 className='shop-ment'>{storeIntroduce}</h2>
+          <div className='shop-ment-intoroduce'>"{storeIntroduce}"</div>
+          </div>
         </div>
       </div>
       <hr className='hr' />

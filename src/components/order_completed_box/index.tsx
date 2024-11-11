@@ -1,30 +1,44 @@
-import React from 'react'
+import React from 'react';
+import { FullOrder } from '../../apis/dto/response/sales/get-sales.response.dto';
 
 interface CompletedOrderProps {
-	completedOrder: CompletedOrderProps;
+    order: FullOrder;
 }
 
-// component: 픽업 완료 상자 컴포넌트 //
-export default function CompletedOrder() {
+const formatOrderTime = (orderTime: string) => {
+    // 날짜 형식 변환
+    const date = new Date(orderTime);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
 
-	// render: 픽업 완료 상자 컴포넌트 렌더링 //
-	return (
-		<div className='completed-box'>
-			<div className='top'>
-				<div className='order-status'>픽업 완료</div>
-				<div className='order-code'>주문 코드 2024101088888</div>
-			</div>
-
-			<div className='main'>
-				<div className='image'></div>
-				<div className='order-info'>
-					<div className='pick-up-date'>픽업 일시 2024.10.10</div>
-					<div className='product-name'>상품 부드러운 생크림 케이크</div>
-					<div className='option-info'>옵션 1호, 바닐라, 요청사항: 없음</div>
-					<div className='customer-info'>고객 정보 홍길동 / 010-5555-6666</div>
-				</div>
-				<div className='order-price'>금액 33,000</div>
-			</div>
-		</div>
-	)
+    return `${year}.${month}.${day}`;
 }
+
+const CompletedOrder: React.FC<CompletedOrderProps> = ({ order }) => (
+    <div className='completed-box'>
+        <div className='top'>
+            <div className='order-status'>{order.orderStatus}</div>
+            <div className='order-code'>주문 코드: {order.orderCode}</div>
+        </div>
+
+        <div>
+            <div className='main'>
+                <div className='image'>
+                    <img src={order.productImageUrl} alt={order.productName} />
+                </div>
+                <div className='order-info'>
+                    <div className='pick-up-date'>주문 일자: {formatOrderTime(order.orderTime)}</div>
+                    <div className='pick-up-date'>픽업 일시: {order.pickupTime}</div>
+                    <div className='product-name'>상품: {order.productName}</div>
+                    <div className='option-info'>
+                        옵션: {order.options.map(opt => `${opt.productCategory}`).join(', ')}
+                    </div>
+                </div>
+                <div className='order-price'>금액: {order.totalPrice.toLocaleString()} 원</div>
+            </div>
+        </div>
+    </div>
+);
+
+export default CompletedOrder;

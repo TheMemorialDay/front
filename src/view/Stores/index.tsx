@@ -220,10 +220,11 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
               <div className='like-count'>{likeCount}</div>
             </div>
           </div>
-
+        <div className='store-card-bottom'>
           <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
           <p className="shop-rating">별점 {store.reviewRating}</p>
           <p className="shop-reviews">리뷰 {store.reviewCount}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -668,7 +669,7 @@ export default function Stores() {
         <div className='store-notice'>
           <div className='store-ment'>
             <div>찾으시는</div>
-            <div><strong>가게이름 & 상품을</strong></div>
+            <div><strong>가게이름 & 상품</strong>을</div>
             <div>검색하세요 !</div>
           </div>
           <div className='search'>

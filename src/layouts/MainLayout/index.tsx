@@ -4,6 +4,8 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN, HO_ABSOLUTE_PATH, HO_PATH, JO_ABSOLUTE_PATH, JO_PATH, JO_USER_ABSOLUTE_PATH, JO_USER_PATH, LOGIN_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH, SHOPPING_CART_ABSOLUTE_PATH, SIGN_IN_ABSOLUTE_PATH, SIGN_UP_ABSOLUTE_PATH, SIGN_UP_PATH, ST_ABSOLUTE_PATH, ST_PATH, SU_ABSOLUTE_PATH, SU_PATH } from '../../constants';
 import { useSignInUserStore } from '../../stores';
+import Footer from '../../components/footer/Footer';
+import ArrowToTop from '../../components/arrow-to-top/ArrowToTop';
 
 // component: 로고 컴포넌트 //
 function Logo() {
@@ -179,6 +181,8 @@ export default function MainLayout() {
             <div id='main-wrapper'>
                 <Outlet />
             </div>
+            <ArrowToTop />
+            <Footer />
         </div>
     )
 }
