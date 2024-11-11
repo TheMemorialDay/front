@@ -35,7 +35,7 @@
   height: 50px;
 
   /* border:1px solid #555; */
-  border:none;
+  border: none;
   border-radius: 30px;
   outline: none;
 
@@ -145,7 +145,7 @@
   border-radius: 5px;
   background-color: #fff7e6;
   cursor: pointer;
-  
+
 }
 
 .sorting-dropdown select:focus {
@@ -252,7 +252,7 @@ select {
 
 .store-card {
   flex: 1 1 calc(25%, -32px);
-  
+
   /* width: calc(25% - 16px); */
   height: 400px;
   border: 1px solid #eee;
@@ -639,7 +639,7 @@ select {
   box-sizing: border-box;
   border-radius: 20px;
   border: 1px solid rgba(64, 64, 64, 1);
-  width: 300px;
+  width: 170px;
   height: 300px;
   max-height: 180px;
 
