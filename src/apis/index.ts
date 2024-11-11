@@ -68,7 +68,7 @@ const MYPAGE_PATCH_USER_INFO_TEL_AUTH_CHECK_API_URL = `${MYPAGE_USER_INFO_API_UR
 const MYPAGE_PATCH_USER_COMPLETED_API_URL = `${MYPAGE_USER_INFO_API_URL}/patch-info`;
 const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
 
-const GET_MY_REVIEW_LIST_API_URL = (userId: string) =>  `${MYPAGE_MODULE_URL}/review?userId=${userId}`;
+const GET_MY_REVIEW_LIST_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/review?userId=${userId}`;
 
 const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 
@@ -531,7 +531,7 @@ export const postOrderRequest = async (requestBody: PostOrderRequestDto, userId:
 };
 
 // function: post review 요청 함수 //
-export const postReviewRequest = async(requestBody: PostReviewRequestDto, accessToken: string) => {
+export const postReviewRequest = async (requestBody: PostReviewRequestDto, accessToken: string) => {
     const responseBody = await axios.post(POST_REVIEW_API_URL, requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
@@ -539,7 +539,7 @@ export const postReviewRequest = async(requestBody: PostReviewRequestDto, access
 }
 
 // function: get review list 요청 함수 //
-export const getReviewListRequest = async(storeNumber: string | number) => {
+export const getReviewListRequest = async (storeNumber: string | number) => {
     const responseBody = await axios.get(GET_REVIEW_LIST_API_URL(storeNumber))
         .then(responseDataHandler<GetReviewListResponseDto>)
         .catch(responseErrorHandler);
@@ -547,7 +547,7 @@ export const getReviewListRequest = async(storeNumber: string | number) => {
 }
 
 // function: get my review list 요청 함수 //
-export const getMyReviewListRequest = async(userId: string, accessToken: string) => {
+export const getMyReviewListRequest = async (userId: string, accessToken: string) => {
     const responseBody = await axios.get(GET_MY_REVIEW_LIST_API_URL(userId), bearerAuthorization(accessToken))
         .then(responseDataHandler<GetMyReviewListResponseDto>)
         .catch(responseErrorHandler);
@@ -595,8 +595,8 @@ export const fileUploadRequest = async (requestBody: FormData) => {
 }
 
 // function: store main search 병합 버전 요청 함수 //
-export const getStoreMainSearchRequest = async (storeName: string, productName: string) => {
-    const responseBody = await axios.get(GET_STORE_LIST_TOTAL_SEARCH_API_URL, { params: { storeName, productName } })
+export const getStoreMainSearchRequest = async (searchKeyword: string) => {
+    const responseBody = await axios.get(GET_STORE_LIST_TOTAL_SEARCH_API_URL, { params: { searchKeyword } })
         .then(responseDataHandler<GetStoreListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
