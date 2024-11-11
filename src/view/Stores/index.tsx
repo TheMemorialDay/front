@@ -551,6 +551,7 @@ export default function Stores() {
         let existed = false;
         for (const theme of item.themes[0]) {
           if (selectedThemes.includes(theme)) {
+            console.log(selectedThemes);
             existed = true;
             break;
           }
