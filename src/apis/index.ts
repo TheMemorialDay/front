@@ -26,6 +26,7 @@ import { PostQnARequestDto } from './dto/request/support';
 import { PostLikeStoreRequestDto, PostPayMentRequestDto } from "./dto/request";
 import PatchOrderStatusReqeustDto from "./dto/request/order/patch-order-status-request.dto";
 import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
+import { PostReviewRequestDto } from "./dto/request/review";
 
 
 // variable: API URL 상수 //
@@ -82,8 +83,10 @@ const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_AP
 //* Auth
 const GET_ORDER_DETAIL_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/order-detail/${userId}`;
 const PATCH_ORDER_STATUS_API_URL = (orderCode: string) => `${MYPAGE_MODULE_URL}/order-detail/${orderCode}`;
+const POST_REVIEW_API_URL = `${MYPAGE_MODULE_URL}/order-detail/write-review`;
 
 const GET_ORDER_MANAGE_API_URL = (storeNumber: number | string) => `${MYPAGE_MODULE_URL}/order-manage/${storeNumber}`;
+const GET_SALES_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/sales?userId=${userId}`;
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
 
@@ -481,6 +484,23 @@ export const getProductPreviewListRequest = async (storeNumber: string | number)
     return responseBody;
 }
 
+
+// // function: get MyPage Store 요청 함수 //
+// export const getMyPageStoreRequest = async (storeNumber: number | string, accessToken: string) => {
+//     const responseBody = await axios.get(GET_MYPAGE_STORE_API_URL(storeNumber), bearerAuthorization(accessToken))
+//         .then(responseDataHandler<GetStoreResponseDto>)
+//         .catch(responseErrorHandler);
+//     return responseBody;
+// }
+
+// function: get Sales 요청 함수 //
+export const getSalesRequest = async (userId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_SALES_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetOrderDetailListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 // function: get product detail 요청 함수 //
 export const getProductDetailRequest = async (storeNumber: string | number, productNumber: string | number) => {
     const responseBody = await axios.get(GET_PRODUCT_DETAIL_API_URL(storeNumber, productNumber))
@@ -499,6 +519,14 @@ export const postOrderRequest = async (requestBody: PostOrderRequestDto, userId:
         throw errorData;
     }
 };
+
+// function: post review 요청 함수 //
+export const postReviewRequest = async(requestBody: PostReviewRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_REVIEW_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
 
 // function: get review list 요청 함수 //
 export const getReviewListRequest = async(storeNumber: string | number) => {

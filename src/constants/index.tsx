@@ -46,7 +46,9 @@ export const MY_PRODUCT_ADD_PATH = `add`;
 export const MY_PRODUCT_UPDATE_PATH = `update/:productNumber`;
 
 export const MY_ORDER_MANAGE_PATH = `order-manage`;
-export const MY_SALES_PATH = `sales`;
+export const MY_SALES_PATH = `${MY_PATH}/sales`;;
+// export const MY_SALES_DETAIL_PATH = (storeNumber: string | number) => `${storeNumber}`;
+
 
 
 
@@ -95,7 +97,7 @@ export const MY_PRODUCT_ADD_ABSOLUTE_PATH = `${MY_PRODUCT_ABSOLUTE_PATH}/${MY_PR
 export const MY_PRODUCT_UPDATE_ABSOLUTE_PATH = `${MY_PRODUCT_ABSOLUTE_PATH}/${MY_PRODUCT_UPDATE_PATH}`;
 
 export const MY_ORDER_MANAGE_ABSOLUTE_PATH = `${MY_PATH}/${MY_ORDER_MANAGE_PATH}`;
-export const MY_SALES_ABSOLUTE_PATH = `${MY_PATH}/${MY_SALES_PATH}`;
+export const MY_SALES_ABSOLUTE_PATH = `${MY_SALES_PATH}`;
 
 // variable: HTTP BEARER TOKEN COOKIE NAME //
 export const ACCESS_TOKEN = 'accessToken';

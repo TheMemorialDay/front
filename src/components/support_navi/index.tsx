@@ -22,16 +22,12 @@ export default function SupportNavi() {
 
     return (
         <div id='supportnavi-wrapper'>
-            <div className="title">SUPPORT</div>
-
             <div className="navigation">
                 <div 
                     className={`navigation-notice ${ isNotice ? 'active' : ''}`} 
                     onClick={() => onItemClickHandler(SU_ABSOLUTE_PATH)}
-                >
-                    Notice
-                </div>
-                <div className="navigation-bar">|</div>
+                >Notice</div>
+                <div className="navigation-bar" style={{fontSize: "17px"}}>|</div>
                 <div 
                     className={`navigation-qa ${ isQa ? 'active' : ''}`} 
                     onClick={() => onItemClickHandler(SU_ABSOLUTE_QA_PATH)}

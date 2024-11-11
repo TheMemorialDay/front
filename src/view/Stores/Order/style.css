@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
+  
   gap: 30px;
   width: 100%
 }
@@ -13,17 +13,21 @@
 }
 
 #store-detail-wrapper .product {
-  width: 80%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  gap: 50px;
-  padding: 16px;
+  /* gap: 50px; */
+  padding: 16px 0px;
+  
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  margin: 0 auto;
 }
 
 #store-detail-wrapper .cake-item {
   width: 240px;
-  height: 300px;
+  /* height: 300px; */
   border: 1px solid #ddd;
   border-radius: 20px;
   overflow: hidden;
@@ -37,6 +41,19 @@
   background-position: center;
   background-repeat: no-repeat;
 
+  cursor: pointer;
+  flex: 1 1 calc(25%, -32px);
+  
+  /* width: calc(25% - 16px); */
+  height: 360px;
+  width: 280px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  /* margin-top: 10px; */
+  transition: transform 0.2s;
   cursor: pointer;
 }
 

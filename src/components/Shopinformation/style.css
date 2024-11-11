@@ -5,11 +5,31 @@
   justify-content: center;
 
   gap: 30px;
-  width: 100%
+  width: 80%
+}
+
+.shop-comment {
+  display: flex;
+  
+  align-items: center;
+}
+
+.shop-ment-name {
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.shop-ment-intoroduce {
+  font-size: 24px;
+  font-weight: 500;
+  font-size: 20px;
+  justify-content: center;
+  text-align: center;
+
 }
 
 #store-detail-wrapper .shop-ment {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 500;
 }
 
@@ -27,7 +47,7 @@
 }
 
 #store-detail-wrapper .shop-image {
-  border-radius: 6px;
+  border-radius: 10px;
   width: 210px;
   height: 210px;
 
@@ -40,8 +60,9 @@
 #store-detail-wrapper .hr {
   border: 0;
   width: 80%;
-  height: 2px;
-  background-color: rgba(0, 0, 0, 0.7);
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.4);
+  margin-top: 30px;
 }
 
 #store-detail-wrapper .shop-ment-day {

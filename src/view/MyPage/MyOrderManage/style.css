@@ -15,7 +15,7 @@
 }
 
 .order-history .order-day {
-  font-size: 25px;
+  font-size: 24px;
   font-weight: bolder;
   align-self: flex-start;
 }
@@ -23,7 +23,7 @@
 .my-order-list {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
   width: 95%;
   justify-content: center;
   align-items: center;
@@ -37,7 +37,7 @@
 
 .my-order-order {
   border: 2px solid black;
-  border-radius: 25px;
+  border-radius: 20px;
   width: 100%;
 
   display: flex;
@@ -46,14 +46,14 @@
 
 .my-order-status {
   border: 2px solid black;
-  border-radius: 25px;
+  border-radius: 20px;
   width: 12%;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bolder;
 }
 
@@ -112,9 +112,12 @@
 
 .order-value {
   margin-top: 115px;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bolder;
   vertical-align: bottom;
+  width: 200px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .my-order-payed-status {
@@ -135,7 +138,7 @@
   align-items: center;
   justify-content: center;
 
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bolder;
   color: white;
 }
@@ -149,7 +152,7 @@
   align-items: center;
   justify-content: center;
 
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bolder;
 }
 
@@ -171,7 +174,7 @@
 
 .my-order-status-pickup {
   border: 2px solid black;
-  border-radius: 25px;
+  border-radius: 20px;
   width: 12%;
   background-color: black;
 
@@ -179,7 +182,7 @@
   align-items: center;
   justify-content: center;
 
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bolder;
   color: white;
 
@@ -189,14 +192,14 @@
 .my-order-status-finished {
   background-color: rgba(64, 64, 64, 0.6);
   border: 2px solid black;
-  border-radius: 25px;
+  border-radius: 20px;
   width: 12%;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bolder;
 }
 
@@ -286,7 +289,7 @@ label {
 .review-content {
   margin-top: -10px;
   border: 1px solid black;
-  border-radius: 25px;
+  border-radius: 20px;
   width: 900px;
   height: 300px;
 
@@ -323,4 +326,11 @@ label {
   background-color: rgba(255, 255, 255, 1);
   color: black;
   border: 1px solid black;
+}
+
+.order-order {
+  width: 90%;
+  display: flex;
+  justify-content: right;
+  gap: 10px;
 }
