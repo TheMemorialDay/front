@@ -231,7 +231,7 @@ function SelectedThemes({ content, onRemove }: ThemeProps) {
 export default function Stores() {
 
   // component: 테마 //
-  const CakeThemes = ['심플', '화려함', '펑키', '크리스마스', '아이돌', '졸업', '귀여움', '러블리', '재미', '할로윈', '신년', '효도', '연인', '어린이', '웨딩', '취업/승진'];
+  const CakeThemes = ['#심플', '#화려함', '#펑키', '#크리스마스', '#아이돌', '#졸업', '#귀여움', '#러블리', '#재미', '#할로윈', '#신년', '#효도', '#연인', '#어린이', '#웨딩', '#취업/승진'];
 
   // component: 요일 //
   const Day = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];

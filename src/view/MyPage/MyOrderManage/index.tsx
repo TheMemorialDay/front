@@ -93,6 +93,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
         // Function: 주문 수락 클릭 핸들러 //
         const onAcccpetUpdateOrderStatus = () => {
+            // 문자 메시지 전송
             setOrderStatus('결제 대기중');
 
             const accessToken = cookies[ACCESS_TOKEN];
