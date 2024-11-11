@@ -249,7 +249,7 @@ select {
   width: 300px;
 
   /* width: calc(25% - 16px); */
-  height: 380px;
+  height: 400px;
   border: 1px solid #ddd;
   border-radius: 15px;
   overflow: hidden;

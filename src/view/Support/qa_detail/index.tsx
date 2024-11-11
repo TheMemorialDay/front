@@ -113,26 +113,26 @@ export default function QaDetail() {
 
     // render: Q&A Detail 컴포넌트 렌더링 //
     return (
-        <div id='qa-detail-wrapper'>
-            <SupportNavi />
-            <div className='write-info-box'>
+        <div id='qa-detail-wrapper' style={{marginTop: "30px"}}>
+            {/* <SupportNavi /> */}
+            <div className='write-info-box' >
                 <div className='writer-box'>
-                    <div className='writer-title'>작성자</div>
+                    <div className='writer-title'>WRITER</div>
                     <div className='writer'>{maskString(writerId)}</div>
                 </div>
                 <div className='write-date-box'>
-                    <div className='write-date-title'>작성일</div>
+                    <div className='write-date-title'>DATE</div>
                     <div className='write-date'>{writeDay.substring(0, 10)}</div>
                 </div>
             </div>
 
             <div className='subject-box'>
-                <div className='subject-title'>제목</div>
+                <div className='subject-title'>TITLE</div>
                 <div className='subject-text'>{title}</div>
             </div>
 
             <div className='script-box'>
-                <div className='script-title'>내용</div>
+                <div className='script-title'>CONTENTS</div>
                 <div className='script-text'>{questionContents}</div>
             </div>
 
@@ -140,7 +140,7 @@ export default function QaDetail() {
 
             {hasAnswer &&
                 <div className='answer-box'>
-                    <div className='answer-title'>답변</div>
+                    <div className='answer-title'>ANSWER</div>
                     <div className='answer-text'>{answerContents}</div>
                 </div>
             }

@@ -296,7 +296,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                 console.log(requestBody);
                 postReviewRequest(requestBody, accessToken).then(postReviewResponse);
             }
-            setOrderStatus("리뷰작성 완료");
+            setOrderStatus("완료");
         }
 
         // component: 별 표기 //
@@ -316,7 +316,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                 <p className='review-title'>리뷰 작성</p>
                                 <p className='review-cancel' onClick={() => setModalOpen(false)}>X</p>
                             </div>
-                            <div className='reset-button' onClick={onResetImagesHandler}>초기화</div>
+                            <div className='review-photo-reset-button' onClick={onResetImagesHandler}>초기화</div>
                             <div className='review-photo-list'>
                                 <div className='review-photo'>
                                     <div className='add-button' onClick={() => fileInputRef.current?.click()}>

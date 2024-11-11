@@ -266,8 +266,8 @@
 
   cursor: pointer;
 }
-/* 
-.reset-button {
+
+.review-photo-reset-button {
   background-color: black;
   color: white;
   border-radius: 6px;
@@ -277,12 +277,11 @@
   padding: 8px 10px;
 
   display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-
+  font-weight: 600;
+  margin-left: auto;
+  margin-right: 20px;
   cursor: pointer;
-} */
+} 
 
 .review-photo-list {
   display: flex;
@@ -321,12 +320,12 @@
   align-items: center;
   justify-content: center;
 
+  border: 1px solid lightgray;
   cursor: pointer;
 }
 
 .review-photo-list .add-button:hover {
-  /* transform: translateY(-10px); */
-  background-color: rgba(64, 64, 64, 0.6);
+  border: 1px solid black;
 }
 
 .review-photo-list .add-button .circle {

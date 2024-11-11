@@ -4,7 +4,7 @@ import StoreComponent from '../../../components/storeThumbnail';
 import MyStoreLikeComponentProps from '../../../types/mypage-likelist.interface';
 import { useNavigate, useParams } from 'react-router';
 import { ACCESS_TOKEN, SIGN_UP_ABSOLUTE_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../../constants';
-import { deleteLikeStoreRequest, getMyPageLikeStoreRequest, postLikeStoreRequest } from '../../../apis';
+import { deleteLikeStoreRequest, getMyPageLikeStoreRequest, getMypageLikeStoreReviewNRatingRequest, postLikeStoreRequest } from '../../../apis';
 import GetMyPageLikeStoreListResponseDto from '../../../apis/dto/response/like/get-mypage-likestore-list.response.dto';
 import { ResponseDto } from '../../../apis/dto/response';
 import { usePagination } from '../../../hooks';
@@ -12,14 +12,18 @@ import { useCookies } from 'react-cookie';
 import { useSignInUserStore } from '../../../stores';
 import { PostLikeStoreRequestDto } from '../../../apis/dto/request';
 import axios from 'axios';
+import { getMypageLikeStoreReviewNRating } from '../../../apis/dto/response/like';
+import { MypageLikeStoreInfo } from '../../../types';
 
 interface StoreRowProps {
     store: MyStoreLikeComponentProps,
-    getStoreList: () => void;
+    //info: MypageLikeStoreInfo,
+    getStoreList: () => void,
+    //getStoreInfo: () => void;
 }
 
 // component: 스토어 리스트 아이템 컴포넌트 //
-function StoreRow({ store, getStoreList }: StoreRowProps) {
+function StoreRow({ store, getStoreList}: StoreRowProps) {
 
     const navigator = useNavigate();
 
@@ -28,10 +32,11 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
 
     // state: 로그인 유저 상태 //
     const { signInUser } = useSignInUserStore();
-
     const [likeCount, setLikeCount] = useState(store.likeList ? store.likeList.length : 0);
-
     const userId = signInUser?.userId;
+
+    // const reviewRating = info?.reviewRating || 0;
+    // const reviewCount = info?.reviewCount || 0;
 
     const onPostButtonClickHandler = () => {
         navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH(store.storeNumber));
@@ -91,6 +96,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
         }
         setChecked(false);
     }
+
     // 쿠키에서 accessToken을 추출하는 함수 (TypeScript와 호환되는 코드)
     function getCookie(name: string): string | undefined {
         const value = `; ${document.cookie}`;
@@ -104,6 +110,8 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     // effect: checked 상태가 변경될 때마다 리스트 업데이트
     useEffect(() => {
         const token = getCookie('accessToken');
+        const accessToken = cookies[ACCESS_TOKEN];
+
         axios.get(`http://localhost:4000/mypage/like/${userId}/${store.storeNumber}`, {
             headers: {
                 'Content-Type': 'application/json',
@@ -119,6 +127,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
             })
             .catch(error => console.error(error));
         getStoreList();
+        //getStoreInfo();
     }, [store.storeNumber, checked]);
 
     // render: 스토어 리스트 컴포넌트 렌더링 //
@@ -134,8 +143,8 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
                         </div>
                     </div>
                     <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
-                    <p className="shop-rating">별점 {store.reviewRating}</p>
-                    <p className="shop-reviews">리뷰 {store.reviewCount}</p>
+                    <p className="shop-rating">별점 {}</p>
+                    <p className="shop-reviews">리뷰 {}</p>
                 </div>
             </div>
         </div>
@@ -158,6 +167,7 @@ export default function MyLike() {
 
     // state: 가게 리스트 상태 //
     const [storeList, setStoreList] = useState<MyStoreLikeComponentProps[]>([]);
+    const [storeInfo, setStoreInfo] = useState<MypageLikeStoreInfo[]>([]);
 
     // function: like store list 불러오기 //
     const getMyPageStoreListResponse = (responseBody: GetMyPageLikeStoreListResponseDto | ResponseDto | null) => {
@@ -186,6 +196,31 @@ export default function MyLike() {
         getMyPageLikeStoreRequest(userId ?? '', accessToken).then(getMyPageStoreListResponse);
     };
 
+    // function: like store review count and review rating //
+    const getStoreInfo = () => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken) return;
+        if(signInUser?.userId) {
+            getMypageLikeStoreReviewNRatingRequest(signInUser?.userId, accessToken).then(getLikeStoreInfoResponse);
+        }
+    }
+
+    // function: get like store info response 처리 함수 //
+    const getLikeStoreInfoResponse = (responseBody: null | ResponseDto | getMypageLikeStoreReviewNRating) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' : responseBody;
+        
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if(!isSuccessed) {
+            alert(message);
+            return;
+        }
+        const {reviewNRatings} = responseBody as getMypageLikeStoreReviewNRating;
+        setStoreInfo(reviewNRatings);
+    }
+
     // effect: 가게 정보 불러오기 함수 //
     useEffect(() => {
         if (!userId) {
@@ -201,6 +236,8 @@ export default function MyLike() {
         }
 
         getStoreList();
+        getStoreInfo();
+
     }, [userId]);
 
     return (
@@ -208,7 +245,7 @@ export default function MyLike() {
             <div className='title'>찜한 가게</div>
             <div className='like-main'>
                 {
-                    storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList} />)
+                    storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList}/>)
                 }
             </div>
         </div>

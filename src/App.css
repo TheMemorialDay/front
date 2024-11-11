@@ -19,11 +19,11 @@ body {
 }
 
 .button {
-  width: 80px;
-  height: 35px;
-  padding: 7px 20px;
-  box-sizing: border-box;
-  border-radius: 5px;
+  width: 60px;
+  height: 20px;
+  padding: 10px;
+  /* box-sizing: border-box; */
+  border-radius: 6px;
   text-align: center;
 
   background-color: var(--black-color);
