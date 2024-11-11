@@ -1,6 +1,8 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './style.css';
+import axios from 'axios';
 
+// component: 메인 페이지 컴포넌트 //
 export default function Home() {
     const readerRef = useRef<HTMLDivElement>(null);
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -24,6 +26,7 @@ export default function Home() {
         setVisibleSections(newVisibleSections);
     };
 
+    // render: 메인 페이지 컴포넌트 렌더링 //
     return (
         <div className='home'>
             <header>

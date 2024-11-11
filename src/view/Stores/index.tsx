@@ -1,6 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
-import { getStoreMainSearchRequest } from '../../apis';
+import { addKeyword, fetchKeywords, getStoreMainSearchRequest } from '../../apis';
 import { useSignInUserStore } from '../../stores';
 import { GetStoreListResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
@@ -295,6 +295,9 @@ export default function Stores() {
 
   // state: 메인 검색창 입력 상태 //
   const [mainSearch, setMainSearch] = useState<string>('');
+  // state: 키워드 //
+  const [keywords, setKeywords] = useState<string[]>([]);
+  const [newKeyword, setNewKeyword] = useState('');
 
   // state: 가게 리스트 상태 //
   const [storeList, setStoreList] = useState<StoreComponentProps[]>([]);
@@ -457,9 +460,11 @@ export default function Stores() {
   const onMainSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setMainSearch(value);
+    setNewKeyword(value);
 
     if (value == null) {
       setMainSearch('');
+      setNewKeyword('');
     }
   };
 
@@ -533,6 +538,43 @@ export default function Stores() {
     if (sortType === value) setSortType('');
     else setSortType(value);
   };
+
+  //* 키워드 ===================================================================================================
+
+  const fetchKeywordsData = async () => {
+    try {
+      const data = await fetchKeywords();
+      setKeywords(data);
+    } catch (error) {
+      console.error("Error fetching keywords:", error);
+    }
+  };
+
+  const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setMainSearch(value);
+    setNewKeyword(value);
+  };
+
+  const handleAddKeyword = async () => {
+    if (newKeyword) {
+      try {
+        await addKeyword(newKeyword);
+        setNewKeyword('');
+        setMainSearch(''); // 추가 후 검색창 초기화
+        fetchKeywordsData(); // 새 키워드 목록 갱신
+      } catch (error) {
+        console.error("Error adding keyword:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchKeywordsData();
+  }, []);
+  //* 키워드 ===================================================================================================
+
+
 
   //* ========================================== store main address selected
 
@@ -648,6 +690,7 @@ export default function Stores() {
 
   }, [selectedTag, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType]);
 
+  // render: 스토어 메인 컴포넌트 렌더링 //
   return (
     <div id='store-wrapper'>
       <div className='store-top'>

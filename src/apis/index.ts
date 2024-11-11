@@ -36,6 +36,9 @@ const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
 
 const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
 
+//* 키워드
+const CREATE_KEYWORD_API_URL = `${MEMORIALDAY_API_DOMAIN}/keywords`;
+
 const POST_PRODUCT_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_LIST_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
@@ -44,8 +47,6 @@ const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MO
 
 //* ========================= stores
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
-// const GET_STORE_LIST_BY_STORE_NAME_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-by-store-name`;
-// const GET_STORE_LIST_BY_PRODUCT_NAME_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-by-product-name`;
 const GET_STORE_LIST_TOTAL_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-main`;
 //* ========================= stores
 const POST_LIKE_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
@@ -648,3 +649,20 @@ export const deleteQnARequest = async (questionNumber: number | string, accessTo
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+//* 키워드
+// function: 키워드 가져오기 요청 함수 //
+export const fetchKeywords = async () => {
+    const responseBody = await axios.get(CREATE_KEYWORD_API_URL)
+        .then(responseDataHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: 키워드 저장하기 요청 함수 //
+export const addKeyword = async (newKeyword: string) => {
+    const responseBody = await axios.post(CREATE_KEYWORD_API_URL, newKeyword)
+        .then(responseDataHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
