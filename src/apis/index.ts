@@ -27,12 +27,15 @@ import { PostLikeStoreRequestDto, PostPayMentRequestDto } from "./dto/request";
 import PatchOrderStatusReqeustDto from "./dto/request/order/patch-order-status-request.dto";
 import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
 import { PostReviewRequestDto } from "./dto/request/review";
+import { GetKeywordListResponseDto } from "./dto/response/keyword/get-keyword-list.response";
 import { getMypageLikeStoreReviewNRating } from "./dto/response/like";
 
 
 // variable: API URL 상수 //
 
 const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
+
+const GET_KEYWORD_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/popular-keyword`;
 
 const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
 
@@ -648,3 +651,14 @@ export const deleteQnARequest = async (questionNumber: number | string, accessTo
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+// function: get popular keyword 요청 함수 //
+export const getKeywordListRequest = () => {
+    return axios.get(GET_KEYWORD_LIST_API_URL)
+        .then(response => response.data)
+        .catch(error => {
+            console.error("에러:", error);
+            return null;
+        });
+};
+

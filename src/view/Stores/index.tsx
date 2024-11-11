@@ -254,7 +254,6 @@ export default function Stores() {
     '연제구': ['거제동', '연산동'],
     '중구': ['중앙동', '동광동', '대청동', '보수동', '부평동', '광복동', '남포동', '영주동'],
     '해운대구': ['우동', '중동', '좌동', '송정동', '반여동', '반송동', '재송동']
-
   }
 
   // state: 원본 리스트 상태 //
@@ -555,6 +554,8 @@ export default function Stores() {
         let existed = false;
         for (const theme of item.themes[0]) {
           if (selectedThemes.includes(theme)) {
+            console.log("selectedThemes:", selectedThemes);
+            console.log("현재 theme:", theme);
             existed = true;
             break;
           }
