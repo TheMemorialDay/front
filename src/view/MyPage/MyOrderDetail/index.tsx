@@ -35,7 +35,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
     const { signInUser } = useSignInUserStore();
     const [userId, setUserId] = useState<string>('');
-    const [userName, setUserName] = useState<string>('');
+    // const [userName, setUserName] = useState<string>('');
     const [orderTime, setOrderTime] = useState<string>('');
     const [cancelCode, setCancelCode] = useState<string>('');
     const [cancelReason, setCancelReason] = useState<string>('');
@@ -49,6 +49,9 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         const { IMP } = window;
         IMP.init("imp84260646"); // 가맹점 식별코드
 
+        // user이름 등록
+
+
         /* 2. 결제 데이터 정의하기 */
         const data: RequestPayParams = {
             pg: "html5_inicis", // PG사 : https://developers.portone.io/docs/ko/tip/pg-2 참고
@@ -56,7 +59,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             merchant_uid: `${orderdetail.orderCode}`, // 주문번호
             amount: Number(`${orderdetail.totalPrice}`), // 결제금액
             name: `${orderdetail.productName}`, // 주문명 (제품명 Order에서 받기)
-            buyer_name: `${userName}`, // 구매자 이름 (userName)
+            buyer_name: `${signInUser?.name}`, // 구매자 이름 (userName)
             buyer_email: ``,
             buyer_tel: `${signInUser?.telNumber}`, // 구매자 전화번호 (signInUser.telNumber)
         };
@@ -73,13 +76,23 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         if (!accessToken) return;
 
         const onPostPayMentEvent = () => {
-            const requestBody: PostPayMentRequestDto = {
-                orderCode: merchant_uid,
-                userId: userId,
-                success: success,
-                paidAmount: paid_amount
-            };
-            postPayMentRequest(requestBody, accessToken).then(postPayMentResponse);
+
+            if (signInUser?.userId !== null && signInUser?.userId !== undefined) {
+                const requestBody: PostPayMentRequestDto = {
+                    orderCode: merchant_uid,
+                    userId: signInUser?.userId,
+                    success: success,
+                    paidAmount: paid_amount
+                };
+                postPayMentRequest(requestBody, accessToken).then(postPayMentResponse);
+
+                setOrderStatus('결제 완료');
+                const requestBodys: PatchOrderStatusReqeustDto = {
+                    orderCode: orderdetail.orderCode,
+                    orderStatus: '결제 완료'
+                };
+                patchOrderStatusRequest(requestBodys, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
+            }
         }
 
         // function: post PayMent response 처리 함수 //
@@ -98,7 +111,6 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         }
 
         if (success) {
-            setOrderStatus('결제 완료');
             onPostPayMentEvent();
         } else {
             alert(`결제 실패: ${error_msg}`);
@@ -299,6 +311,12 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                 };
                 console.log(requestBody);
                 postReviewRequest(requestBody, accessToken).then(postReviewResponse);
+
+                const requestBodys: PatchOrderStatusReqeustDto = {
+                    orderCode: orderdetail.orderCode,
+                    orderStatus: '완료'
+                };
+                patchOrderStatusRequest(requestBodys, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
             }
             setOrderStatus('완료');
         }
@@ -477,7 +495,6 @@ export default function MyOrderDetail() {
         const { orders } = responseBody as GetOrderDetailListResponseDto;
         setOrderDetailList(orders);
         originalList.current = orders;
-        console.log(orders);
 
     }
 
