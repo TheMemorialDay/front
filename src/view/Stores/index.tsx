@@ -472,7 +472,7 @@ export default function Stores() {
     }
   };
 
-  // function: 가게명 검색 시 response 응답 처리 함수 //
+  // function: 가게명 & 상품명 검색 시 response 응답 처리 함수 //
   const getStoresMainSearchResponse = (responseBody: GetStoreListResponseDto | ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
