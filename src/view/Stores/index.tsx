@@ -231,7 +231,7 @@ function SelectedThemes({ content, onRemove }: ThemeProps) {
 export default function Stores() {
 
   // component: 테마 //
-  const CakeThemes = ['심플', '화려함', '펑키', '크리스마스', '아이돌', '졸업', '귀여움', '러블리', '재미', '할로윈', '신년', '효도', '연인', '어린이', '웨딩', '취업/승진'];
+  const CakeThemes = ['#심플', '#화려함', '#펑키', '#크리스마스', '#아이돌', '#졸업', '#귀여움', '#러블리', '#재미', '#할로윈', '#신년', '#효도', '#연인', '#어린이', '#웨딩', '#취업/승진'];
 
   // component: 요일 //
   const Day = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
@@ -254,7 +254,6 @@ export default function Stores() {
     '연제구': ['거제동', '연산동'],
     '중구': ['중앙동', '동광동', '대청동', '보수동', '부평동', '광복동', '남포동', '영주동'],
     '해운대구': ['우동', '중동', '좌동', '송정동', '반여동', '반송동', '재송동']
-
   }
 
   // state: 원본 리스트 상태 //
@@ -555,6 +554,8 @@ export default function Stores() {
         let existed = false;
         for (const theme of item.themes[0]) {
           if (selectedThemes.includes(theme)) {
+            console.log("selectedThemes:", selectedThemes);
+            console.log("현재 theme:", theme);
             existed = true;
             break;
           }
