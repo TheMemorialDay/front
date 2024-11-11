@@ -1,5 +1,6 @@
 #qa-wrapper .table .th {
-    padding: 8px 25px;
+    padding: 13px 25px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 #qa-wrapper .table .th .td-no,
@@ -19,7 +20,8 @@
 }
 
 #qa-wrapper .table .tr {
-    padding: 8px 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 13px 30px;
 }
 
 #qa-wrapper .table .tr .td-no {

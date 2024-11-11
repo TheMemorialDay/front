@@ -182,6 +182,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
         })
         .catch(error => console.error(error));
     }
+    console.log("가게 별점: " + store.reviewRating);
 
   }, [store.storeNumber, userId]);
 
@@ -197,10 +198,10 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
               <div className='like-count'>{store.likeList.length}</div>
             </div>
           </div>
-          <div className='store-card-bottom'>
-            <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
-            <p className="shop-rating">별점 {store.storeRating}</p>
-            <p className="shop-reviews">리뷰 {store.reviewCount}</p>
+        <div className='store-card-bottom'>
+          <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
+          <p className="shop-rating">별점 {store.reviewRating}</p>
+          <p className="shop-reviews">리뷰 {store.reviewCount}</p>
           </div>
         </div>
       </div>
@@ -639,7 +640,7 @@ export default function Stores() {
 
     // ! 찜 수 정렬
     if (sortType === 'popularity') storeList = storeList.sort((a, b) => b.likeList.length - a.likeList.length);
-    if (sortType === 'rating') storeList = storeList.sort((a, b) => b.storeRating - a.storeRating);
+    if (sortType === 'rating') storeList = storeList.sort((a, b) => b.reviewRating - a.reviewRating);
     if (sortType === 'review') storeList = storeList.sort((a, b) => b.reviewCount - a.reviewCount);
 
     setStoreList(storeList);

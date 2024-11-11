@@ -27,6 +27,7 @@ import { PostLikeStoreRequestDto, PostPayMentRequestDto } from "./dto/request";
 import PatchOrderStatusReqeustDto from "./dto/request/order/patch-order-status-request.dto";
 import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
 import { PostReviewRequestDto } from "./dto/request/review";
+import { getMypageLikeStoreReviewNRating } from "./dto/response/like";
 
 
 // variable: API URL 상수 //
@@ -77,6 +78,7 @@ const POST_STORE_API_MODULE = `${MYPAGE_STORE_MODULE}`;
 const GET_MYPAGE_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
 const GET_MYPAGE_LIKE_STORE_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/like/${userId}`;
 const PATCH_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+const GET_MYPAGE_LIKE_STORE_INFO_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/like/${userId}/info`;
 
 const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}`
 
@@ -415,6 +417,14 @@ export const getMyPageStoreRequest = async (storeNumber: number | string, access
 export const getMyPageLikeStoreRequest = async (userId: string, accessToken: string) => {
     const responseBody = await axios.get(GET_MYPAGE_LIKE_STORE_API_URL(userId), bearerAuthorization(accessToken))
         .then(responseDataHandler<GetMyPageLikeStoreListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get mypage like store review and rating 요청 함수 //
+export const getMypageLikeStoreReviewNRatingRequest = async(userId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_MYPAGE_LIKE_STORE_INFO_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<getMypageLikeStoreReviewNRating>)
         .catch(responseErrorHandler);
     return responseBody;
 }

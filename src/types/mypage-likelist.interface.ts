@@ -5,8 +5,8 @@ export default interface MyStoreLikeComponentProps {
   storeNumber: number;
   storeImageUrl: string;
   storeName: string;
-  reviewCount: number;
-  reviewRating: number;
+  reviewCount: number | null;
+  reviewRating: number | null;
   storeGugun: string;
   storeDong: string;
   likeCount: number;

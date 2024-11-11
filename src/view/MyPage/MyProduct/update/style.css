@@ -173,6 +173,7 @@
 }
 
 #add-product .product-name {
+    width: 100%;
     height: 25px;
     border-radius: 6px;
     border: 1px solid darkgray;
@@ -181,6 +182,7 @@
 
 #add-product .product-explain {
     height: 150px;
+    width: 100%;
     border-radius: 6px;
     border: 1px solid darkgray;
     padding: 10px;
@@ -188,6 +190,7 @@
 
 #add-product .product-price {
     height: 25px;
+    width: 100%;
     border-radius: 6px;
     border: 1px solid darkgray;
     padding: 10px;
@@ -203,6 +206,7 @@
     flex-direction: column;
     height: auto;
     overflow: hidden;
+    width: 100%;
 }
 
 #add-product .product-info .radio-handler {
@@ -363,6 +367,7 @@
 }
 
 #add-product .selected-tags {
+    width: 100%;
     height: 47px;
     font-size: 16px;
     font-weight: 500;

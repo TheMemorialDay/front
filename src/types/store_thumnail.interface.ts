@@ -5,7 +5,7 @@ export default interface StoreComponentProps {
 	storeImageUrl: string;
 	storeName: string;
 	reviewCount: number;
-	storeRating: number;
+	reviewRating: number;
 	storeGugun: string;
 	storeDong: string;
 	likeCount: number;

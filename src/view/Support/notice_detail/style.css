@@ -1,14 +1,14 @@
 #notice-detail-wrapper {
     gap: 40px;
     margin-top: 50px;
-    width: 80%;
+    width: 65%;
 }
 
 #notice-detail-wrapper .top {
     display: flex;
-
+    flex-direction: column;
+    gap: 10px;
     border-top: 1px solid rgba(188, 188, 188, 1);
-    border-bottom: 1px solid rgba(188, 188, 188, 1);
 }
 
 #notice-detail-wrapper .title {
@@ -19,27 +19,32 @@
 #notice-detail-wrapper .detail-title,
 #notice-detail-wrapper .detail-date {
     display: flex;
-    gap: 15px;
+    gap: 40px;
 }
 
 #notice-detail-wrapper .detail-title {
-    flex: 1;
+
 
     align-items: center;
-    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 30px; 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 #notice-detail-wrapper .detail-date {
-    width: 156px;
-    padding: 15px;
-    align-items: center;
 
-    border-left: 1px solid rgba(188, 188, 188, 1);
+
+    align-items: center;
+    padding-bottom: 10px;
+    padding-left: 30px; 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 #notice-detail-wrapper .detail-title-main,
 #notice-detail-wrapper .detail-date-main {
-    font-weight: 600;
+    font-weight: bold;
+    padding: 5px;
 }
 
 #notice-detail-wrapper .detail-date-content {
@@ -47,8 +52,6 @@
 }
 
 #notice-detail-wrapper .main {
-    border: 2px solid rgb(127, 127, 127, 1);
-    border-radius: 15px;
 
     margin-bottom: 20px;
     width: 100%;
