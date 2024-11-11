@@ -172,7 +172,7 @@ select {
   appearance: none;
 }
 
-.tag-container {
+.theme-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -185,12 +185,11 @@ select {
   height: 30px;
 }
 
-.tags-container {
+.themes-container {
   margin-left: 5px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 15px;
   flex-wrap: wrap;
   border-radius: 10px;
   text-align: center;
@@ -685,7 +684,7 @@ select {
   color: white;
 }
 
-.selected-theme-item #tags-item {
+.selected-theme-item #themes-item {
   color: white;
   font-size: 15px;
   font-weight: 800;

@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { ResponseDto } from "./dto/response";
-import { IdCheckRequestDto, PasswordResettinIdTelRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { IdCheckRequestDto, PasswordResettingFinalRequestDto, PasswordResettinIdTelRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import { IdSearchResponseDto } from "./dto/response/auth";
 import { GetProductDetailResponseDto, GetProductPreviewListResponseDto, GetReviewListResponseDto } from "./dto/response/stores";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
@@ -28,6 +28,7 @@ import PatchOrderStatusReqeustDto from "./dto/request/order/patch-order-status-r
 import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
 import { PostReviewRequestDto } from "./dto/request/review";
 import { GetKeywordListResponseDto } from "./dto/response/keyword/get-keyword-list.response";
+import { getMypageLikeStoreReviewNRating } from "./dto/response/like";
 
 
 // variable: API URL 상수 //
@@ -70,7 +71,7 @@ const MYPAGE_PATCH_USER_INFO_TEL_AUTH_CHECK_API_URL = `${MYPAGE_USER_INFO_API_UR
 const MYPAGE_PATCH_USER_COMPLETED_API_URL = `${MYPAGE_USER_INFO_API_URL}/patch-info`;
 const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
 
-const GET_MY_REVIEW_LIST_API_URL = (userId: string) =>  `${MYPAGE_MODULE_URL}/review?userId=${userId}`;
+const GET_MY_REVIEW_LIST_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/review?userId=${userId}`;
 
 const MYPAGE_STORE_MODULE = `${MYPAGE_MODULE_URL}/store`;
 
@@ -80,6 +81,7 @@ const POST_STORE_API_MODULE = `${MYPAGE_STORE_MODULE}`;
 const GET_MYPAGE_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
 const GET_MYPAGE_LIKE_STORE_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/like/${userId}`;
 const PATCH_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
+const GET_MYPAGE_LIKE_STORE_INFO_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/like/${userId}/info`;
 
 const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}`
 
@@ -107,8 +109,8 @@ const ID_SEARCH_RESULT_API_URL = `${AUTH_MODULE_URL}/id-search-result`;
 
 //* ================== 비밀번호 재설정
 const PASSWORD_RESETTING_ID_TEL_API_URL = `${AUTH_MODULE_URL}/password-search`;
-// const PASSWORD_SEARCH_AND_GET_PASSWORD_API_URL = (userId: string) => `${AUTH_MODULE_URL}/password-search/${userId}`;
 const PASSWORD_RESETTING_TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-tel-auth-check`;
+const PASSWORD_RESETTING_FINAL_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-final`;
 const PATCH_PASSWORD_API_URL = `${AUTH_MODULE_URL}/password-resetting`;
 //* ================== 비밀번호 재설정
 
@@ -358,6 +360,14 @@ export const passwordResettingTelAuthCheckRequest = async (requestBody: Password
     return responseBody;
 };
 
+// function: password resetting final check 요청 함수 //
+export const passwordResettingFinalCheckRequest = async (requestBody: PasswordResettingFinalRequestDto) => {
+    const responseBody = await axios.post(PASSWORD_RESETTING_FINAL_CHECK_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
 // function: 비밀번호 재설정 patch password 요청 함수 //
 export const patchPasswordRequest = async (requestBody: PatchPasswordRequestDto) => {
     const responseBody = await axios.patch(PATCH_PASSWORD_API_URL, requestBody)
@@ -410,6 +420,14 @@ export const getMyPageStoreRequest = async (storeNumber: number | string, access
 export const getMyPageLikeStoreRequest = async (userId: string, accessToken: string) => {
     const responseBody = await axios.get(GET_MYPAGE_LIKE_STORE_API_URL(userId), bearerAuthorization(accessToken))
         .then(responseDataHandler<GetMyPageLikeStoreListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: get mypage like store review and rating 요청 함수 //
+export const getMypageLikeStoreReviewNRatingRequest = async(userId: string, accessToken: string) => {
+    const responseBody = await axios.get(GET_MYPAGE_LIKE_STORE_INFO_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<getMypageLikeStoreReviewNRating>)
         .catch(responseErrorHandler);
     return responseBody;
 }
@@ -516,7 +534,7 @@ export const postOrderRequest = async (requestBody: PostOrderRequestDto, userId:
 };
 
 // function: post review 요청 함수 //
-export const postReviewRequest = async(requestBody: PostReviewRequestDto, accessToken: string) => {
+export const postReviewRequest = async (requestBody: PostReviewRequestDto, accessToken: string) => {
     const responseBody = await axios.post(POST_REVIEW_API_URL, requestBody, bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
@@ -524,7 +542,7 @@ export const postReviewRequest = async(requestBody: PostReviewRequestDto, access
 }
 
 // function: get review list 요청 함수 //
-export const getReviewListRequest = async(storeNumber: string | number) => {
+export const getReviewListRequest = async (storeNumber: string | number) => {
     const responseBody = await axios.get(GET_REVIEW_LIST_API_URL(storeNumber))
         .then(responseDataHandler<GetReviewListResponseDto>)
         .catch(responseErrorHandler);
@@ -532,7 +550,7 @@ export const getReviewListRequest = async(storeNumber: string | number) => {
 }
 
 // function: get my review list 요청 함수 //
-export const getMyReviewListRequest = async(userId: string, accessToken: string) => {
+export const getMyReviewListRequest = async (userId: string, accessToken: string) => {
     const responseBody = await axios.get(GET_MY_REVIEW_LIST_API_URL(userId), bearerAuthorization(accessToken))
         .then(responseDataHandler<GetMyReviewListResponseDto>)
         .catch(responseErrorHandler);
@@ -580,8 +598,8 @@ export const fileUploadRequest = async (requestBody: FormData) => {
 }
 
 // function: store main search 병합 버전 요청 함수 //
-export const getStoreMainSearchRequest = async (storeName: string, productName: string) => {
-    const responseBody = await axios.get(GET_STORE_LIST_TOTAL_SEARCH_API_URL, { params: { storeName, productName } })
+export const getStoreMainSearchRequest = async (searchKeyword: string) => {
+    const responseBody = await axios.get(GET_STORE_LIST_TOTAL_SEARCH_API_URL, { params: { searchKeyword } })
         .then(responseDataHandler<GetStoreListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;

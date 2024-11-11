@@ -1,7 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
 import { getStoreMainSearchRequest } from '../../apis';
-import { useSignInUserStore, useSortStore } from '../../stores';
+import { useSignInUserStore } from '../../stores';
 import { GetStoreListResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
 import { deleteLikeStoreRequest, getStoreListRequest, postLikeStoreRequest } from '../../apis';
@@ -38,30 +38,6 @@ function CakeComponent({ imageUrl, context, isSelected, onClick }: CakeComponent
   );
 }
 
-// component: 케이크 정렬 방식 //
-function CakeSorting() {
-
-  // state: 케이크 정렬 상태 //
-  const { stores, sortBy, sortedStores, setStores, setSortBy } = useSortStore();
-  //     stores원본배열, 정렬기준, 정렬상태저장하는상태
-
-  // event handler: 찜 수 선택했을 시 찜 수 많은 순으로 정렬 시키는 이벤트 핸들러 //
-  const onLikeDescSortClickHandler = () => {
-    const likeDescSortList = stores.sort((a, b) => b.likeCount - a.likeCount);
-    setStores(likeDescSortList);
-  };
-
-  return (
-    <select>
-      <optgroup label="정렬 방식">
-        <option value="popularity">인기순</option>
-        <option value="rating" onClick={onLikeDescSortClickHandler}>별점순</option>
-        <option value="review">리뷰순</option>
-      </optgroup>
-    </select>
-  );
-}
-
 interface StoreRowProps {
   store: StoreComponentProps,
   getStoreList: () => void;
@@ -75,11 +51,12 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
+  // state: 좋아요 수 상태 //
+  const [likeCount, setLikeCount] = useState<number>(0);
+
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
 
-  // State: 찜 상태 //
-  const [likeCount, setLikeCount] = useState(store.likeList.length);
   const userId = signInUser?.userId;
 
   const onPostButtonClickHandler = () => {
@@ -95,7 +72,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
       setLikeCount(likeCount - 1);
     } else if (!checked && userId !== undefined) {
       await onStoreLikeAddButtonClickHandler();
-      setLikeCount(likeCount + 1);
     }
   };
 
@@ -169,6 +145,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
       return;
     }
     setChecked(true);
+    getStoreList()
   }
 
   // function: delete Like Store Response 처리 함수 //
@@ -205,6 +182,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
         })
         .catch(error => console.error(error));
     }
+    console.log("가게 별점: " + store.reviewRating);
 
   }, [store.storeNumber, userId]);
 
@@ -217,7 +195,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
           <div className='liked'>
             <h2 className="shop-name">{store.storeName}</h2>
             <div onClick={onHeartClickHandler} className={checked ? 'red-heart' : 'white-heart'}>
-              <div className='like-count'>{likeCount}</div>
+              <div className='like-count'>{store.likeList.length}</div>
             </div>
           </div>
         <div className='store-card-bottom'>
@@ -231,24 +209,24 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
   )
 }
 
-interface TagProps {
+interface ThemeProps {
   content: string;
   onRemove?: () => void;
 }
 
-// component: 선택된 상품 태그 컴포넌트 //
-function SelectedTags({ content, onRemove }: TagProps) {
+// component: 선택된 상품 테마 컴포넌트 //
+function SelectedThemes({ content, onRemove }: ThemeProps) {
 
   // render: 선택된 상품 태그 렌더링 //
   return (
-    <div className='selected-tag-item'>
+    <div className='selected-theme-item'>
       <div className='x-sign' onClick={onRemove}>X</div>
-      <div id='tags-item'>{content}</div>
+      <div id='themes-item'>{content}</div>
     </div>
   )
 }
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
+//% 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인 메인
 // component: 가게 화면 //
 export default function Stores() {
 
@@ -282,17 +260,8 @@ export default function Stores() {
   // state: 원본 리스트 상태 //
   const originalList = useRef<StoreComponentProps[]>([]);
 
-  // state: 선택된 태그를 저장하는 상태 // 
-  const [selectedTags, setSelectedTags] = useState<string>('');
-
-  // state: 선택된 테마를 저장하는 상태 //
-  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
-
   // state: 테마 선택 셀렉터 오픈 여부 상태 //
   const [showThemeSelector, setShowThemeSelector] = useState<boolean>(false);
-
-  // state: 선택된 요일을 저장하는 상태 //
-  const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
 
   // state: 픽업 가능 요일 셀렉터 오픈 여부 상태 //
   const [showPickUpSelector, setShowPickUpSelector] = useState<boolean>(false);
@@ -303,14 +272,23 @@ export default function Stores() {
   // state: 동 셀렉터 오픈 여부 상태 //
   const [showDongSelector, setShowDongSelector] = useState<boolean>(false);
 
-  // state: 선택된 구에 맞는 동 리스트 //
-  const [dongList, setDongList] = useState<string[]>([]);
+  // state: 선택된 태그 저장하는 상태 //
+  const [selectedTag, setSelectedTag] = useState<string>('');
+
+  // state: 선택된 테마를 저장하는 상태 //
+  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+
+  // state: 선택된 요일을 저장하는 상태 //
+  const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
 
   // state: 선택된 구군 저장하는 상태 //
   const [selectedGugun, setSelectedGugun] = useState<string>('');
 
   // state: 선택된 동 저장하는 상태 //
   const [selectedDong, setSelectedDong] = useState<string>('');
+
+  // state: 선택된 구에 맞는 동 리스트 //
+  const [dongList, setDongList] = useState<string[]>([]);
 
   // state: 당일 케이크 가능 여부 상태 //
   const [productToday, setProductToday] = useState<boolean>(false);
@@ -321,13 +299,14 @@ export default function Stores() {
   // state: 가게 리스트 상태 //
   const [storeList, setStoreList] = useState<StoreComponentProps[]>([]);
 
-  // state: 찜 수 많은 순으로 정렬 상태를 저장하는 상태 //
-  // const [likeDescSortState, setLikeDescSortState] = useState<string[]>([]);
+  // state: 정렬 상태 //
+  const [sortType, setSortType] = useState<string>('');
+
 
   // event handler: 태그 클릭 이벤트 핸들러 //
   const onTagClickHandler = (tag: string) => {
-    if (selectedTags === tag) setSelectedTags('');
-    else setSelectedTags(tag); // 클릭된 태그를 상태로 저장
+    if (selectedTag === tag) setSelectedTag('');
+    else setSelectedTag(tag); // 클릭된 태그를 상태로 저장
   };
 
   // event handler: 테마 클릭 이벤트 핸들러 //
@@ -414,29 +393,29 @@ export default function Stores() {
     }
   }
 
-
-  // event handler: 동 선택시 선택 업데이트 //
-  const onSelectedDong = (dong: string) => {
-    setSelectedDong(dong);
-    setShowDongSelector(false);
-  }
-
-  // event handler: 당일 케이크 선택 이벤트 //
-  const onSelectedProductToday = () => {
+  // event handler: 당일 케이크 상태 토글 이벤트 //
+  const onToggledProductToday = () => {
     setProductToday(!productToday);
   }
 
   // event handler: 초기화 버튼 클릭 이벤트 //
   const onResetClickHandler = () => {
+    setSelectedTag('')
     setSelectedThemes([]);
     setSelectedWeekdays([]);
     setSelectedGugun('');
     setSelectedDong('');
+    setSortType('')
   }
 
   // event handler: 선택된 테마 삭제 클릭 이벤트 //
   const handleThemeRemove = (theme: string) => {
     setSelectedThemes(selectedThemes.filter(selectTheme => selectTheme !== theme));
+  };
+
+  // event handler: 선택된 요일 삭제 클릭 이벤트 //
+  const handleWeekRemove = (weekday: string) => {
+    setSelectedWeekdays(selectedWeekdays.filter(selectedWeekday => selectedWeekday !== weekday));
   };
 
   // event handler: 선택된 구군 삭제 클릭 이벤트 //
@@ -451,7 +430,7 @@ export default function Stores() {
   };
 
   // function: store list 불러오기 함수 //
-  const getStoreList = () => {
+  const getStoreLists = () => {
     getStoreListRequest().then(getStoreListResponse);
   }
 
@@ -478,13 +457,16 @@ export default function Stores() {
   const onMainSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setMainSearch(value);
+
+    if (value == null) {
+      setMainSearch('');
+    }
   };
 
   // event handler: 검색어 입력 후 요청하는 이벤트 핸들러 //
   const onStoresSearchClickHandler = () => {
-    if (!mainSearch) return;
 
-    getStoreMainSearchRequest(mainSearch, mainSearch).then(getStoresMainSearchResponse);
+    getStoreMainSearchRequest(mainSearch).then(getStoresMainSearchResponse);
   };
 
   // event handler: 검색어 입력 후 요청할 때 키보드 핸들러 //
@@ -494,7 +476,7 @@ export default function Stores() {
     }
   };
 
-  // function: 가게명 검색 시 response 응답 처리 함수 //
+  // function: 가게명 & 상품명 검색 시 response 응답 처리 함수 //
   const getStoresMainSearchResponse = (responseBody: GetStoreListResponseDto | ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
@@ -545,41 +527,45 @@ export default function Stores() {
     setShowDongSelector(false);
   };
 
-  // event handler: 찜 수 선택했을 시 찜 수 많은 순으로 정렬 시키는 이벤트 핸들러 //
-  const onLikeDescSortClickHandler = () => {
-    const likeDescSortList = storeList.sort((a, b) => b.likeCount - a.likeCount);
-    setStoreList(likeDescSortList);
+  // event handler: 정렬 선택 이벤트 처리 //
+  const onSortSelectHandler = (event: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    if (sortType === value) setSortType('');
+    else setSortType(value);
   };
 
   //* ========================================== store main address selected
 
   // effect: 로드시 상점 리스트 불러오기 함수 //
-  useEffect(getStoreList, []);
+  useEffect(getStoreLists, []);
 
   // effect: 조건 변경시 실행할 함수 //
   useEffect(() => {
 
     let storeList = [...originalList.current];
 
-    // if (selectedTag) {
-    //   storeList = storeList.filter(item => item.tags.includes(selectedTag))
-    // }
+    // ! 태그 필터링
+    if (selectedTag) {
+      storeList = storeList.filter(item => item.productTag.includes(selectedTag))
+    }
 
-    // if (selectedThemes.length) {
-    //   storeList = storeList.filter(item => {
-    //     let existed = false;
-    //     for (const theme of item.themes) {
-    //       if (selectedThemes.includes(theme)) {
-    //         existed = true;
-    //         break;
-    //       }
-    //     }
-    //     return existed;
-    //   });
-    // }
+    // ! 테마 필터링
+    if (selectedThemes.length) {
+      storeList = storeList.filter(item => {
+        let existed = false;
+        for (const theme of item.themes[0]) {
+          if (selectedThemes.includes(theme)) {
+            existed = true;
+            break;
+          }
+        }
+        return existed;
+      });
+    }
 
     // ! 픽업 요일 필터링
     if (selectedWeekdays.length) {
+
       storeList = storeList.filter(itme => {
         let existed = false;
 
@@ -648,20 +634,18 @@ export default function Stores() {
     }
 
     // ! 당일 픽업 가능 필터링
-    // if (productToday) {
-    //   storeList = storeList.filter(item => item.productToday);
-    // }
+    if (productToday) {
+      storeList = storeList.filter(item => item.productToday.includes(true));
+    }
 
-
-    storeList = storeList.sort((a, b) => b.likeCount - a.likeCount);
-
-    // storeList = storeList.sort((a, b) => b.reviewRating - a.reviewRating);
-
-    // storeList = storeList.sort((a, b) => b.reviewCount - a.reviewCount);
+    // ! 찜 수 정렬
+    if (sortType === 'popularity') storeList = storeList.sort((a, b) => b.likeList.length - a.likeList.length);
+    if (sortType === 'rating') storeList = storeList.sort((a, b) => b.reviewRating - a.reviewRating);
+    if (sortType === 'review') storeList = storeList.sort((a, b) => b.reviewCount - a.reviewCount);
 
     setStoreList(storeList);
 
-  }, [selectedTags, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday,]);
+  }, [selectedTag, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType]);
 
   return (
     <div id='store-wrapper'>
@@ -680,7 +664,7 @@ export default function Stores() {
               onClick={onStoresSearchClickHandler}
               onKeyDown={onStoresSearchKeyDownHandler}
             />
-            <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
+            <img onClick={onStoresSearchClickHandler} src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
         </div>
       </div>
@@ -688,13 +672,13 @@ export default function Stores() {
         <div className='filter-box'>
           <div className='store-filter' style={{ marginBottom: "30px" }}>
             <div className='filter-box'>
-              <CakeComponent imageUrl="/photo.png" context="포토" isSelected={selectedTags === "포토"} onClick={() => onTagClickHandler("포토")} />
-              <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={selectedTags === "레터링"} onClick={() => onTagClickHandler("레터링")} />
-              <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={selectedTags === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")} />
-              <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={selectedTags === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")} />
-              <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={selectedTags === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")} />
-              <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={selectedTags === "비건 케이크"} onClick={() => onTagClickHandler("비건 케이크")} />
-              <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={selectedTags === "떡 케이크"} onClick={() => onTagClickHandler("떡 케이크")} />
+              <CakeComponent imageUrl="/photo.png" context="포토" isSelected={selectedTag === "포토"} onClick={() => onTagClickHandler("포토")} />
+              <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={selectedTag === "레터링"} onClick={() => onTagClickHandler("레터링")} />
+              <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={selectedTag === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")} />
+              <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={selectedTag === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")} />
+              <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={selectedTag === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")} />
+              <CakeComponent imageUrl="/leaf.png" context="비건 케이크" isSelected={selectedTag === "비건 케이크"} onClick={() => onTagClickHandler("비건 케이크")} />
+              <CakeComponent imageUrl="/ricecake_final.png" context="떡 케이크" isSelected={selectedTag === "떡 케이크"} onClick={() => onTagClickHandler("떡 케이크")} />
             </div>
           </div>
         </div>
@@ -702,16 +686,17 @@ export default function Stores() {
       <div className='store-box'>
         <div className="sorting-header">
           <div className="item-count">전체 {storeList.length}개</div>
+
           {/* 정렬 */}
           <div className="sorting-dropdown">
-            <select>
-              <optgroup label="정렬 방식">
-                <option value="popularity">인기순</option>
-                <option value="rating" onClick={onLikeDescSortClickHandler}>별점순</option>
-                <option value="review">리뷰순</option>
-              </optgroup>
+            <select onChange={onSortSelectHandler}>
+              <option value="system">기본순</option>
+              <option value="popularity">인기순</option>
+              <option value="rating">별점순</option>
+              <option value="review">리뷰순</option>
             </select>
           </div>
+
         </div>
         <div className="dropdown-container">
           <div className='label'>
@@ -804,27 +789,27 @@ export default function Stores() {
           <div className='label'>
             {productToday ?
               <div className='selector open' style={{ backgroundColor: 'black' }}>
-                <div className='selected-today' onClick={onSelectedProductToday} style={{ color: 'white' }}>당일 케이크 가능</div>
+                <div className='selected-today' onClick={onToggledProductToday} style={{ color: 'white' }}>당일 케이크 가능</div>
               </div> :
               <div className='selector close'>
-                <div className='selected-today' onClick={onSelectedProductToday}>당일 케이크 불가능</div>
+                <div className='selected-today' onClick={onToggledProductToday}>당일 케이크 가능</div>
               </div>
             }
           </div>
 
         </div>
-        <div className="tag-container">
-          <div className="tags-container">
-            {selectedThemes.map(tag => <SelectedTags key={tag} content={tag} onRemove={() => handleThemeRemove(tag)} />)}
-            {selectedWeekdays.map(weekday => <SelectedTags key={weekday} content={weekday} onRemove={() => handleThemeRemove(weekday)} />)}
-            {selectedGugun !== '' && <SelectedTags content={selectedGugun} onRemove={handleGugunRemove} />}
-            {selectedDong !== '' && <SelectedTags content={selectedDong} onRemove={handleDongRemove} />}
+        <div className="theme-container">
+          <div className="themes-container">
+            {selectedThemes.map(theme => <SelectedThemes key={theme} content={theme} onRemove={() => handleThemeRemove(theme)} />)}
+            {selectedWeekdays.map(weekday => <SelectedThemes key={weekday} content={weekday} onRemove={() => handleWeekRemove(weekday)} />)}
+            {selectedGugun !== '' && <SelectedThemes content={selectedGugun} onRemove={handleGugunRemove} />}
+            {selectedDong !== '' && <SelectedThemes content={selectedDong} onRemove={handleDongRemove} />}
           </div>
           <button className="reset-button" onClick={onResetClickHandler}>초기화 ↻</button>
         </div>
         <div className='shop-list'>
           {
-            storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList} />)
+            storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreLists} />)
           }
         </div>
 

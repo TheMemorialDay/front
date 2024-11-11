@@ -18,15 +18,13 @@
 #mypage-review-wrapper {
     display: flex;
     flex-direction: column;
-    width: 77vw;
-}
+} 
 
 #notice-wrapper,
 #qa-wrapper {
-    width: 77vw;
+    width: 63vw;
     gap: 10px;
-    width: 80%;
-}
+} 
 
 #qa-wrapper .top {
     display: flex;
@@ -35,6 +33,7 @@
 
 #notice-wrapper .top-text,
 #qa-wrapper .top-text {
+    margin-top: 30px;
     font-size: 16px;
 }
 
@@ -43,26 +42,26 @@
     display: flex;
     flex-direction: column;
 
-    border-top: 1px solid rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.2); */
 }
 
 #notice-wrapper .table .th {
-    padding: 12px 50px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 13px 50px;
 }
 
 #notice-wrapper .table .th,
 #qa-wrapper .table .th {
     display: flex;
 
-    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 500;
 }
 
 #notice-wrapper .table .tr {
-    padding: 12px 25px;
+    padding: 13px 25px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 #notice-wrapper .table .tr,
@@ -70,7 +69,6 @@
     display: flex;
     gap: 44px;
 
-    border-bottom: 1px rgba(0, 0, 0, 0.3);
 }
 
 #notice-wrapper .table .tr .td-no {
@@ -109,10 +107,10 @@
 
 #notice-wrapper input,
 #qa-wrapper input {
-    padding: 7px 0px 7px 8px;
-    width: 145px;
-    border-radius: 5px;
-    height: 21px;
+    padding: 10px;
+    width: 180px;
+    border-radius: 6px;
+    height: 20px;
     outline: none;
     border: 1px solid rgb(161, 161, 161);
 }

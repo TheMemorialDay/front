@@ -284,7 +284,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                         </div>
                         <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
                     </div>
-                    
+
                 </div>
                 {
                     orderStatus === '승인 대기중' ? <RejectOrderReason /> :
@@ -330,6 +330,37 @@ export default function MyOrderManage() {
     // state: cookie 상태 //
     const [cookies] = useCookies();
 
+    // function: 픽업 완료 상태 업데이트 함수 //
+    const updateCompletedPickups = async () => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) {
+            console.log('토큰 오류');
+            return;
+        }
+
+        // 현재 시간 기준으로 픽업 완료 상태로 변경해야 할 주문들 필터링
+        const currentTime = new Date();
+        const ordersToUpdate = originalList.current.filter(order => {
+            const pickupTime = new Date(order.pickupTime);
+            return pickupTime <= currentTime && order.orderStatus !== '픽업 완료' && order.orderStatus !== '완료';
+        });
+
+        // 서버에 PATCH 요청을 보내 orderStatus 업데이트
+        for (const order of ordersToUpdate) {
+            const requestBody: PatchOrderStatusReqeustDto = {
+                orderCode: order.orderCode,
+                orderStatus: '픽업 완료',
+            };
+            console.log('로딩 완료');
+
+            try {
+                await patchOrderStatusRequest(requestBody, order.orderCode, accessToken);
+            } catch (error) {
+                console.error('주문 상태 업데이트 오류:', error);
+            }
+        }
+    };
+
     // function: get Order Detail Response 처리 함수 //
     const getOrderDetailResponse = (responseBody: GetOrderDetailListResponseDto | ResponseDto | null) => {
         const message =
@@ -346,6 +377,7 @@ export default function MyOrderManage() {
         const { orders } = responseBody as GetOrderDetailListResponseDto;
         setOrderDetailList(orders);
         originalList.current = orders;
+
     }
 
     // function: order detail list 불러오기 함수 //
@@ -353,9 +385,10 @@ export default function MyOrderManage() {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken || !signInUser || !signInUser.storeNumber) {
             console.log('접근 권한이 없습니다.');
+            console.log(signInUser);
             return;
         }
-        getOrderManageRequest(signInUser.storeNumber, accessToken).then(getOrderDetailResponse);
+        getOrderManageRequest(signInUser.storeNumber, accessToken).then(getOrderDetailResponse).then(updateCompletedPickups);
     }
 
     // effect: 유저 정보 불러오기 함수 //
@@ -388,6 +421,7 @@ export default function MyOrderManage() {
         setSelectedSort(newValue); // 선택된 값을 상태에 저장
     };
 
+    // Function: 정렬 설정 //
     useEffect(() => {
         let orderList = [...originalList.current];
 
@@ -426,8 +460,6 @@ export default function MyOrderManage() {
             );
         }
 
-        const curretTime = new Date();
-        console.log(curretTime);
         setOrderDetailList(orderList);
     }, [selectedYear, selectedMonth, selectedStatus, selectedSort]);
 

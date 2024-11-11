@@ -31,9 +31,7 @@ export default function SupportNavi() {
                 <div 
                     className={`navigation-qa ${ isQa ? 'active' : ''}`} 
                     onClick={() => onItemClickHandler(SU_ABSOLUTE_QA_PATH)}
-                >
-                    Q&A
-                </div>
+                >Q&A</div>
             </div>
         </div>
     )
