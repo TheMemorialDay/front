@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
 import { useCookies } from 'react-cookie';
@@ -87,6 +87,13 @@ export default function MyPasswordCheck() {
         passwordCheckOfUserUpdateRequest(requestBody, accessToken).then(userUpdateResponse);
     };
 
+    // event handler: 비밀번호 확인 엔터키 이벤트 핸들러 //
+    const onKeyDownHandler = (event: KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter') {
+            onEditInfoClickHandler();
+        }
+    };
+
     // render: 본인 확인 페이지 렌더링 //
     return (
         <div id='check-info'>
@@ -98,6 +105,7 @@ export default function MyPasswordCheck() {
                     placeholder='비밀번호(영문+숫자 8~13자)'
                     value={password}
                     onChange={onChangePasswordHandler}
+                    onKeyDown={onKeyDownHandler}
                 />
                 <div className={isMatched ? 'message-true' : 'message-false'}>
                     {passwordMessage}

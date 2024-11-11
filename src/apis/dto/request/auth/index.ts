@@ -8,6 +8,7 @@ import PasswordSearchTelAuthCheckRequestDto from "./password-search-tel-auth-che
 import PatchPasswordRequestDto from "./patch-password.request.dto";
 import IdSearchNameTelNumberRequestDto from "./Id-search-name-tel-number.request.dto";
 import IdSearchTelAndAuthRequestDto from "./Id-search-tel-and-auth.request.dto";
+import PasswordResettingFinalRequestDto from "./password-resetting-final.request.dto";
 
 export type {
 	IdCheckRequestDto,
@@ -19,5 +20,6 @@ export type {
 	PasswordSearchTelAuthCheckRequestDto,
 	PatchPasswordRequestDto,
 	IdSearchNameTelNumberRequestDto,
-	IdSearchTelAndAuthRequestDto
+	IdSearchTelAndAuthRequestDto,
+	PasswordResettingFinalRequestDto
 }

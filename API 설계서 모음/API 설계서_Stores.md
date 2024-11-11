@@ -43,7 +43,7 @@ The Memorial Day 서비스의 가게 관리와 관련된 REST API 모듈입니�
 ###### Example
 
 ```bash
-curl -v -X POST "http://localhost:4000/stroes/join" \
+curl -v -X POST "http://localhost:4000/stores/join" \
  -h "Authorization=Bearer XXXX" \
  -d "businessNumber=5646531351" \
  -d "businessUrl=http://localhost:4000/file/bebd4a76-5278-4fe6-b140-4f87ed5e3151.jpg" 

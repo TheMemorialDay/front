@@ -1,3 +1,46 @@
 .month-select-box .selector-option:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
+
+.year-select-box,
+.month-select-box {
+    position: relative;
+}
+
+.year-input-box,
+.month-input-box {
+    padding: 10px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selected-item {
+    font-size: 14px;
+}
+
+.arrow-button {
+    font-size: 18px;
+}
+
+.selector-box {
+    position: absolute;
+    top: 40px; /* 박스 아래로 펼쳐지도록 */
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 10;
+}
+
+.selector-option {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+.selector-option:hover {
+    background-color: #f1f1f1;
+}

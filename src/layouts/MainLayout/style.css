@@ -6,8 +6,14 @@
 /* 4, 5, 6, 8, 10, 11은 otf */
 
 #main-layout {
+    display: flex;
     flex-direction: column;
+    align-items: center; /* 추가: 콘텐츠를 가운데 정렬 */
+    min-height: 100vh;
+}
 
+#footer {
+    margin-top: auto;
 }
 
 #main-layout .category {
@@ -26,14 +32,22 @@
 #main-wrapper {
     flex-grow: 1;
     margin-top: 80px;
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 #store-wrapper {
     width: 100%;
+     /* 추가: 최대 너비 설정 */
     display: flex;
     align-items: center;
     flex-direction: column;
     gap: 40px;
+}
+
+.store-box {
+    max-width: 1200px;
 }
 
 #layout-logo {
@@ -42,11 +56,8 @@
     width: 240px;
     display: flex;
     font-weight: bold;
-
     margin-left: 30px;
-
     cursor: pointer;
-
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -62,14 +73,12 @@
     display: flex;
     align-items: center;
     gap: 2px;
-
     cursor: default;
 }
 
 #layout-logo .icon {
     width: 30px;
     height: 30px;
-
     background-size: 100% 100%;
 }
 
@@ -120,21 +129,16 @@
 #layout-my .layout-my-cart {
     width: 35px;
     height: 35px;
-
     background-image: url('/public/images/shopping-cart.png');
     background-size: cover;
-
     cursor: pointer;
 }
 
 #layout-my .menu-box {
     position: absolute;
     top: 45px;
-    /* Adjust this value to place the menu just below the icon */
     left: 80%;
-    /* Center the menu horizontally relative to the parent */
     transform: translateX(-50%);
-    /* Shift the menu left by 50% of its width to center it under the icon */
     width: 100px;
     border-radius: 6px;
     background-color: white;
@@ -153,6 +157,5 @@
 }
 
 #layout-my .menu:hover {
-
     text-decoration: underline;
 }

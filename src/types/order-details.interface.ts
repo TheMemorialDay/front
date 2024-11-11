@@ -14,7 +14,6 @@ export default interface OrderDetailsProps {
     totalPrice: number;
     orderTime: string;
 	productImageUrl: string;
-    // productCategory: string;
     cancelCode: string | null;
     cancelReason: string | null;
     optionSelect: string;
