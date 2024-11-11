@@ -1,16 +1,18 @@
 #qa-detail-wrapper {
     display: flex;
     flex-direction: column;
-    width: 80%;
+    width: 65%;
 
     gap: 30px;
 }
 
 #qa-detail-wrapper .write-info-box {
-    margin-top: 40px;
+    margin-top: 50px;
 
     display: flex;
     justify-content: space-between;
+    
+    font-size: 15px;
 }
 
 #qa-detail-wrapper .writer-box,
@@ -22,6 +24,10 @@
 
 /* wrtie-info-box ============================================================== */
 
+#qa-detail-wrapper .subject-box {
+    margin-top: 20px;
+}
+
 #qa-detail-wrapper .subject-box,
 #qa-detail-wrapper .script-box,
 #qa-detail-wrapper .answer-box {
@@ -32,12 +38,14 @@
 #qa-detail-wrapper .subject-title,
 #qa-detail-wrapper .script-title,
 #qa-detail-wrapper .answer-title {
-    font-size: 20px;
+    width: 100px;
+    text-align: left;
+    font-size: 17px;
     font-weight: 600;
 }
 
 #qa-detail-wrapper .line {
-    border-top: 1px solid var(--black-color);
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 #qa-detail-wrapper .button-box {

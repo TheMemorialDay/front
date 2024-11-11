@@ -28,7 +28,6 @@ const MyPage = () => {
     useEffect(() => {
         if (signInUser) {
             setUserId(signInUser.userId);
-            console.log(userId);
         }
 
         const accessToken = cookies[ACCESS_TOKEN];

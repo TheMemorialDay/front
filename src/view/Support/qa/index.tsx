@@ -135,7 +135,7 @@ export default function Qa() {
 
             <div className="top">
                 <div className="top-text">전체 {totalCount}건</div>
-                <div className="button write-button" onClick={onQaWriteButtonHandler}>작성</div>
+                <div className="button write-button" onClick={onQaWriteButtonHandler} style={{marginTop: "30px"}}>작성</div>
             </div>
 
             <div className="main">

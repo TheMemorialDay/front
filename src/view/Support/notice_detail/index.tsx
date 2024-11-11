@@ -52,15 +52,15 @@ export default function NoticeDetail() {
     // render: NoticeDetail 컴포넌트 렌더링 //
     return (
         <div id='notice-detail-wrapper'>
-            <SupportNavi />
-            <div className='top'>
+            {/* <SupportNavi /> */}
+            <div className='top' style={{display: "flex", flexDirection: "column", marginTop: "30px"}}>
                 <div className='detail-title'>
-                    <div className='detail-title-main'>제목</div>
+                    <div className='detail-title-main'>TILTE</div>
                     <div className='detail-title-content'>{title}</div>
                 </div>
                 <div className='detail-date'>
-                    <div className='detail-date-main'>작성일</div>
-                    <div className='detail-date-content'>{writeDay}</div>
+                    <div className='detail-title-main'>DATE</div>
+                    <div className='detail-title-content'>{writeDay}</div>
                 </div>
             </div>
             <div className='main'>

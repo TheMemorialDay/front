@@ -56,7 +56,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
 
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
-  
+
   const userId = signInUser?.userId;
 
   const onPostButtonClickHandler = () => {
@@ -182,6 +182,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
         })
         .catch(error => console.error(error));
     }
+    console.log("가게 별점: " + store.reviewRating);
 
   }, [store.storeNumber, userId]);
 
@@ -199,7 +200,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
           </div>
         <div className='store-card-bottom'>
           <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
-          <p className="shop-rating">별점 {store.storeRating}</p>
+          <p className="shop-rating">별점 {store.reviewRating}</p>
           <p className="shop-reviews">리뷰 {store.reviewCount}</p>
           </div>
         </div>
@@ -258,7 +259,7 @@ export default function Stores() {
 
   // state: 원본 리스트 상태 //
   const originalList = useRef<StoreComponentProps[]>([]);
-  
+
   // state: 테마 선택 셀렉터 오픈 여부 상태 //
   const [showThemeSelector, setShowThemeSelector] = useState<boolean>(false);
 
@@ -272,14 +273,14 @@ export default function Stores() {
   const [showDongSelector, setShowDongSelector] = useState<boolean>(false);
 
   // state: 선택된 태그 저장하는 상태 //
-	const [selectedTag, setSelectedTag] = useState<string>('');
+  const [selectedTag, setSelectedTag] = useState<string>('');
 
   // state: 선택된 테마를 저장하는 상태 //
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
-  
+
   // state: 선택된 요일을 저장하는 상태 //
   const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
-  
+
   // state: 선택된 구군 저장하는 상태 //
   const [selectedGugun, setSelectedGugun] = useState<string>('');
 
@@ -456,13 +457,16 @@ export default function Stores() {
   const onMainSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setMainSearch(value);
+
+    if (value == null) {
+      setMainSearch('');
+    }
   };
 
   // event handler: 검색어 입력 후 요청하는 이벤트 핸들러 //
   const onStoresSearchClickHandler = () => {
-    if (!mainSearch) return;
 
-    getStoreMainSearchRequest(mainSearch, mainSearch).then(getStoresMainSearchResponse);
+    getStoreMainSearchRequest(mainSearch).then(getStoresMainSearchResponse);
   };
 
   // event handler: 검색어 입력 후 요청할 때 키보드 핸들러 //
@@ -562,7 +566,7 @@ export default function Stores() {
 
     // ! 픽업 요일 필터링
     if (selectedWeekdays.length) {
-      
+
       storeList = storeList.filter(itme => {
         let existed = false;
 
@@ -637,9 +641,9 @@ export default function Stores() {
 
     // ! 찜 수 정렬
     if (sortType === 'popularity') storeList = storeList.sort((a, b) => b.likeList.length - a.likeList.length);
-    if (sortType === 'rating') storeList = storeList.sort((a, b) => b.storeRating - a.storeRating);
+    if (sortType === 'rating') storeList = storeList.sort((a, b) => b.reviewRating - a.reviewRating);
     if (sortType === 'review') storeList = storeList.sort((a, b) => b.reviewCount - a.reviewCount);
-    
+
     setStoreList(storeList);
 
   }, [selectedTag, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType]);
@@ -661,7 +665,7 @@ export default function Stores() {
               onClick={onStoresSearchClickHandler}
               onKeyDown={onStoresSearchKeyDownHandler}
             />
-            <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
+            <img onClick={onStoresSearchClickHandler} src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
         </div>
       </div>
@@ -686,12 +690,12 @@ export default function Stores() {
 
           {/* 정렬 */}
           <div className="sorting-dropdown">
-          <select onChange={onSortSelectHandler}>
-              <option value="system">정렬방식</option>
+            <select onChange={onSortSelectHandler}>
+              <option value="system">기본순</option>
               <option value="popularity">인기순</option>
               <option value="rating">별점순</option>
               <option value="review">리뷰순</option>
-          </select>
+            </select>
           </div>
 
         </div>
@@ -798,7 +802,7 @@ export default function Stores() {
         <div className="theme-container">
           <div className="themes-container">
             {selectedThemes.map(theme => <SelectedThemes key={theme} content={theme} onRemove={() => handleThemeRemove(theme)} />)}
-            {selectedWeekdays.map(weekday => <SelectedThemes key={weekday} content={weekday} onRemove={() => handleWeekRemove(weekday)} />)} 
+            {selectedWeekdays.map(weekday => <SelectedThemes key={weekday} content={weekday} onRemove={() => handleWeekRemove(weekday)} />)}
             {selectedGugun !== '' && <SelectedThemes content={selectedGugun} onRemove={handleGugunRemove} />}
             {selectedDong !== '' && <SelectedThemes content={selectedDong} onRemove={handleDongRemove} />}
           </div>
