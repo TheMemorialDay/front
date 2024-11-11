@@ -78,7 +78,7 @@ const POST_STORE_API_MODULE = `${MYPAGE_STORE_MODULE}`;
 const GET_MYPAGE_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
 const GET_MYPAGE_LIKE_STORE_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/like/${userId}`;
 const PATCH_STORE_API_URL = (storeNumber: number | string) => `${MYPAGE_STORE_MODULE}/${storeNumber}`;
-const GET_MYPAGE_LIKE_STORE_INFO_API_URL = (userId: string) => `${GET_MYPAGE_LIKE_STORE_API_URL}/info`;
+const GET_MYPAGE_LIKE_STORE_INFO_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/like/${userId}/info`;
 
 const GET_STORE_API_URL = (storeNumber: number | string) => `${GET_STORE_LIST_API_URL}/${storeNumber}`
 

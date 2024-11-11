@@ -17,9 +17,7 @@ import { MypageLikeStoreInfo } from '../../../types';
 
 interface StoreRowProps {
     store: MyStoreLikeComponentProps,
-    //info: MypageLikeStoreInfo,
     getStoreList: () => void,
-    //getStoreInfo: () => void;
 }
 
 // component: 스토어 리스트 아이템 컴포넌트 //
@@ -34,9 +32,6 @@ function StoreRow({ store, getStoreList}: StoreRowProps) {
     const { signInUser } = useSignInUserStore();
     const [likeCount, setLikeCount] = useState(store.likeList ? store.likeList.length : 0);
     const userId = signInUser?.userId;
-
-    // const reviewRating = info?.reviewRating || 0;
-    // const reviewCount = info?.reviewCount || 0;
 
     const onPostButtonClickHandler = () => {
         navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH(store.storeNumber));
@@ -127,7 +122,6 @@ function StoreRow({ store, getStoreList}: StoreRowProps) {
             })
             .catch(error => console.error(error));
         getStoreList();
-        //getStoreInfo();
     }, [store.storeNumber, checked]);
 
     // render: 스토어 리스트 컴포넌트 렌더링 //
@@ -143,8 +137,8 @@ function StoreRow({ store, getStoreList}: StoreRowProps) {
                         </div>
                     </div>
                     <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
-                    <p className="shop-rating">별점 {}</p>
-                    <p className="shop-reviews">리뷰 {}</p>
+                    <p className="shop-rating">별점 {store.reviewRating}</p>
+                    <p className="shop-reviews">리뷰 {store.reviewCount}</p>
                 </div>
             </div>
         </div>
@@ -183,7 +177,21 @@ export default function MyLike() {
         }
 
         const { likes } = responseBody as GetMyPageLikeStoreListResponseDto;
-        setStoreList(likes);
+        //setStoreList(likes);
+
+        const newStoreList: MyStoreLikeComponentProps[] = likes.map((like) => {
+            const ratingInfo = storeInfo.find(
+                (rating) => rating.storeNumber === like.storeNumber
+            );
+
+            return {
+                ...like,
+                reviewRating: ratingInfo ? ratingInfo.reviewRating : 0,
+                reviewCount: ratingInfo ? ratingInfo.reviewCount : 0,
+            };
+
+        })
+        setStoreList(newStoreList);
     }
 
     // function: like store list를 서버에서 불러오는 함수 //
@@ -235,10 +243,9 @@ export default function MyLike() {
             return;
         }
 
-        getStoreList();
         getStoreInfo();
-
-    }, [userId]);
+        getStoreList();
+    }, [userId, storeList]);
 
     return (
         <div id='mypage-like-wrapper'>

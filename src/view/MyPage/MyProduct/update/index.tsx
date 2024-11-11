@@ -243,7 +243,7 @@ const Add = () => {
             <div className='product-info'>
                 <input className='product-name' placeholder='메뉴 이름' value={productData.productName} onChange={onNameChangeHandler} />
                 <textarea className='product-explain' placeholder='메뉴 설명' value={productData.productIntroduce} onChange={onExplainChangeHandler} />
-                <input className='product-price' type='number' placeholder='메뉴 최소 가격 (ex: 30000)' value={productData.productPrice || ''} onChange={onDefaultPriceChangeHandler} />
+                <input className='product-price' type='text' placeholder='메뉴 최소 가격 (ex: 30000)' value={productData.productPrice || ''} onChange={onDefaultPriceChangeHandler} />
 
                 <div className='oneday-cake'>
                     <div onClick={() => { selectedOnedayClickHandler(true) }} className={productData.productToday ? 'possible' : 'impossible'}>당일 케이크 가능</div>
