@@ -268,16 +268,19 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                         <div className="order-details">
                             <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
                             <div className="order-productCategory-productContents">
-                                <div>
+                                <div>옵션: 
                                     {options.map((option, index) => (
-                                        <span key={index} className="order-option">{orderdetail.productContents ? orderdetail.productContents : '없음'}{index < options.length ? ', ' : ',   '} </span>     // css 조금 수정할 예정입니다.
+                                        <span key={index} className="order-option">
+                                            {option.productCategory ? option.productCategory : '없음'}
+                                            {index < options.length - 1 ? ', ' : ''}
+                                        </span>
                                     ))}
                                 </div>
                                 <div>
-                                    요청사항: {orderdetail.productContents}
+                                    요청사항: {orderdetail.productContents ? orderdetail.productContents : '없음'}
                                 </div>
                             </div>
-                            <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
+                            <p className="order-plan">픽업일시: {orderdetail.pickupTime}</p>
                         </div>
                         <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
                     </div>

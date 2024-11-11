@@ -3,20 +3,18 @@
 }
 
 .shop-review-bottom {
-  width: 90%;
+  width: 100%;
   margin-bottom: 100px;
 
 }
 
 .shop-review-bottom .review-total {
-  margin: 0px 00px 20px 100px;
   font-size: 20px;
   font-weight: bolder;
 
 }
 
 .shop-review-bottom-list {
-  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -57,22 +55,23 @@
 .review-card {
   display: flex;
   align-items: center;
-  border: 2px solid black;
+  border: 2px solid #555;
   border-radius: 15px;
-  padding: 10px;
-  width: 95%;
+  padding: 10px 0px;
+  width: 100%;
   justify-content: space-between;
 }
 
 .review-rating {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   flex-basis: 15%;
   font-size: 1.5em;
-  border-right: 2px solid black;
+  border-right: 2px solid #555;
   height: 100px;
-  margin-right: 10px;
+  margin-right: 20px;
 }
 
 .star {
@@ -80,11 +79,11 @@
 }
 
 .rating-value {
-  margin-left: 5px;
+  margin-top: 5px;
 }
 
 .review-details {
-  flex-basis: 65%;
+  flex-basis: 70%;
 }
 
 .review-date {
@@ -114,6 +113,8 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
+  margin-right: 15px;
 }
 
 .image-count {
@@ -128,6 +129,7 @@
   align-items: center;
   justify-content: center;
   font-size: 0.9em;
+  margin-right: 15px;
 }
 
 /** 모달 start ================================================================  */

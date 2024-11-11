@@ -23,7 +23,7 @@ export default function MySales() {
 
     useEffect(() => {
         if (signInUser) {
-            setUserId(signInUser.userId); // signInUser가 있으면 userId 설정
+            setUserId(signInUser.userId);
         }
     }, [signInUser]);
 
@@ -59,7 +59,7 @@ export default function MySales() {
                 const orderYear = orderDate.getFullYear().toString(); // orderTime의 연도를 문자열로 변환
                 const orderMonth = (orderDate.getMonth() + 1).toString().padStart(2, '0'); // orderTime의 월을 문자열로 변환
 
-                return orderYear === yearSelected && orderMonth === monthSelected; // 선택된 연도와 월에 맞는 데이터 필터링
+                return orderYear === yearSelected && orderMonth === monthSelected;
             });
             setFilteredSalesData(filteredData);
         } else {
@@ -68,7 +68,9 @@ export default function MySales() {
         }
     }, [yearSelected, monthSelected, salesData]);
 
-    const completedOrders = filteredSalesData.filter(order => order.orderStatus === '완료');
+    const completedOrders = filteredSalesData.filter(
+        order => order.orderStatus === '완료' || order.orderStatus === '픽업 완료'
+    );
 
     return (
         <div id='mypage-sales-wrapper'>
@@ -82,7 +84,13 @@ export default function MySales() {
             <div className='completed-order-container'>
                 {completedOrders.length > 0 ? (
                     completedOrders.map((order, index) => (
-                        <CompletedOrder key={index} order={order} />
+                        <CompletedOrder 
+                            key={index} 
+                            order={{
+                                ...order,
+                                orderStatus: '완료',
+                            }} 
+                        />
                     ))
                 ) : (
                     <div>선택한 년도와 월에 해당하는 매출 데이터가 없습니다.</div>
@@ -90,4 +98,5 @@ export default function MySales() {
             </div>
         </div>
     );
+    
 }

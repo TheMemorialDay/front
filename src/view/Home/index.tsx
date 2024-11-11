@@ -95,7 +95,7 @@ export default function Home() {
                 <h2><span>#여자친구</span> #졸업</h2>
             </section>
             <a className='go-to-stores' href='/stores' >지금 바로 둘러보기</a>
-            <footer>
+            {/* <footer>
                 <div className='footer-in-box'>
                     <div className='footer-title-logo'>
                         <div style={{fontWeight: '600'}}>The Memorial Day</div>
@@ -107,7 +107,7 @@ export default function Home() {
                         <div>제작 기간: 2024.10.01 ~ 2024.11.21</div>
                     </div>
                 </div>
-            </footer>
+            </footer> */}
         </div>
     );
 }

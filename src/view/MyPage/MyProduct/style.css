@@ -24,13 +24,17 @@
     flex-direction: column;
     justify-items: center;
 }
-/* 지금부터 수정 */
+
 #manage-product .product-box {
     display: flex;
     flex: 1;
     flex-wrap: wrap;
     gap: 35px;
-    width: 60vw;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 #manage-product .add-button {

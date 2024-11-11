@@ -8,8 +8,13 @@ const SalesGraph = ({ salesData, selectedMonth }: { salesData: any[]; selectedMo
 
     useEffect(() => {
         if (salesData.length > 0) {
-            // 월별 매출 총합 계산
-            const monthlySales = salesData.reduce((acc, order) => {
+            // 완료 또는 픽업 완료 상태의 주문만 필터링
+            const filteredSalesData = salesData.filter(order => 
+                order.orderStatus === '완료' || order.orderStatus === '픽업 완료'
+            );
+    
+            // 필터링된 데이터로 월별 매출 총합 계산
+            const monthlySales = filteredSalesData.reduce((acc, order) => {
                 const orderDate = new Date(order.orderTime);
                 const month = orderDate.getMonth() + 1; // 1부터 시작하는 월
                 if (!acc[month]) {
@@ -18,7 +23,7 @@ const SalesGraph = ({ salesData, selectedMonth }: { salesData: any[]; selectedMo
                 acc[month] += order.totalPrice;
                 return acc;
             }, {} as { [key: number]: number });
-
+    
             // 차트에 맞는 데이터 형식으로 변환 (1~12월 모두 표시)
             const formattedData = Array.from({ length: 12 }, (_, index) => {
                 const month = index + 1; // 월은 1부터 12까지
@@ -27,9 +32,9 @@ const SalesGraph = ({ salesData, selectedMonth }: { salesData: any[]; selectedMo
                     매출: monthlySales[month] || 0,
                 };
             });
-
+    
             setChartData(formattedData);
-
+    
             // 주문 상태별 주문 수 계산
             const statusData = salesData.reduce((acc, order) => {
                 if (!acc[order.orderStatus]) {
@@ -38,11 +43,11 @@ const SalesGraph = ({ salesData, selectedMonth }: { salesData: any[]; selectedMo
                 acc[order.orderStatus] += 1; // 각 주문 상태별 건수 증가
                 return acc;
             }, {} as { [key: string]: number });
-
+    
             setOrderStatusData(statusData); // 주문 상태별 데이터 업데이트
         }
     }, [salesData]);
-
+    
     // 월 강조 스타일 적용
     const getLineStroke = (month: string) => {
         return month === selectedMonth ? { strokeWidth: 3, stroke: '#9b5bcf' } : { strokeWidth: 2, stroke: '#d3a3e8' };
