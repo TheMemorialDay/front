@@ -5,19 +5,12 @@ import { ACCESS_TOKEN, MY_PATH } from '../../../constants';
 import useUserInfoZustand from '../../../stores/user-check-after-info.store';
 import { ResponseDto } from '../../../apis/dto/response';
 import { TelAuthCheckRequestDto, TelAuthRequestDto } from '../../../apis/dto/request/auth';
-import { patchUserInfoRequest, telAuthCheckRequest, telAuthRequest, userInfoTelAuthCheckRequest, userInfoTelAuthReqeust } from '../../../apis';
+import { patchUserInfoRequest, userInfoTelAuthCheckRequest, userInfoTelAuthReqeust } from '../../../apis';
 import { PatchUserInfoRequestDto } from '../../../apis/dto/request/mypage_user_info';
 import { useCookies } from 'react-cookie';
 
 // component: 마이페이지 유저 정보 수정 컴포넌트 //
 export default function InfoUpdate() {
-    
-    // state: 기존 정보로 초기화 //
-    // const [name, setName] = useState<string>('기존 이름');
-    // const [birth, setBirth] = useState<string>('YYYYMMDD');
-    // const [gender, setGender] = useState<string>('여');
-    // const [telNumber, setTelNumber] = useState<string>('01012345678');
-    // const [authNumber, setAuthNumber] = useState<string>('');
     
     // state: 메시지 상태 //
     const [telMessage, setTelMessage] = useState<string>('');
@@ -43,9 +36,15 @@ export default function InfoUpdate() {
     // state: cookie //
     const [cookies] = useCookies();
 
+    // state: 전화번호 변경 유무 상태 //
+    const [telUpdate, setTelUpdate] = useState<boolean>(false);
+
+    // state: 새로 입력할 전화번호 상태 //
+    const [newTelNumber, setNewTelNumber] = useState<string>('');
+
     // variable: 회원 수정 가능 상태 확인 //
-    const isPossible = name && birth && gender && telNumber && telAuthNumber 
-        && isSend  && isMatched1 && isMatched2;
+    const isPossibleNoAuth = name && birth && gender && telNumber;
+    const isPossibleYesAuth = name && birth && gender && telNumber && newTelNumber;
 
     // variable: 토큰 //
     const accessToken = cookies[ACCESS_TOKEN];
@@ -114,6 +113,12 @@ export default function InfoUpdate() {
         navigator(MY_PATH);
     };
 
+    // event handler: 새로 입력하는 전화번호 상태 변경 핸들러 //
+    const onNewTelNumberHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setNewTelNumber(value);
+    };
+
     // event handler: 이름 변경 이벤트 핸들러 //
     const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
@@ -154,32 +159,26 @@ export default function InfoUpdate() {
         setGender(gender);
     }
 
-    // event handler: 전화번호 변경 이벤트 핸들러 //
-    const onTelNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        setTelNumber(value);
-    }
-
     // event handler: 전화번호 인증번호 변경 이벤트 핸들러 //
     const onAuthNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setTelAuthNumber(value);
     }
 
-    // event handler: 전화번호 인증 확인 / 전송 버튼 클릭 이벤트 핸들러 //
+    // event handler: 전화번호 인증 확인 / 인증번호 전송 버튼 클릭 이벤트 핸들러 //
     const onSendClickHandler = () => {
-        if (!telNumber) {
-            setTelMessage('');
+        if (telNumber === newTelNumber) {
+            setTelMessage('중복된 전화번호입니다.');
             return;
         }
 
         const pattern = /^[0-9]{11}$/;
-        const isTrue = pattern.test(telNumber);
-        console.log("istrue:"+isTrue);
+        const isTrue = pattern.test(newTelNumber);
+        console.log("istrue:" + isTrue);
 
-        if (isTrue) {
+        if (isTrue && telNumber !== newTelNumber) {
             setTelMessage('');
-            const requestBody: TelAuthRequestDto = { telNumber };
+            const requestBody: TelAuthRequestDto = { telNumber: newTelNumber };
             userInfoTelAuthReqeust(requestBody, accessToken).then(telAuthResponse);
         } else {
             setTelMessage('숫자 11자로 입력해주세요.');
@@ -188,11 +187,16 @@ export default function InfoUpdate() {
         }
     }
 
+    // event handler: 전화번호 변경할려고 할 때 전화번호 인증창 오픈할 이벤트 핸들러 //
+    const onOpenTelUpdateInputClickHandler = () => {
+        setTelUpdate(true);
+    };
+
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
     const onCheckClickHandler = () => {
         if (!telAuthNumber) return;
 
-        const requestBody: TelAuthCheckRequestDto = { telNumber, telAuthNumber: telAuthNumber };
+        const requestBody: TelAuthCheckRequestDto = { telNumber: newTelNumber, telAuthNumber: telAuthNumber };
         userInfoTelAuthCheckRequest(requestBody, accessToken).then(telAuthCheckResponse);
     }
 
@@ -203,16 +207,15 @@ export default function InfoUpdate() {
 
     // event handler: 최종 / 수정 버튼 클릭 이벤트 핸들러 //
     const onEditClickHandler = () => {
-        if(!isPossible) {
+        if((!telUpdate && !isPossibleNoAuth) || (telUpdate && !isPossibleYesAuth)) {
             alert('정확하게 입력해주세요.');
             return;
         }
-
         const requestBody: PatchUserInfoRequestDto = {
             name,
             gender,
             birth,
-            telNumber
+            telNumber: telUpdate ? newTelNumber : telNumber
         };
 
         patchUserInfoRequest(requestBody, accessToken).then(userUpdateCompletedResponse);
@@ -235,10 +238,21 @@ export default function InfoUpdate() {
                 </div>
 
                 <div className='tel-number-box'>
-                    <input className='inputs2' placeholder='전화번호' value={telNumber} onChange={onTelNumberChangeHandler} />
-                    <div className='send-button' onClick={onSendClickHandler}>전화번호 인증</div>
+                    <input className='inputs2' placeholder='전화번호' value={telNumber} disabled />
+                    <div className='change-button-box'>
+                        <div className='change-button' onClick={onOpenTelUpdateInputClickHandler}>전화번호 변경</div>
+                    </div>
                 </div>
-                <div className={`message ${isMatched1 ? 'true' : 'false'}`}>{telMessage}</div>
+
+                {telUpdate &&
+                    <>
+                        <div className='tel-number-update-box'>
+                            <input className='inputs3' placeholder='변경할 전화번호' value={newTelNumber} onChange={onNewTelNumberHandler} />
+                            <div className='update-send-button' onClick={onSendClickHandler}>전화번호 인증</div>
+                        </div>
+                        <div className={`message ${isMatched1 ? 'true' : 'false'}`}>{telMessage}</div>
+                    </>
+                }
 
                 {isMatched1 && 
                 <>

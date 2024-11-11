@@ -6,8 +6,8 @@ import { useCookies } from 'react-cookie';
 import SnsContainer from '../../components/sns_login_sign_up';
 import { IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { getIdSearchRequest, idSearchNameTelNumberRequest, idSearchTelAuthRequest, passwordResettingIdTelRequest, passwordResettingTelAuthCheckRequest, patchPasswordRequest, signInRequest } from '../../apis';
-import { IdSearchNameTelNumberRequestDto, PasswordResettinIdTelRequestDto, PatchPasswordRequestDto, SignInRequestDto, TelAuthCheckRequestDto } from '../../apis/dto/request/auth';
+import { getIdSearchRequest, idSearchNameTelNumberRequest, idSearchTelAuthRequest, passwordResettingFinalCheckRequest, passwordResettingIdTelRequest, passwordResettingTelAuthCheckRequest, patchPasswordRequest, signInRequest } from '../../apis';
+import { IdSearchNameTelNumberRequestDto, PasswordResettingFinalRequestDto, PasswordResettinIdTelRequestDto, PatchPasswordRequestDto, SignInRequestDto, TelAuthCheckRequestDto } from '../../apis/dto/request/auth';
 import usePatchPasswordZustand from '../../stores/patch-password.store';
 import useIdSearchResultZustand from '../../stores/id-search-result-store';
 import PasswordResettingTelAuthCheckRequestDto from '../../apis/dto/request/auth/password-search-tel-auth-check.request.dto';
@@ -245,6 +245,8 @@ function FindId({ onPathChange }: AuthComponentProps) {
         if (!isMatched) {
             setTelMessage('숫자 11자 입력해주세요.');
             setTelMessageError(true);
+            setName('');
+            setTelNumber('');
             return;
         }
 
@@ -255,6 +257,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
     const onCheckClickHandler = () => {
         if (!telAuthNumber) {
+            setTelAuthNumber('');
             return;
         }
 
@@ -281,6 +284,9 @@ function FindId({ onPathChange }: AuthComponentProps) {
         if (!isIdSearchPossible) {
             console.log(name, telNumber, telAuthNumber, isSend, isCheckedTelAuthNumber)
             alert('정확하게 입력해주세요.');
+            setName('');
+            setTelNumber('');
+            setTelAuthNumber('');
             return;
         }
         
@@ -291,6 +297,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
         }
 
         getIdSearchRequest(requestBody).then(idSearchResultResponse);
+        
     };
 
     //render: 아이디 찾기 화면 렌더링 //
@@ -390,10 +397,12 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
     
     // state: 검증 상태 //
     const [isSend, setSend] = useState<boolean>(false);
-    const [userIdCheck, setUserIdCheck] = useState<boolean>(false);
+    const [isUserIdCheck, setIsUserIdCheck] = useState<boolean>(false);
+    const [isTelNumberCheck, setIsTelNumberCheck] = useState<boolean>(false);
+    const [isAuthNumberCheck, setIsAuthNumberCheck] = useState<boolean>(false);
 
     // variable: 비밀번호 재설정 가능 검증 //
-    const isPatchPasswordPossible = userId && zusTelNumber && isSend;
+    const isPatchPasswordPossible = isUserIdCheck && isTelNumberCheck && isAuthNumberCheck && isSend;
 
     // function: 비밀번호 찾기 (userId + telNumber) Response 처리 함수 //
     const passwordSearchResponse = (responseBody: ResponseDto | null) => {
@@ -409,6 +418,9 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         setTelMessage(message);
         setTelMessageError(!isSuccessed);
         setSend(isSuccessed);
+
+        setIsUserIdCheck(isSuccessed);
+        setIsTelNumberCheck(isSuccessed);
     };
 
     // function: 비밀번호 찾기 (인증번호 telAuthNumber 확인) Response 처리 함수 //
@@ -422,6 +434,29 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         setAuthMessage(message);
         setAuthMessageError(!isSuccessed);
+
+        setIsTelNumberCheck(isSuccessed);
+        setIsAuthNumberCheck(isSuccessed);
+    };
+
+    // function: 비밀번호 재설정 전 최종 확인 Response 처리 함수 //
+    const passwordFinalCheckResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+
+        if (isSuccessed) {
+            setIsUserIdCheck(isSuccessed);
+            setIsTelNumberCheck(isSuccessed);
+            setIsAuthNumberCheck(isSuccessed);
+            onPathChange('changePassword');
+        } else {
+            alert(message);
+            return;
+        }
     };
 
     // event handler: 아이디 변경 이벤트 핸들러 //
@@ -444,7 +479,11 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
     // event handler: 전송 버튼 클릭 이벤트 핸들러 //
     const onSendClickHandler = () => {
-        if (!userId || !zusTelNumber) return;
+        if (!userId || !zusTelNumber) {
+            setUserId('');
+            setZusTelNumber('');
+            return;
+        }
 
         const pattern = /^[0-9]{11}$/;
         const isMatched = pattern.test(zusTelNumber);
@@ -452,6 +491,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         if (!isMatched) {
             setTelMessage('전화번호 11자 입력해주세요.');
             setTelMessageError(true);
+            setZusTelNumber('');
             return;
         }
 
@@ -464,6 +504,7 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         if (!telAuthNumber) {
             setAuthMessage('인증번호를 입력하세요.');
             setAuthMessageError(true);
+            setTelAuthNumber('');
             return;
         }
 
@@ -473,9 +514,15 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
     // event handler: 비밀번호 재설정 버튼 클릭 핸들러 //
     const onNextPatchPasswordClickHandler = () => {
-        if (!isPatchPasswordPossible) return;
+        if (!isPatchPasswordPossible) {
+            setTelAuthNumber('');
+            return;
+        }
 
-        onPathChange('changePassword');
+        const requestBody: PasswordResettingFinalRequestDto = { userId, telNumber: zusTelNumber, telAuthNumber };
+        passwordResettingFinalCheckRequest(requestBody).then(passwordFinalCheckResponse);
+
+        console.log(isUserIdCheck, isTelNumberCheck, isAuthNumberCheck, isSend)
     };
 
     // event handler: 엔터키로 전송 버튼 동작 //

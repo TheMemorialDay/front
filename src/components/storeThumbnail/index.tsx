@@ -7,7 +7,7 @@ import './style.css';
 export default function StoreComponent({ storeNumber, storeImageUrl,
 	storeName,
 	reviewCount,
-	reviewRating,
+	storeRating,
 	storeGugun,
 	storeDong,
 	likeCount,
@@ -51,7 +51,7 @@ export default function StoreComponent({ storeNumber, storeImageUrl,
 
 
 					<p className="shop-location">{storeGugun} + {storeDong}ß</p>
-					<p className="shop-rating">별점 {reviewRating}</p>
+					<p className="shop-rating">별점 {storeRating}</p>
 					<p className="shop-reviews">리뷰 {reviewCount}</p>
 				</div>
 			</div>

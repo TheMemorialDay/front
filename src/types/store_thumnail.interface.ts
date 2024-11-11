@@ -5,7 +5,7 @@ export default interface StoreComponentProps {
 	storeImageUrl: string;
 	storeName: string;
 	reviewCount: number;
-	reviewRating: number;
+	storeRating: number;
 	storeGugun: string;
 	storeDong: string;
 	likeCount: number;
@@ -25,7 +25,7 @@ export default interface StoreComponentProps {
 	sundayLast: string;
 	// 테마 태그 들고오기 -> back에 store back 관련 자료에 추가해서 들고오기.
 	likeList: string[];
-	productToday: string[];
+	productToday: boolean[];
 	productTag: string[];
 	themes: string[][];
 }

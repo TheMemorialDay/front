@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import PostStoreRequestDto from "./dto/request/store/post-store.request.dto";
 import { ResponseDto } from "./dto/response";
-import { IdCheckRequestDto, PasswordResettinIdTelRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
+import { IdCheckRequestDto, PasswordResettingFinalRequestDto, PasswordResettinIdTelRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import { IdSearchResponseDto } from "./dto/response/auth";
 import { GetProductDetailResponseDto, GetProductPreviewListResponseDto, GetReviewListResponseDto } from "./dto/response/stores";
 import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
@@ -104,8 +104,8 @@ const ID_SEARCH_RESULT_API_URL = `${AUTH_MODULE_URL}/id-search-result`;
 
 //* ================== 비밀번호 재설정
 const PASSWORD_RESETTING_ID_TEL_API_URL = `${AUTH_MODULE_URL}/password-search`;
-// const PASSWORD_SEARCH_AND_GET_PASSWORD_API_URL = (userId: string) => `${AUTH_MODULE_URL}/password-search/${userId}`;
 const PASSWORD_RESETTING_TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-tel-auth-check`;
+const PASSWORD_RESETTING_FINAL_CHECK_API_URL = `${AUTH_MODULE_URL}/password-search-final`;
 const PATCH_PASSWORD_API_URL = `${AUTH_MODULE_URL}/password-resetting`;
 //* ================== 비밀번호 재설정
 
@@ -350,6 +350,14 @@ export const passwordResettingIdTelRequest = async (requestBody: PasswordResetti
 // function: password RESETTING tel-auth check (telNumber + telAuthNumber) 요청 함수 //
 export const passwordResettingTelAuthCheckRequest = async (requestBody: PasswordSearchTelAuthCheckRequestDto) => {
     const responseBody = await axios.post(PASSWORD_RESETTING_TEL_AUTH_CHECK_API_URL, requestBody)
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: password resetting final check 요청 함수 //
+export const passwordResettingFinalCheckRequest = async (requestBody: PasswordResettingFinalRequestDto) => {
+    const responseBody = await axios.post(PASSWORD_RESETTING_FINAL_CHECK_API_URL, requestBody)
         .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
