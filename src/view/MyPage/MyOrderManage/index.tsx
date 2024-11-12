@@ -1,22 +1,24 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
 import { useOrderReject, useSignInUserStore } from '../../../stores';
-import { OrderDetailsProps } from '../../../types';
+import { NewOrderDetailsProps, OrderDetailsProps } from '../../../types';
 import { useCookies } from 'react-cookie';
 import GetOrderDetailListResponseDto from '../../../apis/dto/response/get-order-detail-list.response.dto';
 import { ResponseDto } from '../../../apis/dto/response';
 import { ACCESS_TOKEN } from '../../../constants';
-import { getOrderDetailRequest, getOrderManageRequest, patchOrderStatusRequest } from '../../../apis';
+import { getOrderDetailRequest, getOrderManageRequest, patchOrderStatusRequest, postSendPaymentMsgRequest } from '../../../apis';
 import PatchOrderStatusReqeustDto from '../../../apis/dto/request/order/patch-order-status-request.dto';
 import { Autocomplete, TextField } from '@mui/material';
+import NewGetOrderManageList from '../../../apis/dto/response/new-get-order-manage.response.dto';
+import { PostSendPaymentMsgRequestDto } from '../../../apis/dto/request/order';
 
 // interface: 주문 내역 컴포넌트 Properties //
 interface OrderDetailProps {
-    orderdetail: OrderDetailsProps,
+    orderdetail: NewOrderDetailsProps,
     getOrderDetailList: () => void;
 };
 
-function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetailProps) {
+function MyOrderDetailComponent({ orderdetail, getOrderDetailList}: OrderDetailProps) {
 
     type OrderStatus = '승인 대기중' | '결제 대기중' | '결제 완료' | '리뷰 쓰기' | '완료' | '주문 취소' | '주문 거부' | '픽업 완료';
     type CancelCode = '재료가 소진되었습니다.' | '해당 시간에 예약이 가득 찼습니다.' | '운영 시간이 변경되었습니다.' | '기타' | '';
@@ -37,6 +39,9 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     const { signInUser } = useSignInUserStore();
     const [userId, setUserId] = useState<string>('');
 
+    // state: order submit time //
+    const [orderSubmitTime, setOrderSubmitTime] = useState<string>('');
+
     // function: patch orderstatus response 처리 함수 //
     const patchOrderStatusResponse = (responseBody: ResponseDto | null) => {
 
@@ -56,6 +61,11 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     // function: 숫자 쉼표 찍어주는 함수 //
     function formatNumberWithCommas(number: number): string {
         return new Intl.NumberFormat('en-US').format(number);
+    }
+
+    // function: 전화번호 - 넣어주는 함수 //
+    function formatPhoneNumber(phone: string): string {
+        return phone.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
     }
 
     function FinishedPay() {
@@ -91,12 +101,37 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             setInputReason(value); // 입력 값은 즉시 업데이트
         };
 
+        // function: post send payment message response 처리 함수 //
+        const postSendPaymentMsgResponse = (responseBody: null | ResponseDto) => {
+            const message = 
+                !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다. ' :
+                responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' : '' ;
+            
+            const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+            if(!isSuccessed) {
+                alert(message);
+                return;
+            }
+        }
+
         // Function: 주문 수락 클릭 핸들러 //
         const onAcccpetUpdateOrderStatus = () => {
+            
             // 문자 메시지 전송
+            const accessToken = cookies[ACCESS_TOKEN];
+            if(signInUser && accessToken) {
+                const requestBody1 : PostSendPaymentMsgRequestDto = {
+                    telNumber: orderdetail.telNumber,
+                    name: orderdetail.name,
+                    totalPrice: orderdetail.totalPrice,
+                    storeName: orderdetail.storeName.split(",")[1],
+                    productName: orderdetail.productName
+                }
+                postSendPaymentMsgRequest(requestBody1, accessToken).then(postSendPaymentMsgResponse);
+            }
             setOrderStatus('결제 대기중');
 
-            const accessToken = cookies[ACCESS_TOKEN];
             if (!accessToken) {
                 console.log('토큰 오류');
                 return;
@@ -282,8 +317,16 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                 </div>
                             </div>
                             <p className="order-plan">픽업일시: {orderdetail.pickupTime}</p>
+                            {orderStatus === '완료' ? '' :
+                                <div className='orderer-info'>
+                                    <div>주문 고객: </div>
+                                    <div>{orderdetail.name} </div>
+                                    <div>{formatPhoneNumber(orderdetail.telNumber)}</div>
+                                </div>
+                            }
                         </div>
                         <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
+                        
                     </div>
 
                 </div>
@@ -301,12 +344,12 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 export default function MyOrderManage() {
 
     // state: 원본 리스트 상태 //
-    const originalList = useRef<OrderDetailsProps[]>([]);
+    const originalList = useRef<NewOrderDetailsProps[]>([]);
 
     const [userId, setUserId] = useState<string>('');
     const { signInUser } = useSignInUserStore();
     // state: 주문 정보 상태 //
-    const [orderDetailList, setOrderDetailList] = useState<OrderDetailsProps[]>([]);
+    const [orderDetailList, setOrderDetailList] = useState<NewOrderDetailsProps[]>([]);
     const [selectedYear, setSelectedYear] = useState<string | null>();
     const [selectedMonth, setSelectedMonth] = useState<string | null>();
     const [selectedStatus, setSelectedStatus] = useState<string | null>();
@@ -363,7 +406,7 @@ export default function MyOrderManage() {
     };
 
     // function: get Order Detail Response 처리 함수 //
-    const getOrderDetailResponse = (responseBody: GetOrderDetailListResponseDto | ResponseDto | null) => {
+    const getOrderDetailResponse = (responseBody: NewGetOrderManageList | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
                 responseBody.code === 'VF' ? '잘못된 접근입니다.' :
@@ -375,13 +418,21 @@ export default function MyOrderManage() {
             alert(message);
             return;
         }
-        const { orders } = responseBody as GetOrderDetailListResponseDto;
-        setOrderDetailList(orders);
-        originalList.current = orders;
+        const { orderManages } = responseBody as NewGetOrderManageList;
+        setOrderDetailList(orderManages);
+        originalList.current = orderManages;
 
     }
 
-    // function: order detail list 불러오기 함수 //
+    // function: 사장님이 주문 승인 후 24시간 이내에 결제되지 않으면 자동으로 주문 취소되는 함수 //
+    const check24hours = async() => {
+        const date = new Date();
+        const now = date.toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
+
+        return;
+    }
+
+    // function: order detail list 불러오기 함수                                                          가장 처음 주문 리스트 불러오는 함수 //
     const getOrderDetailList = () => {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken || !signInUser || !signInUser.storeNumber) {
@@ -512,7 +563,8 @@ export default function MyOrderManage() {
             </div>
             <div className='my-order-list'>
                 {
-                    orderDetailList.map((orderdetail) => <MyOrderDetailComponent key={orderdetail.orderCode} orderdetail={orderdetail} getOrderDetailList={getOrderDetailList} />)
+                    orderDetailList.map((orderdetail) => <MyOrderDetailComponent key={orderdetail.orderCode} orderdetail={orderdetail}
+                    getOrderDetailList={getOrderDetailList} />)
                 }
             </div>
             <div></div>
