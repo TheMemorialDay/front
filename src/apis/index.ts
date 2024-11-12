@@ -96,6 +96,7 @@ const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
+const DELETE_USER_API_URL = `${AUTH_MODULE_URL}/delete-user/me`;
 
 //* ====================== 아이디 찾기
 const ID_SEARCH_NAME_TEL_API_URL = `${AUTH_MODULE_URL}/id-search-first`;
@@ -647,6 +648,15 @@ export const deleteQnARequest = async (questionNumber: number | string, accessTo
         .catch(responseErrorHandler);
     return responseBody;
 }
+
+//* 회원 탈퇴
+// function: delete user 요청 함수 //
+export const deleteUserRequest = async (accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_USER_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
 
 //* 키워드 저장
 // function: post keyword 요청 함수 //
