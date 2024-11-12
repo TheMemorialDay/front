@@ -30,6 +30,8 @@ import { PostReviewRequestDto } from "./dto/request/review";
 import { GetKeywordListResponseDto } from "./dto/response/keyword/get-keyword-list.response";
 import { getMypageLikeStoreReviewNRating } from "./dto/response/like";
 import NewGetOrderManageList from "./dto/response/new-get-order-manage.response.dto";
+import { FullOrder } from "./dto/response/sales/get-sales.response.dto";
+import { SalesListResponseDto } from "./dto/response/sales/get-sales-list.response.dto";
 
 
 // variable: API URL 상수 //
@@ -519,10 +521,11 @@ export const getProductPreviewListRequest = async (storeNumber: string | number)
 // function: get Sales 요청 함수 //
 export const getSalesRequest = async (userId: string, accessToken: string) => {
     const responseBody = await axios.get(GET_SALES_API_URL(userId), bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetOrderDetailListResponseDto>)
+        .then(responseDataHandler<SalesListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
-}
+};
+
 
 // function: get product detail 요청 함수 //
 export const getProductDetailRequest = async (storeNumber: string | number, productNumber: string | number) => {
