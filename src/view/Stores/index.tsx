@@ -182,8 +182,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
         })
         .catch(error => console.error(error));
     }
-    console.log("가게 별점: " + store.reviewRating);
-
   }, [store.storeNumber, userId]);
 
   // render: 스토어 리스트 컴포넌트 렌더링 //
@@ -198,10 +196,10 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
               <div className='like-count'>{store.likeList.length}</div>
             </div>
           </div>
-        <div className='store-card-bottom'>
-          <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
-          <p className="shop-rating">별점 {store.reviewRating}</p>
-          <p className="shop-reviews">리뷰 {store.reviewCount}</p>
+          <div className='store-card-bottom'>
+            <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
+            <p className="shop-rating">별점 {store.reviewRating}</p>
+            <p className="shop-reviews">리뷰 {store.reviewCount}</p>
           </div>
         </div>
       </div>
@@ -421,6 +419,7 @@ export default function Stores() {
   const handleGugunRemove = () => {
     setSelectedGugun('');
     setSelectedDong('');
+    setDongList([]);
   };
 
   // event handler: 선택된 동 삭제 클릭 이벤트 //

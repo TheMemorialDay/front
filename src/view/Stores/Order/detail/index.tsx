@@ -25,8 +25,8 @@ interface ThemaProps {
 }
 
 interface RadioProps {
-  name: string; 
-  value: string; 
+  name: string;
+  value: string;
   price: number;
   selectedOptions: SelectedOptionInterface[],
   optionCategoryNumber: number;
@@ -34,26 +34,26 @@ interface RadioProps {
 }
 
 // component: 사진 미리보기 컴포넌트 //
-function Previews({imageUrl, onClick}: PreviewUrlProps) {
+function Previews({ imageUrl, onClick }: PreviewUrlProps) {
 
   //render: 사진 미리보기 렌더링 //
   return (
-    <div id='preview' style={{backgroundImage: `url(${imageUrl})`}} onClick={onClick}></div>
+    <div id='preview' style={{ backgroundImage: `url(${imageUrl})` }} onClick={onClick}></div>
   )
 }
 
 // component: 상품 테마 컴포넌트 //
-function Tags({contents}: ThemaProps) {
+function Tags({ contents }: ThemaProps) {
 
   // render: 상품 태그 렌더링 //
   return (
-      <div id='tags'>{contents}</div>
+    <div id='tags'>{contents}</div>
   )
 }
 
 // component: 옵션 라디오 버튼 컴포넌트 //
-function RadioButtonGroup({name, value, price, selectedOptions, onSelect, optionCategoryNumber}: RadioProps) {
-  
+function RadioButtonGroup({ name, value, price, selectedOptions, onSelect, optionCategoryNumber }: RadioProps) {
+
   // event handler: 라디오 버튼 선택 핸들러 //
   const handleOptionChange = () => {
     onSelect(name, value, price, optionCategoryNumber);
@@ -62,26 +62,26 @@ function RadioButtonGroup({name, value, price, selectedOptions, onSelect, option
   const isChecked = selectedOptions.some(item => item.name === name && item.value === value);
 
   return (
-      <label style={{marginLeft: "15px"}}>
-        <input
-          type="radio"
-          name={name}
-          value={value}
-          checked={isChecked}
-          onChange={handleOptionChange}
-          style={{
-            fontSize: "16px",
-            fontWeight: "500"
-          }}
-        />
-        {value}{price ? `(+ ${price.toLocaleString()}원)` : ''}
-      </label>
+    <label style={{ marginLeft: "15px" }}>
+      <input
+        type="radio"
+        name={name}
+        value={value}
+        checked={isChecked}
+        onChange={handleOptionChange}
+        style={{
+          fontSize: "16px",
+          fontWeight: "500"
+        }}
+      />
+      {value}{price ? `(+ ${price.toLocaleString()}원)` : ''}
+    </label>
   );
 };
 
 // component: 상품 상세 페이지(주문 페이지)
 export default function Order() {
-  
+
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
 
@@ -89,7 +89,7 @@ export default function Order() {
   const [cookies] = useCookies();
 
   // state: 가게, 상품 정보 //
-  const {storeNumber, productNumber} = useParams();
+  const { storeNumber, productNumber } = useParams();
 
   // state: 상품 정보 //
   const [cakeName, setCakeName] = useState<string>('');
@@ -113,7 +113,7 @@ export default function Order() {
 
   // state: 선택 옵션 리스트 상태 //
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptionInterface[]>([]);
-  
+
   // state: 가격 상태 //
   const [finalPrice, setFinalPrice] = useState<number>(price);
 
@@ -172,7 +172,7 @@ export default function Order() {
 
   // function: get product detail 함수 //
   const getProductDetail = () => {
-    if(storeNumber && productNumber) getProductDetailRequest(storeNumber, productNumber).then(getProductDetailRespone);
+    if (storeNumber && productNumber) getProductDetailRequest(storeNumber, productNumber).then(getProductDetailRespone);
     else {
       alert("잘못된 접근입니다.");
       return;
@@ -180,21 +180,20 @@ export default function Order() {
   }
 
   // function: get product detail response 처리 //
-  const getProductDetailRespone = (responseBody: GetProductDetailResponseDto | ResponseDto | null) => { 
-    console.log(responseBody);
-    const message = 
+  const getProductDetailRespone = (responseBody: GetProductDetailResponseDto | ResponseDto | null) => {
+    const message =
       !responseBody ? "서버에 문제가 있습니다." :
-      responseBody.code === 'NS' ? '존재하지 않는 가게입니다.' :
-      responseBody.code === 'NP' ? '존재하지 않는 상품입니다.' : 
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        responseBody.code === 'NS' ? '존재하지 않는 가게입니다.' :
+          responseBody.code === 'NP' ? '존재하지 않는 상품입니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if(!isSuccessed) {
+    if (!isSuccessed) {
       alert(message);
       return;
     }
 
-    const {orderProductDetails} = responseBody as GetProductDetailResponseDto;
+    const { orderProductDetails } = responseBody as GetProductDetailResponseDto;
     setCakeName(orderProductDetails.productName);
     setPrice(orderProductDetails.productPrice);
     setFinalPrice(orderProductDetails.productPrice);
@@ -204,7 +203,7 @@ export default function Order() {
     setImageList(orderProductDetails.productImages);
     setCakeToday(orderProductDetails.productToday);
     setProductTag(orderProductDetails.productTag);
-    
+
     const parseTime = (time: string) => {
       return time === "휴무일" ? null : parseInt(time.split(":")[0], 10);
     };
@@ -224,15 +223,6 @@ export default function Order() {
     setSundayOpen(parseTime(orderProductDetails.sundayOpen));
     setSundayLast(parseTime(orderProductDetails.sundayLast));
 
-    // options 배열 확인
-    orderProductDetails.options.forEach((option, index) => {
-      console.log(`Option ${index + 1}: ${option.productOptionName}`);
-
-      // optionDetails 확인
-      option.optionDetails.forEach((detail) => {
-        console.log(`Category: ${detail.productCategory}, Price: ${detail.productOptionPrice}, optionCategoryNumber: ${detail.optionCategoryNumber}`);
-      });
-    });
 
     setOptions(orderProductDetails.options);
     const initSelectedOptions = orderProductDetails.options.map(option => ({ name: option.productOptionName, value: '', price: 0, optionCategoryNumber: 0 }));
@@ -273,7 +263,7 @@ export default function Order() {
   const onMinusClickHandler = () => {
     setCakeCount(cakeCount - 1);
 
-    if(cakeCount <= 0 || finalPrice === 0) {
+    if (cakeCount <= 0 || finalPrice === 0) {
       alert("케이크 최소 수량은 1개입니다.");
       setCakeCount(1);
     }
@@ -281,7 +271,7 @@ export default function Order() {
 
   // event handler: 요청 사항 변경 핸들러 //
   const onRequestChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    const {value} = event.target;
+    const { value } = event.target;
     setRequest(value);
   }
 
@@ -305,54 +295,54 @@ export default function Order() {
   };
 
   // event handler: 주문하기 버튼 클릭 이벤트 핸들러 //
-const onOrderClickHandler = async () => {
-  const accessToken = cookies[ACCESS_TOKEN];
+  const onOrderClickHandler = async () => {
+    const accessToken = cookies[ACCESS_TOKEN];
 
-  if (!accessToken) {
-    alert("로그인이 필요한 서비스입니다.");
-    navigator(LOGIN_PATH);
-    return;
-  }
-
-  const userId = signInUser?.userId;
-  if (!userId) {
-    alert("사용자 정보가 확인되지 않습니다.");
-    return;
-  }
-
-  if (!selectedDate || !isChecked || selectedOptions.some(item => !item.value)) {
-    alert("모든 항목을 입력해주세요.");
-    return;
-  }
-  
-  const pickupTime = formatPickupTime(selectedDate.toISOString());
-
-  const orderRequestBody: PostOrderRequestDto = {
-    pickupTime,
-    productCount: cakeCount,
-    productContents: request,
-    totalPrice: finalPrice,
-    options: selectedOptions.map(option => ({
-      optionCategoryNumber: option.optionCategoryNumber
-    }))
-  };
-
-  try {
-    // 주문 요청 전송
-    if (storeNumber && productNumber && userId) {
-      const response = await postOrderRequest(orderRequestBody, userId, storeNumber, productNumber, accessToken);
-      if (response.code === 'SU') {
-        alert("주문이 완료되었습니다.");
-        if (storeNumber) navigator(ST_ORDER_DONE_ABSOLUTE_PATH(storeNumber));
-      } else {
-        alert(response.message || "주문에 실패했습니다.");
-      }
+    if (!accessToken) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigator(LOGIN_PATH);
+      return;
     }
-  } catch (error) {
-    console.error("주문 요청 오류:", error); // 오류 로그
-    alert("서버 오류로 주문을 처리할 수 없습니다.");
-  }
-};
+
+    const userId = signInUser?.userId;
+    if (!userId) {
+      alert("사용자 정보가 확인되지 않습니다.");
+      return;
+    }
+
+    if (!selectedDate || !isChecked || selectedOptions.some(item => !item.value)) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+
+    const pickupTime = formatPickupTime(selectedDate.toISOString());
+
+    const orderRequestBody: PostOrderRequestDto = {
+      pickupTime,
+      productCount: cakeCount,
+      productContents: request,
+      totalPrice: finalPrice,
+      options: selectedOptions.map(option => ({
+        optionCategoryNumber: option.optionCategoryNumber
+      }))
+    };
+
+    try {
+      // 주문 요청 전송
+      if (storeNumber && productNumber && userId) {
+        const response = await postOrderRequest(orderRequestBody, userId, storeNumber, productNumber, accessToken);
+        if (response.code === 'SU') {
+          alert("주문이 완료되었습니다.");
+          if (storeNumber) navigator(ST_ORDER_DONE_ABSOLUTE_PATH(storeNumber));
+        } else {
+          alert(response.message || "주문에 실패했습니다.");
+        }
+      }
+    } catch (error) {
+      console.error("주문 요청 오류:", error); // 오류 로그
+      alert("서버 오류로 주문을 처리할 수 없습니다.");
+    }
+  };
 
   // effect: 상품 상세 정보 가져오기 //
   useEffect(getProductDetail, []);
@@ -368,97 +358,97 @@ const onOrderClickHandler = async () => {
 
   // render: 주문 상세 페이지 렌더링 //
   return (
-      <div id='product-order'>
-        <div className='photo-zone'>
-          <div className='arrow-left' onClick={handlePrevImage}></div>
-          <div className='image-box' style={{display: "flex", flexDirection: "column"}}>
-            <div className='images' style={{ backgroundImage: `url(${showCurrentImage()})`, backgroundSize: 'cover', backgroundRepeat: "no-repeat" }}></div>
-            <div className='preview-box'>
-              {imageList.length > 0 ? imageList.map((image, index) => <Previews key={index} imageUrl={image} onClick={() => handlePreviewClick(index)}/>) : '' }
-            </div>
+    <div id='product-order'>
+      <div className='photo-zone'>
+        <div className='arrow-left' onClick={handlePrevImage}></div>
+        <div className='image-box' style={{ display: "flex", flexDirection: "column" }}>
+          <div className='images' style={{ backgroundImage: `url(${showCurrentImage()})`, backgroundSize: 'cover', backgroundRepeat: "no-repeat" }}></div>
+          <div className='preview-box'>
+            {imageList.length > 0 ? imageList.map((image, index) => <Previews key={index} imageUrl={image} onClick={() => handlePreviewClick(index)} />) : ''}
           </div>
-          <div className='arrow-right' onClick={handleNextImage}></div>
+        </div>
+        <div className='arrow-right' onClick={handleNextImage}></div>
+      </div>
+
+      <div className='order-page'>
+        <div>
+          <div className='text'>케이크 주문서 작성</div>
+          <hr className='custom-hr' />
+          <div style={{ display: "flex", flexDirection: "row", gap: "12px" }}>
+            <div className={
+              productTag === '포토' ? 'productTag-icon-photo' :
+                productTag === '레터링' ? 'productTag-icon-letter' :
+                  productTag === '한입 케이크' ? 'productTag-icon-oneBite' :
+                    productTag === '도시락 케이크' ? 'productTag-icon-obento' :
+                      productTag === '이단 케이크' ? 'productTag-icon-twoFloor' :
+                        productTag === '비건 케이크' ? 'productTag-icon-vegun' :
+                          productTag === '떡 케이크' ? 'productTag-icon-riceCake' : ''
+            }></div>
+            <div className='cake-name'>{cakeName}</div>
+          </div>
+          <div className='thema-zone'>
+            {themaList.length > 0 ? themaList.map((thema, index) => <Tags key={index} contents={thema} />) : ''}
+          </div>
+          <div className='cake-introduce'>{introduce}</div>
+          <div className='cake-price'>가격 {formatNumberWithCommas(price)}원</div>
         </div>
 
-        <div className='order-page'>
-            <div>
-              <div className='text'>케이크 주문서 작성</div>
-              <hr className='custom-hr'/>
-              <div style={{display: "flex", flexDirection: "row", gap:"12px"}}>
-                <div className={
-                  productTag === '포토' ? 'productTag-icon-photo' :
-                  productTag === '레터링' ? 'productTag-icon-letter' :
-                  productTag === '한입 케이크' ? 'productTag-icon-oneBite' :
-                  productTag === '도시락 케이크' ? 'productTag-icon-obento' :
-                  productTag === '이단 케이크' ? 'productTag-icon-twoFloor' :
-                  productTag === '비건 케이크' ? 'productTag-icon-vegun' :
-                  productTag === '떡 케이크' ? 'productTag-icon-riceCake' : ''
-                }></div>
-                <div className='cake-name'>{cakeName}</div>
-              </div>
-              <div className='thema-zone'>
-                {themaList.length > 0 ?  themaList.map((thema, index) => <Tags key={index} contents={thema} />) : '' }
-              </div>
-              <div className='cake-introduce'>{introduce}</div>
-              <div className='cake-price'>가격 {formatNumberWithCommas(price)}원</div>
-            </div>
-              
-            <div className='pickup-date'>
-              <div className='option-title'>픽업 일시 선택<span style={{color: "red"}}>*</span></div>
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date: Date | null) => setSelectedDate(date)}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={30}
-                timeCaption="Time"
-                dateFormat="yyyy년 MM월 dd일 h:mm aa"
-                placeholderText="날짜와 시간을 선택하세요"
-                filterTime={filterTime}
-              />
-            </div>
+        <div className='pickup-date'>
+          <div className='option-title'>픽업 일시 선택<span style={{ color: "red" }}>*</span></div>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date: Date | null) => setSelectedDate(date)}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={30}
+            timeCaption="Time"
+            dateFormat="yyyy년 MM월 dd일 h:mm aa"
+            placeholderText="날짜와 시간을 선택하세요"
+            filterTime={filterTime}
+          />
+        </div>
 
-            {options.map((option, index) => 
-            <div key={index} className='pick-size' style={{marginBottom: "25px"}}>
-              <div className='option-title'>{option.productOptionName} 선택{(option.productOptionName === '맛' || option.productOptionName === '크기') &&<span style={{color: "red"}}>*</span>}</div>
-              <div className='radio-group' style={{marginTop: "15px"}}>
-                {option.optionDetails.map((optionDetail, index) => 
-                <RadioButtonGroup key={index} name={option.productOptionName} value={optionDetail.productCategory} price={optionDetail.productOptionPrice} 
-                selectedOptions={selectedOptions} onSelect={onOptionSelectHandler} optionCategoryNumber={optionDetail.optionCategoryNumber} />
-                )}
-              </div>
+        {options.map((option, index) =>
+          <div key={index} className='pick-size' style={{ marginBottom: "25px" }}>
+            <div className='option-title'>{option.productOptionName} 선택{(option.productOptionName === '맛' || option.productOptionName === '크기') && <span style={{ color: "red" }}>*</span>}</div>
+            <div className='radio-group' style={{ marginTop: "15px" }}>
+              {option.optionDetails.map((optionDetail, index) =>
+                <RadioButtonGroup key={index} name={option.productOptionName} value={optionDetail.productCategory} price={optionDetail.productOptionPrice}
+                  selectedOptions={selectedOptions} onSelect={onOptionSelectHandler} optionCategoryNumber={optionDetail.optionCategoryNumber} />
+              )}
             </div>
-            )}
+          </div>
+        )}
 
-            <div className='pickup-date' style={{display: "none"}}>
-              <div className='option-title'>수량 입력<span style={{color: "red"}}>*</span></div>
-              <div className='count-handler'>
-                <div className='count-up' onClick={onPlusClickHandler}></div>
-                <div style={{fontSize: "16px", cursor:"pointer"}}>{cakeCount}</div>
-                <div className='count-down' onClick={onMinusClickHandler}></div>
-              </div>
-            </div>
+        <div className='pickup-date' style={{ display: "none" }}>
+          <div className='option-title'>수량 입력<span style={{ color: "red" }}>*</span></div>
+          <div className='count-handler'>
+            <div className='count-up' onClick={onPlusClickHandler}></div>
+            <div style={{ fontSize: "16px", cursor: "pointer" }}>{cakeCount}</div>
+            <div className='count-down' onClick={onMinusClickHandler}></div>
+          </div>
+        </div>
 
-            <div>
-              <div className='option-title'>요청사항</div>
-              <textarea className='textarea' placeholder='자유롭게 입력하세요.' onChange={onRequestChangeHandler}/>
-            </div>
+        <div>
+          <div className='option-title'>요청사항</div>
+          <textarea className='textarea' placeholder='자유롭게 입력하세요.' onChange={onRequestChangeHandler} />
+        </div>
 
-            <div style={{display:"flex", flexDirection:"column", marginTop: "20px"}}>
-              <div className='option-title'>유의사항 확인<span style={{color: "red"}}>*</span></div>
-              <div style={{marginTop: "20px"}}>{caution}</div>
-              <label className='checkbox'>
-                <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange}/>
-                상기의 내용을 확인하였으며, 불이익시 가게가 책임지지 않음에 동의합니다.
-                </label>
-            </div>
+        <div style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}>
+          <div className='option-title'>유의사항 확인<span style={{ color: "red" }}>*</span></div>
+          <div style={{ marginTop: "20px" }}>{caution}</div>
+          <label className='checkbox'>
+            <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
+            상기의 내용을 확인하였으며, 불이익시 가게가 책임지지 않음에 동의합니다.
+          </label>
+        </div>
 
-            <div className='total-price'>최종 금액 {formatNumberWithCommas(finalPrice)} 원</div>
+        <div className='total-price'>최종 금액 {formatNumberWithCommas(finalPrice)} 원</div>
 
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "35px"}}>
-              <div className='order-button' onClick={onOrderClickHandler}>주문하기</div>
-            </div>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "35px" }}>
+          <div className='order-button' onClick={onOrderClickHandler}>주문하기</div>
+        </div>
       </div>
-  </div>
-  ) 
+    </div>
+  )
 }

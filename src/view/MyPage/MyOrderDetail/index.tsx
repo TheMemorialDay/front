@@ -59,7 +59,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             merchant_uid: `${orderdetail.orderCode}`, // 주문번호
             amount: Number(`${orderdetail.totalPrice}`), // 결제금액
             name: `${orderdetail.productName}`, // 주문명 (제품명 Order에서 받기)
-            buyer_name: `${signInUser?.name}`, // 구매자 이름 (userName)
+            buyer_name: `${signInUser?.userId}`, // 구매자 이름 (userName)
             buyer_email: ``,
             buyer_tel: `${signInUser?.telNumber}`, // 구매자 전화번호 (signInUser.telNumber)
         };

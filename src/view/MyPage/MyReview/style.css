@@ -12,20 +12,26 @@
 #mypage-review-wrapper .main-title {
     font-size: 25px;
     font-weight: 600;
-    
+
     margin-bottom: 15px;
 
-    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-#mypage-review-wrapper .main-title:hover {
-    font-size: 25px;
-    font-weight: 600;
-    
-    margin-bottom: 15px;
+#mypage-review-wrapper .main-title .delete-icon {
+    margin-top: 20px;
+}
 
+#mypage-review-wrapper .main-title .title-span:hover {
     cursor: pointer;
     text-decoration: underline;
+}
+
+#mypage-review-wrapper .review-box {
+    display: flex;
+    flex-direction: row;
 }
 
 /** 모달 start ================================================================  */

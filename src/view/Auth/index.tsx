@@ -6,8 +6,8 @@ import { useCookies } from 'react-cookie';
 import SnsContainer from '../../components/sns_login_sign_up';
 import { IdSearchResponseDto, SignInResponseDto } from '../../apis/dto/response/auth';
 import { ResponseDto } from '../../apis/dto/response';
-import { getIdSearchRequest, idSearchNameTelNumberRequest, idSearchTelAuthRequest, passwordResettingFinalCheckRequest, passwordResettingIdTelRequest, passwordResettingTelAuthCheckRequest, patchPasswordRequest, signInRequest } from '../../apis';
-import { IdSearchNameTelNumberRequestDto, PasswordResettingFinalRequestDto, PasswordResettinIdTelRequestDto, PatchPasswordRequestDto, SignInRequestDto, TelAuthCheckRequestDto } from '../../apis/dto/request/auth';
+import { getIdSearchRequest, idSearchNameTelNumberRequest, idSearchTelAuthRequest, passwordResettingFinalCheckRequest, passwordResettingIdTelRequest, passwordResettingTelAuthCheckRequest, patchPasswordRequest, signInRequest, telAuthRequest } from '../../apis';
+import { IdSearchNameTelNumberRequestDto, PasswordResettingFinalRequestDto, PasswordResettinIdTelRequestDto, PatchPasswordRequestDto, SignInRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from '../../apis/dto/request/auth';
 import usePatchPasswordZustand from '../../stores/patch-password.store';
 import useIdSearchResultZustand from '../../stores/id-search-result-store';
 import PasswordResettingTelAuthCheckRequestDto from '../../apis/dto/request/auth/password-search-tel-auth-check.request.dto';
@@ -37,10 +37,10 @@ function SignIn({ onPathChange }: AuthComponentProps) {
     const signInResponse = (responseBody: SignInResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '아이디와 비밀번호를 모두 입력하세요.' :
-            responseBody.code === 'SF' ? '로그인 정보가 일치하지 않습니다.' :
-            responseBody.code === 'TCF' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '아이디와 비밀번호를 모두 입력하세요.' :
+                    responseBody.code === 'SF' ? '로그인 정보가 일치하지 않습니다.' :
+                        responseBody.code === 'TCF' ? '서버에 문제가 있습니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -127,17 +127,22 @@ function SignIn({ onPathChange }: AuthComponentProps) {
 
 // component: 아이디 찾기 화면 컴포넌트 //
 function FindId({ onPathChange }: AuthComponentProps) {
-    
+
     // state: 메시지 상태 //
     const [nameMessage, setNameMessage] = useState<string>('');
     const [telMessage, setTelMessage] = useState<string>('');
     const [authMessage, setAuthMessage] = useState<string>('');
-    
+
+    // state: 타이머 상태 //
+    const [timer, setTimer] = useState(180);
+
     // state: 메시지 에러 상태 //
     const [isNameMessageError, setNameMessageError] = useState<boolean>(false);
     const [isTelMessageError, setTelMessageError] = useState<boolean>(false);
     const [isAuthMessageError, setAuthMessageError] = useState<boolean>(false);
-    
+
+    const [isMatched1, setIsMatched1] = useState<boolean>(false);
+
     // state: 아이디 찾기 입력값 검증 상태 //
     const [isSend, setSend] = useState<boolean>(false);
     const [isName, setIsName] = useState<boolean>(false);
@@ -147,7 +152,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const [isTelNumberAndTelAuthNumberMatched, setTelNumberAndTelAuthNumberMatched] = useState<boolean>(false);
 
     // state: zustand 상태 //
-    const { name, telNumber, userId, telAuthNumber, 
+    const { name, telNumber, userId, telAuthNumber,
         setName, setTelNumber, setUserId, setTelAuthNumber
     } = useIdSearchResultZustand();
 
@@ -161,26 +166,26 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const idSearchNameTelNumberResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'NF' ? '존재하지 않는 정보입니다.' :
-            responseBody.code === 'TF' ? '전송에 실패했습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'SU' ? '정보가 확인되었습니다.' : '';
+                responseBody.code === 'NF' ? '존재하지 않는 정보입니다.' :
+                    responseBody.code === 'TF' ? '전송에 실패했습니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                            responseBody.code === 'SU' ? '정보가 확인되었습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
         setTelMessage(message);
         setTelMessageError(!isSuccessed);
         setSend(isSuccessed);
-        
+
     };
 
     // function: 아이디 찾기에서 전화번호 + 인증번호 확인 Response 처리 함수 //
     const idSearchtelAuthCheckResponse = (responseBody: ResponseDto | null) => {
-        const message = 
-        !responseBody ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
-        responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
-        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-        responseBody.code === 'SU' ? '인증번호가 확인되었습니다.' : '';
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
+                    responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                            responseBody.code === 'SU' ? '인증번호가 확인되었습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
 
@@ -193,8 +198,8 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const idSearchResultResponse = (responseBody: IdSearchResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
 
@@ -218,26 +223,41 @@ function FindId({ onPathChange }: AuthComponentProps) {
         setNameMessageError(true);
     }
 
-    // event Handler: 전화번호 변경 이벤트 처리 //
-    const onTelNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        setTelNumber(value);
+    // event handler: 전화번호 변경 이벤트 핸들러 //
+    const onTelNumberChangeHandler = (e: { target: { value: string } }) => {
+        const numbersOnly = e.target.value.replace(/\D/g, "");
+        if (numbersOnly.length <= 11) {
+            setTelNumber(numbersOnly);
+        }
 
         setSend(false);
         setTelMessage('');
+    }
+
+    // Function: 전화번호 '-'넣는 함수 //
+    const displayFormattedPhoneNumber = (numbers: string) => {
+        if (numbers.length <= 3) {
+            return numbers;
+        } else if (numbers.length <= 7) {
+            return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+        } else {
+            return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(
+                7
+            )}`;
+        }
     };
 
-    // event handler: 인증번호 변경 이벤트 핸들러 //
-    const onAuthNumberChangeHandler = (evnet: ChangeEvent<HTMLInputElement>) => {
-        const { value } = evnet.target;
-        setTelAuthNumber(value);
-
-        setAuthMessage('');
+    // Function: 타이머 //
+    const formatTime = () => {
+        const minutes = Math.floor(timer / 60);
+        const seconds = timer % 60;
+        return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
     };
 
-    // event handler: 아이디 찾기 이름 & 전화번호 입력 후 전송 버튼 클릭 이벤트 핸들러 //
-    const onSendClickHandler = () => {
-        if (!name || !telNumber) return;
+    // Function: 인증번호 재전송 함수 //
+    const resendVerification = () => {
+        setTimer(180);
+        setTelAuthNumber('');
 
         const pattern = /^[0-9]{11}$/;
         const isMatched = pattern.test(telNumber);
@@ -252,6 +272,33 @@ function FindId({ onPathChange }: AuthComponentProps) {
 
         const requestBody: IdSearchNameTelNumberRequestDto = { name, telNumber };
         idSearchNameTelNumberRequest(requestBody).then(idSearchNameTelNumberResponse);
+    };
+
+    // event handler: 인증번호 변경 이벤트 핸들러 //
+    const onAuthNumberChangeHandler = (e: { target: { value: string } }) => {
+        const numbersOnly = e.target.value.replace(/\D/g, "");
+        if (numbersOnly.length <= 4) {
+            setTelAuthNumber(numbersOnly);
+        }
+    }
+
+    // event handler: 아이디 찾기 이름 & 전화번호 입력 후 전송 버튼 클릭 이벤트 핸들러 //
+    const onSendClickHandler = () => {
+        if (!name || !telNumber) return;
+
+        const pattern = /^[0-9]{11}$/;
+        const isMatched = pattern.test(telNumber);
+
+        if (isMatched) {
+            const requestBody: IdSearchNameTelNumberRequestDto = { name, telNumber };
+            idSearchNameTelNumberRequest(requestBody).then(idSearchNameTelNumberResponse);
+            setIsMatched1(true);
+        } else {
+            setTelMessage('숫자 11자 입력해주세요.');
+            setTelMessageError(true);
+            setTelNumber('');
+            return;
+        }
     }
 
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
@@ -261,7 +308,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
             return;
         }
 
-        const requestBody: TelAuthCheckRequestDto = {telNumber, telAuthNumber};
+        const requestBody: TelAuthCheckRequestDto = { telNumber, telAuthNumber };
         idSearchTelAuthRequest(requestBody).then(idSearchtelAuthCheckResponse);
     }
 
@@ -289,7 +336,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
             setTelAuthNumber('');
             return;
         }
-        
+
         onPathChange('findIdResult');
 
         const requestBody: IdSearchNameTelNumberRequestDto = {
@@ -297,8 +344,34 @@ function FindId({ onPathChange }: AuthComponentProps) {
         }
 
         getIdSearchRequest(requestBody).then(idSearchResultResponse);
-        
+
     };
+
+    // effect: 화면 로드시 마다 입력창 비워주기 //
+    useEffect(() => {
+        setName('');
+        setTelNumber('');
+        setTelAuthNumber('');
+    }, []);
+
+    // Effect: 타이머 기능 구현 //
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isSend) {
+            interval = setInterval(() => {
+                setTimer((prevTimer) => {
+                    if (prevTimer <= 1) {
+                        clearInterval(interval);
+                        setSend(false);
+                        return 0;
+                    }
+                    return prevTimer - 1;
+                });
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [isSend]);
 
     //render: 아이디 찾기 화면 렌더링 //
     return (
@@ -310,18 +383,20 @@ function FindId({ onPathChange }: AuthComponentProps) {
                     <div className={`name-message message ${isNameMessageError ? 'false' : 'true'}`}>{nameMessage}</div>
                 </div>
                 <div className='tel'>
-                    <input className='tel-number' placeholder='전화번호 – 빼고 입력해주세요.' value={telNumber} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
-                    <div className='send-button' onClick={onSendClickHandler}>전송</div>
+                    <input className='tel-number' placeholder='전화번호를 입력해주세요.' value={displayFormattedPhoneNumber(telNumber)} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
+                    <div className='send-button' onClick={!isSend ? onSendClickHandler : resendVerification}>{isMatched1 ? '재전송' : '전송'}</div>
                 </div>
-                <div className={`message ${isTelMessageError ? 'false' : 'true' }`}>{telMessage}</div>
-
+                <div className={`message ${isTelMessageError ? 'false' : 'true'}`}>{telMessage}</div>
                 {isSend &&
                     <div>
                         <div className='tel' style={{ marginTop: '20px' }}>
-                            <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
+                            <div className='input-wrapper'>
+                                <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
+                                <div className='timer'>{formatTime()}</div>
+                            </div>
                             <div className='send-button' onClick={onCheckClickHandler}>확인</div>
                         </div>
-                        <div className={`message ${isAuthMessageError ? 'false' : 'true' }`}>{authMessage}</div>
+                        <div className={`message ${isAuthMessageError ? 'false' : 'true'}`}>{authMessage}</div>
                     </div>
                 }
 
@@ -340,12 +415,12 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
     const [isName, setIsName] = useState<boolean>(false);
     const [isTelNumber, setIsTelNumber] = useState<boolean>(false);
     const [isTelAuthNumber, setIsTelAuthNumber] = useState<boolean>(false);
-    
+
     // state: 아이디 찾기 상태 //
     const [idSearchMessage, setIdSearchMessage] = useState<string>('');
 
     // state: zustand 만든 거 가져오기 //
-    const { name, telNumber, userId, telAuthNumber, 
+    const { name, telNumber, userId, telAuthNumber,
         setName, setTelNumber, setUserId, setTelAuthNumber
     } = useIdSearchResultZustand();
 
@@ -383,23 +458,27 @@ function FindIdResult({ onPathChange }: AuthComponentProps) {
 function FindPassword({ onPathChange }: AuthComponentProps) {
 
     // state: zustand 상태 //
-    const { userId, zusTelNumber, telAuthNumber, zusPassword, 
-        setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword} 
+    const { userId, zusTelNumber, telAuthNumber, zusPassword,
+        setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword }
         = usePatchPasswordZustand();
 
     // state: 메세지 상태 //
     const [telMessage, setTelMessage] = useState<string>('');
     const [authMessage, setAuthMessage] = useState<string>('');
-    
+
     // state: 메세지 에러 상태 //
     const [isTelMessageError, setTelMessageError] = useState<boolean>(false);
     const [isAuthMessageError, setAuthMessageError] = useState<boolean>(false);
-    
+
     // state: 검증 상태 //
     const [isSend, setSend] = useState<boolean>(false);
     const [isUserIdCheck, setIsUserIdCheck] = useState<boolean>(false);
     const [isTelNumberCheck, setIsTelNumberCheck] = useState<boolean>(false);
     const [isAuthNumberCheck, setIsAuthNumberCheck] = useState<boolean>(false);
+
+    // state: 타이머 //
+    const [timer, setTimer] = useState(180);
+    const [isMatched1, setIsMatched1] = useState<boolean>(false);
 
     // variable: 비밀번호 재설정 가능 검증 //
     const isPatchPasswordPossible = isUserIdCheck && isTelNumberCheck && isAuthNumberCheck && isSend;
@@ -408,10 +487,10 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
     const passwordSearchResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'NF' ? '존재하지 않는 정보입니다.' :
-            responseBody.code === 'TF' ? '전송에 실패했습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'SU' ? '인증번호를 전송하였습니다.' : '';
+                responseBody.code === 'NF' ? '존재하지 않는 정보입니다.' :
+                    responseBody.code === 'TF' ? '전송에 실패했습니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                            responseBody.code === 'SU' ? '인증번호를 전송하였습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
 
@@ -425,11 +504,11 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
     // function: 비밀번호 찾기 (인증번호 telAuthNumber 확인) Response 처리 함수 //
     const passwordTelAuthCheckResponse = (responseBody: ResponseDto | null) => {
-        const message = 
+        const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'SU' ? '인증번호가 일치합니다.' : '';
+                responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                        responseBody.code === 'SU' ? '인증번호가 일치합니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         setAuthMessage(message);
@@ -443,8 +522,8 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
     const passwordFinalCheckResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
 
@@ -466,15 +545,50 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
     }
 
     // event Handler: 전화번호 변경 이벤트 처리 //
-    const onTelNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        setZusTelNumber(value);
+    const onTelNumberChangeHandler = (e: { target: { value: string } }) => {
+        const numbersOnly = e.target.value.replace(/\D/g, "");
+        if (numbersOnly.length <= 11) {
+            setZusTelNumber(numbersOnly);
+        }
+
+        setSend(false);
+        setTelMessage('');
     };
 
-    // event handler: 전화번호 인증번호 변경 이벤트 핸들러 //
-    const onAuthNumberChangeHandler = (evnet: ChangeEvent<HTMLInputElement>) => {
-        const { value } = evnet.target;
-        setTelAuthNumber(value);
+    // Function: 전화번호 '-'넣는 함수 //
+    const displayFormattedPhoneNumber = (numbers: string) => {
+        if (numbers.length <= 3) {
+            return numbers;
+        } else if (numbers.length <= 7) {
+            return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+        } else {
+            return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(
+                7
+            )}`;
+        }
+    };
+
+    // event handler: 인증번호 변경 이벤트 핸들러 //
+    const onAuthNumberChangeHandler = (e: { target: { value: string } }) => {
+        const numbersOnly = e.target.value.replace(/\D/g, "");
+        if (numbersOnly.length <= 4) {
+            setTelAuthNumber(numbersOnly);
+        }
+    }
+
+    // Function: 타이머 //
+    const formatTime = () => {
+        const minutes = Math.floor(timer / 60);
+        const seconds = timer % 60;
+        return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    };
+
+    // Function: 인증번호 재전송 함수 //
+    const resendVerification = () => {
+        setTimer(180);
+        setTelAuthNumber('');
+        const requestBody: PasswordResettinIdTelRequestDto = { userId, telNumber: zusTelNumber };
+        passwordResettingIdTelRequest(requestBody).then(passwordSearchResponse);
     };
 
     // event handler: 전송 버튼 클릭 이벤트 핸들러 //
@@ -488,15 +602,16 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         const pattern = /^[0-9]{11}$/;
         const isMatched = pattern.test(zusTelNumber);
 
-        if (!isMatched) {
-            setTelMessage('전화번호 11자 입력해주세요.');
+        if (isMatched) {
+            const requestBody: PasswordResettinIdTelRequestDto = { userId, telNumber: zusTelNumber };
+            passwordResettingIdTelRequest(requestBody).then(passwordSearchResponse);
+            setIsMatched1(true);
+        } else {
+            setTelMessage('숫자 11자 입력해주세요.');
             setTelMessageError(true);
             setZusTelNumber('');
             return;
         }
-
-        const requestBody: PasswordResettinIdTelRequestDto = { userId, telNumber: zusTelNumber};
-        passwordResettingIdTelRequest(requestBody).then(passwordSearchResponse);
     }
 
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
@@ -539,26 +654,54 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         }
     }
 
+    // effect: 화면 로드시 마다 입력창 비워주기 //
+    useEffect(() => {
+        setUserId('');
+        setZusTelNumber('');
+        setTelAuthNumber('');
+    }, []);
+
+    // Effect: 타이머 기능 구현 //
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isSend) {
+            interval = setInterval(() => {
+                setTimer((prevTimer) => {
+                    if (prevTimer <= 1) {
+                        clearInterval(interval);
+                        setSend(false);
+                        return 0;
+                    }
+                    return prevTimer - 1;
+                });
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [isSend]);
+
     //render: 비밀번호 찾기 화면 렌더링 //
     return (
         <div id='find-password'>
             <div className='auth-title'>비밀번호 찾기</div>
             <div className='login-box'>
-                    <input className='input-id' placeholder='아이디' value={userId} onChange={onIdChangeHandler} />
+                <input className='input-id' placeholder='아이디' value={userId} onChange={onIdChangeHandler} />
                 <div className='tel'>
-                    <input className='tel-number' placeholder='전화번호 – 빼고 입력해주세요.' value={zusTelNumber} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
-                    <div className='send-button' onClick={onSendClickHandler}>전송</div>
+                    <input className='tel-number' placeholder='전화번호를 입력해주세요.' value={displayFormattedPhoneNumber(zusTelNumber)} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
+                    <div className='send-button' onClick={!isSend ? onSendClickHandler : resendVerification}>{isMatched1 ? '재전송' : '전송'}</div>
                 </div>
-                <div className={`message ${isTelMessageError ? 'false' : 'true' }`}>{telMessage}</div>
-
+                <div className={`message ${isTelMessageError ? 'false' : 'true'}`}>{telMessage}</div>
                 {isSend &&
-                <div>
-                    <div className='tel' style={{ marginTop: '20px' }}>
-                        <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
-                        <div className='send-button' onClick={onCheckClickHandler}>확인</div>
+                    <div>
+                        <div className='tel' style={{ marginTop: '20px' }}>
+                            <div className='input-wrapper'>
+                                <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
+                                <div className='timer'>{formatTime()}</div>
+                            </div>
+                            <div className='send-button' onClick={onCheckClickHandler}>확인</div>
+                        </div>
+                        <div className={`message ${isAuthMessageError ? 'false' : 'true'}`}>{authMessage}</div>
                     </div>
-                    <div className={`message ${isAuthMessageError ? 'false' : 'true' }`}>{authMessage}</div>
-                </div>
                 }
 
             </div>
@@ -571,8 +714,8 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 function ChangePassword({ onPathChange }: AuthComponentProps) {
 
     // state: zustand 상태 //
-    const { userId, zusTelNumber, telAuthNumber, zusPassword, 
-        setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword} 
+    const { userId, zusTelNumber, telAuthNumber, zusPassword,
+        setUserId, setZusTelNumber, setTelAuthNumber, setZusPassword }
         = usePatchPasswordZustand();
 
     // state: 새 비밀번호 상태 //
@@ -583,7 +726,7 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
     const [pwCheckMsg, setPwCheckMsg] = useState<string>('');
     const [isMatched1, setIsMatched1] = useState<boolean>(false);
     const [isMatched2, setIsMatched2] = useState<boolean>(false);
-    
+
     // state: 메시지 상태 //
     const [passwordMessage, setPasswordMessage] = useState<string>('');
 
@@ -597,12 +740,12 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
     const patchPasswordResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '같은 비밀번호는 사용할 수 없습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '같은 비밀번호는 사용할 수 없습니다.' :
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
 
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             setPasswordMessage(message);
             setIsMatched1(isSuccessed);
             return;
@@ -684,10 +827,10 @@ export default function Auth() {
             <div className='auth-container'>
                 {
                     path === 'logIn' ? <SignIn onPathChange={onPathChangeHandler} /> :
-                    path === 'findId' ? <FindId onPathChange={onPathChangeHandler} /> :
-                    path === 'findIdResult' ? <FindIdResult onPathChange={onPathChangeHandler} /> :
-                    path === 'findPassword' ? <FindPassword onPathChange={onPathChangeHandler} /> :
-                    path === 'changePassword' ? <ChangePassword onPathChange={onPathChangeHandler} /> : ''
+                        path === 'findId' ? <FindId onPathChange={onPathChangeHandler} /> :
+                            path === 'findIdResult' ? <FindIdResult onPathChange={onPathChangeHandler} /> :
+                                path === 'findPassword' ? <FindPassword onPathChange={onPathChangeHandler} /> :
+                                    path === 'changePassword' ? <ChangePassword onPathChange={onPathChangeHandler} /> : ''
                 }
             </div>
         </div>

@@ -222,6 +222,126 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         );
     };
 
+    // function: 주문 거부 //
+    function RejectOrder() {
+
+        const [inputReason, setInputReason] = useState<string>('');
+
+        // event handler: 라디오 버튼 클릭 핸들러 // 
+        const handleClickRadioButton = (reason: CancelCode) => {
+            if (reason !== '기타') {
+                setCancelCode(reason);
+            }
+        }
+        // event handler: Textarea 입력 핸들러 //
+        const handleTextareaChange = (e: ChangeEvent<HTMLInputElement>) => {
+            const { value } = e.target
+            setInputReason(value); // 입력 값은 즉시 업데이트
+        };
+
+        // Function: 주문 거부 클릭 핸들러 //
+        const onRejectUpdateOrderStatus = () => {
+            setOrderStatus('주문 거부');
+
+            const accessToken = cookies[ACCESS_TOKEN];
+            if (!accessToken) {
+                console.log('토큰 오류');
+                return;
+            }
+
+            if (cancelCode && !cancelReason) {
+                const requestBody: PatchOrderStatusReqeustDto = {
+                    orderCode: orderdetail.orderCode,
+                    orderStatus: '주문 거부',
+                    cancelCode: cancelCode,
+                };
+                patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
+            }
+
+            if (cancelCode && cancelReason) {
+                const requestBody: PatchOrderStatusReqeustDto = {
+                    orderCode: orderdetail.orderCode,
+                    orderStatus: '주문 거부',
+                    cancelCode: cancelCode,
+                    cancelReason: inputReason
+                };
+                patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
+
+            }
+        }
+
+        // component: 모달창 //
+        return (
+            <>
+                <div className='my-order-status-reject'>
+                    <div className='go-payed' onClick={() => { setModalOpen(true); }} >거부</div>
+                </div>
+                {
+                    modalOpen &&
+                    <div className='modal-container' ref={modalBackground} onClick={e => {
+                        if (e.target === modalBackground.current) {
+                            setModalOpen(false);
+                        }
+                    }}>
+                        <div className='modal-content' style={cancelCode !== '기타' ? { height: 270 } : {}}>
+                            <div className='review-component'>
+                                <p className='review-title'>거부 사유</p>
+                                <p className='review-cancel' onClick={() => setModalOpen(false)}>X</p>
+                            </div>
+                            <div className='order-reject-list'>
+                                <div className='first-reject-button'>
+                                    <div>
+                                        <input
+                                            type='radio'
+                                            id='radio'
+                                            checked={cancelCode === '재료가 소진되었습니다.'}
+                                            onClick={() => handleClickRadioButton('재료가 소진되었습니다.')} />
+                                        <label htmlFor='radio'>재료가 소진되었습니다.</label>
+                                    </div>
+                                    <div>
+                                        <input
+                                            type='radio'
+                                            id='radio1'
+                                            checked={cancelCode === '해당 시간에 예약이 가득 찼습니다.'}
+                                            onClick={() => handleClickRadioButton('해당 시간에 예약이 가득 찼습니다.')} />
+                                        <label htmlFor='radio1'>해당 시간 예약이 가득찼습니다.</label>
+                                    </div>
+                                </div>
+                                <div className='second-reject-button'>
+                                    <div>
+                                        <input
+                                            type='radio'
+                                            id='radio2'
+                                            checked={cancelCode === '운영 시간이 변경되었습니다.'}
+                                            onClick={() => handleClickRadioButton('운영 시간이 변경되었습니다.')} />
+                                        <label htmlFor='radio2'>운영 시간이 변경되었습니다.</label>
+                                    </div>
+                                    <div className='another'>
+                                        <input
+                                            type='radio'
+                                            checked={cancelCode === '기타' || typeof cancelCode === 'string' && cancelCode !== '재료가 소진되었습니다.' && cancelCode !== '해당 시간에 예약이 가득 찼습니다.' && cancelCode !== '운영 시간이 변경되었습니다.'}
+                                            onChange={() => setCancelCode('기타')}
+                                        />
+                                        <label>기타</label>
+                                    </div>
+                                </div>
+                            </div>
+                            {cancelCode === '기타' ?
+                                < input className='review-content' value={inputReason}
+                                    onChange={handleTextareaChange} maxLength={60}
+                                    placeholder="기타 사유를 입력해주세요." /> : ''
+                            }
+                            <div className='review-bottom'>
+                                <div className='button disable' onClick={() => { setModalOpen(false); }}>취소</div>
+                                <div className='button' onClick={() => { onRejectUpdateOrderStatus(); setModalOpen(false); }}>거부</div>
+                            </div>
+                        </div>
+                    </div >
+                }
+            </>
+        );
+    }
+
     // Function: 픽업완료 클릭 핸들러 //
     const onPickUpFinishOrderStatus = () => {
         setOrderStatus('픽업 완료');
@@ -268,7 +388,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                         <div className="order-details">
                             <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
                             <div className="order-productCategory-productContents">
-                                <div>옵션: 
+                                <div>옵션:
                                     {options.map((option, index) => (
                                         <span key={index} className="order-option">
                                             {option.productCategory ? option.productCategory : '없음'}
@@ -288,7 +408,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                 </div>
                 {
                     orderStatus === '승인 대기중' ? <RejectOrderReason /> :
-                        orderStatus === '결제 대기중' ? <RejectOrderReason /> :
+                        orderStatus === '결제 대기중' ? <RejectOrder /> :
                             orderStatus === '결제 완료' ? <FinishedPay /> :
                                 orderStatus === '픽업 완료' ? <FinishedOrder /> : ''
                 }

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
+import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
 import { useCookies } from 'react-cookie';
@@ -20,11 +20,11 @@ export default function MyPasswordCheck() {
     const [userId, setUserId] = useState<string>('');
 
     // state: 쿠키 상태 //
-    const [ cookies, setCookie ] = useCookies();
+    const [cookies, setCookie] = useCookies();
 
     // state: zustand 불러오기 //
-    const { password, name, birth, gender, telNumber, 
-        setPassword, setName, setBirth, setGender, setTelNumber } 
+    const { password, name, birth, gender, telNumber,
+        setPassword, setName, setBirth, setGender, setTelNumber }
         = useUserInfoZustand();
 
     // variable: access token //
@@ -37,16 +37,17 @@ export default function MyPasswordCheck() {
     const userUpdateResponse = (responseBody: PasswordCheckOfUserUpdateResponseDto | ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '일치하는 정보가 없습니다.' :
-            responseBody.code === 'AF' ? '일치하는 정보가 없습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'SU' ? '인증에 성공했습니다.' : '';
+                responseBody.code === 'VF' ? '일치하는 정보가 없습니다.' :
+                    responseBody.code === 'AF' ? '일치하는 정보가 없습니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                            responseBody.code === 'SU' ? '인증에 성공했습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
 
         if (!isSuccessed) {
             setPasswordMessage(message);
             setIsMatched(isSuccessed);
+            setPassword('');
             alert('잘못된 정보입니다.');
             return;
         }
@@ -81,7 +82,9 @@ export default function MyPasswordCheck() {
 
     // event handler: 개인 정보 수정 버튼 클릭 이벤트 핸들러 //
     const onEditInfoClickHandler = () => {
-        if (!password) return;
+        if (!password) {
+            setPassword('');
+        };
 
         const requestBody: PasswordCheckOfUserUpdateRequestDto = { password };
         passwordCheckOfUserUpdateRequest(requestBody, accessToken).then(userUpdateResponse);
@@ -93,6 +96,11 @@ export default function MyPasswordCheck() {
             onEditInfoClickHandler();
         }
     };
+
+    // effect: 아이디 및 비밀번호 변경시마다 입력창 비워주기 //
+    useEffect(() => {
+        setPassword('');
+    }, []);
 
     // render: 본인 확인 페이지 렌더링 //
     return (

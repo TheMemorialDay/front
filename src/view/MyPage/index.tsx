@@ -76,7 +76,6 @@ const MyPage = () => {
             const data = await response.json();
             if (data.storeNumber) {
                 navigate(`/mypage/store/${data.storeNumber}`);
-                console.log(token);
             } else {
                 navigate(MY_STORE_ABSOLUTE_PATH);
             }
@@ -112,7 +111,6 @@ const MyPage = () => {
             const data = await response.json();
             if (userId) {
                 navigate(`/mypage/like/${userId}`);
-                console.log(token);
             } else {
                 console.log(data.userId);
                 console.log(userId);
