@@ -1,6 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
-import { addKeyword, fetchKeywords, getStoreMainSearchRequest } from '../../apis';
+import { getStoreMainSearchRequest, postKeywordRequest } from '../../apis';
 import { useSignInUserStore } from '../../stores';
 import { GetStoreListResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
@@ -11,6 +11,7 @@ import { ACCESS_TOKEN, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
 import { PostLikeStoreRequestDto } from '../../apis/dto/request';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
+import { PostKeywordRequestDto } from '../../apis/dto/request/store';
 
 interface CakeComponentProps {
   imageUrl: string;
@@ -295,9 +296,6 @@ export default function Stores() {
 
   // state: 메인 검색창 입력 상태 //
   const [mainSearch, setMainSearch] = useState<string>('');
-  // state: 키워드 //
-  const [keywords, setKeywords] = useState<string[]>([]);
-  const [newKeyword, setNewKeyword] = useState('');
 
   // state: 가게 리스트 상태 //
   const [storeList, setStoreList] = useState<StoreComponentProps[]>([]);
@@ -455,16 +453,33 @@ export default function Stores() {
     originalList.current = storeDetails;
   }
 
+  //* ================================================================== keyword
+
+  // function: 스토어 메인 검색창 키워드 저장하는 response 응답 처리 함수 //
+  const postKeywordResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody != null && responseBody.code === 'SU';
+
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+  };
+
+  //* ================================================================== keyword
+
   //* ======================================== store main search
   // event handler: 검색어 입력 변경 이벤트 핸들러 //
   const onMainSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setMainSearch(value);
-    setNewKeyword(value);
 
     if (value == null) {
       setMainSearch('');
-      setNewKeyword('');
     }
   };
 
@@ -472,6 +487,7 @@ export default function Stores() {
   const onStoresSearchClickHandler = () => {
 
     getStoreMainSearchRequest(mainSearch).then(getStoresMainSearchResponse);
+    postKeywordRequest(mainSearch).then(postKeywordResponse);
   };
 
   // event handler: 검색어 입력 후 요청할 때 키보드 핸들러 //
@@ -481,7 +497,7 @@ export default function Stores() {
     }
   };
 
-  // function: 가게명 & 상품명 검색 시 response 응답 처리 함수 //
+  // function: 스토어 메인 검색창 검색 시 response 응답 처리 함수 //
   const getStoresMainSearchResponse = (responseBody: GetStoreListResponseDto | ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
@@ -538,43 +554,6 @@ export default function Stores() {
     if (sortType === value) setSortType('');
     else setSortType(value);
   };
-
-  //* 키워드 ===================================================================================================
-
-  const fetchKeywordsData = async () => {
-    try {
-      const data = await fetchKeywords();
-      setKeywords(data);
-    } catch (error) {
-      console.error("Error fetching keywords:", error);
-    }
-  };
-
-  const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setMainSearch(value);
-    setNewKeyword(value);
-  };
-
-  const handleAddKeyword = async () => {
-    if (newKeyword) {
-      try {
-        await addKeyword(newKeyword);
-        setNewKeyword('');
-        setMainSearch(''); // 추가 후 검색창 초기화
-        fetchKeywordsData(); // 새 키워드 목록 갱신
-      } catch (error) {
-        console.error("Error adding keyword:", error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchKeywordsData();
-  }, []);
-  //* 키워드 ===================================================================================================
-
-
 
   //* ========================================== store main address selected
 
@@ -705,7 +684,6 @@ export default function Stores() {
               className='store-search'
               placeholder='검색어 입력'
               onChange={onMainSearchChangeHandler}
-              onClick={onStoresSearchClickHandler}
               onKeyDown={onStoresSearchKeyDownHandler}
             />
             <img onClick={onStoresSearchClickHandler} src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />

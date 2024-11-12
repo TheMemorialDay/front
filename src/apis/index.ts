@@ -12,7 +12,7 @@ import { GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
 import { PostProductRequestDto } from './dto/request/product/post-product-request.dto'; // DTO import
 import { GetProductListResponseDto, GetProductResponseDto } from './dto/response/product';
 import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
-import { PatchStoreRequestDto } from "./dto/request/store";
+import { PatchStoreRequestDto, PostKeywordRequestDto } from "./dto/request/store";
 import BusinessCheckRequestDto from "./dto/request/join/business-check.request.dto";
 import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
@@ -36,9 +36,6 @@ const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
 
 const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
 
-//* 키워드
-const CREATE_KEYWORD_API_URL = `${MEMORIALDAY_API_DOMAIN}/keywords`;
-
 const POST_PRODUCT_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_LIST_API_URL = `${PRODUCT_MODULE_URL}`;
 const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
@@ -47,7 +44,8 @@ const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MO
 
 //* ========================= stores
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
-const GET_STORE_LIST_TOTAL_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-main`;
+const GET_STORE_LIST_TOTAL_SEARCH_API_URL = `${GET_STORE_LIST_API_URL}/search-main`;
+const POST_KEYWORD_API_URL = `${GET_STORE_LIST_API_URL}/keyword`;
 //* ========================= stores
 const POST_LIKE_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 const DELETE_LIKE_API_URL = (userId: string, storeNumber: number | string) => `${POST_LIKE_API_URL}?userId=${userId}&storeNumber=${storeNumber}`;
@@ -650,19 +648,11 @@ export const deleteQnARequest = async (questionNumber: number | string, accessTo
     return responseBody;
 }
 
-//* 키워드
-// function: 키워드 가져오기 요청 함수 //
-export const fetchKeywords = async () => {
-    const responseBody = await axios.get(CREATE_KEYWORD_API_URL)
-        .then(responseDataHandler)
-        .catch(responseErrorHandler);
-    return responseBody;
-};
-
-// function: 키워드 저장하기 요청 함수 //
-export const addKeyword = async (newKeyword: string) => {
-    const responseBody = await axios.post(CREATE_KEYWORD_API_URL, newKeyword)
-        .then(responseDataHandler)
+//* 키워드 저장
+// function: post keyword 요청 함수 //
+export const postKeywordRequest = async (keyword: string) => {
+    const responseBody = await axios.post(POST_KEYWORD_API_URL, {}, { params: { keyword } })
+        .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
