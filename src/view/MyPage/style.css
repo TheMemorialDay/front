@@ -66,6 +66,7 @@
     background-image: url('/public/images/mypage/userInfo.png');
     background-image: no-repeat;
     border: 1.5px solid white;
+    transform: none;
 }
 
 #myPage .category-icon.review {
@@ -75,6 +76,7 @@
     background-image: url('/public/images/mypage/review.png');
     background-image: no-repeat;
     border: 1.5px solid white;
+    transform: none;
 }
 
 #myPage .category-icon.order-detail {
@@ -84,6 +86,7 @@
     background-image: url('/public/images/mypage/shoppingCart.png');
     background-image: no-repeat;
     border: 1.5px solid white;
+    transform: none;
 }
 
 #myPage .category-icon.like {
@@ -91,9 +94,10 @@
     height: 120px;
     background-size: 100%;
     background-repeat: no-repeat;
-    background-image: url('/public/images/mypage/like.png');
+    background-image: url('/public/blackheart.png');
     background-image: no-repeat;
     border: 1.5px solid white;
+    transform: none;
 }
 
 #ceo .category-icon.store {
@@ -103,6 +107,7 @@
     background-image: url('/public/images/mypage/store.png');
     background-image: no-repeat;
     border: 1.5px solid white;
+    transform: none;
 }
 
 #ceo .category-icon.product {
@@ -112,6 +117,7 @@
     background-image: url('/public/images/mypage/product.png');
     background-image: no-repeat;
     border: 1.5px solid white;
+    transform: none;
 } 
 
 #ceo .category-icon.order-manage {
@@ -121,6 +127,7 @@
     background-image: url('/public/images/mypage/orderManage.png');
     background-image: no-repeat;
     border: 1.5px solid white;
+    transform: none;
 } 
 
 #ceo .category-icon.sales {
@@ -130,6 +137,7 @@
     background-image: url('/public/images/mypage/sales.png');
     background-image: no-repeat;
     border: 1.5px solid white;
+    transform: none;
 }
 
 #myPage .category-icon-product {
