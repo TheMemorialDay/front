@@ -125,7 +125,10 @@ const Add = () => {
         console.log(urls);
     }
 
-    if (!urls.length) urls.push(defaultImageUrl);
+    if (!urls.length) {
+        alert("사진 등록은 필수입니다.");
+        return;
+    }
 
     // 필수 필드 검증
     if (!productData.productName || !productData.productPrice ||
@@ -275,6 +278,7 @@ interface PicturesProps {
     onReset: () => void;
 }
 
+// component: 이미지 등록 컴포넌트 //
 const Pictures = ({ files, onImagesChange, onReset }: PicturesProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -413,7 +417,7 @@ const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestD
                 <div className='detail-text' style={{ marginTop: '10px' }}>
                     {product.options.filter(item => item.productOptionName === "크기").map((option, optionIndex) => (
                         option.optionDetails.map((detail, detailIndex) => (
-                            <div key={`${optionIndex}-${detailIndex}`} style={{ display: "flex", flexDirection: "row", padding: "5px" }}>
+                            <div key={`${optionIndex}-${detailIndex}`} style={{ display: "flex", flexDirection: "row", padding: "5px"}}>
                                 <div className='xx-sign' onClick={() => handleRemoveButtonClick(detailIndex)}>x</div>
                                 <input type="radio" id={`radio-${optionIndex}-${detailIndex}`} name="radioGroup" value={option.productOptionName} disabled />
                                 <label htmlFor={`radio-${optionIndex}-${detailIndex}`} style={{ marginLeft: "5px" }}>
@@ -564,7 +568,7 @@ const OptionList = ({ product, onOptionsChange }: { product: PostProductRequestD
     };
 
     return (
-        <div>
+        <div style={{width: "100%", marginLeft: "-40px"}}>
             {optionComponents.map((option, index) => (
                 <NewOption
                     key={index}
@@ -649,7 +653,7 @@ const NewOption = ({ product, onOptionsChange, option, setOptionName, removeOpti
     };
 
     return (
-        <div className='option-box' style={{ marginBottom: "20px", minHeight: 'auto' }}>
+        <div className='option-box' style={{ marginBottom: "20px", minHeight: 'auto'}}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <input
                     className='new-option-name'
@@ -706,7 +710,6 @@ const NewOption = ({ product, onOptionsChange, option, setOptionName, removeOpti
 // component: ProductTags 컴포넌트 //
 const ProductTags = ({ product, onTagsChange }: { product: PostProductRequestDto, onTagsChange: (tags: string[]) => void }) => {
     
-
     const handleTagClick = (tag: string) => {
         if (!product.themes.includes(tag) && product.themes.length < 5) {
             const updatedTags = [...product.themes, tag];

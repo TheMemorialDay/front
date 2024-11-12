@@ -1,6 +1,6 @@
 // interface: 픽업 완료된 주문 정보 리스트 //
 
-export default interface OrderDetailsProps {
+export default interface NewOrderDetailsProps {
     orderCode: string;
     productNumber: number;
     productName: string;
@@ -17,8 +17,8 @@ export default interface OrderDetailsProps {
     cancelCode: string | null;
     cancelReason: string | null;
     optionSelect: string;
-    // name: string;
-    // telNumber: string;
+    name: string;
+    telNumber: string;
 
     // options 필드 추가
     options: Array<{

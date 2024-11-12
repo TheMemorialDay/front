@@ -15,6 +15,7 @@ import Option from "./option.interface";
 import SelectedOptionInterface from "./selected-option.interface";
 import RunningHours from "./running-hour.interface";
 import MypageLikeStoreInfo from "./mypage-list-store-reviewNrating.interface";
+import NewOrderDetailsProps from "./new-mypage-order-manage.interface";
 
 export type {
     Product,
@@ -33,5 +34,6 @@ export type {
     Option,
     SelectedOptionInterface,
     RunningHours,
-    MypageLikeStoreInfo
+    MypageLikeStoreInfo,
+    NewOrderDetailsProps
 }

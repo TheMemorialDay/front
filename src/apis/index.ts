@@ -18,7 +18,7 @@ import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
 import IdSearchNameTelNumberRequestDto from "./dto/request/auth/Id-search-name-tel-number.request.dto";
 import IdSearchTelAndAuthRequestDto from "./dto/request/auth/Id-search-tel-and-auth.request.dto";
-import { PostOrderRequestDto } from './dto/request/order';
+import { PostOrderRequestDto, PostSendPaymentMsgRequestDto } from './dto/request/order';
 import GetMyPageLikeStoreListResponseDto from './dto/response/like/get-mypage-likestore-list.response.dto';
 import GetOrderDetailListResponseDto from './dto/response/get-order-detail-list.response.dto';
 import { GetNoticeDetailResponseDto, GetNoticeListResponseDto, GetQnADetailResponseDto, GetQnAListResponseDto } from './dto/response/support';
@@ -29,6 +29,7 @@ import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
 import { PostReviewRequestDto } from "./dto/request/review";
 import { GetKeywordListResponseDto } from "./dto/response/keyword/get-keyword-list.response";
 import { getMypageLikeStoreReviewNRating } from "./dto/response/like";
+import NewGetOrderManageList from "./dto/response/new-get-order-manage.response.dto";
 import { FullOrder } from "./dto/response/sales/get-sales.response.dto";
 import { SalesListResponseDto } from "./dto/response/sales/get-sales-list.response.dto";
 
@@ -93,6 +94,7 @@ const PATCH_ORDER_STATUS_API_URL = (orderCode: string) => `${MYPAGE_MODULE_URL}/
 const POST_REVIEW_API_URL = `${MYPAGE_MODULE_URL}/order-detail/write-review`;
 
 const GET_ORDER_MANAGE_API_URL = (storeNumber: number | string) => `${MYPAGE_MODULE_URL}/order-manage/${storeNumber}`;
+const POST_SEND_PAYMENT_MSG_API_URL = `${MYPAGE_MODULE_URL}/order-manage/send-pay-msg`;
 const GET_SALES_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/sales?userId=${userId}`;
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
@@ -477,7 +479,15 @@ export const getOrderDetailRequest = async (userId: string, accessToken: string)
 // function: get Order Manage 요청 함수 //
 export const getOrderManageRequest = async (storeNumber: number | string, accessToken: string) => {
     const responseBody = await axios.get(GET_ORDER_MANAGE_API_URL(storeNumber), bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetOrderDetailListResponseDto>)
+        .then(responseDataHandler<NewGetOrderManageList>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: post send payment message 요청 함수 //
+export const postSendPaymentMsgRequest = async(requestBody: PostSendPaymentMsgRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_SEND_PAYMENT_MSG_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
