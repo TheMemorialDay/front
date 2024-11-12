@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, MouseEvent, useState } from 'react'
 import './style.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SIGN_IN_ABSOLUTE_PATH } from '../../../constants';
@@ -53,11 +53,18 @@ export default function SignUp() {
     const [isMatched1, setIsMatched1] = useState<boolean>(false);
     const [isMatched2, setIsMatched2] = useState<boolean>(false);
 
+    // state: 전화번호 인증 재전송 상태 //
+    const [isMatched3, setIsMatched3] = useState<boolean>(false);
+
+
     // state: 입력값 검증 상태 //
     const [isCheckId, setCheckId] = useState<boolean>(false);
     const [isSend, setSend] = useState<boolean>(false);
     const [isCheckedAuthNumber, setCheckedAuthNumber] = useState<boolean>(false);
 
+    // state: 인증번호 타이머 //
+    const [timer, setTimer] = useState(180);
+  
     // state: 전체 동의와 개별 동의 항목 상태 //
     const [allChecked, setAllChecked] = useState(false);
     const [terms, setTerms] = useState({
@@ -82,10 +89,10 @@ export default function SignUp() {
     const idCheckResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
-            responseBody.code === 'DI' ? '이미 사용 중인 아이디입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'SU' ? '사용 가능한 아이디입니다.' : '';
+                responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
+                    responseBody.code === 'DI' ? '이미 사용 중인 아이디입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                            responseBody.code === 'SU' ? '사용 가능한 아이디입니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         setIdMessage(message);
@@ -97,11 +104,11 @@ export default function SignUp() {
     const telAuthResponse = (responseBody: ResponseDto | null) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '숫자 11자를 입력해주세요.' :
-            responseBody.code === 'DT' ? '중복된 전화번호입니다.' :
-            responseBody.code === 'TF' ? '전송에 실패했습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'SU' ? '인증번호가 전송되었습니다.' : '';
+                responseBody.code === 'VF' ? '숫자 11자를 입력해주세요.' :
+                    responseBody.code === 'DT' ? '중복된 전화번호입니다.' :
+                        responseBody.code === 'TF' ? '전송에 실패했습니다.' :
+                            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                                responseBody.code === 'SU' ? '인증번호가 전송되었습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         setTelMessage(message);
@@ -112,12 +119,12 @@ export default function SignUp() {
 
     // function: 전화번호 & 인증번호 인증 Response 처리 함수 //
     const telAuthCheckResponse = (responseBody: ResponseDto | null) => {
-        const message = 
+        const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
-            responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'SU' ? '인증번호가 확인되었습니다.' : '';
+                responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
+                    responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                            responseBody.code === 'SU' ? '인증번호가 확인되었습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         setAuthMessage(message);
@@ -128,13 +135,13 @@ export default function SignUp() {
 
     // function: 회원가입 Response 처리 함수 //
     const signUpResponse = (responseBody: ResponseDto | null) => {
-        const message = 
+        const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
-            responseBody.code === 'DI' ? '이미 사용 중인 아이디입니다.' :
-            responseBody.code === 'DT' ? '중복된 전화번호입니다.' :
-            responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+                responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' :
+                    responseBody.code === 'DI' ? '이미 사용 중인 아이디입니다.' :
+                        responseBody.code === 'DT' ? '중복된 전화번호입니다.' :
+                            responseBody.code === 'TAF' ? '인증번호가 일치하지 않습니다.' :
+                                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         if (!isSuccessed) {
@@ -147,7 +154,7 @@ export default function SignUp() {
 
     // event handler: 아이디 변경 이벤트 핸들러 //
     const idChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
+        const { value } = event.target;
         setId(value);
 
         setCheckId(false);
@@ -166,8 +173,8 @@ export default function SignUp() {
     }
 
     // event handler: 비밀번호 변경 이벤트 핸들러 //
-    const passwordChangeHandler = (event:ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
+    const passwordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
         setPassword(value);
 
         const pattern = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,13}$/;
@@ -175,31 +182,31 @@ export default function SignUp() {
         console.log(isTrue);
         setIsPwMatched1(isTrue);
 
-        if(!isTrue) setPasswordMessage('영문, 숫자를 혼용하여 8~13자 입력해주세요.');
+        if (!isTrue) setPasswordMessage('영문, 숫자를 혼용하여 8~13자 입력해주세요.');
         else setPasswordMessage('');
     }
 
     // event handler: 비밀번호 확인 변경 이벤트 핸들러 //
     const onPwCheckChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
+        const { value } = event.target;
         setPasswordCheck(value);
 
         let isTrue = (password === value);
         setPwIsMatched2(isTrue);
-        
-        if(!isTrue) setPwCheckMsg('비밀번호가 일치하지 않습니다.');
+
+        if (!isTrue) setPwCheckMsg('비밀번호가 일치하지 않습니다.');
         else setPwCheckMsg('');
     }
 
     // event handler: 이름 변경 이벤트 핸들러 //
     const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
+        const { value } = event.target;
         setName(value);
     }
 
     // event handler: 생년월일 변경 이벤트 핸들러 //
-    const onBirthChangeHandler = (event:ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
+    const onBirthChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
         setBirth(value);
 
         if (value.length === 8) {
@@ -214,12 +221,12 @@ export default function SignUp() {
             if (inputDate > today) {
                 setBirthMessage('일치하지 않는 형식입니다.');
                 setBirthMsgBool(false);
-            }else{
+            } else {
                 setBirthMessage('');
                 setBirthMsgBool(true);
             }
 
-        } else if(value.length === 0) {
+        } else if (value.length === 0) {
             setBirthMessage('');
             setBirthMsgBool(false);
         } else {
@@ -235,33 +242,65 @@ export default function SignUp() {
     }
 
     // event handler: 전화번호 변경 이벤트 핸들러 //
-    const onTelNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
-        setTelNumber(value);
+    const onTelNumberChangeHandler = (e: { target: { value: string } }) => {
+        const numbersOnly = e.target.value.replace(/\D/g, "");
+        if (numbersOnly.length <= 11) {
+            setTelNumber(numbersOnly);
+        }
 
         setSend(false);
         setTelMessage('');
     }
 
+    // Function: 전화번호 '-'넣는 함수 //
+    const displayFormattedPhoneNumber = (numbers: string) => {
+        if (numbers.length <= 3) {
+            return numbers;
+        } else if (numbers.length <= 7) {
+            return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+        } else {
+            return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(
+                7
+            )}`;
+        }
+    };
+
     // event handler: 인증번호 변경 이벤트 핸들러 //
-    const onAuthNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
-        setTelAuthNumber(value);
+    const onAuthNumberChangeHandler = (e: { target: { value: string } }) => {
+        const numbersOnly = e.target.value.replace(/\D/g, "");
+        if (numbersOnly.length <= 4) {
+            setTelAuthNumber(numbersOnly);
+        }
     }
+
+    // Function: 타이머 //
+    const formatTime = () => {
+        const minutes = Math.floor(timer / 60);
+        const seconds = timer % 60;
+        return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    };
+
+    // Function: 인증번호 재전송 함수 //
+    const resendVerification = () => {
+        setTimer(180);
+        setTelAuthNumber('');
+        const requestBody: TelAuthRequestDto = { telNumber };
+        telAuthRequest(requestBody).then(telAuthResponse);
+    };
 
     // event handler: 전화번호 인증 및 인증번호 전송 버튼 클릭 이벤트 핸들러 //
     const onSendClickHandler = () => {
-        if(!telNumber) {
+        if (!telNumber) {
             setTelMessage('');
             return;
         }
 
         const pattern = /^[0-9]{11}$/;
         const isTrue = pattern.test(telNumber);
-        console.log("istrue:"+isTrue);
 
         if (isTrue) {
             setTelMessage('');
+            setIsMatched3(true);
             const requestBody: TelAuthRequestDto = { telNumber };
             telAuthRequest(requestBody).then(telAuthResponse);
         } else {
@@ -273,7 +312,7 @@ export default function SignUp() {
 
     // event handler: 인증 번호 확인 버튼 클릭 이벤트 핸들러 //
     const onCheckClickHandler = () => {
-        if(!telAuthNumber) return;
+        if (!telAuthNumber) return;
 
         const requestBody: TelAuthCheckRequestDto = { telNumber, telAuthNumber };
         telAuthCheckRequest(requestBody).then(telAuthCheckResponse);
@@ -288,7 +327,7 @@ export default function SignUp() {
 
     // event handler: 회원가입 버튼 클릭 이벤트 핸들러 //
     const signUpClickHandler = () => {
-        if(!isPossible) {
+        if (!isPossible) {
             alert('정확하게 입력해주세요.');
             return;
         }
@@ -308,6 +347,26 @@ export default function SignUp() {
         alert('회원가입이 완료되었습니다.');
         signUpRequest(requestBody).then(signUpResponse);
     }
+
+
+    // Effect: 타이머 기능 구현 //
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isMatched1) {
+            interval = setInterval(() => {
+                setTimer((prevTimer) => {
+                    if (prevTimer <= 1) {
+                        clearInterval(interval);
+                        setIsMatched1(false);
+                        return 0;
+                    }
+                    return prevTimer - 1;
+                });
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [isMatched1]);
 
     // event handler: 전체 동의 핸들러 //
     const handleAllChecked = (e: ChangeEvent<HTMLInputElement>) => {
@@ -343,57 +402,60 @@ export default function SignUp() {
 
     //render: 회원가입 화면 렌더링 //
     return (
-        <div id='sign-up' style={{width:"450px"}}>
+        <div id='sign-up' style={{ width: "450px" }}>
             <div className='auth-title'>회원가입</div>
 
             <div className='sub-title'>SNS 회원가입</div>
             <SnsContainer />
-            <hr className='hr-custom-two'/>
+            <hr className='hr-custom-two' />
 
             <div className='login-box'>
-                
+
                 <div className='box-test'>
-                    <input className='inputs' placeholder='아이디' value={id} onChange={idChangeHandler}/>
+                    <input className='inputs' placeholder='아이디' value={id} onChange={idChangeHandler} />
                     <div className='send-button' onClick={idDuplicatedCheck}>중복 확인</div>
                 </div>
-                <div className= {idMsgBool ? 'message-true' : 'message-false'}>{idMessage}</div>
+                <div className={idMsgBool ? 'message-true' : 'message-false'}>{idMessage}</div>
 
-                <input className='inputs1' placeholder='비밀번호 (영문+숫자 8~13자)' type='password' value={password} onChange={passwordChangeHandler}/>
-                <div className= {isPwMatched1 ? 'message-true' : 'message-false'}>{passwordMessage}</div>
+                <input className='inputs1' placeholder='비밀번호 (영문+숫자 8~13자)' type='password' value={password} onChange={passwordChangeHandler} />
+                <div className={isPwMatched1 ? 'message-true' : 'message-false'}>{passwordMessage}</div>
 
-                <input className='inputs1' placeholder='비밀번호 확인' type='password' value={passwordCheck} onChange={onPwCheckChangeHandler}/>
+                <input className='inputs1' placeholder='비밀번호 확인' type='password' value={passwordCheck} onChange={onPwCheckChangeHandler} />
                 <div className={isPwMatched2 ? 'message-true' : 'message-false'}>{pwCheckMsg}</div>
 
-                <input className='inputs1' placeholder='이름' style={{marginBottom:"25px"}} value={name} onChange={onNameChangeHandler}/>
+                <input className='inputs1' placeholder='이름' style={{ marginBottom: "25px" }} value={name} onChange={onNameChangeHandler} />
 
-                <input className='inputs1' placeholder='생년월일(YYYYMMDD)' value={birth} onChange={onBirthChangeHandler} 
-                        maxLength={8}/>
-                <div className= {birthMsgBool ? 'message-true' : 'message-false'}>{birthMessage}</div>
+                <input className='inputs1' placeholder='생년월일(YYYYMMDD)' value={birth} onChange={onBirthChangeHandler}
+                    maxLength={8} />
+                <div className={birthMsgBool ? 'message-true' : 'message-false'}>{birthMessage}</div>
 
                 <div className='gender-box'>
-                    <div 
-                        onClick={() => {selectedGenderClickHandler('여')}}
-                        className= {selectedGender === '여' ? 'selected' : 'unselected'}
+                    <div
+                        onClick={() => { selectedGenderClickHandler('여') }}
+                        className={selectedGender === '여' ? 'selected' : 'unselected'}
                     >여성</div>
-                    <div 
-                        onClick={() => {selectedGenderClickHandler('남')}}
-                        className= {selectedGender === '남' ? 'selected' : 'unselected'}
+                    <div
+                        onClick={() => { selectedGenderClickHandler('남') }}
+                        className={selectedGender === '남' ? 'selected' : 'unselected'}
                     >남성</div>
                 </div>
 
                 <div className='box-test'>
-                    <input className='inputs' placeholder='전화번호 – 빼고 입력해주세요' value={telNumber} onChange={onTelNumberChangeHandler} />
-                    <div className='send-button' onClick={onSendClickHandler}>전화번호 인증</div>
+                    <input className='inputs' placeholder='전화번호를 입력해주세요' value={displayFormattedPhoneNumber(telNumber)} onChange={onTelNumberChangeHandler} />
+                    <div className='send-button' onClick={!isMatched1 ? onSendClickHandler : resendVerification}>{isMatched3 ? '재전송' : '전화번호 인증'}</div>
                 </div>
-                <div className= {isMatched1 ? 'message-true' : 'message-false'}>{telMessage}</div>
+                <div className={isMatched1 ? 'message-true' : 'message-false'}>{telMessage}</div>
 
-                {isMatched1 && 
+                {isMatched1 &&
                     <div>
                         <div className='box-test'>
-                            <input className='inputs' placeholder='인증번호 4자리' onKeyDown={handleKeyDown} value={telAuthNumber} onChange={onAuthNumberChangeHandler}/>
+                            <div className='input-wrapper'>
+                                <input className='inputs' placeholder='인증번호 4자리' onKeyDown={handleKeyDown} value={telAuthNumber} onChange={onAuthNumberChangeHandler} />
+                                <div className='timer'>{formatTime()}</div>
+                            </div>
                             <div className='send-button' onClick={onCheckClickHandler}>인증 확인</div>
                         </div>
-                        <div className= {isMatched2 ? 'message-true' : 'message-false'}>{authMessage}</div>
+                        <div className={isMatched2 ? 'message-true' : 'message-false'}>{authMessage}</div>
                     </div>
                 }
 

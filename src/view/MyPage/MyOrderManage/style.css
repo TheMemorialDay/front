@@ -70,9 +70,10 @@
   width: 97%;
   display: flex;
   justify-content: space-between;
-  align-self: center;
+  align-items: center;
 
   font-size: 18px;
+  max-height: 22.5px;
 }
 
 .order-box-bottom {
@@ -171,6 +172,9 @@
   background-color: rgba(183, 240, 177, 0.8);
   box-shadow: 3px 3px gray;
   cursor: pointer;
+  height: 15px;
+  display: flex;
+  align-items: center;
 }
 
 .write-review:hover {
