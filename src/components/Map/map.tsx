@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import './style.css';
 
 
 declare global {
@@ -31,9 +32,11 @@ const MapContainer = ({ storeLatitude, storeLongtitude }: MapContainerPros) => {
   }, [])
 
   return (
-    <div id="map" style={{
-      width: "400px", height: "400px", border: "2px solid #000000", borderRadius: "15px"
+    <div id='map'>
+    <div style={{
+      width: "70%", height: "400px", border: "2px solid #000000", borderRadius: "15px"
     }} />
+    </div>
   );
 }
 

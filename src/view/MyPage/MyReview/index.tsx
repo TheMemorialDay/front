@@ -102,7 +102,6 @@ export default function MyReview() {
         <div id='mypage-review-wrapper'>
             <div className='title'>REVIEW</div>
             <div className='main'>
-
                 {myReviewList.map((myReview, index) =>
                     <div style={{ marginTop: "30px" }}>
                         <div className='main-title'>
@@ -110,6 +109,7 @@ export default function MyReview() {
                                 {myReview.storeName}
                             </span>
                         </div>
+                        {isDraggingLeft && <div className="overlay" />}
                         <div className='review-box' draggable="true" onDragStart={handleDragStart} onDragOver={handleDragOver}
                             onDragEnd={handleDragEnd}
                             style={{ cursor: 'grab' }}>

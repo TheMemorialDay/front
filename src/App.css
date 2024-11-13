@@ -28,9 +28,10 @@ body {
   width: 60px;
   height: 20px;
   padding: 10px;
-  /* box-sizing: border-box; */
   border-radius: 6px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   background-color: var(--black-color);
   color: var(--white-color);

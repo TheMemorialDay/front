@@ -19,6 +19,7 @@ export default interface NewOrderDetailsProps {
     optionSelect: string;
     name: string;
     telNumber: string;
+    photoUrl?: string;
 
     // options 필드 추가
     options: Array<{

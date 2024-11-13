@@ -1761,6 +1761,109 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
+<hr>
+
+#### - 로그인 유저 정보 불러오기
+  
+##### 설명
+
+클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
+로그인한 유저의 이름, 권한, 전화번호, 사장일 경우에는 가게 번호를 요청할 수 있으며 성공 시 성공에 대한 응답을 받습니다. 데이터베이스 에러가 발생할 수 있습니다.
+
+- method : **GET**  
+- URL : **/get-sign-in**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Authorization | Bearer 토큰 인증 헤더 | O |
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+
+
+###### Example
+
+```bash
+curl -v -X GET "http://localhost:4000/api/v1/get-sign-in" \
+ -h "Authorization=Bearer XXXX" 
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+| userId | String | 로그인한 유저의 아이디 | O |
+| name | String | 로그인한 유저의 이름 | O |
+| telNumber | String | 로그인한 유저의 전화번호 | O |
+| permission | String | 로그인한 유저의 권한 | O |
+| storeNumber | Integer | 로그인한 유저가 사장일 경우, 가게 번호 | X |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success",
+  "userId": "qwer1234",
+  "name": "홍길동",
+  "telNumber": "01012345678",
+  "permission": "사장",
+  "storeNumber": 1
+}
+```
+
+
+**응답 : 실패 (존재하지 않는 고객)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "NU",
+  "message": "No exist user."
+}
+```
+
+**응답 : 실패 (인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "AF",
+  "message": "Authentication fail."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase Error"
+}
+```
+
 ***
 
 #### - 회원 탈퇴

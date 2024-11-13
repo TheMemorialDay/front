@@ -105,7 +105,7 @@ export default function ShopMain() {
         <div className='shop-comment'>
           <div>
             <span className='shop-ment-name'>{storeName}</span>
-            <span className='shop-ment-rating'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating}</span>
+            <span className='shop-ment-rating'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating?.toFixed(1)}</span>
             <h2 className='shop-ment'>{storeGugun}&nbsp;{storeDong}&nbsp;{storeDetailAddress}</h2>
             <h2 className='shop-ment-day'>
               {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => {

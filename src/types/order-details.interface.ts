@@ -17,6 +17,7 @@ export default interface OrderDetailsProps {
     cancelCode: string | null;
     cancelReason: string | null;
     optionSelect: string;
+    photoUrl?: string;
     // name: string;
     // telNumber: string;
 

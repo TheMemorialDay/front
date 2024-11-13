@@ -3,11 +3,10 @@ import './style.css';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, JO_OKAY_ABSOLUTE_PATH, ROOT_ABSOLUTE_PATH } from '../../constants';
 import { PatchJoinRequestDto } from '../../apis/dto/request/join';
-import { checkBusinessNumRequest, checkBusinessRequest, fileUploadRequest, patchJoinRequest } from '../../apis';
+import { checkBusinessRequest, fileUploadRequest, patchJoinRequest } from '../../apis';
 import { useCookies } from 'react-cookie';
 import { ResponseDto } from '../../apis/dto/response';
 import { useSignInUserStore } from '../../stores';
-import BusinessNumCheckRequestDto from '../../apis/dto/request/join/business-num-check.request.dto';
 import BusinessCheckRequestDto from '../../apis/dto/request/join/business-check.request.dto';
 
 
@@ -32,27 +31,10 @@ export default function Join() {
     const [businessFile, setBusinessFile] = useState<File | null>(null);
     const [sendUrl, setSendUrl] = useState<string | null>('');
 
-    // // effect: sendUrl 업데이트 //
-    // useEffect(() => {
-    //     if (sendUrl && signInUser?.name) {
-    //         // const requestBody: BusinessNumCheckRequestDto = {
-    //         //     b_no: [businessNumber]
-    //         // };
-    //         // checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
-    //         const requestBody: BusinessCheckRequestDto = {
-    //             businesses: [{
-    //                 b_no: businessNumber,
-    //                 start_dt: openDate,
-    //                 p_nm: signInUser.name,
-    //                 p_nm2: "",
-    //                 b_nm: "",
-    //                 corp_no: "",
-    //                 b_sector: "",
-    //                 b_type: ""
-    //             }]
-    //         }
-    //     }
-    // }, [sendUrl]);
+    let url: string | null = null;
+
+    // function: 네비게이션 함수 //
+    const navigator = useNavigate();
 
     // function: business check response 함수 //
     const businessCheckResponse = (responseBody: string | null | ResponseDto) => {
@@ -70,48 +52,13 @@ export default function Join() {
         const accessToken = cookies[ACCESS_TOKEN];
         if(!accessToken) return;
 
-        console.log("send file: " + sendUrl);
-        if(signInUser?.userId && sendUrl) {
+        console.log("send file: " + url);
+        if(signInUser?.userId && url) {
             const requestBody: PatchJoinRequestDto = {
                 businessNumber,
                 businessOpendate: openDate,
                 permission: "사장",
-                businessUrl: sendUrl
-            };
-            console.log(requestBody);
-            patchJoinRequest(requestBody, signInUser.userId, accessToken).then(patchJoinResponse);
-        }
-    }
-
-    // function: 네비게이션 함수 //
-    const navigator = useNavigate();
-    
-    // function: business number check api response 처리 //
-    const businessNumCheckResponse = (responseBody: string | null | ResponseDto) => {
-
-        const message = 
-            !responseBody ? '서버에 문제가 있습니다.1' :
-            responseBody === '01' ? '사업자 등록 인증 완료.' :
-            responseBody === '02' ? '휴업자는 등록 불가합니다.' :
-            responseBody === '03' ? '폐업자는 등록 불가합니다.' : responseBody;
-
-        const isSuccessed = responseBody !== null && responseBody === '01';
-        if(!isSuccessed) {
-            alert(message);
-            return;
-        }
-        console.log(message);
-
-        const accessToken = cookies[ACCESS_TOKEN];
-        if(!accessToken) return;
-
-        console.log("send file: " + sendUrl);
-        if(signInUser?.userId && sendUrl) {
-            const requestBody: PatchJoinRequestDto = {
-                businessNumber,
-                businessOpendate: openDate,
-                permission: "사장",
-                businessUrl: sendUrl
+                businessUrl: url
             };
             console.log(requestBody);
             patchJoinRequest(requestBody, signInUser.userId, accessToken).then(patchJoinResponse);
@@ -172,6 +119,7 @@ export default function Join() {
     // event handler: 취소 버튼 클릭 이벤트 핸들러 //
     const onCancleButtonClickHandler = () => {
         navigator(ROOT_ABSOLUTE_PATH);
+        
     }
 
     // event handler: 등록 버튼 클릭 이벤트 핸들러 //
@@ -184,13 +132,13 @@ export default function Join() {
             return;
         }
 
-        let url: string | null = null;
+        
         if(businessFile) {
             const formData = new FormData();
             formData.append('file', businessFile);
             url = await fileUploadRequest(formData);
             console.log("selected file: " + url);
-            setSendUrl(url);
+            //setSendUrl(url);
         }
 
         if(signInUser && url) {
@@ -214,16 +162,6 @@ export default function Join() {
             if(!accessToken) return;
             checkBusinessRequest(requestBody).then(businessCheckResponse);
         }
-
-        // if(signInUser?.userId && url) {
-        //     const requestBody: BusinessNumCheckRequestDto = {
-        //         b_no: [businessNumber]
-        //     }
-        //     checkBusinessNumRequest(requestBody).then(businessNumCheckResponse);
-        // }else {
-        //     alert('사업자 등록증 PDF 파일을 등록하여 주세요.');
-        //     return;
-        // }
     }
 
     // render: 사장 권한 등록 조인 화면 렌더링 //
