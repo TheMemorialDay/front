@@ -28,11 +28,15 @@ import PatchOrderStatusReqeustDto from "./dto/request/order/patch-order-status-r
 import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
 import { PostReviewRequestDto } from "./dto/request/review";
 import { getMypageLikeStoreReviewNRating } from "./dto/response/like";
+import { GetKeywordResponseDto } from "./dto/response/main";
 
 
 // variable: API URL 상수 //
 
 const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
+
+//* 키워드
+const GET_KEYWORD_API_URL = `${MEMORIALDAY_API_DOMAIN}/`;
 
 const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
 
@@ -131,6 +135,14 @@ const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorizatio
 const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
     const { data } = response;
     return data;
+};
+
+// function: get keyword 요청 함수 //
+export const getKeywordRequest = async () => {
+    const responseBody = await axios.get(GET_KEYWORD_API_URL)
+        .then(responseDataHandler<GetKeywordResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
 // function: get store number 요청 함수 //

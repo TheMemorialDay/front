@@ -4,22 +4,33 @@ import axios from 'axios';
 
 // component: 메인 페이지 컴포넌트 //
 export default function Home() {
+    //% useRef
     const readerRef = useRef<HTMLDivElement>(null);
     const sectionRef = useRef<HTMLDivElement>(null);
+
+    // state:  //
     const [visibleSections, setVisibleSections] = useState([false, false, false]);
 
+    // function: 인기 키워드 불러오기 response 처리 함수 //
+    const getKeywordResponse = () => {
+        
+    };
+
+    // event handler: //
     const scrollToReader = () => {
         if (readerRef.current) {
             readerRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
+    // event handler: //
     const scrollToSection = () => {
         if (sectionRef.current) {
             sectionRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
+    // event handler: //
     const onAnswerButtonClickHandler = (index: number) => {
         const newVisibleSections = [...visibleSections];
         newVisibleSections[index] = !newVisibleSections[index];
@@ -94,9 +105,12 @@ export default function Home() {
                     </div>
                 </div>
             </section>
+
+            {/* 인기 키워드 */}
             <section ref={sectionRef}>
                 <h2><span>#여자친구</span> #졸업</h2>
             </section>
+
             <a className='go-to-stores' href='/stores' >지금 바로 둘러보기</a>
             {/* <footer>
                 <div className='footer-in-box'>
