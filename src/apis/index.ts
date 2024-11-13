@@ -12,7 +12,7 @@ import { GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
 import { PostProductRequestDto } from './dto/request/product/post-product-request.dto'; // DTO import
 import { GetProductListResponseDto, GetProductResponseDto } from './dto/response/product';
 import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
-import { PatchStoreRequestDto, PostKeywordRequestDto } from "./dto/request/store";
+import { PatchStoreRequestDto } from "./dto/request/store";
 import BusinessCheckRequestDto from "./dto/request/join/business-check.request.dto";
 import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
@@ -27,27 +27,19 @@ import { PostLikeStoreRequestDto, PostPayMentRequestDto } from "./dto/request";
 import PatchOrderStatusReqeustDto from "./dto/request/order/patch-order-status-request.dto";
 import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
 import { PostReviewRequestDto } from "./dto/request/review";
-import { GetKeywordListResponseDto } from "./dto/response/keyword/get-keyword-list.response";
 import { getMypageLikeStoreReviewNRating } from "./dto/response/like";
-<<<<<<< HEAD
-import { GetKeywordResponseDto } from "./dto/response/main";
-=======
+import { GetHotThemeResponseDto, GetKeywordResponseDto } from "./dto/response/home";
 import NewGetOrderManageList from "./dto/response/new-get-order-manage.response.dto";
-import { FullOrder } from "./dto/response/sales/get-sales.response.dto";
 import { SalesListResponseDto } from "./dto/response/sales/get-sales-list.response.dto";
->>>>>>> bdc1638b35981b94e8256e10df5086a87e642ca9
 
 
 // variable: API URL 상수 //
 
 const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
 
-<<<<<<< HEAD
-//* 키워드
-const GET_KEYWORD_API_URL = `${MEMORIALDAY_API_DOMAIN}/`;
-=======
-const GET_KEYWORD_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/popular-keyword`;
->>>>>>> bdc1638b35981b94e8256e10df5086a87e642ca9
+//* 홈 - 키워드 & 테마
+const GET_KEYWORD_API_URL = `${MEMORIALDAY_API_DOMAIN}/hot-keyword`;
+const GET_THEME_API_URL = `${MEMORIALDAY_API_DOMAIN}/hot-theme`;
 
 const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
 
@@ -149,10 +141,18 @@ const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
     return data;
 };
 
-// function: get keyword 요청 함수 //
+// function: get hot keyword 요청 함수 //
 export const getKeywordRequest = async () => {
     const responseBody = await axios.get(GET_KEYWORD_API_URL)
         .then(responseDataHandler<GetKeywordResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: get hot theme 요청 함수 //
+export const getThemeRequest = async () => {
+    const responseBody = await axios.get(GET_THEME_API_URL)
+        .then(responseDataHandler<GetHotThemeResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 };
@@ -526,15 +526,6 @@ export const getProductPreviewListRequest = async (storeNumber: string | number)
     return responseBody;
 }
 
-
-// // function: get MyPage Store 요청 함수 //
-// export const getMyPageStoreRequest = async (storeNumber: number | string, accessToken: string) => {
-//     const responseBody = await axios.get(GET_MYPAGE_STORE_API_URL(storeNumber), bearerAuthorization(accessToken))
-//         .then(responseDataHandler<GetStoreResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// }
-
 // function: get Sales 요청 함수 //
 export const getSalesRequest = async (userId: string, accessToken: string) => {
     const responseBody = await axios.get(GET_SALES_API_URL(userId), bearerAuthorization(accessToken))
@@ -682,7 +673,6 @@ export const deleteQnARequest = async (questionNumber: number | string, accessTo
     return responseBody;
 }
 
-<<<<<<< HEAD
 //* 회원 탈퇴
 // function: delete user 요청 함수 //
 export const deleteUserRequest = async (accessToken: string) => {
@@ -700,15 +690,4 @@ export const postKeywordRequest = async (keyword: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 };
-=======
-// function: get popular keyword 요청 함수 //
-export const getKeywordListRequest = () => {
-    return axios.get(GET_KEYWORD_LIST_API_URL)
-        .then(response => response.data)
-        .catch(error => {
-            console.error("에러:", error);
-            return null;
-        });
-};
 
->>>>>>> bdc1638b35981b94e8256e10df5086a87e642ca9

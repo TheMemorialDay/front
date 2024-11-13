@@ -59,6 +59,7 @@ import { GetSignInRequest } from './apis';
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
 import { useSignInUserStore } from './stores';
+import { KeywordComponentProps } from './types';
 
 
 // component: root path 컴포넌트 //
@@ -166,7 +167,7 @@ export default function TheMemorialDay() {
     <>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route index element={<Index />} />
+          <Route index element={<Index/>} />
         </Route>
 
         <Route path={ST_PATH} element={<MainLayout />}>

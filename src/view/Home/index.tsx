@@ -1,37 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import './style.css';
-import axios from 'axios';
 import KeywordCloud from '../../components/keyword';
 
 // component: 메인 페이지 컴포넌트 //
 export default function Home() {
-    //% useRef
     const readerRef = useRef<HTMLDivElement>(null);
     const sectionRef = useRef<HTMLDivElement>(null);
-
-    // state:  //
     const [visibleSections, setVisibleSections] = useState([false, false, false]);
 
-    // function: 인기 키워드 불러오기 response 처리 함수 //
-    const getKeywordResponse = () => {
-        
-    };
-
-    // event handler: //
     const scrollToReader = () => {
         if (readerRef.current) {
             readerRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
-    // event handler: //
     const scrollToSection = () => {
         if (sectionRef.current) {
             sectionRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
-    // event handler: //
     const onAnswerButtonClickHandler = (index: number) => {
         const newVisibleSections = [...visibleSections];
         newVisibleSections[index] = !newVisibleSections[index];
@@ -109,11 +97,24 @@ export default function Home() {
 
             {/* 인기 키워드 */}
             <section ref={sectionRef}>
-                <h2>인기 키워드</h2>
+                {/* <h2><span>#여자친구</span> #졸업</h2> */}
                 <KeywordCloud />
             </section>
 
             <a className='go-to-stores' href='/stores' >지금 바로 둘러보기</a>
+            {/* <footer>
+                <div className='footer-in-box'>
+                    <div className='footer-title-logo'>
+                        <div style={{fontWeight: '600'}}>The Memorial Day</div>
+                        <div style={{fontSize: '12px'}}> &copy; 2024. B Team All rights reserved</div>
+                    </div>
+                    <div className='footer-content'>
+                        <div>이메일: rpaeheh@naver.com</div>
+                        <div>대표자: 이찬숙, 송태휘, 정호정, 김도연</div>
+                        <div>제작 기간: 2024.10.01 ~ 2024.11.21</div>
+                    </div>
+                </div>
+            </footer> */}
         </div>
     );
 }

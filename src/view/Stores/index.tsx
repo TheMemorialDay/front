@@ -11,7 +11,6 @@ import { ACCESS_TOKEN, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
 import { PostLikeStoreRequestDto } from '../../apis/dto/request';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
-import { PostKeywordRequestDto } from '../../apis/dto/request/store';
 
 interface CakeComponentProps {
   imageUrl: string;
@@ -511,6 +510,8 @@ export default function Stores() {
     const { storeDetails } = responseBody as GetStoreListResponseDto;
     setStoreList(storeDetails);
     originalList.current = storeDetails;
+
+    setMainSearch('');
   };
   //* ======================================== store main search
 
@@ -685,6 +686,7 @@ export default function Stores() {
               placeholder='검색어 입력'
               onChange={onMainSearchChangeHandler}
               onKeyDown={onStoresSearchKeyDownHandler}
+              value={mainSearch}
             />
             <img onClick={onStoresSearchClickHandler} src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
