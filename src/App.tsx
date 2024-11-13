@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 
 import MainLayout from './layouts/MainLayout';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
 
 import {
   JO_PATH, LOGIN_PATH, OTHERS_PATH, ROOT_ABSOLUTE_PATH, SIGN_UP_PATH, ST_CONTACT_DETAIL_PATH,
@@ -18,7 +18,8 @@ import {
   ROOT_PATH,
   SIGN_IN_ABSOLUTE_PATH,
   JO_USER_PATH,
-  MY_LIKE_DETAIL_PATH
+  MY_LIKE_DETAIL_PATH,
+  SNS_SUCCESS_PATH
 } from './constants';
 
 import Stores from './view/Stores';
@@ -77,6 +78,34 @@ function Index() {
       <Home />
     </>
   );
+}
+
+// component: SNS Success 컴포넌트 //
+function SnsSuccess() {
+
+  // state: Query Parameter 상태 //
+  const [queryParam] = useSearchParams();
+  const accessToken = queryParam.get('accessToken');
+  const expiration = queryParam.get('expiration');
+
+  // state: cookie 상태 //
+  const [cookies, setCookie] = useCookies();
+
+  // function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  // effect: Sns Success 컴포넌트 로드시 accessToken과 expiration을 확인하여 로그인 처리 함수 //
+  useEffect(() => {
+    if (accessToken && expiration) {
+      const expires = new Date(Date.now() + (Number(expiration) * 1000));
+      setCookie(ACCESS_TOKEN, accessToken, { path: ROOT_PATH, expires });
+
+      navigator(ROOT_ABSOLUTE_PATH);
+    }
+    else navigator(SIGN_IN_ABSOLUTE_PATH);
+  }, []);
+  // render: Sns Success 컴포넌트 렌더링 //
+  return <></>;
 }
 
 // component: TheMemorialDay 컴포넌트 //
@@ -172,6 +201,7 @@ export default function TheMemorialDay() {
 
         </Route>
         <Route path={OTHERS_PATH} element={<Index />} />
+        <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
         <Route path={LOGIN_PATH} element={<MainLayout />} >
           <Route path={LOGIN_PATH} element={<Auth />} />
           <Route path={SIGN_UP_PATH} element={<SignUp />} />

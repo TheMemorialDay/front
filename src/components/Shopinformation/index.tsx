@@ -17,7 +17,7 @@ export default function ShopMain() {
   const [cookies] = useCookies();
 
   // state: 가게 번호 경로 변수 상태 //
-  const { storeNumber} = useParams();
+  const { storeNumber } = useParams();
   const [store, setStore] = useState<GetStoreResponseDto | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
 
@@ -94,7 +94,6 @@ export default function ShopMain() {
       console.log('가게 번호가 없습니다. 등록페이지로 이동합니다.');
       return;
     }
-    console.log("스토어 넘버: " + storeNumber);
 
     getStoreRequest(storeNumber).then(getStoreResponse);
   }, [storeNumber])
@@ -105,47 +104,47 @@ export default function ShopMain() {
         <div className='shop-image' style={{ backgroundImage: `url(${previewUrl})` }}></div>
         <div className='shop-comment'>
           <div>
-          <span className='shop-ment-name'>{storeName}</span>
-          <span className='shop-ment-rating'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating}</span>
-          <h2 className='shop-ment'>{storeGugun}&nbsp;{storeDong}&nbsp;{storeDetailAddress}</h2>
-          <h2 className='shop-ment-day'>
-            {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => {
-              const dayState = [monday, tuesday, wednesday, thursday, friday, saturday, sunday][index];
-              const isClosed = dayState.start === '휴무일' || dayState.end === '휴무일';
-              return (
-                <Tooltip TransitionComponent={Zoom} title={isClosed ? '휴무일' : `${dayState.start} ~ ${dayState.end}`} arrow
-                  slotProps={{
-                    popper: {
-                      sx: {
-                        [`&.${tooltipClasses.popper}[data-popper-placement*="bottom"] .${tooltipClasses.tooltip}`]:
-                        {
-                          marginTop: '3px',
-                        },
-                        [`&.${tooltipClasses.popper}[data-popper-placement*="top"] .${tooltipClasses.tooltip}`]:
-                        {
-                          marginBottom: '0px',
-                        },
-                        [`&.${tooltipClasses.popper}[data-popper-placement*="right"] .${tooltipClasses.tooltip}`]:
-                        {
-                          marginLeft: '0px',
-                        },
-                        [`&.${tooltipClasses.popper}[data-popper-placement*="left"] .${tooltipClasses.tooltip}`]:
-                        {
-                          marginRight: '0px',
+            <span className='shop-ment-name'>{storeName}</span>
+            <span className='shop-ment-rating'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐ {storeRating}</span>
+            <h2 className='shop-ment'>{storeGugun}&nbsp;{storeDong}&nbsp;{storeDetailAddress}</h2>
+            <h2 className='shop-ment-day'>
+              {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => {
+                const dayState = [monday, tuesday, wednesday, thursday, friday, saturday, sunday][index];
+                const isClosed = dayState.start === '휴무일' || dayState.end === '휴무일';
+                return (
+                  <Tooltip TransitionComponent={Zoom} title={isClosed ? '휴무일' : `${dayState.start} ~ ${dayState.end}`} arrow
+                    slotProps={{
+                      popper: {
+                        sx: {
+                          [`&.${tooltipClasses.popper}[data-popper-placement*="bottom"] .${tooltipClasses.tooltip}`]:
+                          {
+                            marginTop: '3px',
+                          },
+                          [`&.${tooltipClasses.popper}[data-popper-placement*="top"] .${tooltipClasses.tooltip}`]:
+                          {
+                            marginBottom: '0px',
+                          },
+                          [`&.${tooltipClasses.popper}[data-popper-placement*="right"] .${tooltipClasses.tooltip}`]:
+                          {
+                            marginLeft: '0px',
+                          },
+                          [`&.${tooltipClasses.popper}[data-popper-placement*="left"] .${tooltipClasses.tooltip}`]:
+                          {
+                            marginRight: '0px',
+                          },
                         },
                       },
-                    },
-                  }}>
-                  <div
-                    key={day}
-                    className={isClosed ? 'closed-day' : 'open-day'}>
-                    {day}
-                  </div>
-                </Tooltip>
-              );
-            })}
-          </h2>
-          <div className='shop-ment-intoroduce'>"{storeIntroduce}"</div>
+                    }}>
+                    <div
+                      key={day}
+                      className={isClosed ? 'closed-day' : 'open-day'}>
+                      {day}
+                    </div>
+                  </Tooltip>
+                );
+              })}
+            </h2>
+            <div className='shop-ment-intoroduce'>"{storeIntroduce}"</div>
           </div>
         </div>
       </div>

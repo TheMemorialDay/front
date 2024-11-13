@@ -183,8 +183,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
         })
         .catch(error => console.error(error));
     }
-    console.log("가게 별점: " + store.reviewRating);
-
   }, [store.storeNumber, userId]);
 
   // render: 스토어 리스트 컴포넌트 렌더링 //
@@ -199,10 +197,10 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
               <div className='like-count'>{store.likeList.length}</div>
             </div>
           </div>
-        <div className='store-card-bottom'>
-          <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
-          <p className="shop-rating">별점 {store.reviewRating}</p>
-          <p className="shop-reviews">리뷰 {store.reviewCount}</p>
+          <div className='store-card-bottom'>
+            <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
+            <p className="shop-rating">별점 {store.reviewRating}</p>
+            <p className="shop-reviews">리뷰 {store.reviewCount}</p>
           </div>
         </div>
       </div>
@@ -232,7 +230,7 @@ function SelectedThemes({ content, onRemove }: ThemeProps) {
 export default function Stores() {
 
   // component: 테마 //
-  const CakeThemes = ['심플', '화려함', '펑키', '크리스마스', '아이돌', '졸업', '귀여움', '러블리', '재미', '할로윈', '신년', '효도', '연인', '어린이', '웨딩', '취업/승진'];
+  const CakeThemes = ['#심플', '#화려함', '#펑키', '#크리스마스', '#아이돌', '#졸업', '#귀여움', '#러블리', '#재미', '#할로윈', '#신년', '#효도', '#연인', '#어린이', '#웨딩', '#취업/승진'];
 
   // component: 요일 //
   const Day = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
@@ -255,7 +253,6 @@ export default function Stores() {
     '연제구': ['거제동', '연산동'],
     '중구': ['중앙동', '동광동', '대청동', '보수동', '부평동', '광복동', '남포동', '영주동'],
     '해운대구': ['우동', '중동', '좌동', '송정동', '반여동', '반송동', '재송동']
-
   }
 
   // state: 원본 리스트 상태 //
@@ -423,6 +420,7 @@ export default function Stores() {
   const handleGugunRemove = () => {
     setSelectedGugun('');
     setSelectedDong('');
+    setDongList([]);
   };
 
   // event handler: 선택된 동 삭제 클릭 이벤트 //
@@ -577,6 +575,8 @@ export default function Stores() {
         for (const theme of item.themes[0]) {
           if (selectedThemes.includes(theme)) {
             console.log(selectedThemes);
+            console.log("selectedThemes:", selectedThemes);
+            console.log("현재 theme:", theme);
             existed = true;
             break;
           }

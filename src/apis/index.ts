@@ -18,7 +18,7 @@ import ApiResponseDto from "./dto/response/join/api-response.dto";
 import GetStoreNumber from './dto/response/product/get-store-number-response.dto';
 import IdSearchNameTelNumberRequestDto from "./dto/request/auth/Id-search-name-tel-number.request.dto";
 import IdSearchTelAndAuthRequestDto from "./dto/request/auth/Id-search-tel-and-auth.request.dto";
-import { PostOrderRequestDto } from './dto/request/order';
+import { PostOrderRequestDto, PostSendPaymentMsgRequestDto } from './dto/request/order';
 import GetMyPageLikeStoreListResponseDto from './dto/response/like/get-mypage-likestore-list.response.dto';
 import GetOrderDetailListResponseDto from './dto/response/get-order-detail-list.response.dto';
 import { GetNoticeDetailResponseDto, GetNoticeListResponseDto, GetQnADetailResponseDto, GetQnAListResponseDto } from './dto/response/support';
@@ -27,16 +27,27 @@ import { PostLikeStoreRequestDto, PostPayMentRequestDto } from "./dto/request";
 import PatchOrderStatusReqeustDto from "./dto/request/order/patch-order-status-request.dto";
 import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
 import { PostReviewRequestDto } from "./dto/request/review";
+import { GetKeywordListResponseDto } from "./dto/response/keyword/get-keyword-list.response";
 import { getMypageLikeStoreReviewNRating } from "./dto/response/like";
+<<<<<<< HEAD
 import { GetKeywordResponseDto } from "./dto/response/main";
+=======
+import NewGetOrderManageList from "./dto/response/new-get-order-manage.response.dto";
+import { FullOrder } from "./dto/response/sales/get-sales.response.dto";
+import { SalesListResponseDto } from "./dto/response/sales/get-sales-list.response.dto";
+>>>>>>> bdc1638b35981b94e8256e10df5086a87e642ca9
 
 
 // variable: API URL 상수 //
 
 const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
 
+<<<<<<< HEAD
 //* 키워드
 const GET_KEYWORD_API_URL = `${MEMORIALDAY_API_DOMAIN}/`;
+=======
+const GET_KEYWORD_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/popular-keyword`;
+>>>>>>> bdc1638b35981b94e8256e10df5086a87e642ca9
 
 const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
 
@@ -91,6 +102,7 @@ const PATCH_ORDER_STATUS_API_URL = (orderCode: string) => `${MYPAGE_MODULE_URL}/
 const POST_REVIEW_API_URL = `${MYPAGE_MODULE_URL}/order-detail/write-review`;
 
 const GET_ORDER_MANAGE_API_URL = (storeNumber: number | string) => `${MYPAGE_MODULE_URL}/order-manage/${storeNumber}`;
+const POST_SEND_PAYMENT_MSG_API_URL = `${MYPAGE_MODULE_URL}/order-manage/send-pay-msg`;
 const GET_SALES_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/sales?userId=${userId}`;
 
 const AUTH_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/api/v1/auth`;
@@ -484,7 +496,15 @@ export const getOrderDetailRequest = async (userId: string, accessToken: string)
 // function: get Order Manage 요청 함수 //
 export const getOrderManageRequest = async (storeNumber: number | string, accessToken: string) => {
     const responseBody = await axios.get(GET_ORDER_MANAGE_API_URL(storeNumber), bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetOrderDetailListResponseDto>)
+        .then(responseDataHandler<NewGetOrderManageList>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: post send payment message 요청 함수 //
+export const postSendPaymentMsgRequest = async(requestBody: PostSendPaymentMsgRequestDto, accessToken: string) => {
+    const responseBody = await axios.post(POST_SEND_PAYMENT_MSG_API_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
@@ -518,10 +538,11 @@ export const getProductPreviewListRequest = async (storeNumber: string | number)
 // function: get Sales 요청 함수 //
 export const getSalesRequest = async (userId: string, accessToken: string) => {
     const responseBody = await axios.get(GET_SALES_API_URL(userId), bearerAuthorization(accessToken))
-        .then(responseDataHandler<GetOrderDetailListResponseDto>)
+        .then(responseDataHandler<SalesListResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
-}
+};
+
 
 // function: get product detail 요청 함수 //
 export const getProductDetailRequest = async (storeNumber: string | number, productNumber: string | number) => {
@@ -661,6 +682,7 @@ export const deleteQnARequest = async (questionNumber: number | string, accessTo
     return responseBody;
 }
 
+<<<<<<< HEAD
 //* 회원 탈퇴
 // function: delete user 요청 함수 //
 export const deleteUserRequest = async (accessToken: string) => {
@@ -678,3 +700,15 @@ export const postKeywordRequest = async (keyword: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 };
+=======
+// function: get popular keyword 요청 함수 //
+export const getKeywordListRequest = () => {
+    return axios.get(GET_KEYWORD_LIST_API_URL)
+        .then(response => response.data)
+        .catch(error => {
+            console.error("에러:", error);
+            return null;
+        });
+};
+
+>>>>>>> bdc1638b35981b94e8256e10df5086a87e642ca9

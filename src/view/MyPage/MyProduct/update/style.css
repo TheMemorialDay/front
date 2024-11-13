@@ -206,7 +206,7 @@
     flex-direction: column;
     height: auto;
     overflow: hidden;
-    width: 100%;
+    width: 100%
 }
 
 #add-product .product-info .radio-handler {
@@ -346,7 +346,7 @@
     gap: 15px;
     flex-direction: column;
     margin-top: 30px;
-
+    width: 100%;
 }
 
 #add-product .tag-chunks {
@@ -366,8 +366,8 @@
     white-space: nowrap; /* 줄바꿈 방지 */
 }
 
-#add-product .selected-tags {
-    width: 100%;
+.tag-select .selected-tags {
+
     height: 47px;
     font-size: 16px;
     font-weight: 500;
