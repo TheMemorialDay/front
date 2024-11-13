@@ -15,7 +15,7 @@ function Logo() {
 
     // variable: 특정 경로 여부 변수 //
     const isHome = pathname.startsWith(ROOT_PATH);
-    
+
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
 
@@ -23,7 +23,7 @@ function Logo() {
     const onItemClickHandler = (path: string) => {
         navigator(path);
     };
-    
+
 
     // render: 로고 컴포넌트 렌더링 //
     return (
@@ -42,7 +42,7 @@ function TopNavigation() {
     const { pathname } = useLocation();
 
     // state: login user state //
-    const {signInUser} = useSignInUserStore();
+    const { signInUser } = useSignInUserStore();
     const [userId, setUserId] = useState<string>('');
 
     // function: 네비게이터 함수 //
@@ -62,12 +62,12 @@ function TopNavigation() {
     // event handler: join page 클릭 이벤트 //
     const onJoinClickHandler = () => {
         //alert(signInUser?.permission);
-        if(signInUser?.userId && signInUser.permission === '일반') {
+        if (signInUser?.userId && signInUser.permission === '일반') {
             navigator(JO_USER_ABSOLUTE_PATH);
-        }else if(signInUser?.userId && signInUser.permission === '사장'){
+        } else if (signInUser?.userId && signInUser.permission === '사장') {
             alert('이미 가게가 등록된 계정입니다.');
             navigator(ROOT_ABSOLUTE_PATH);
-        }else {
+        } else {
             alert('로그인이 필요한 서비스입니다.');
             navigator(SIGN_IN_ABSOLUTE_PATH);
         }
@@ -80,7 +80,7 @@ function TopNavigation() {
                 <div className={`navigation-item ${isSt ? 'active' : ''}`} onClick={() => onItemClickHandler(ST_ABSOLUTE_PATH)}>
                     <div className='item-text'>STORES</div>
                 </div>
-                <a className={`navigation-item ${isHo ? 'active' : ''}`} aria-hidden="true" href="#read"  onClick={() => onItemClickHandler(HO_ABSOLUTE_PATH)}>
+                <a className={`navigation-item ${isHo ? 'active' : ''}`} aria-hidden="true" href="#read" onClick={() => onItemClickHandler(HO_ABSOLUTE_PATH)}>
                     <div className='item-text'>HOW</div>
                 </a>
                 <div className={`navigation-item ${isSu ? 'active' : ''}`} onClick={() => onItemClickHandler(SU_ABSOLUTE_PATH)}>
@@ -93,8 +93,6 @@ function TopNavigation() {
         </div>
     );
 }
-
-
 
 // component: 상단 네비게이션 컴포넌트 //
 function TopPersonalNavigation() {
@@ -114,7 +112,8 @@ function TopPersonalNavigation() {
 
     // event handler: 사람 아이콘 버튼 클릭 이벤트 //
     const onLogInClickHandler = () => {
-        navigator(LOGIN_PATH);
+        if (pathname === SIGN_IN_ABSOLUTE_PATH) window.location.reload();
+        navigator(SIGN_IN_ABSOLUTE_PATH);
     }
 
     // event handler: 회원가입 버튼 //
@@ -124,28 +123,23 @@ function TopPersonalNavigation() {
 
     // event Handler: 로그아웃 버튼 클릭 이벤트 처리 //
     const onLogoutButtonClickHandler = () => {
-        removeCookie(ACCESS_TOKEN, {path:ROOT_ABSOLUTE_PATH});
+        removeCookie(ACCESS_TOKEN, { path: ROOT_ABSOLUTE_PATH });
         navigator(ROOT_ABSOLUTE_PATH);
-    };
-
-    // event handler: 장바구니 아이콘 클릭 //
-    const onShoppingCartIconClickHandler = () => {
-        navigator(SHOPPING_CART_ABSOLUTE_PATH);
     };
 
     // render: 상단 컴포넌트 //
     return (
         <div id='layout-my'>
-            <div 
-                className='layout-my-icon' 
+            <div
+                className='layout-my-icon'
                 onMouseEnter={() => setIsHovered(true)}></div>
             {/* <div className='layout-my-cart' onClick={onShoppingCartIconClickHandler}></div> */}
-        
+
             {isHovered && (
                 <div className='menu-box'
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}>
-                    {!accessToken && 
+                    {!accessToken &&
                         <div>
                             <div className='menu' onClick={onLogInClickHandler}>로그인</div>
                             <div className='menu' onClick={onSignUpClickHandler}>회원가입</div>
@@ -157,7 +151,7 @@ function TopPersonalNavigation() {
                             <div className='menu' onClick={() => navigator('/mypage')}>마이페이지</div>
                         </div>
                     }
-                    
+
                 </div>
             )}
         </div>

@@ -498,6 +498,37 @@ export default function MyOrderDetail() {
 
     }
 
+    // Function: 픽업 완료 상태 업데이트 함수 //
+    const updateCompletedPickups = async () => {
+        const accessToken = cookies[ACCESS_TOKEN];
+        if (!accessToken) {
+            console.log('토큰 오류');
+            return;
+        }
+
+        // Function: 현재 시간 기준으로 픽업 완료 상태로 변경해야 할 주문들 필터링 //
+        const currentTime = new Date();
+        const ordersToUpdate = originalList.current.filter(order => {
+            const pickupTime = new Date(order.pickupTime);
+            return pickupTime <= currentTime && order.orderStatus !== '픽업 완료' && order.orderStatus !== '완료';
+        });
+
+        // Function: 서버에 PATCH 요청을 보내 orderStatus 업데이트 //
+        for (const order of ordersToUpdate) {
+            const requestBody: PatchOrderStatusReqeustDto = {
+                orderCode: order.orderCode,
+                orderStatus: '픽업 완료',
+            };
+            console.log('로딩 완료');
+
+            try {
+                await patchOrderStatusRequest(requestBody, order.orderCode, accessToken);
+            } catch (error) {
+                console.error('주문 상태 업데이트 오류:', error);
+            }
+        }
+    };
+
     // function: order detail list 불러오기 함수 //
     const getOrderDetailList = () => {
         const accessToken = cookies[ACCESS_TOKEN];
@@ -505,7 +536,7 @@ export default function MyOrderDetail() {
             console.log('접근 권한이 없습니다.');
             return;
         }
-        getOrderDetailRequest(signInUser.userId, accessToken).then(getOrderDetailResponse);
+        getOrderDetailRequest(signInUser.userId, accessToken).then(getOrderDetailResponse).then(updateCompletedPickups);
     }
 
     // effect: 유저 정보 불러오기 함수 //
