@@ -134,7 +134,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const [authMessage, setAuthMessage] = useState<string>('');
 
     // state: 타이머 상태 //
-    const [timer, setTimer] = useState(10);
+    const [timer, setTimer] = useState(180);
 
     // state: 타이머를 멈출 상태 추가
     const [stopTimer, setStopTimer] = useState(false);

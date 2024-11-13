@@ -22,8 +22,8 @@ The Memorial Day 서비스의 가게 관리와 관련된 REST API 모듈입니�
 
 클라이언트는 사업자 등록번호, 사업자 등록증 파일을 입력하여 요청하고 사업자 인증에 성공할 시 권한이 일반에서 사장으로 변경됩니다. 네트워크 에러, 서버 에러, 인증 에러, 데이티베이스 에러가 발생할 수 있습니다.   
 
-- method : **POST**  
-- URL : **/stores/join**  
+- method : **PATCH**  
+- URL : **/join/{userId}**  
 
 ##### Request
 
@@ -39,14 +39,18 @@ The Memorial Day 서비스의 가게 관리와 관련된 REST API 모듈입니�
 |---|:---:|:---:|:---:|
 | businessNumber | String | 사업자 등록번호 | O |
 | businessUrl | String | 사업자 등록증 파일 링크 | O |
+| businessOpendate | String | 사업 개시일 | O |
+| permission | String | 회원 권한 | O |
 
 ###### Example
 
 ```bash
-curl -v -X POST "http://localhost:4000/stores/join" \
+curl -v -X PATCH "http://localhost:4000/stores/join/qwer1234" \
  -h "Authorization=Bearer XXXX" \
  -d "businessNumber=5646531351" \
- -d "businessUrl=http://localhost:4000/file/bebd4a76-5278-4fe6-b140-4f87ed5e3151.jpg" 
+ -d "businessUrl=http://localhost:4000/file/bebd4a76-5278-4fe6-b140-4f87ed5e3151.jpg" \
+ -d "businessOpendate=20210101" \
+ -d "permission=사장"
 
 ```
 
@@ -92,7 +96,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -330,14 +333,14 @@ Content-Type: application/json;charset=UTF-8
 ```
 ***
 
-#### - 가게 상세 조회 -  주문하기  
+#### - 가게 상세 조회 - 상단의 가게 영업 정보
   
 ##### 설명
 
 클라이언트는 가게 상세 조회를 요청하고 조회가 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.
 
 - method : **GET**  
-- URL : **/stores/{storesNumber}/order**  
+- URL : **/stores/{storesNumber}**  
 
 ##### Request
 
@@ -368,15 +371,24 @@ Content-Type: application/json;charset=UTF-8
 |---|:---:|:---:|:---:|
 | code | String | 결과 코드 | O |
 | message | String | 결과 코드에 대한 설명 | O |
+| storeNumber | Integer | 가게 번호 | O |
+| userId | string | 가게 주인 | O |
 | storeName | String | 가게명 | O |
-| storeRating | Float | 가게 별점 | O |
-| storeAddress | String | 가게 주소 | O |
 | storeIntroduce | String | 가게 소개  | O |
-| storeUrl | String | 가게 이미지 URL | O |
-| productName | String | 상품 이름 | O |
-| productTag | String | 태그 내용 | O |
-| productPrice | int | 상품 가격 | O |
-| productOptionUrl | String | 상품 이미지 URL | X |
+| storePaticular | String | 가게 상세 소개 | O |
+| storeContact | String | 가게 연락 수단 | O |
+| storeCaution | String | 가게 유의 사항 | O |
+| storeAddress | String | 가게 주소 | O |
+| storeDetailAddress | String | 가게 상세 주소 | O |
+| storeGugun | String | 가게 주소 구/군 | O |
+| storeDong | String | 가게 주소 동/읍/면 / O |
+| storeTel | String | 가게 전화번호 | O |
+| storeLatitude | String | 가게 위도 | O |
+| storeLongtitude | String | 가게 경도 | O | 
+| storeRating | Double | 가게 별점 | O |
+| reviewCount | Integer | 가게 리뷰 개수 | O |
+| likeCount | Integer | 가게 찜하기 개수 | O |
+| storeImageUrl | String | 가게 대표 이미지 url | O |
 | sundayOpen          | Integer    | 일요일 오픈시간   | O |
 | sundayLast          | Integer    | 일요일 마감시간   | O |
 | mondayOpen          | Integer    | 월요일 오픈시간   | O |
@@ -397,42 +409,189 @@ Content-Type: application/json;charset=UTF-8
 **응답 성공**
 ```bash
 HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success.",
+  "storeNumber": 1,
+  "userId": "qwer1234",
+  "storeName": "Cafe Delight",
+  "storeIntroduce": "A cozy cafe with delightful drinks",
+  "storeParticular": "Perfect for casual meetings or solo work",
+  "storeContact": "01087654321",
+  "storeCaution": "유의 부탁 드립니다~",
+  "storeAddress": "서울 강남구 테헤란로 203",
+  "storeDetailAddress": "test address",
+  "storeGugun": "강남구",
+  "storeDong": "삼성동",
+  "storeTel": "0212345678",
+  "storeLatitude": "37.500621",
+  "storeLongtitude": "127.036431",
+  "storeRating": 4.75,
+  "reviewCount": 0,
+  "likeCount": null,
+  "storeImageUrl": "http://localhost:4000/file/7c9a7393-bab1-4319-8967-f9bd24cc4306.png",
+  "mondayOpen": "09:00",
+  "mondayLast": "18:00",
+  "tuesdayOpen": "09:00",
+  "tuesdayLast": "18:00",
+  "wednesdayOpen": "09:00",
+  "wednesdayLast": "18:00",
+  "thursdayOpen": "09:00",
+  "thursdayLast": "18:00",
+  "fridayOpen": "09:00",
+  "fridayLast": "18:00",
+  "saturdayOpen": "휴무일",
+  "saturdayLast": "휴무일",
+  "sundayOpen": "휴무일",
+  "sundayLast": "휴무일"
+}
+```
+
+**응답 실패 (존재하지 않는 가게)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "NS",
+  "message": "No exist store."
+}
+```
+
+**응답 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
 
 {
+  "code": "DBE",
+  "message": "Database error."
+}
+```
+***
+
+#### - 가게 상세 조회 - 가게 상품 불러오기
+  
+##### 설명
+
+클라이언트는 가게 내의 상품 
+
+- method : **GET**  
+- URL : **/stores/{storesNumber}**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+
+
+###### Example
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+| storeNumber | Integer | 가게 번호 | O |
+| userId | string | 가게 주인 | O |
+| storeName | String | 가게명 | O |
+| storeIntroduce | String | 가게 소개  | O |
+| storePaticular | String | 가게 상세 소개 | O |
+| storeContact | String | 가게 연락 수단 | O |
+| storeCaution | String | 가게 유의 사항 | O |
+| storeAddress | String | 가게 주소 | O |
+| storeDetailAddress | String | 가게 상세 주소 | O |
+| storeGugun | String | 가게 주소 구/군 | O |
+| storeDong | String | 가게 주소 동/읍/면 / O |
+| storeTel | String | 가게 전화번호 | O |
+| storeLatitude | String | 가게 위도 | O |
+| storeLongtitude | String | 가게 경도 | O | 
+| storeRating | Double | 가게 별점 | O |
+| reviewCount | Integer | 가게 리뷰 개수 | O |
+| likeCount | Integer | 가게 찜하기 개수 | O |
+| storeImageUrl | String | 가게 대표 이미지 url | O |
+| sundayOpen          | Integer    | 일요일 오픈시간   | O |
+| sundayLast          | Integer    | 일요일 마감시간   | O |
+| mondayOpen          | Integer    | 월요일 오픈시간   | O |
+| mondayLast          | Integer    | 월요일 마감시간   | O |
+| tuesdayOpen         | Integer    | 화요일 오픈시간   | O |
+| tuesdayLast         | Integer    | 화요일 마감시간   | O |
+| wednesdayOpen       | Integer    | 수요일 오픈시간   | O |
+| wednesdayLast       | Integer    | 수요일 마감시간   | O |
+| thursdayOpen        | Integer    | 목요일 오픈시간   | O |
+| thursdayLast        | Integer    | 목요일 마감시간   | O |
+| fridayOpen          | Integer    | 금요일 오픈시간   | O |
+| fridayLast          | Integer    | 금요일 마감시간   | O |
+| saturdayOpen        | Integer    | 토요일 오픈시간   | O |
+| saturdayLast        | Integer    | 토요일 마감시간   | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+{
   "code": "SU",
-  "message": "Success."
-  "stores":  [
-    {
-      "productName": "가게명임의값",
-      "storeRating": 4.5,
-      "storeAddress": "금정구 동부곡로 9번길 53 1층",
-      "sundayOpen": 11,
-      "sundayLast": 20,
-      "mondayOpen": 11,
-      "mondayLast": 20,
-      "tuesdayOpen": 11,
-      "tuesdayLast": 20,
-      "wednesdayOpen": 11,
-      "wednesdayLast": 20,
-      "thursdayOpen": 11,
-      "thursdayLast": 20,
-      "fridayOpen": 11,
-      "fridayLast": 20,
-      "saturdayOpen": 11,
-      "saturdayLast": 20,
-      "storeIntroduce": "생화 케이크 제작 전문점입니다.",
-      "storeUrl": "http://localhost:4000/file/store_image.jpg"
-    }
-  ]
-  "products":  [
-    {
-      "productName": "케이크1",
-      "productTag": "귀여움",
-      "productPrice": 35000,
-      "productOptionUrl": "http://localhost:4000/file/store_image.jpg"
-    }
-  ]
+  "message": "Success.",
+  "storeNumber": 1,
+  "userId": "qwer1234",
+  "storeName": "Cafe Delight",
+  "storeIntroduce": "A cozy cafe with delightful drinks",
+  "storeParticular": "Perfect for casual meetings or solo work",
+  "storeContact": "01087654321",
+  "storeCaution": "유의 부탁 드립니다~",
+  "storeAddress": "서울 강남구 테헤란로 203",
+  "storeDetailAddress": "test address",
+  "storeGugun": "강남구",
+  "storeDong": "삼성동",
+  "storeTel": "0212345678",
+  "storeLatitude": "37.500621",
+  "storeLongtitude": "127.036431",
+  "storeRating": 4.75,
+  "reviewCount": 0,
+  "likeCount": null,
+  "storeImageUrl": "http://localhost:4000/file/7c9a7393-bab1-4319-8967-f9bd24cc4306.png",
+  "mondayOpen": "09:00",
+  "mondayLast": "18:00",
+  "tuesdayOpen": "09:00",
+  "tuesdayLast": "18:00",
+  "wednesdayOpen": "09:00",
+  "wednesdayLast": "18:00",
+  "thursdayOpen": "09:00",
+  "thursdayLast": "18:00",
+  "fridayOpen": "09:00",
+  "fridayLast": "18:00",
+  "saturdayOpen": "휴무일",
+  "saturdayLast": "휴무일",
+  "sundayOpen": "휴무일",
+  "sundayLast": "휴무일"
+}
+```
+
+**응답 실패 (존재하지 않는 가게)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "NS",
+  "message": "No exist store."
 }
 ```
 

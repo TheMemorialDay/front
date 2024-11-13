@@ -52,7 +52,33 @@
     background-color: var(--white-color);
     color: var(--black-color);
 
-    border: 2px solid rgba(100, 100, 100, 1);
-    width: 76px;
-    line-height: 20px;
+    border: 1px solid rgba(100, 100, 100, 1);
+    width: 80px;
+    /* line-height: 20px; */
+    padding: 10px;
+    font-weight: 500;
+}
+
+#qa-write-wrapper .write-button {
+    background-color: var(--white-color);
+    color: var(--black-color);
+
+    border: 1px solid black;
+    width: 80px;
+    /* line-height: 20px; */
+    padding: 10px;
+    background-color: black;
+    color: white;
+    font-weight: 500;
+}
+
+#qa-write-wrapper .cancle-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.7);
+    color: white;
+}
+
+#qa-write-wrapper .write-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.7);
 }
