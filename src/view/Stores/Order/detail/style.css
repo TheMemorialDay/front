@@ -215,12 +215,11 @@
 }
 
 #product-order .cake-photo-pre {
-    width: 190px;
+    width: 250px;
     height: 250px;
     border-radius: 6px;
     border: 1px solid lightgray;
 
-    background-image: url('/public/images/cake/cake14.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 }
