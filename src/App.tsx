@@ -188,17 +188,6 @@ export default function TheMemorialDay() {
             </Route>
           </Route>
 
-          {/* <Route path={`${ST_NUMBER_PATH(':storeNumber')}/order/${ST_PRODUCT_ORDER_PATH(':productNumber')}`} element={<Order />} />
-          <Route path={`${ST_NUMBER_PATH(':storeNumber')}/order/${ST_ORDER_DONE_PATH}`} element={<DoneScreen />} />
-          <Route path={ST_NUMBER_PATH(':storeNumber')} element={<ShopMain />}>
-            <Route path={ST_ORDER_DETAIL_PATH}>
-              <Route index element={<ShopOrder />} />
-            </Route>
-            <Route path={ST_INFORMATION_DETAIL_PATH} element={<ShopInformation />} />
-            <Route path={ST_CONTACT_DETAIL_PATH} element={<ShopContact />} />
-            <Route path={ST_REVIEW_DETAIL_PATH} element={<ShopReview />} />
-          </Route> */}
-
         </Route>
         <Route path={OTHERS_PATH} element={<Index />} />
         <Route path={SNS_SUCCESS_PATH} element={<SnsSuccess />} />
