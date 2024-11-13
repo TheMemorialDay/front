@@ -16,6 +16,8 @@ import SelectedOptionInterface from "./selected-option.interface";
 import RunningHours from "./running-hour.interface";
 import MypageLikeStoreInfo from "./mypage-list-store-reviewNrating.interface";
 import NewOrderDetailsProps from "./new-mypage-order-manage.interface";
+import KeywordComponentProps from "./popular-keyword.interface";
+import ThemeComponentProps from "./popular-theme.interface";
 
 export type {
     Product,
@@ -35,5 +37,7 @@ export type {
     SelectedOptionInterface,
     RunningHours,
     MypageLikeStoreInfo,
-    NewOrderDetailsProps
+    NewOrderDetailsProps,
+    KeywordComponentProps,
+    ThemeComponentProps
 }

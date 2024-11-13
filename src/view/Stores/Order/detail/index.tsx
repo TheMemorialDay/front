@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, useParams } from 'react-router-dom';
 import { ACCESS_TOKEN, LOGIN_PATH, ST_ORDER_DONE_ABSOLUTE_PATH } from '../../../../constants';
-import { getProductDetailRequest, postOrderRequest } from '../../../../apis';
+import { fileUploadRequest, getProductDetailRequest, postOrderRequest } from '../../../../apis';
 import { GetProductDetailResponseDto } from '../../../../apis/dto/response/stores';
 import { ResponseDto } from '../../../../apis/dto/response';
 import { Option, RunningHours, SelectedOptionInterface } from '../../../../types';
@@ -80,6 +80,9 @@ function RadioButtonGroup({ name, value, price, selectedOptions, onSelect, optio
 // component: 상품 상세 페이지(주문 페이지)
 export default function Order() {
 
+  // variable: 기본 이미지 URL //
+  const defaultProfileImageUrl = process.env.PUBLIC_URL + '/defaultImage.png';
+
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
 
@@ -103,6 +106,8 @@ export default function Order() {
   // state: 사진 미리보기 상태 //
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const storeUrlInputRef = useRef<HTMLInputElement | null>(null);
+  const [storeImageUrl, setStoreImageUrl] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>(defaultProfileImageUrl);
 
   // state: 케이크 주문 관련 상태 //
   const [cakeCount, setCakeCount] = useState<number>(1);
@@ -220,10 +225,14 @@ export default function Order() {
     }
 
     const { orderProductDetails } = responseBody as GetProductDetailResponseDto;
+
+    if (orderProductDetails.storeCaution) {
+      setCaution(orderProductDetails.storeCaution.replace(/\\n/g, "\n"));
+    };
+
     setCakeName(orderProductDetails.productName);
     setPrice(orderProductDetails.productPrice);
     setFinalPrice(orderProductDetails.productPrice);
-    setCaution(orderProductDetails.storeCaution);
     setIntroduce(orderProductDetails.productIntroduce);
     setThemaList(orderProductDetails.themes);
     setImageList(orderProductDetails.productImages);
@@ -311,6 +320,22 @@ export default function Order() {
     current.click();
 };
 
+  // event handler: 대표 이미지 파일 선택 //
+  const onStoreUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target;
+    if (!files || !files.length) return;
+
+    const file = files[0];
+    setStoreImageUrl(file);
+
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onloadend = () => {
+        setPreviewUrl(fileReader.result as string);
+        //console.log(fileReader.result as string);
+    }
+  };
+
   // event handler: 주문하기 버튼 클릭 이벤트 핸들러 //
   const onOrderClickHandler = async () => {
     const accessToken = cookies[ACCESS_TOKEN];
@@ -332,6 +357,17 @@ export default function Order() {
       return;
     }
 
+    let url: string | null = null;
+    if (storeImageUrl) {
+      const formData = new FormData();
+      formData.append('file', storeImageUrl);
+      url = await fileUploadRequest(formData);
+    }
+    if(!url) {
+      alert("이미지 파일을 선택해주세요!");
+      return;
+    }
+
     const pickupTime = formatPickupTime(selectedDate.toISOString());
 
     const orderRequestBody: PostOrderRequestDto = {
@@ -339,6 +375,7 @@ export default function Order() {
       productCount: cakeCount,
       productContents: request,
       totalPrice: finalPrice,
+      photoUrl: url,
       options: selectedOptions.map(option => ({
         optionCategoryNumber: option.optionCategoryNumber
       }))
@@ -448,7 +485,9 @@ export default function Order() {
           <div style={{marginTop: "20px", display: "flex", flexDirection: "column"}}>
             <div className='option-title'>사진 첨부<span style={{ color: "red" }}>*</span></div>
             <div className='cake-photo-zone'>
-              <div className='cake-photo-pre'></div>
+              <div className='cake-photo-pre' style={{ backgroundImage: `url(${previewUrl})` }}>
+                <input ref={storeUrlInputRef} style={{ display: 'none' }} type='file' accept='image/*' onChange={onStoreUrlChange} />
+              </div>
               <div className='cake-photo-file-pick' onClick={onStoreImageClickHandler}>파일 선택</div>
             </div>
           </div>
@@ -457,7 +496,7 @@ export default function Order() {
 
         <div style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}>
           <div className='option-title'>유의사항 확인<span style={{ color: "red" }}>*</span></div>
-          <div style={{ marginTop: "20px" }}>{caution}</div>
+          <div style={{ marginTop: "20px", whiteSpace: 'pre-line' }}>{caution}</div>
           <label className='checkbox'>
             <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
             상기의 내용을 확인하였으며, 불이익시 가게가 책임지지 않음에 동의합니다.

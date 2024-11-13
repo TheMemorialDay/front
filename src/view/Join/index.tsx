@@ -119,6 +119,7 @@ export default function Join() {
     // event handler: 취소 버튼 클릭 이벤트 핸들러 //
     const onCancleButtonClickHandler = () => {
         navigator(ROOT_ABSOLUTE_PATH);
+        
     }
 
     // event handler: 등록 버튼 클릭 이벤트 핸들러 //

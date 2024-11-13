@@ -38,6 +38,7 @@
     "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
     "react-wordcloud-words-style": "^1.2.8",
+    "react-wordcloud": "^1.2.7",
     "recharts": "^2.13.3",
     "run": "^1.5.0",
     "styled-components": "^6.1.13",
