@@ -79,8 +79,8 @@ const KeywordCloud = () => {
 
     //* 색상 배열
     const colors = [
-        '#C70039', '#AF47D2', '#2192FF', '#FFEB00',
-        '#FF6701', '#FA4032', '#65B741', '#FF0080'
+        '#C70039', '#ff69b4', '#2192FF', '#ffff00', '#87ceeb', '#ffff66',
+        '#FF6701', '#FA4032', '#ADff2f', '#FF0080', '#1e90ff', '#ccC0e5'
     ];
 
     // function: 색상 배열 랜덤 돌리기 //
