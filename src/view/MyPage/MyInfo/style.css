@@ -49,20 +49,20 @@
 
 #info-update .inputs2 {
     width: 380px;
-    margin: 10px 0px;
-    height: 15px;
+    /* margin: 10px 0px; */
+    height: 25px;
     border-radius: 6px;
     border: 1px solid darkgray;
-    padding: 15px 10px;
+    padding: 10px;
 }
 
 #info-update .inputs3 {
     width: 380px;
-    margin: 10px 0px;
-    height: 15px;
+    
+    height: 25px;
     border-radius: 6px;
     border: 1px solid darkgray;
-    padding: 15px 10px;
+    padding: 10px;
 }
 
 #info-update .gender-box {
@@ -120,7 +120,7 @@
     padding-left: 22px;
 }
 
-#info-update .update-send-button,
+
 #info-update .send-button {
     width: 250px;
     /* width: 100%; */
@@ -138,6 +138,22 @@
     /* margin-top: 10px; */
 }
 
+#info-update .update-send-button {
+    width: 250px;
+    height: 25px;
+    padding: 10px;
+    /* margin: 10px 0px; */
+    border-radius: 6px;
+    background-color: black;
+    display: flex;
+    color: white;
+    font-size: 14px;
+    font-weight: 400;
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer;
+}
+
 #info-update .update-button:hover {
     background-color: rgba(0, 0, 0, 0.7);
 }
@@ -147,7 +163,7 @@
     justify-content: center; 
     align-items: center; 
     width: 100px; 
-    height: 30px;
+    height: 25px;
     color: black;
     background-color: white;
     margin-top: 30px;
@@ -155,7 +171,7 @@
     font-size: 18px;
     font-weight: 500;
     cursor: pointer;
-    padding: 13px 0;
+    padding: 10px;
     border: 1px solid;
 }
 
@@ -164,7 +180,7 @@
     justify-content: center; 
     align-items: center; 
     width: 100px; 
-    height: 30px;
+    height: 25px;
     color: black;
     background-color: white;
     margin-top: 30px;
@@ -172,20 +188,33 @@
     font-size: 18px;
     font-weight: 500;
     cursor: pointer;
-    padding: 13px 0;
+    padding: 10px;
     
     border: 1px solid;
 }
 
+#info-update .change-button {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    /* width: 100px;  */
+    height: 25px;
+    background-color: black;
+    color: white;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 10px;
+}
+
 #info-update .update-button,
-#info-update .change-button,
-#info-update .update-send-button,
 #info-update .send-button {
     display: flex;
     justify-content: center; 
     align-items: center; 
     width: 100px; 
-    height: 30px;
+    height: 25px;
     background-color: black;
     color: white;
     margin-top: 30px;
@@ -193,7 +222,22 @@
     font-size: 18px;
     font-weight: 500;
     cursor: pointer;
-    padding: 13px 0;
+    padding: 10px;
+}
+
+#info-update .update-send-button {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 100px; 
+    height: 25px;
+    background-color: black;
+    color: white;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 10px;
 }
 
 #info-update .withdraw-button:hover,
@@ -225,7 +269,7 @@
 #info-update .change-button,
 #info-update .update-send-button {
     width: 160px;
-    margin-top: 5px;
+    
 }
 
 #info-update .tel-number-box,
@@ -233,6 +277,10 @@
     display: flex;
     gap: 10px;
     max-width: 401.33px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+
 }
 
 #info-update .inputs2,
