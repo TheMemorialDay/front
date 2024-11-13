@@ -60,8 +60,11 @@ export default function QaDetail() {
         setTitle(questionTitle);
         setWriterId(userId);
         setQuestionContents(questionContents);
-        setWriteDay(questionDay);
-        setQuestionStatus(questionStatus);
+
+        const date = new Date(questionDay);
+        date.setHours(date.getHours() + 9);
+        const newDate = date.toISOString(); // 또는 원하는 형식으로 변환
+        setWriteDay(newDate);
 
         if (questionStatus === '미응답') {
             setHasAnswer(false);

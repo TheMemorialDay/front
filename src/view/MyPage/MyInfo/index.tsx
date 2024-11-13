@@ -113,10 +113,27 @@ export default function InfoUpdate() {
         navigator(MY_PATH);
     };
 
+    // Function: 전화번호 '-'넣는 함수 //
+    const displayFormattedPhoneNumber = (numbers: string) => {
+        if (numbers.length <= 3) {
+            return numbers;
+        } else if (numbers.length <= 7) {
+            return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+        } else {
+            return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(
+                7
+            )}`;
+        }
+    };
+
     // event handler: 새로 입력하는 전화번호 상태 변경 핸들러 //
     const onNewTelNumberHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        setNewTelNumber(value);
+        // const { value } = event.target;
+        // setNewTelNumber(value);
+        const numbersOnly = event.target.value.replace(/\D/g, "");
+        if (numbersOnly.length <= 11) {
+            setNewTelNumber(numbersOnly);
+        }
     };
 
     // event handler: 이름 변경 이벤트 핸들러 //
@@ -238,16 +255,15 @@ export default function InfoUpdate() {
                 </div>
 
                 <div className='tel-number-box'>
-                    <input className='inputs2' placeholder='전화번호' value={telNumber} disabled />
-                    <div className='change-button-box'>
-                        <div className='change-button' onClick={onOpenTelUpdateInputClickHandler}>전화번호 변경</div>
-                    </div>
+                    <input className='inputs2' placeholder='전화번호' value={displayFormattedPhoneNumber(telNumber)} disabled />
+                    <div className='change-button' onClick={onOpenTelUpdateInputClickHandler}>전화번호 변경</div>
+                    
                 </div>
 
                 {telUpdate &&
                     <>
                         <div className='tel-number-update-box'>
-                            <input className='inputs3' placeholder='변경할 전화번호' value={newTelNumber} onChange={onNewTelNumberHandler} />
+                            <input className='inputs3' placeholder='변경할 전화번호' value={displayFormattedPhoneNumber(newTelNumber)} onChange={onNewTelNumberHandler} />
                             <div className='update-send-button' onClick={onSendClickHandler}>전화번호 인증</div>
                         </div>
                         <div className={`message ${isMatched1 ? 'true' : 'false'}`}>{telMessage}</div>
