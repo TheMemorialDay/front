@@ -12,13 +12,13 @@ function OkScreen() {
     // event handler: 나중에 버튼 클릭 이벤트 핸들러 //
     const onClickHandler = () => {
         navigator(ROOT_ABSOLUTE_PATH);
-        //window.location.reload();
+        window.location.reload();
     }
 
     // event handler: 확인 버튼 클릭 이벤트 핸들러 //
     const onClickHandler2 = () => {
         navigator(MY_ABSOLUTE_PATH);
-        //window.location.reload();
+        window.location.reload();
     }
 
     // render: 등록 완료 화면 렌더링 //

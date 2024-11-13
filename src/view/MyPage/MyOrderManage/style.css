@@ -139,6 +139,11 @@
   overflow-wrap: break-word; /* 콘텐츠가 넘칠 경우 줄바꿈 */
 }
 
+.check-image-file {
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .check-image-file:hover {
   text-decoration: underline;
   cursor: pointer;
