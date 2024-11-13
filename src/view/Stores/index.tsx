@@ -1,6 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
-import { getStoreMainSearchRequest } from '../../apis';
+import { getStoreMainSearchRequest, postKeywordRequest } from '../../apis';
 import { useSignInUserStore } from '../../stores';
 import { GetStoreListResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
@@ -451,6 +451,25 @@ export default function Stores() {
     originalList.current = storeDetails;
   }
 
+  //* ================================================================== keyword
+
+  // function: 스토어 메인 검색창 키워드 저장하는 response 응답 처리 함수 //
+  const postKeywordResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
+    const isSuccessed = responseBody != null && responseBody.code === 'SU';
+
+    if (!isSuccessed) {
+      alert(message);
+      return;
+    }
+  };
+
+  //* ================================================================== keyword
+
   //* ======================================== store main search
   // event handler: 검색어 입력 변경 이벤트 핸들러 //
   const onMainSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -466,6 +485,7 @@ export default function Stores() {
   const onStoresSearchClickHandler = () => {
 
     getStoreMainSearchRequest(mainSearch).then(getStoresMainSearchResponse);
+    postKeywordRequest(mainSearch).then(postKeywordResponse);
   };
 
   // event handler: 검색어 입력 후 요청할 때 키보드 핸들러 //
@@ -475,7 +495,7 @@ export default function Stores() {
     }
   };
 
-  // function: 가게명 & 상품명 검색 시 response 응답 처리 함수 //
+  // function: 스토어 메인 검색창 검색 시 response 응답 처리 함수 //
   const getStoresMainSearchResponse = (responseBody: GetStoreListResponseDto | ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
@@ -491,6 +511,8 @@ export default function Stores() {
     const { storeDetails } = responseBody as GetStoreListResponseDto;
     setStoreList(storeDetails);
     originalList.current = storeDetails;
+
+    setMainSearch('');
   };
   //* ======================================== store main search
 
@@ -645,6 +667,7 @@ export default function Stores() {
 
   }, [selectedTag, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType]);
 
+  // render: 스토어 메인 컴포넌트 렌더링 //
   return (
     <div id='store-wrapper'>
       <div className='store-top'>
@@ -659,8 +682,8 @@ export default function Stores() {
               className='store-search'
               placeholder='검색어 입력'
               onChange={onMainSearchChangeHandler}
-              onClick={onStoresSearchClickHandler}
               onKeyDown={onStoresSearchKeyDownHandler}
+              value={mainSearch}
             />
             <img onClick={onStoresSearchClickHandler} src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png" />
           </div>
