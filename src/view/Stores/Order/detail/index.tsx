@@ -225,10 +225,14 @@ export default function Order() {
     }
 
     const { orderProductDetails } = responseBody as GetProductDetailResponseDto;
+
+    if (orderProductDetails.storeCaution) {
+      setCaution(orderProductDetails.storeCaution.replace(/\\n/g, "\n"));
+    };
+
     setCakeName(orderProductDetails.productName);
     setPrice(orderProductDetails.productPrice);
     setFinalPrice(orderProductDetails.productPrice);
-    setCaution(orderProductDetails.storeCaution);
     setIntroduce(orderProductDetails.productIntroduce);
     setThemaList(orderProductDetails.themes);
     setImageList(orderProductDetails.productImages);
@@ -492,7 +496,7 @@ export default function Order() {
 
         <div style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}>
           <div className='option-title'>유의사항 확인<span style={{ color: "red" }}>*</span></div>
-          <div style={{ marginTop: "20px" }}>{caution}</div>
+          <div style={{ marginTop: "20px", whiteSpace: 'pre-line' }}>{caution}</div>
           <label className='checkbox'>
             <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
             상기의 내용을 확인하였으며, 불이익시 가게가 책임지지 않음에 동의합니다.

@@ -18,7 +18,7 @@ interface OrderDetailProps {
     getOrderDetailList: () => void;
 };
 
-function MyOrderDetailComponent({ orderdetail, getOrderDetailList}: OrderDetailProps) {
+function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetailProps) {
 
     type OrderStatus = '승인 대기중' | '결제 대기중' | '결제 완료' | '리뷰 쓰기' | '완료' | '주문 취소' | '주문 거부' | '픽업 완료';
     type CancelCode = '재료가 소진되었습니다.' | '해당 시간에 예약이 가득 찼습니다.' | '운영 시간이 변경되었습니다.' | '기타' | '';
@@ -31,7 +31,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList}: OrderDetailP
     const [modalOpen, setModalOpen] = useState(false);
     const modalBackground = useRef<HTMLDivElement | null>(null);
     const [secondReject, setSecondReject] = useState(false);
-    const [cancelCode, setCancelCode] = useState<CancelCode>('');
+    const [cancelCode, setCancelCode] = useState<CancelCode>('재료가 소진되었습니다.');
     const [cancelReason, setCancelReason] = useState<string>('');
 
     const [cookies] = useCookies();
@@ -103,13 +103,13 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList}: OrderDetailP
 
         // function: post send payment message response 처리 함수 //
         const postSendPaymentMsgResponse = (responseBody: null | ResponseDto) => {
-            const message = 
+            const message =
                 !responseBody ? '서버에 문제가 있습니다.' :
-                responseBody.code === 'DBE' ? '서버에 문제가 있습니다. ' :
-                responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' : '' ;
-            
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다. ' :
+                        responseBody.code === 'VF' ? '올바른 데이터가 아닙니다.' : '';
+
             const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-            if(!isSuccessed) {
+            if (!isSuccessed) {
                 alert(message);
                 return;
             }
@@ -117,11 +117,11 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList}: OrderDetailP
 
         // Function: 주문 수락 클릭 핸들러 //
         const onAcccpetUpdateOrderStatus = () => {
-            
+
             // 문자 메시지 전송
             const accessToken = cookies[ACCESS_TOKEN];
-            if(signInUser && accessToken) {
-                const requestBody1 : PostSendPaymentMsgRequestDto = {
+            if (signInUser && accessToken) {
+                const requestBody1: PostSendPaymentMsgRequestDto = {
                     telNumber: orderdetail.telNumber,
                     name: orderdetail.name,
                     totalPrice: orderdetail.totalPrice,
@@ -309,8 +309,8 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList}: OrderDetailP
         // component: 모달창 //
         return (
             <>
-                <div className='my-order-status-reject'>
-                    <div className='go-payed' onClick={() => { setModalOpen(true); }} >거부</div>
+                <div className='my-order-status-reject' onClick={() => { setModalOpen(true); }}>
+                    <div className='go-payed'>거부</div>
                 </div>
                 {
                     modalOpen &&
@@ -460,7 +460,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList}: OrderDetailP
                             }
                         </div>
                         <div className="order-value">금액 : {formatNumberWithCommas(orderdetail.totalPrice)}원</div>
-                        
+
                     </div>
 
                 </div>
@@ -508,7 +508,7 @@ export default function MyOrderManage() {
     // state: cookie 상태 //
     const [cookies] = useCookies();
 
-    // function: 픽업 완료 상태 업데이트 함수 //
+    // Function: 픽업 완료 상태 업데이트 함수 //
     const updateCompletedPickups = async () => {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
@@ -516,14 +516,14 @@ export default function MyOrderManage() {
             return;
         }
 
-        // 현재 시간 기준으로 픽업 완료 상태로 변경해야 할 주문들 필터링
+        // Function: 현재 시간 기준으로 픽업 완료 상태로 변경해야 할 주문들 필터링 //
         const currentTime = new Date();
         const ordersToUpdate = originalList.current.filter(order => {
             const pickupTime = new Date(order.pickupTime);
             return pickupTime <= currentTime && order.orderStatus !== '픽업 완료' && order.orderStatus !== '완료';
         });
 
-        // 서버에 PATCH 요청을 보내 orderStatus 업데이트
+        // Function: 서버에 PATCH 요청을 보내 orderStatus 업데이트 //
         for (const order of ordersToUpdate) {
             const requestBody: PatchOrderStatusReqeustDto = {
                 orderCode: order.orderCode,
@@ -559,7 +559,7 @@ export default function MyOrderManage() {
     }
 
     // function: 사장님이 주문 승인 후 24시간 이내에 결제되지 않으면 자동으로 주문 취소되는 함수 //
-    const check24hours = async() => {
+    const check24hours = async () => {
         const date = new Date();
         const now = date.toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
 
@@ -698,7 +698,7 @@ export default function MyOrderManage() {
             <div className='my-order-list'>
                 {
                     orderDetailList.map((orderdetail) => <MyOrderDetailComponent key={orderdetail.orderCode} orderdetail={orderdetail}
-                    getOrderDetailList={getOrderDetailList} />)
+                        getOrderDetailList={getOrderDetailList} />)
                 }
             </div>
             <div></div>

@@ -51,9 +51,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
-  // state: 좋아요 수 상태 //
-  const [likeCount, setLikeCount] = useState<number>(0);
-
   // state: 로그인 유저 상태 //
   const { signInUser } = useSignInUserStore();
 
@@ -69,9 +66,13 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     event.stopPropagation();
     if (checked) {
       await onStoreLikeDeleteButtonClickHandler();
-      setLikeCount(likeCount - 1);
+      store.likeList = store.likeList.filter(id => id !== userId); // 좋아요 삭제
+      console.log('좋아요 삭제');
     } else if (!checked && userId !== undefined) {
       await onStoreLikeAddButtonClickHandler();
+      store.likeList.push(userId); // 좋아요 추가
+      console.log('좋아요 추가');
+
     }
   };
 
@@ -145,7 +146,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
       return;
     }
     setChecked(true);
-    getStoreList()
   }
 
   // function: delete Like Store Response 처리 함수 //
@@ -182,6 +182,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
         })
         .catch(error => console.error(error));
     }
+
   }, [store.storeNumber, userId]);
 
   // render: 스토어 리스트 컴포넌트 렌더링 //
@@ -550,15 +551,12 @@ export default function Stores() {
     // ! 테마 필터링
     if (selectedThemes.length) {
       storeList = storeList.filter(item => {
-        let existed = false;
-        for (const theme of item.themes[0]) {
-          if (selectedThemes.includes(theme)) {
-            console.log("selectedThemes:", selectedThemes);
-            console.log("현재 theme:", theme);
-            existed = true;
-            break;
-          }
-        }
+        // 모든 테마 그룹을 하나의 배열로 합치기
+        const allThemes = item.themes.flat();
+        // selectedThemes의 모든 요소가 allThemes에 포함되어 있는지 확인
+        const existed = selectedThemes.every(theme => allThemes.includes(theme));
+
+        console.log(allThemes);
         return existed;
       });
     }
