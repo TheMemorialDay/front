@@ -20,7 +20,9 @@ Auth 모듈은 인증 없이 요청할 수 있습니다.
   
 ##### 설명
 
-클라이언트는 사용자 아이디와 평문의 비밀번호를 입력하여 요청하고 아이디와 비밀번호가 일치한다면 인증에 사용될 token과 해당 token의 만료 기간을 응답 데이터로 전달 받습니다. 만약 아이디 혹은 비밀번호가 하나라도 틀린다면 로그인 정보 불일치에 해당하는 응답을 받게됩니다. 네트워크 에러, 서버 에러, 데이터베이스 에러, 토큰 생성 에러가 발생할 수 있습니다.  
+클라이언트는 사용자 아이디와 평문의 비밀번호를 입력하여 요청하고 아이디와 비밀번호가 일치한다면 인증에 사용될 token과 해당 token의 만료 기간을 응답 데이터로 전달 받습니다.  
+만약 아이디 혹은 비밀번호가 하나라도 틀린다면 로그인 정보 불일치에 해당하는 응답을 받게됩니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러, 토큰 생성 에러가 발생할 수 있습니다.  
 
 - method : **POST**  
 - end point : **/sign-in**  
@@ -120,14 +122,17 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - 아이디 찾기 
+#### - 아이디 찾기 (이름, 전화번호 확인)
   
 ##### 설명
 
-클라이언트는 찾으려는 계정의 이름과 숫자로만 이루어진 11자리 전화번호를 입력한다. 이름과 전화번호의 일치 여부를 확인한 후 일치한다면 인증번호를 요청하고 4자리의 인증번호를 해당 전화번호에 문자로 전송합니다. 인증번호가 정상적으로 전송이 된다면 성공 응답을 받습니다. 만약 이름이나 전화번호가 존재하지 않는다면 그에 대한 실패 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
+클라이언트는 찾으려는 계정의 이름과 숫자로만 이루어진 11자리 전화번호를 입력합니다.  
+이름과 전화번호의 일치 여부를 확인한 후 일치한다면 인증번호를 전송합니다.  
+일치하지 않는다면 일치하는 정보가 없다는 응답을 받습니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
 
 - method : **POST**  
-- end point : **/id-search**  
+- end point : **/id-search-first**  
 
 ##### Request
 
@@ -141,7 +146,7 @@ Content-Type: application/json;charset=UTF-8
 ###### Example
 
 ```bash
-curl -v -X POST "http://localhost:4000/api/v1/auth/id-search" \
+curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-first" \
  -d "name=홍길동"\
  -d "telNumber=01011112222"\
 ```
@@ -171,6 +176,17 @@ Content-Type: application/json;charset=UTF-8
 {
   "code": "SU",
   "message": "Success."
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
 }
 ```
 
@@ -209,14 +225,17 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - 아이디 찾기의 인증번호 확인 후 결과 
+#### - 아이디 찾기 (전화번호, 인증번호 확인)
   
 ##### 설명
 
-클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다. 일치한다면 성공에 대한 응답을 받고 이름, 전화번호, 아이디를 보여줍니다. 만약 일치하지 않는다면 전화번호 인증 실패에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
+클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다.  
+일치한다면 성공에 대한 응답을 받고 이름, 전화번호, 아이디를 보여줍니다.  
+만약 일치하지 않는다면 전화번호 인증 실패에 대한 응답을 받습니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **POST**  
-- end point : **/id-search-result**  
+- end point : **/id-search-middle**  
 
 ##### Request
 
@@ -230,7 +249,100 @@ Content-Type: application/json;charset=UTF-8
 ###### Example
 
 ```bash
-curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-tel-auth-check" \
+curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-middle" \
+ -d "telNumber=01011112222" \
+ -d "telAuthNumber=1234"
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "SU",
+  "message": "Success."
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (전화번호 인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "TAF",
+  "message": "Tel number authentication failed."
+}
+```
+
+**응답 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "DBE",
+  "message": "Database error."
+}
+```
+
+***
+
+#### - 아이디 찾기 (이름, 전화번호, 인증번호 확인 후 결과)
+  
+##### 설명
+
+클라이언트는 사용자 이름, 전화번호, 인증번호를 입력하여 요청하고 전부 일치하는지 확인합니다.    
+일치한다면 성공에 대한 응답을 받고 이름, 전화번호, 아이디를 보여줍니다.  
+만약 일치하지 않는다면 인증 실패에 대한 응답을 받습니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
+
+- method : **POST**  
+- end point : **/id-search-result**  
+
+##### Request
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| name | String | 인증 번호를 확인할 사용자 이름 | O |
+| telNumber | String | 인증 번호를 확인할 사용자 전화번호 | O |
+| telAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
+
+###### Example
+
+```bash
+curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-result" \
  -d "telNumber=01011112222" \
  -d "telAuthNumber=1234"
 ```
@@ -266,6 +378,28 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (존재하지 않는 정보)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "NF",
+  "message": "No exist info."
+}
+```
+
 **응답 : 실패 (전화번호 인증 실패)**
 ```bash
 HTTP/1.1 401 Unauthorized
@@ -287,11 +421,17 @@ Content-Type: application/json;charset=UTF-8
   "message": "Database error."
 }
 ```
-#### - 비밀번호 찾기 
+
+***
+
+#### - 비밀번호 재설정 (아이디, 전화번호 확인)
   
 ##### 설명
 
-클라이언트는 찾으려는 아이디와, 숫자로만 이루어진 11자리 전화번호를 입력하여 아이디와 전화번호의 일치 여부를 확인한 후 일치한다면 인증번호를 요청하고 4자리의 인증번호를 해당 전화번호에 문자로 전송합니다. 인증번호가 정상적으로 전송이 된다면 성공 응답을 받습니다. 만약 아이디나 전화번호가 존재하지 않는다면 그에 대한 실패 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
+클라이언트는 찾으려는 아이디와, 숫자로만 이루어진 11자리 전화번호를 입력하여 아이디와 전화번호의 일치 여부를 확인한 후 일치한다면 인증번호를 요청하고 4자리의 인증번호를 해당 전화번호에 문자로 전송합니다.  
+인증번호가 정상적으로 전송이 된다면 성공 응답을 받습니다.  
+만약 아이디나 전화번호가 존재하지 않는다면 그에 대한 실패 응답을 받습니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
 
 - method : **POST**  
 - end point : **/password-search**  
@@ -341,25 +481,25 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (존재하지 않는 아이디)**
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (존재하지 않는 정보)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
 
 {
   "code": "NI",
-  "message": "No exist id."
-}
-```
-
-**응답 : 실패 (존재하지 않는 전화번호)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-
-{
-  "code": "NT",
-  "message": "No exist tel number."
+  "message": "No exist info."
 }
 ```
 
@@ -387,11 +527,14 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - 비밀번호 찾기의 인증번호 확인  
+#### - 비밀번호 재설정 (전화번호, 인증번호 확인)  
   
 ##### 설명
 
-클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다. 일치한다면 성공에 대한 응답을 받고 비밀번호 재설정을 시도할 수 있습니다. 만약 일치하지 않는다면 전화번호 인증 실패에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
+클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다.  
+일치한다면 성공에 대한 응답을 받고 비밀번호 재설정을 시도할 수 있습니다.  
+만약 일치하지 않는다면 전화번호 인증 실패에 대한 응답을 받습니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **POST**  
 - end point : **/password-search-tel-auth-check**  
@@ -441,6 +584,17 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
 **응답 : 실패 (전화번호 인증 실패)**
 ```bash
 HTTP/1.1 401 Unauthorized
@@ -465,11 +619,118 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
+#### - 비밀번호 재설정 (아이디, 전화번호, 인증번호 확인)  
+  
+##### 설명
+
+클라이언트는 사용자 아이디, 전화번호, 인증번호를 입력하여 요청하고 해당하는 아이디, 전화번호, 인증번호가 서로 일치하는지 확인합니다.   
+일치한다면 성공에 대한 응답을 받고 비밀번호 재설정을 시도할 수 있습니다.  
+만약 일치하지 않는다면 전화번호 인증 실패에 대한 응답을 받습니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
+
+- method : **POST**  
+- end point : **/password-search-final**  
+
+##### Request
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| userId | String | 인증 번호를 확인할 사용자 아이디 | O |
+| telNumber | String | 인증 번호를 확인할 사용자 전화번호 | O |
+| telAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
+
+###### Example
+
+```bash
+curl -v -X POST "http://localhost:4000/api/v1/auth/password-search-final" \
+ -d "telNumber=01011112222" \
+ -d "telAuthNumber=1234"
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "SU",
+  "message": "Success."
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (전화번호 인증 실패)**
+```bash
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "TAF",
+  "message": "Tel number authentication failed."
+}
+```
+
+**응답 : 실패 (존재하지 않는 정보)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "NI",
+  "message": "No exist info."
+}
+```
+
+**응답 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "DBE",
+  "message": "Database error."
+}
+```
+
+***
+
 #### - 비밀번호 재설정  
   
 ##### 설명
 
-클라이언트는 재설정할 비밀번호를 입력하여 확인한 후 요청하고, 재설정이 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 만약 비밀번호가 일치하지 않으면 비밀번호 불일치에 대한 응답을 받습니다. 데이터베이스 에러가 발생할 수 있습니다.  
+클라이언트는 재설정할 비밀번호를 입력하여 확인한 후 요청하고, 재설정이 성공적으로 이루어지면 성공에 대한 응답을 받습니다.  
+이전 비밀번호와 변경하려는 비밀번호가 일치한다면 실패에 대한 응답을 받습니다.  
+일치하지 않는다면 성공적으로 비밀번호가 변경됩니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다. 
 
 - method : **PATCH**  
 - end point : **/password-resetting**  
@@ -479,18 +740,12 @@ Content-Type: application/json;charset=UTF-8
 ###### Request Body
 
 | name | type | description | required |
-| userId | String | 사용자의 아이디 | O |
-| telNumber | String | 사용자의 전화번호 (11자의 숫자) | O |
-| telAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
 | password | String | 사용자의 비밀번호 (8~13자의 영문 + 숫자) | O |
 
 ###### Example
 
 ```bash
 curl -v -X PATCH "http://localhost:4000/api/v1/auth/password-resetting" \
-  -d "userId=qwer1234"\
-  -d "telNumber=01011112222"\
-  -d "telAuthNumber=1234"
   -d "password=P!ssw0rd"\
 ```
 
@@ -519,6 +774,28 @@ Content-Type: application/json;charset=UTF-8
 {
   "code": "SU",
   "message": "Success."
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 실패 (비밀번호 중복)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "DP",
+  "message": "Duplicated password."
 }
 ```
 
@@ -661,11 +938,14 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - (회원가입) 전화번호 인증  
+#### - 전화번호 인증 (회원가입)  
   
 ##### 설명
 
-클라이언트는 숫자로만 이루어진 11자리 전화번호를 입력하여 요청하고 이미 사용중인 전화번호인지 확인 후 4자리의 인증번호를 해당 전화번호에 문자를 전송합니다. 인증번호가 정상적으로 전송이 된다면 성공 응답을 받습니다. 만약 중복된 전화번호를 입력한다면 중복된 전화번호에 해당하는 응답을 받게됩니다. 네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
+클라이언트는 숫자로만 이루어진 11자리 전화번호를 입력하여 요청하고 이미 사용중인 전화번호인지 확인 후 4자리의 인증번호를 해당 전화번호에 문자를 전송합니다.  
+인증번호가 정상적으로 전송이 된다면 성공 응답을 받습니다.  
+만약 중복된 전화번호를 입력한다면 중복된 전화번호에 해당하는 응답을 받게됩니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
 
 - method : **POST**  
 - URL : **/tel-auth**  
@@ -759,11 +1039,14 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - (회원가입) 인증번호 확인  
+#### - 전화번호, 인증번호 확인 (회원가입)  
   
 ##### 설명
 
-클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다. 일치한다면 성공에 대한 응답을 받습니다. 만약 일치하지 않는 다면 전화번호 인증 실패에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
+클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다.  
+일치한다면 성공에 대한 응답을 받습니다.  
+만약 일치하지 않는 다면 전화번호 인증 실패에 대한 응답을 받습니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **POST**  
 - end point : **/tel-auth-check**  
@@ -853,8 +1136,10 @@ Content-Type: application/json;charset=UTF-8
 ##### 설명
 
 클라이언트는 사용자 이름, 사용자 아이디, 비밀번호, 전화번호, 인증 번호, 가입 경로, 생년월일, 성별을 입력하여 요청 하고 회원가입이 성공적으로 이루어지면 성공에 대한 응답을 받습니다.  
-만약 존재하는 아이디일 경우, 중복된 아이디에 대한 응답을 받습니다. 또한 존재하는 전화번호일 경우 중복된 전화번호에 대한 응답을 받습니다.  
-전화번호와 인증번호가 일치하지 않으면 전화번호 인증 실패에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.
+만약 존재하는 아이디일 경우, 중복된 아이디에 대한 응답을 받습니다.  
+또한 존재하는 전화번호일 경우 중복된 전화번호에 대한 응답을 받습니다.  
+전화번호와 인증번호가 일치하지 않으면 전화번호 인증 실패에 대한 응답을 받습니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.
 
 - method : **POST**  
 - URL : **/sign-up**  
@@ -983,7 +1268,9 @@ The Memorial Day 서비스의 회원 정보 수정과 관련된 REST API 모듈�
 
 클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
 사용자는 본인의 비밀번호를 입력하고 본인임을 인증해야 합니다.
-만약 비밀번호가 데이터베이스에 입력된 값과 다른 경우 원래 입력된 값과 다름에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.  
+만약 비밀번호가 데이터베이스에 입력된 값과 다른 경우 원래 입력된 값과 다름에 대한 응답을 받습니다.  
+성공할 경우 개인정보를 불러옵니다.  
+네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **POST**  
 - URL : **/password-check**  
@@ -1024,6 +1311,11 @@ curl -v -X POST "http://localhost:4000/api/v1/mypage/userInfo/password-check" \
 |---|:---:|:---:|:---:|
 | code | String | 결과 코드 | O |
 | message | String | 결과 코드에 대한 설명 | O |
+| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
+| name | string | 사용자 이름 | O |
+| birth | String | 사용자의 생년월일(yyyymmdd) | O |
+| gender | String | 사용자의 성별(남/녀) | O |
+| telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
 
 ###### Example
 
@@ -1057,80 +1349,6 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (데이터베이스 에러)**
-```bash
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "DBE",
-  "message": "DataBase Error"
-}
-```
-
-<hr>
-
-#### - 개인 정보 불러오기
-
-#### 설명
-
-비밀번호로 본인 확인을 마친 클라이언트의 개인 정보를 불러옵니다. 요청 헤더에 Bearer 인증 토큰을 포함하고 url에 userId를 포함하여 요청합니다. 조회가 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 만약 존재하지 않는 회원일 경우 존재하지 않는 고객에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.
-
-- method : **GET**  
-- URL : **/{userId}**  
-
-##### Request
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Authorization | Bearer 토큰 인증 헤더 | O |
-
-###### Example
-
-```bash
-curl -X GET "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
- -h "Authorization=Bearer XXXX"
-```
-
-##### Response
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
-
-###### Response Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| code | String | 결과 코드 | O |
-| message | String | 결과 코드에 대한 설명 | O |
-| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
-| name | string | 사용자 이름 | O |
-| birth | String | 사용자의 생년월일(yyyymmdd) | O |
-| gender | String | 사용자의 성별(남/녀) | O |
-| telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
-
-###### Example
-
-**응답 성공**
-```bash
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "SU",
-  "message": "Success",
-  "password": "qwer1234",
-  "name": "홍길동",
-  "birth": "010425",
-  "gender": "여",
-  "telNumber": "01011112222",
-  "telAuthNumber": "1234"
-}
-```
-
 **응답 : 실패 (존재하지 않는 회원)**
 ```bash
 HTTP/1.1 400 Bad Request
@@ -1141,16 +1359,6 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (인증 실패)**
-```bash
-HTTP/1.1 401 Unauthorized
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "AF",
-  "message": "Authentication fail."
-}
-```
-
 **응답 : 실패 (데이터베이스 에러)**
 ```bash
 HTTP/1.1 500 Internal Server Error
@@ -1161,13 +1369,16 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-<hr>
+***
 
-#### - (회원정보 수정) 전화번호 인증  
+#### - 전화번호 인증 (회원정보 수정)  
   
 ##### 설명
 
-클라이언트는 숫자로만 이루어진 11자리 전화번호를 입력하여 요청하고 이미 사용중인 전화번호인지 확인 후 4자리의 인증번호를 해당 전화번호에 문자를 전송합니다. 인증번호가 정상적으로 전송이 된다면 성공 응답을 받습니다. 만약 중복된 전화번호를 입력한다면 중복된 전화번호에 해당하는 응답을 받게됩니다. 네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
+클라이언트는 숫자로만 이루어진 11자리 전화번호를 입력하여 요청하고 이미 사용중인 전화번호인지 확인 후 4자리의 인증번호를 해당 전화번호에 문자를 전송합니다.  
+인증번호가 정상적으로 전송이 된다면 성공 응답을 받습니다.  
+만약 중복된 전화번호를 입력한다면 중복된 전화번호에 해당하는 응답을 받게됩니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
 
 - method : **POST**  
 - URL : **/tel-auth**  
@@ -1256,11 +1467,14 @@ Content-Type: application/json;charset=UTF-8
 
 ***
 
-#### - (회원 정보 수정)인증번호 확인  
+#### - 전화번호, 인증번호 확인 (회원정보 수정)  
   
 ##### 설명
 
-클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다. 일치한다면 성공에 대한 응답을 받습니다. 만약 일치하지 않는 다면 전화번호 인증 실패에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
+클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다.  
+일치한다면 성공에 대한 응답을 받습니다.  
+만약 일치하지 않는 다면 전화번호 인증 실패에 대한 응답을 받습니다.  
+네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
 
 - method : **POST**  
 - end point : **/tel-auth-check**  
@@ -1338,17 +1552,111 @@ Content-Type: application/json;charset=UTF-8
   "message": "Database error."
 }
 ```
-<hr>
 
-#### - 개인 정보 수정
+***
+
+#### - 개인 정보 수정 (전화번호 없이)
   
 ##### 설명
 
 클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
-이름, 생년월일, 비밀번호, 성별, 전화번호, 전화번호 인증번호를 입력하여 요청하고 용품 수정이 성공적으로 이루어지면 성공에 대한 응답을 받습니다. 만약 존재하지 않는 회원일 경우 존재하지 않는 고객에 대한 응답을 받습니다. 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.   
+이름, 생년월일, 비밀번호, 성별을 입력하여 요청하고 수정이 성공적으로 이루어지면 성공에 대한 응답을 받습니다.  
+유효하지 않은 값이나 빈 값이 있을 경우 실패에 대한 응답을 받습니다.    
+네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.   
 
 - method : **PATCH**  
-- URL : **/{userId}**  
+- URL : **/patch-info**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Authorization | Bearer 토큰 인증 헤더 | O |
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
+| name | string | 사용자 이름 | O |
+| birth | String | 사용자의 생년월일(yyyymmdd) | O |
+| gender | String | 사용자의 성별(남/녀) | O |
+
+
+###### Example
+
+```bash
+curl -v -X PATCH "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
+ -h "Authorization=Bearer XXXX" \
+ -d "password=qwer1234" \
+ -d "name=홍길동" \
+ -d "birth=010101" \
+ -d "gender=남" \
+```
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success"
+}
+```
+
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase Error"
+}
+```
+
+***
+
+#### - 개인 정보 수정 (전화번호 포함)
+  
+##### 설명
+
+클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
+이름, 생년월일, 비밀번호, 성별, 전화번호, 전화번호 인증번호를 입력하여 요청하고 수정이 성공적으로 이루어지면 성공에 대한 응답을 받습니다.  
+만약 유효하지 않은 값, 빈 값, 인증에 실패할 경우 실패에 대한 응답을 받습니다.    
+네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.   
+
+- method : **PATCH**  
+- URL : **/patch-info**  
 
 ##### Request
 
@@ -1440,6 +1748,77 @@ Content-Type: application/json;charset=UTF-8
 {
   "code": "AF",
   "message": "Authentication fail."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase Error"
+}
+```
+
+***
+
+#### - 회원 탈퇴
+  
+##### 설명
+
+클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
+탈퇴 버튼을 눌러 탈퇴를 요청합니다.    
+요청에 성공한 경우 성공에 대한 응답을 받습니다.  
+실패할 경우 실패에 대한 응답을 받습니다.      
+네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.   
+
+- method : **PATCH**  
+- URL : **/delete-user/me**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Authorization | Bearer 토큰 인증 헤더 | O |
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success"
+}
+```
+
+**응답 : 실패 (존재하지 않는 고객)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "NU",
+  "message": "No exist user."
 }
 ```
 
