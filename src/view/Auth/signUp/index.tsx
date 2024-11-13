@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, MouseEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, MouseEvent, useState, useRef } from 'react'
 import './style.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SIGN_IN_ABSOLUTE_PATH } from '../../../constants';
@@ -63,8 +63,11 @@ export default function SignUp() {
     const [isCheckedAuthNumber, setCheckedAuthNumber] = useState<boolean>(false);
 
     // state: 인증번호 타이머 //
-    const [timer, setTimer] = useState(180);
-  
+    const [timer, setTimer] = useState(10);
+
+    // state: 타이머를 멈출 상태 추가
+    const [stopTimer, setStopTimer] = useState(false);
+
     // state: 전체 동의와 개별 동의 항목 상태 //
     const [allChecked, setAllChecked] = useState(false);
     const [terms, setTerms] = useState({
@@ -73,7 +76,6 @@ export default function SignUp() {
     });
     const [showServiceTerms, setShowServiceTerms] = useState(false);
     const [showPrivacyTerms, setShowPrivacyTerms] = useState(false);
-    const [showMarketingTerms, setShowMarketingTerms] = useState(false);
 
     // variable: SNS 회원가입 여부 //
     const isSnsSignUp = snsId !== null && joinPath !== null;
@@ -131,6 +133,9 @@ export default function SignUp() {
         setTelAuthCheckMessageError(!isSuccessed);
         setCheckedAuthNumber(isSuccessed);
         setIsMatched2(isSuccessed);
+        if (isSuccessed) {
+            setStopTimer(true);
+        }
     };
 
     // function: 회원가입 Response 처리 함수 //
@@ -280,14 +285,6 @@ export default function SignUp() {
         return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
     };
 
-    // Function: 인증번호 재전송 함수 //
-    const resendVerification = () => {
-        setTimer(180);
-        setTelAuthNumber('');
-        const requestBody: TelAuthRequestDto = { telNumber };
-        telAuthRequest(requestBody).then(telAuthResponse);
-    };
-
     // event handler: 전화번호 인증 및 인증번호 전송 버튼 클릭 이벤트 핸들러 //
     const onSendClickHandler = () => {
         if (!telNumber) {
@@ -301,6 +298,9 @@ export default function SignUp() {
         if (isTrue) {
             setTelMessage('');
             setIsMatched3(true);
+            setTimer(10);
+            setTelAuthNumber('');
+            setAuthMessage('');
             const requestBody: TelAuthRequestDto = { telNumber };
             telAuthRequest(requestBody).then(telAuthResponse);
         } else {
@@ -348,16 +348,19 @@ export default function SignUp() {
         signUpRequest(requestBody).then(signUpResponse);
     }
 
+    // useRef로 interval을 관리
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     // Effect: 타이머 기능 구현 //
+
     useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (isMatched1) {
-            interval = setInterval(() => {
+        if (isMatched1 && !stopTimer) { // stopTimer가 false일 때만 타이머 시작
+            intervalRef.current = setInterval(() => {
                 setTimer((prevTimer) => {
                     if (prevTimer <= 1) {
-                        clearInterval(interval);
+                        clearInterval(intervalRef.current!);
                         setIsMatched1(false);
+                        setTelMessage('');
                         return 0;
                     }
                     return prevTimer - 1;
@@ -365,8 +368,17 @@ export default function SignUp() {
             }, 1000);
         }
 
-        return () => clearInterval(interval);
-    }, [isMatched1]);
+        // stopTimer가 true가 되면 타이머를 멈추도록 추가
+        if (stopTimer && intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [isMatched1, stopTimer]);
 
     // event handler: 전체 동의 핸들러 //
     const handleAllChecked = (e: ChangeEvent<HTMLInputElement>) => {
@@ -442,7 +454,7 @@ export default function SignUp() {
 
                 <div className='box-test'>
                     <input className='inputs' placeholder='전화번호를 입력해주세요' value={displayFormattedPhoneNumber(telNumber)} onChange={onTelNumberChangeHandler} />
-                    <div className='send-button' onClick={!isMatched1 ? onSendClickHandler : resendVerification}>{isMatched3 ? '재전송' : '전화번호 인증'}</div>
+                    <div className='send-button' onClick={onSendClickHandler}>{isMatched3 ? '재전송' : '전화번호 인증'}</div>
                 </div>
                 <div className={isMatched1 ? 'message-true' : 'message-false'}>{telMessage}</div>
 
@@ -450,7 +462,7 @@ export default function SignUp() {
                     <div>
                         <div className='box-test'>
                             <div className='input-wrapper'>
-                                <input className='inputs' placeholder='인증번호 4자리' onKeyDown={handleKeyDown} value={telAuthNumber} onChange={onAuthNumberChangeHandler} />
+                                <input className='inputs' placeholder='인증번호 4자리' onKeyDown={handleKeyDown} value={telAuthNumber} onChange={onAuthNumberChangeHandler} readOnly={isMatched2} />
                                 <div className='timer'>{formatTime()}</div>
                             </div>
                             <div className='send-button' onClick={onCheckClickHandler}>인증 확인</div>
@@ -460,24 +472,24 @@ export default function SignUp() {
                 }
 
                 <div className='user-permission'>
-                    
+
                     <div className='permission-box'>
-                        <input type="checkbox" id='all' checked={allChecked} onChange={handleAllChecked}/>
-        		        <label htmlFor="all">약관 전체 동의</label>    
+                        <input type="checkbox" id='all' checked={allChecked} onChange={handleAllChecked} />
+                        <label htmlFor="all">약관 전체 동의</label>
                     </div>
-                    <hr className='hr-custom-three'/>
+                    <hr className='hr-custom-three' />
 
                     <div className='permission-box-detail'>
-                        <input type="checkbox" 
-                            id="service" 
+                        <input type="checkbox"
+                            id="service"
                             name="service"
-                            checked={terms.service} 
-                            onChange={handleTermChange}/>
-        		        <label htmlFor="service" className="permission-label">[필수] 이용약관 동의</label>
+                            checked={terms.service}
+                            onChange={handleTermChange} />
+                        <label htmlFor="service" className="permission-label">[필수] 이용약관 동의</label>
                         <button type="button"
-                                onClick={toggleServiceTerms1}
-                                className={`toggle-button ${showServiceTerms ? 'rotate' : ''}`}>
-                        ▼
+                            onClick={toggleServiceTerms1}
+                            className={`toggle-button ${showServiceTerms ? 'rotate' : ''}`}>
+                            ▼
                         </button>
                     </div>
                     {showServiceTerms && (
@@ -540,16 +552,16 @@ export default function SignUp() {
 
 
                     <div className='permission-box-detail'>
-                        <input type="checkbox" 
+                        <input type="checkbox"
                             id="privacy"
                             name="privacy"
                             checked={terms.privacy}
-                            onChange={handleTermChange}/>
-        		        <label htmlFor="privacy" className="permission-label">[필수] 개인정보 수집 및 이용 동의</label>
+                            onChange={handleTermChange} />
+                        <label htmlFor="privacy" className="permission-label">[필수] 개인정보 수집 및 이용 동의</label>
                         <button type="button"
-                                onClick={toggleServiceTerms2}
-                                className={`toggle-button ${showPrivacyTerms ? 'rotate' : ''}`}>
-                        ▼
+                            onClick={toggleServiceTerms2}
+                            className={`toggle-button ${showPrivacyTerms ? 'rotate' : ''}`}>
+                            ▼
                         </button>
                     </div>
                     {showPrivacyTerms && (
@@ -618,7 +630,7 @@ The Memorial Day (이하 "갑")는 고객(이하 "을")의 개인정보를 중�
                         </div>
                     )}
                 </div>
-                
+
                 <div className='signup-button' onClick={signUpClickHandler}>회원가입</div>
             </div>
         </div>

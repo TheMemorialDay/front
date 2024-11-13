@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACCESS_TOKEN, ROOT_PATH, SIGN_UP_ABSOLUTE_PATH } from '../../constants';
@@ -134,7 +134,10 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const [authMessage, setAuthMessage] = useState<string>('');
 
     // state: 타이머 상태 //
-    const [timer, setTimer] = useState(180);
+    const [timer, setTimer] = useState(10);
+
+    // state: 타이머를 멈출 상태 추가
+    const [stopTimer, setStopTimer] = useState(false);
 
     // state: 메시지 에러 상태 //
     const [isNameMessageError, setNameMessageError] = useState<boolean>(false);
@@ -173,7 +176,6 @@ function FindId({ onPathChange }: AuthComponentProps) {
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
         setTelMessage(message);
-        setTelMessageError(!isSuccessed);
         setSend(isSuccessed);
 
     };
@@ -190,8 +192,12 @@ function FindId({ onPathChange }: AuthComponentProps) {
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
 
         setAuthMessage(message);
-        setAuthMessageError(!isSuccessed);
+        setAuthMessageError(isSuccessed);
         setIsCheckedTelAuthNumber(isSuccessed)
+
+        if (isSuccessed) {
+            setStopTimer(true);
+        }
     };
 
     // function: 아이디 찾기 after Response 처리 함수 //
@@ -215,8 +221,6 @@ function FindId({ onPathChange }: AuthComponentProps) {
     const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setName(value);
-
-        const name = value;
 
         const message = value ? '' : '이름을 입력해주세요.';
         setNameMessage(message);
@@ -254,26 +258,6 @@ function FindId({ onPathChange }: AuthComponentProps) {
         return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
     };
 
-    // Function: 인증번호 재전송 함수 //
-    const resendVerification = () => {
-        setTimer(180);
-        setTelAuthNumber('');
-
-        const pattern = /^[0-9]{11}$/;
-        const isMatched = pattern.test(telNumber);
-
-        if (!isMatched) {
-            setTelMessage('숫자 11자 입력해주세요.');
-            setTelMessageError(true);
-            setName('');
-            setTelNumber('');
-            return;
-        }
-
-        const requestBody: IdSearchNameTelNumberRequestDto = { name, telNumber };
-        idSearchNameTelNumberRequest(requestBody).then(idSearchNameTelNumberResponse);
-    };
-
     // event handler: 인증번호 변경 이벤트 핸들러 //
     const onAuthNumberChangeHandler = (e: { target: { value: string } }) => {
         const numbersOnly = e.target.value.replace(/\D/g, "");
@@ -290,9 +274,13 @@ function FindId({ onPathChange }: AuthComponentProps) {
         const isMatched = pattern.test(telNumber);
 
         if (isMatched) {
+            setTelMessage('');
+            setTimer(10);
+            setTelAuthNumber('');
+            setAuthMessage('');
+            setIsMatched1(true);
             const requestBody: IdSearchNameTelNumberRequestDto = { name, telNumber };
             idSearchNameTelNumberRequest(requestBody).then(idSearchNameTelNumberResponse);
-            setIsMatched1(true);
         } else {
             setTelMessage('숫자 11자 입력해주세요.');
             setTelMessageError(true);
@@ -354,15 +342,18 @@ function FindId({ onPathChange }: AuthComponentProps) {
         setTelAuthNumber('');
     }, []);
 
+    // useRef로 interval을 관리
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
     // Effect: 타이머 기능 구현 //
     useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (isSend) {
-            interval = setInterval(() => {
+        if (isMatched1 && !stopTimer) { // stopTimer가 false일 때만 타이머 시작
+            intervalRef.current = setInterval(() => {
                 setTimer((prevTimer) => {
                     if (prevTimer <= 1) {
-                        clearInterval(interval);
+                        clearInterval(intervalRef.current!);
                         setSend(false);
+                        setTelMessage('');
                         return 0;
                     }
                     return prevTimer - 1;
@@ -370,8 +361,17 @@ function FindId({ onPathChange }: AuthComponentProps) {
             }, 1000);
         }
 
-        return () => clearInterval(interval);
-    }, [isSend]);
+        // stopTimer가 true가 되면 타이머를 멈추도록 추가
+        if (stopTimer && intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [isSend, stopTimer]);
 
     //render: 아이디 찾기 화면 렌더링 //
     return (
@@ -384,22 +384,21 @@ function FindId({ onPathChange }: AuthComponentProps) {
                 </div>
                 <div className='tel'>
                     <input className='tel-number' placeholder='전화번호를 입력해주세요.' value={displayFormattedPhoneNumber(telNumber)} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
-                    <div className='send-button' onClick={!isSend ? onSendClickHandler : resendVerification}>{isMatched1 ? '재전송' : '전송'}</div>
+                    <div className='send-button' onClick={onSendClickHandler}>{isMatched1 ? '재전송' : '전송'}</div>
                 </div>
                 <div className={`message ${isTelMessageError ? 'false' : 'true'}`}>{telMessage}</div>
                 {isSend &&
                     <div>
                         <div className='tel' style={{ marginTop: '20px' }}>
                             <div className='input-wrapper'>
-                                <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
+                                <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} readOnly={isAuthMessageError} />
                                 <div className='timer'>{formatTime()}</div>
                             </div>
                             <div className='send-button' onClick={onCheckClickHandler}>확인</div>
                         </div>
-                        <div className={`message ${isAuthMessageError ? 'false' : 'true'}`}>{authMessage}</div>
+                        <div className={`message ${isAuthMessageError ? 'true' : 'false'}`}>{authMessage}</div>
                     </div>
                 }
-
 
             </div>
 
@@ -478,6 +477,10 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
     // state: 타이머 //
     const [timer, setTimer] = useState(180);
+
+    // state: 타이머를 멈출 상태 추가
+    const [stopTimer, setStopTimer] = useState(false);
+
     const [isMatched1, setIsMatched1] = useState<boolean>(false);
 
     // variable: 비밀번호 재설정 가능 검증 //
@@ -495,7 +498,6 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
 
         setTelMessage(message);
-        setTelMessageError(!isSuccessed);
         setSend(isSuccessed);
 
         setIsUserIdCheck(isSuccessed);
@@ -512,10 +514,14 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
         setAuthMessage(message);
-        setAuthMessageError(!isSuccessed);
 
         setIsTelNumberCheck(isSuccessed);
         setIsAuthNumberCheck(isSuccessed);
+
+        if (isSuccessed) {
+            setStopTimer(true);
+            setAuthMessageError(isSuccessed);
+        }
     };
 
     // function: 비밀번호 재설정 전 최종 확인 Response 처리 함수 //
@@ -583,14 +589,6 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
     };
 
-    // Function: 인증번호 재전송 함수 //
-    const resendVerification = () => {
-        setTimer(180);
-        setTelAuthNumber('');
-        const requestBody: PasswordResettinIdTelRequestDto = { userId, telNumber: zusTelNumber };
-        passwordResettingIdTelRequest(requestBody).then(passwordSearchResponse);
-    };
-
     // event handler: 전송 버튼 클릭 이벤트 핸들러 //
     const onSendClickHandler = () => {
         if (!userId || !zusTelNumber) {
@@ -603,9 +601,13 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         const isMatched = pattern.test(zusTelNumber);
 
         if (isMatched) {
+            setTelMessage('');
+            setTimer(10);
+            setTelAuthNumber('');
+            setAuthMessage('');
+            setIsMatched1(true);
             const requestBody: PasswordResettinIdTelRequestDto = { userId, telNumber: zusTelNumber };
             passwordResettingIdTelRequest(requestBody).then(passwordSearchResponse);
-            setIsMatched1(true);
         } else {
             setTelMessage('숫자 11자 입력해주세요.');
             setTelMessageError(true);
@@ -661,15 +663,18 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
         setTelAuthNumber('');
     }, []);
 
+    // useRef로 interval을 관리
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
     // Effect: 타이머 기능 구현 //
     useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (isSend) {
-            interval = setInterval(() => {
+        if (isMatched1 && !stopTimer) { // stopTimer가 false일 때만 타이머 시작
+            intervalRef.current = setInterval(() => {
                 setTimer((prevTimer) => {
                     if (prevTimer <= 1) {
-                        clearInterval(interval);
+                        clearInterval(intervalRef.current!);
                         setSend(false);
+                        setTelMessage('');
                         return 0;
                     }
                     return prevTimer - 1;
@@ -677,8 +682,17 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
             }, 1000);
         }
 
-        return () => clearInterval(interval);
-    }, [isSend]);
+        // stopTimer가 true가 되면 타이머를 멈추도록 추가
+        if (stopTimer && intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [isSend, stopTimer]);
 
     //render: 비밀번호 찾기 화면 렌더링 //
     return (
@@ -688,19 +702,19 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
                 <input className='input-id' placeholder='아이디' value={userId} onChange={onIdChangeHandler} />
                 <div className='tel'>
                     <input className='tel-number' placeholder='전화번호를 입력해주세요.' value={displayFormattedPhoneNumber(zusTelNumber)} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
-                    <div className='send-button' onClick={!isSend ? onSendClickHandler : resendVerification}>{isMatched1 ? '재전송' : '전송'}</div>
+                    <div className='send-button' onClick={onSendClickHandler}>{isMatched1 ? '재전송' : '전송'}</div>
                 </div>
                 <div className={`message ${isTelMessageError ? 'false' : 'true'}`}>{telMessage}</div>
                 {isSend &&
                     <div>
                         <div className='tel' style={{ marginTop: '20px' }}>
                             <div className='input-wrapper'>
-                                <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} />
+                                <input className='tel-number' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} onKeyDown={handleKeyDown2} readOnly={isAuthMessageError} />
                                 <div className='timer'>{formatTime()}</div>
                             </div>
                             <div className='send-button' onClick={onCheckClickHandler}>확인</div>
                         </div>
-                        <div className={`message ${isAuthMessageError ? 'false' : 'true'}`}>{authMessage}</div>
+                        <div className={`message ${isAuthMessageError ? 'true' : 'false'}`}>{authMessage}</div>
                     </div>
                 }
 
