@@ -27,10 +27,9 @@ import { PostLikeStoreRequestDto, PostPayMentRequestDto } from "./dto/request";
 import PatchOrderStatusReqeustDto from "./dto/request/order/patch-order-status-request.dto";
 import { GetMyReviewListResponseDto } from "./dto/response/mypage-review";
 import { PostReviewRequestDto } from "./dto/request/review";
-import { GetKeywordListResponseDto } from "./dto/response/keyword/get-keyword-list.response";
 import { getMypageLikeStoreReviewNRating } from "./dto/response/like";
+import { GetHotThemeResponseDto, GetKeywordResponseDto } from "./dto/response/home";
 import NewGetOrderManageList from "./dto/response/new-get-order-manage.response.dto";
-import { FullOrder } from "./dto/response/sales/get-sales.response.dto";
 import { SalesListResponseDto } from "./dto/response/sales/get-sales-list.response.dto";
 
 
@@ -38,7 +37,9 @@ import { SalesListResponseDto } from "./dto/response/sales/get-sales-list.respon
 
 const MEMORIALDAY_API_DOMAIN = process.env.REACT_APP_API_URL;
 
-const GET_KEYWORD_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/popular-keyword`;
+//* 홈 - 키워드 & 테마
+const GET_KEYWORD_API_URL = `${MEMORIALDAY_API_DOMAIN}/hot-keyword`;
+const GET_THEME_API_URL = `${MEMORIALDAY_API_DOMAIN}/hot-theme`;
 
 const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
 
@@ -50,9 +51,8 @@ const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MO
 
 //* ========================= stores
 const GET_STORE_LIST_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
-// const GET_STORE_LIST_BY_STORE_NAME_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-by-store-name`;
-// const GET_STORE_LIST_BY_PRODUCT_NAME_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-by-product-name`;
-const GET_STORE_LIST_TOTAL_SEARCH_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores/search-main`;
+const GET_STORE_LIST_TOTAL_SEARCH_API_URL = `${GET_STORE_LIST_API_URL}/search-main`;
+const POST_KEYWORD_API_URL = `${GET_STORE_LIST_API_URL}/keyword`;
 //* ========================= stores
 const POST_LIKE_API_URL = `${MEMORIALDAY_API_DOMAIN}/stores`;
 const DELETE_LIKE_API_URL = (userId: string, storeNumber: number | string) => `${POST_LIKE_API_URL}?userId=${userId}&storeNumber=${storeNumber}`;
@@ -104,6 +104,7 @@ const TEL_AUTH_API_URL = `${AUTH_MODULE_URL}/tel-auth`;
 const TEL_AUTH_CHECK_API_URL = `${AUTH_MODULE_URL}/tel-auth-check`;
 const SIGN_UP_API_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_API_URL = `${AUTH_MODULE_URL}/sign-in`;
+const DELETE_USER_API_URL = `${AUTH_MODULE_URL}/delete-user/me`;
 
 //* ====================== 아이디 찾기
 const ID_SEARCH_NAME_TEL_API_URL = `${AUTH_MODULE_URL}/id-search-first`;
@@ -138,6 +139,22 @@ const bearerAuthorization = (accessToken: string) => ({ headers: { 'Authorizatio
 const responseDataHandler = <T>(response: AxiosResponse<T, any>) => {
     const { data } = response;
     return data;
+};
+
+// function: get hot keyword 요청 함수 //
+export const getKeywordRequest = async () => {
+    const responseBody = await axios.get(GET_KEYWORD_API_URL)
+        .then(responseDataHandler<GetKeywordResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+// function: get hot theme 요청 함수 //
+export const getThemeRequest = async () => {
+    const responseBody = await axios.get(GET_THEME_API_URL)
+        .then(responseDataHandler<GetHotThemeResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
 // function: get store number 요청 함수 //
@@ -509,15 +526,6 @@ export const getProductPreviewListRequest = async (storeNumber: string | number)
     return responseBody;
 }
 
-
-// // function: get MyPage Store 요청 함수 //
-// export const getMyPageStoreRequest = async (storeNumber: number | string, accessToken: string) => {
-//     const responseBody = await axios.get(GET_MYPAGE_STORE_API_URL(storeNumber), bearerAuthorization(accessToken))
-//         .then(responseDataHandler<GetStoreResponseDto>)
-//         .catch(responseErrorHandler);
-//     return responseBody;
-// }
-
 // function: get Sales 요청 함수 //
 export const getSalesRequest = async (userId: string, accessToken: string) => {
     const responseBody = await axios.get(GET_SALES_API_URL(userId), bearerAuthorization(accessToken))
@@ -665,13 +673,21 @@ export const deleteQnARequest = async (questionNumber: number | string, accessTo
     return responseBody;
 }
 
-// function: get popular keyword 요청 함수 //
-export const getKeywordListRequest = () => {
-    return axios.get(GET_KEYWORD_LIST_API_URL)
-        .then(response => response.data)
-        .catch(error => {
-            console.error("에러:", error);
-            return null;
-        });
+//* 회원 탈퇴
+// function: delete user 요청 함수 //
+export const deleteUserRequest = async (accessToken: string) => {
+    const responseBody = await axios.delete(DELETE_USER_API_URL, bearerAuthorization(accessToken))
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+//* 키워드 저장
+// function: post keyword 요청 함수 //
+export const postKeywordRequest = async (keyword: string) => {
+    const responseBody = await axios.post(POST_KEYWORD_API_URL, {}, { params: { keyword } })
+        .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
