@@ -224,7 +224,7 @@ export default function TheMemorialDay() {
         <Route path={MY_PATH} element={<MainLayout />}  >
           <Route path={MY_PATH} element={<MyPage />} />
           <Route path={MY_INFO_PATH} >
-            <Route index element={<InfoUpdate />} />
+            <Route index element={<InfoUpdate />}/>
             <Route path={MY_PASSWORD_CHECK_PATH} element={<MyPasswordCheck />} />
           </Route>
           <Route path={MY_REVIEW_PATH} element={<MyReview />} />
@@ -256,4 +256,3 @@ export default function TheMemorialDay() {
   );
 
 }
-
