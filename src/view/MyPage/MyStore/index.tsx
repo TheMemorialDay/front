@@ -253,10 +253,6 @@ export default function MyStore() {
         fileReader.onloadend = () => {
             setPreviewUrl(fileReader.result as string);
         }
-        // const file = event.target.files?.[0] || null;
-        // if (file) {
-        //     setStoreImageUrl(file.name);
-        // }
     };
 
     // event handler: 간단한 가게 소개 변경 이벤트 핸들러 //
