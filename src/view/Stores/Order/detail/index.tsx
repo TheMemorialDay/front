@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import './style.css'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,9 +11,7 @@ import { Option, RunningHours, SelectedOptionInterface } from '../../../../types
 import { useCookies } from 'react-cookie';
 import { PostOrderRequestDto } from '../../../../apis/dto/request/order';
 import { useSignInUserStore } from '../../../../stores';
-
 import dayjs from 'dayjs';
-
 
 interface PreviewUrlProps {
   imageUrl: string;
@@ -104,6 +102,7 @@ export default function Order() {
 
   // state: 사진 미리보기 상태 //
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const storeUrlInputRef = useRef<HTMLInputElement | null>(null);
 
   // state: 케이크 주문 관련 상태 //
   const [cakeCount, setCakeCount] = useState<number>(1);
@@ -136,7 +135,6 @@ export default function Order() {
   // state: 케이크 주문 가능 상태 //
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-
   // function: 선택된 요일에 따라 open, last 시간 설정 //
   const getOpeningHours = (day: number) => {
     switch (day) {
@@ -151,12 +149,40 @@ export default function Order() {
     }
   };
 
+  // function: 날짜 제한 함수
+  const filterDate = (date: Date) => {
+    const dayOfWeek = date.getDay(); // 선택된 날짜의 요일 (0 = 일요일, 1 = 월요일, ..., 6 = 토요일)
+    const { open, last } = getOpeningHours(dayOfWeek);
+
+    // open과 last가 null인 경우 날짜 선택을 제한
+    if (open === null || last === null) {
+      return false;
+  }
+  return true;
+};
+
   // function: 시간 제한 함수 //
   const filterTime = (time: Date) => {
     if (selectedDate) {
+      const now = new Date();
+      const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+
       const dayOfWeek = selectedDate.getDay();
       const { open, last } = getOpeningHours(dayOfWeek);
       const hour = time.getHours();
+
+      // 선택된 날짜가 오늘인 경우, 현재 시간부터 2시간 이내 시간 제한
+      if (
+        selectedDate.toDateString() === now.toDateString() && (time < now || time < twoHoursLater)
+      ) {
+          return false;
+      }
+
+       // 당일 케이크가 불가하면 당일은 선택하지 못하도록 함
+      if (!cakeToday && selectedDate.toDateString() === now.toDateString()) {
+        return false;
+      }
+
       return open !== null && last !== null ? hour >= open && hour < last : false;
     }
     return true;
@@ -223,7 +249,6 @@ export default function Order() {
     setSundayOpen(parseTime(orderProductDetails.sundayOpen));
     setSundayLast(parseTime(orderProductDetails.sundayLast));
 
-
     setOptions(orderProductDetails.options);
     const initSelectedOptions = orderProductDetails.options.map(option => ({ name: option.productOptionName, value: '', price: 0, optionCategoryNumber: 0 }));
     setSelectedOptions(initSelectedOptions);
@@ -254,21 +279,6 @@ export default function Order() {
     setCurrentImageIndex(index);
   };
 
-  // event handler: 케이크 수량 up 버튼 클릭 핸들러 //
-  const onPlusClickHandler = () => {
-    setCakeCount(cakeCount + 1);
-  }
-
-  // event handler: 케이크 수량 down 버튼 클릭 핸들러 //
-  const onMinusClickHandler = () => {
-    setCakeCount(cakeCount - 1);
-
-    if (cakeCount <= 0 || finalPrice === 0) {
-      alert("케이크 최소 수량은 1개입니다.");
-      setCakeCount(1);
-    }
-  }
-
   // event handler: 요청 사항 변경 핸들러 //
   const onRequestChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
@@ -293,6 +303,13 @@ export default function Order() {
   const formatPickupTime = (isoString: string): string => {
     return dayjs(isoString).format('YYYY.MM.DD HH:mm');
   };
+
+  // event handler: 이미지 클릭 이벤트 핸들러 //
+  const onStoreImageClickHandler = () => {
+    const { current } = storeUrlInputRef;
+    if (!current) return;
+    current.click();
+};
 
   // event handler: 주문하기 버튼 클릭 이벤트 핸들러 //
   const onOrderClickHandler = async () => {
@@ -346,8 +363,6 @@ export default function Order() {
 
   // effect: 상품 상세 정보 가져오기 //
   useEffect(getProductDetail, []);
-
-  useEffect(() => console.log(selectedOptions), [selectedOptions]);
 
   // effect: 상품 최종 금액 업데이트 //
   useEffect(() => {
@@ -405,6 +420,10 @@ export default function Order() {
             dateFormat="yyyy년 MM월 dd일 h:mm aa"
             placeholderText="날짜와 시간을 선택하세요"
             filterTime={filterTime}
+            filterDate={filterDate}
+            dayClassName={(date) => 
+              dayjs(date).isSame(dayjs(), 'day') ? '' : 'non-highlighted'
+            }
           />
         </div>
 
@@ -420,19 +439,21 @@ export default function Order() {
           </div>
         )}
 
-        <div className='pickup-date' style={{ display: "none" }}>
-          <div className='option-title'>수량 입력<span style={{ color: "red" }}>*</span></div>
-          <div className='count-handler'>
-            <div className='count-up' onClick={onPlusClickHandler}></div>
-            <div style={{ fontSize: "16px", cursor: "pointer" }}>{cakeCount}</div>
-            <div className='count-down' onClick={onMinusClickHandler}></div>
-          </div>
-        </div>
-
         <div>
           <div className='option-title'>요청사항</div>
           <textarea className='textarea' placeholder='자유롭게 입력하세요.' onChange={onRequestChangeHandler} />
         </div>
+
+        {productTag === '포토' ?
+          <div style={{marginTop: "20px", display: "flex", flexDirection: "column"}}>
+            <div className='option-title'>사진 첨부<span style={{ color: "red" }}>*</span></div>
+            <div className='cake-photo-zone'>
+              <div className='cake-photo-pre'></div>
+              <div className='cake-photo-file-pick' onClick={onStoreImageClickHandler}>파일 선택</div>
+            </div>
+          </div>
+        : ''}
+        
 
         <div style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}>
           <div className='option-title'>유의사항 확인<span style={{ color: "red" }}>*</span></div>

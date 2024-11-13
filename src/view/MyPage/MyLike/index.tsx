@@ -137,7 +137,7 @@ function StoreRow({ store, getStoreList}: StoreRowProps) {
                         </div>
                     </div>
                     <p className="shop-location">{store.storeGugun} {store.storeDong}</p>
-                    <p className="shop-rating">별점 {store.reviewRating}</p>
+                    <p className="shop-rating">별점 {store.reviewRating?.toFixed(1)}</p>
                     <p className="shop-reviews">리뷰 {store.reviewCount}</p>
                 </div>
             </div>

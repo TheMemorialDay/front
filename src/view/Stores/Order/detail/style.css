@@ -206,6 +206,50 @@
     align-items: center;
 }
 
+#product-order .cake-photo-zone {
+    display: flex; 
+    flex-direction: row; 
+    gap: 15px; 
+    margin-left: 20px;
+    margin-top: 15px;
+}
+
+#product-order .cake-photo-pre {
+    width: 190px;
+    height: 250px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+
+    background-image: url('/public/images/cake/cake14.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+#product-order .cake-photo-file-pick {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 203px;
+
+    width: 80px;
+    height: 25px;
+    padding: 10px;
+    background-color: black;
+    border-radius: 6px;
+    color: white;
+    border: 1px solid black;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+#product-order .cake-photo-file-pick:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.7);
+}
+
 /******************************************************************************************************************************/
 /* 전체 Datepicker 스타일 */
 .react-datepicker {
@@ -242,10 +286,10 @@
     color: #333;
   }
   
-  /* 오늘 날짜 강조 */
-  .react-datepicker__day--today {
-    background-color: #fffae6;
-    border-radius: 50%;
+/* 오늘 날짜 강조 제거*/
+.react-datepicker__day--today {
+    background-color: transparent !important;
+    color: inherit !important;
   }
   
   /* 선택한 날짜 강조 */
