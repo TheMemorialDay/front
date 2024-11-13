@@ -392,7 +392,7 @@ const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestD
     };
 
     return (
-        <div className='option-box'>크기
+        <div className='option-box'>크기 <span className='option-box-in'>선택 사항이 없다면 '없음 (가격: 0원)' 카테고리를 하나 만들어주세요!</span>
                     {showInput && (
                         <div style={{marginTop: "10px", marginBottom:"10px"}}>
                             <input
@@ -498,7 +498,7 @@ const FlavorOption = ({ product, onOptionsChange }: { product: PostProductReques
     };
 
     return (
-        <div className='option-box'>맛
+        <div className='option-box'>맛<span className='option-box-in'>선택 사항이 없다면 '없음 (가격: 0원)' 카테고리를 하나 만들어주세요!</span>
             {showFlavorInput && (
                 <div style={{ marginTop: "10px", marginBottom: "10px" }}>
                     <input
@@ -568,7 +568,7 @@ const OptionList = ({ product, onOptionsChange }: { product: PostProductRequestD
     };
 
     return (
-        <div style={{width: "100%", marginLeft: "-40px"}}>
+        <div style={{width: "100%"}}>
             {optionComponents.map((option, index) => (
                 <NewOption
                     key={index}

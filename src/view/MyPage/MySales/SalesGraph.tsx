@@ -13,7 +13,7 @@ const SalesGraph = ({ salesData, selectedMonth }: { salesData: any[]; selectedMo
                 order.orderStatus === '완료' || order.orderStatus === '픽업 완료'
             );
     
-            // 필터링된 데이터로 월별 매출 총합 계산
+            // 월별 매출 총합 계산
             const monthlySales = filteredSalesData.reduce((acc, order) => {
                 const orderDate = new Date(order.orderTime);
                 const month = orderDate.getMonth() + 1; // 1부터 시작하는 월
@@ -26,7 +26,7 @@ const SalesGraph = ({ salesData, selectedMonth }: { salesData: any[]; selectedMo
     
             // 차트에 맞는 데이터 형식으로 변환 (1~12월 모두 표시)
             const formattedData = Array.from({ length: 12 }, (_, index) => {
-                const month = index + 1; // 월은 1부터 12까지
+                const month = index + 1;
                 return {
                     date: month.toString(),
                     매출: monthlySales[month] || 0,
@@ -35,18 +35,20 @@ const SalesGraph = ({ salesData, selectedMonth }: { salesData: any[]; selectedMo
     
             setChartData(formattedData);
     
-            // 주문 상태별 주문 수 계산
+            // 주문 상태별 주문 수 계산, '완료'와 '픽업 완료'를 합산
             const statusData = salesData.reduce((acc, order) => {
-                if (!acc[order.orderStatus]) {
-                    acc[order.orderStatus] = 0;
+                const status = order.orderStatus === '픽업 완료' ? '완료' : order.orderStatus;
+                if (!acc[status]) {
+                    acc[status] = 0;
                 }
-                acc[order.orderStatus] += 1; // 각 주문 상태별 건수 증가
+                acc[status] += 1;
                 return acc;
             }, {} as { [key: string]: number });
     
             setOrderStatusData(statusData); // 주문 상태별 데이터 업데이트
         }
     }, [salesData]);
+    
     
     // 월 강조 스타일 적용
     const getLineStroke = (month: string) => {

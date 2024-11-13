@@ -43,18 +43,21 @@ export default function ShopInformation() {
         <div className='shop-review' onClick={onReviewButtonClickHandler}>리뷰</div>
       </div>
       <div className='information'>
-        {
-          store ? <MapContainer storeLatitude={store.storeLatitude} storeLongtitude={store.storeLongtitude} /> : ''
-        }
-
-        <div className='line'></div>
         <div className='shop-locate'>
           {
             store?.storeParticular?.split('\\n').map((line, index) => (
-              <div key={index}>{line}</div>
+              <div className='shop-locate-in' key={index}>{line}</div>
             ))
           }
         </div>
+          {/* <div className='line'></div> */}
+        <div>
+        {
+          store ? <MapContainer storeLatitude={store.storeLatitude} storeLongtitude={store.storeLongtitude} /> : ''
+        }
+        </div>
+
+
       </div>
     </div>
   )

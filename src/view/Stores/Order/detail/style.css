@@ -15,9 +15,10 @@
     justify-content: center;
     padding: 8px 12px;
     cursor: pointer;
-    width: 50px;
+    min-width: 50px;
     margin-right: 5px;
 }
+
 
 #preview {
     width: 50px;
@@ -348,15 +349,21 @@
 
 #product-order .textarea {
     margin-left: 20px;
-    width: 500px;
-    height: 100px;
-    border-radius: 6px;
-    border: 1px solid darkgray;
+    width: 96%;
+    height: 110px;
     margin-top: 15px;
-
-    font-size: 14px;
+    border-radius: 6px;
+    padding: 10px 15px;
+    border: 1px solid darkgray;
+    font-size: 16px;
     font-weight: 400;
+    font-family: inherit;
+    box-sizing: border-box;
+    resize: none;
+    line-height: 1.8;
 }
+
+
 
 #product-order .checkbox {
     margin-top: 20px;
