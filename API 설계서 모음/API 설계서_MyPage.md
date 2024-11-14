@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 ***
   
+=======
+>>>>>>> 9e3e05b9c26b3997664eff60768091f4b7471da9
 <h2 style='background-color: rgba(55, 55, 55, 0.2); text-align: center'>회원 정보 수정 모듈</h2>
 
 The Memorial Day 서비스의 회원 정보 수정과 관련된 REST API 모듈입니다.  
@@ -509,6 +512,8 @@ Content-Type: application/json;charset=UTF-8
 ```
 
 ***
+<<<<<<< HEAD
+=======
 
 #### - 회원 탈퇴
   
@@ -579,6 +584,83 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
+***
+
+<h2 style='background-color: rgba(55, 55, 55, 0.2); text-align: center'>주문 내역 모듈</h2>
+>>>>>>> 9e3e05b9c26b3997664eff60768091f4b7471da9
+
+#### - 회원 탈퇴
+  
+##### 설명
+
+<<<<<<< HEAD
+클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
+탈퇴 버튼을 눌러 탈퇴를 요청합니다.    
+요청에 성공한 경우 성공에 대한 응답을 받습니다.  
+실패할 경우 실패에 대한 응답을 받습니다.      
+네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.   
+
+- method : **DELETE**  
+- URL : **/delete-user/me**  
+
+##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Authorization | Bearer 토큰 인증 헤더 | O |
+
+##### Response
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
+
+###### Response Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+| code | String | 결과 코드 | O |
+| message | String | 결과 코드에 대한 설명 | O |
+
+###### Example
+
+**응답 성공**
+```bash
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "SU",
+  "message": "Success"
+}
+```
+
+**응답 : 실패 (존재하지 않는 고객)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "NU",
+  "message": "No exist user."
+}
+```
+
+**응답 : 실패 (데이터베이스 에러)**
+```bash
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json;charset=UTF-8
+{
+  "code": "DBE",
+  "message": "DataBase Error"
+}
+```
+
+=======
+>>>>>>> 9e3e05b9c26b3997664eff60768091f4b7471da9
 #### - 주문내역 리스트 불러오기
 
 #### 설명

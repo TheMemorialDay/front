@@ -4,5 +4,5 @@ import ResponseDto from "./response.dto";
 
 export default interface GetOrderDetailListResponseDto extends ResponseDto {
   //orders: OrderDetailsProps[];
-  orders: NewOrderDetailsProps[];
+  orderManages: NewOrderDetailsProps[];
 }

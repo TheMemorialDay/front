@@ -363,7 +363,7 @@ export default function Order() {
       formData.append('file', storeImageUrl);
       url = await fileUploadRequest(formData);
     }
-    if(!url) {
+    if(productTag == "포토" && (!url)) {
       alert("이미지 파일을 선택해주세요!");
       return;
     }
