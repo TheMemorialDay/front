@@ -11,77 +11,77 @@ import { useNavigate } from 'react-router-dom';
 // component: 인기 키워드 컴포넌트 //
 const KeywordCloud = () => {
 
-        // state: 인기 키워드 상태 //
-        const [keywordstate, setKeywordState] = useState<KeywordComponentProps[]>([]);
+    // state: 인기 키워드 상태 //
+    const [keywordstate, setKeywordState] = useState<KeywordComponentProps[]>([]);
 
-        // state: 인기 테마 상태 //
-        const [themeState, setThemeState] = useState<ThemeComponentProps[]>([]);
+    // state: 인기 테마 상태 //
+    const [themeState, setThemeState] = useState<ThemeComponentProps[]>([]);
 
-        // state: zustand 상태 //
-        const { setMainSearch, setSelectedThemes } = useStoreSearchStore();
+    // state: zustand 상태 //
+    const { setMainSearch, setSelectedThemes } = useStoreSearchStore();
 
-        // state: 메시지 상태 //
-        const [keywordMessage, setKeywordMessage] = useState<string>('');
-        const [themeMessage, setThemeMessage] = useState<string>('');
+    // state: 메시지 상태 //
+    const [keywordMessage, setKeywordMessage] = useState<string>('');
+    const [themeMessage, setThemeMessage] = useState<string>('');
 
-        const navigator = useNavigate();
-    
-        // function: 인기 키워드 불러오기 response 처리 함수 //
-        const getKeywordResponse = (responseBody: GetKeywordResponseDto | ResponseDto | null) => {
-            const message = 
-                !responseBody ? '준비하여 보여드리겠습니다.' :
+    const navigator = useNavigate();
+
+    // function: 인기 키워드 불러오기 response 처리 함수 //
+    const getKeywordResponse = (responseBody: GetKeywordResponseDto | ResponseDto | null) => {
+        const message =
+            !responseBody ? '준비하여 보여드리겠습니다.' :
                 responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
-            const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    
-            if (!isSuccessed) {
-                setKeywordMessage(message);
-                return;
-            }
 
-            const { keywords } = responseBody as GetKeywordResponseDto;
-            setKeywordState(keywords);
-        };
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
 
-        // function: 인기 테마 불러오기 response 처리 함수 //
-        const getThemeResponse = (responseBody: GetHotThemeResponseDto | ResponseDto | null) => {
-            const message = 
-                !responseBody ? '준비하여 보여드리겠습니다.' :
-                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
-    
-            const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    
-            if (!isSuccessed) {
-                setThemeMessage(message);
-                return;
-            }
-
-            const { themas } = responseBody as GetHotThemeResponseDto;
-            setThemeState(themas);
-        };
-
-        // event handler: 인기 키워드 클릭 이벤트 핸들러 //
-        const onKeywordClickHandler = (keyword: string) => {
-            if (keyword.startsWith('#')) {
-                setSelectedThemes([keyword]);
-            } else {
-                setMainSearch(keyword);
-            }
-            navigator(ST_ABSOLUTE_PATH);
+        if (!isSuccessed) {
+            setKeywordMessage(message);
+            return;
         }
 
-        //* 인기 키워드를 위한 ==============================================================
-        const keywords = keywordstate.map(keyword => ({
-            text: (keyword.keyword), // 'text' 속성에 단어를 할당
-            value: (keyword.cnt)*10,    // 'value' 속성에 해당 카운트를 할당
-        }));
+        const { keywords } = responseBody as GetKeywordResponseDto;
+        setKeywordState(keywords);
+    };
 
-        const keyworda = themeState.map(theme => ({
-            text: (theme.thema), // 'text' 속성에 단어를 할당
-            value: (theme.cnt)*10,    // 'value' 속성에 해당 카운트를 할당
-        }));
+    // function: 인기 테마 불러오기 response 처리 함수 //
+    const getThemeResponse = (responseBody: GetHotThemeResponseDto | ResponseDto | null) => {
+        const message =
+            !responseBody ? '준비하여 보여드리겠습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
-        const keywordb = [...keywords, ...keyworda];
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+
+        if (!isSuccessed) {
+            setThemeMessage(message);
+            return;
+        }
+
+        const { themas } = responseBody as GetHotThemeResponseDto;
+        setThemeState(themas);
+    };
+
+    // event handler: 인기 키워드 클릭 이벤트 핸들러 //
+    const onKeywordClickHandler = (keyword: string) => {
+        if (keyword.startsWith('#')) {
+            setSelectedThemes([keyword]);
+        } else {
+            setMainSearch(keyword);
+        }
+        navigator(ST_ABSOLUTE_PATH);
+    }
+
+    //* 인기 키워드를 위한 ==============================================================
+    const keywords = keywordstate.map(keyword => ({
+        text: (keyword.keyword), // 'text' 속성에 단어를 할당
+        value: (keyword.cnt) * 10,    // 'value' 속성에 해당 카운트를 할당
+    }));
+
+    const keyworda = themeState.map(theme => ({
+        text: (theme.thema), // 'text' 속성에 단어를 할당
+        value: (theme.cnt) * 10,    // 'value' 속성에 해당 카운트를 할당
+    }));
+
+    const keywordb = [...keywords, ...keyworda];
 
     // effect: 마운트 될 시 키워드 불러오는 이펙트 //
     useEffect(() => {
@@ -108,10 +108,10 @@ const KeywordCloud = () => {
     };
 
     const options: OptionsProp = {
-        colors: Array.from({length: 100}, () => getRandomColor()),
+        colors: Array.from({ length: 100 }, () => getRandomColor()),
         enableTooltip: false,
         deterministic: true,
-        fontFamily: 'Montserrat',
+        fontFamily: '양진체',
         fontSizes: [40, 130],
         fontStyle: 'normal',
         // fontWeight: 'normal',

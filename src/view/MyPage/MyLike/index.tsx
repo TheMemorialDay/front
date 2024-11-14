@@ -21,7 +21,7 @@ interface StoreRowProps {
 }
 
 // component: 스토어 리스트 아이템 컴포넌트 //
-function StoreRow({ store, getStoreList}: StoreRowProps) {
+function StoreRow({ store, getStoreList }: StoreRowProps) {
 
     const navigator = useNavigate();
 
@@ -207,8 +207,8 @@ export default function MyLike() {
     // function: like store review count and review rating //
     const getStoreInfo = () => {
         const accessToken = cookies[ACCESS_TOKEN];
-        if(!accessToken) return;
-        if(signInUser?.userId) {
+        if (!accessToken) return;
+        if (signInUser?.userId) {
             getMypageLikeStoreReviewNRatingRequest(signInUser?.userId, accessToken).then(getLikeStoreInfoResponse);
         }
     }
@@ -217,15 +217,15 @@ export default function MyLike() {
     const getLikeStoreInfoResponse = (responseBody: null | ResponseDto | getMypageLikeStoreReviewNRating) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' : responseBody;
-        
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' : responseBody;
+
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
             return;
         }
-        const {reviewNRatings} = responseBody as getMypageLikeStoreReviewNRating;
+        const { reviewNRatings } = responseBody as getMypageLikeStoreReviewNRating;
         setStoreInfo(reviewNRatings);
     }
 
@@ -245,14 +245,14 @@ export default function MyLike() {
 
         getStoreInfo();
         getStoreList();
-    }, [userId, storeList]);
+    }, [userId]);
 
     return (
         <div id='mypage-like-wrapper'>
             <div className='title'>찜한 가게</div>
             <div className='like-main'>
                 {
-                    storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList}/>)
+                    storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList} />)
                 }
             </div>
         </div>
