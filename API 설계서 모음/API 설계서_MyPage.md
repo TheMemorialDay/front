@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+***
+  
+=======
+>>>>>>> 9e3e05b9c26b3997664eff60768091f4b7471da9
 <h2 style='background-color: rgba(55, 55, 55, 0.2); text-align: center'>회원 정보 수정 모듈</h2>
 
 The Memorial Day 서비스의 회원 정보 수정과 관련된 REST API 모듈입니다.  
@@ -576,14 +581,6 @@ Content-Type: application/json;charset=UTF-8
   "message": "DataBase Error"
 }
 ```
-
-***
-
-<h2 style='background-color: rgba(55, 55, 55, 0.2); text-align: center'>주문 내역 모듈</h2>
-
-The Memorial Day 서비스의 주문 내역과 관련된 REST API 모듈입니다.  
-  
-- url : /mypage/order-detail
 
 #### - 주문내역 리스트 불러오기
 
