@@ -513,9 +513,9 @@ export default function MyOrderDetail() {
             alert(message);
             return;
         }
-        const { orders } = responseBody as GetOrderDetailListResponseDto;
-        setOrderDetailList(orders);
-        originalList.current = orders;
+        const { orderManages } = responseBody as GetOrderDetailListResponseDto;
+        setOrderDetailList(orderManages);
+        originalList.current = orderManages;
     }
 
     // Function: 픽업 완료 상태 업데이트 함수 //
