@@ -33,7 +33,7 @@ const Add = () => {
     const { productNumber } = useParams<{ productNumber?: string }>();
     //const {storeNumber} = useParams<{storeNumber?: string}>();
     const [storeNumber, setStoreNumber] = useState<string | number>();
-    const {signInUser} = useSignInUserStore();
+    const { signInUser } = useSignInUserStore();
     const [productData, setProductData] = useState<PostProductRequestDto | PatchProductRequestDto>(defaultProductData);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [cookies] = useCookies();
@@ -44,7 +44,7 @@ const Add = () => {
             const loadProduct = async () => {
                 try {
                     const accessToken = cookies[ACCESS_TOKEN];
-                    if(!accessToken) return;
+                    if (!accessToken) return;
                     const response = await getProductRequest(productNumber, accessToken);
                     if (response) {
                         const product = response as GetProductResponseDto;
@@ -113,127 +113,127 @@ const Add = () => {
 
     // 상품 등록 핸들러 수정
     const onRegisterClickHandler = async () => {
-    console.log('입력된 데이터:', productData);
+        console.log('입력된 데이터:', productData);
 
-    let urls: string[] = [];
-    for (const file of selectedFiles) {
-        const formData = new FormData();
-        formData.append('file', file);
-        let url = await fileUploadRequest(formData);
-        console.log(url);
-        if (url) urls.push(url);
-        console.log(urls);
-    }
+        let urls: string[] = [];
+        for (const file of selectedFiles) {
+            const formData = new FormData();
+            formData.append('file', file);
+            let url = await fileUploadRequest(formData);
+            console.log(url);
+            if (url) urls.push(url);
+            console.log(urls);
+        }
 
-    if (!urls.length) {
-        alert("사진 등록은 필수입니다.");
-        return;
-    }
-
-    // 필수 필드 검증
-    if (!productData.productName || !productData.productPrice ||
-        !urls.length || !productData.options.length || !productData.productTag) {
-        alert('모든 필드를 올바르게 입력해주세요.');
-        return;
-    }
-
-    // 옵션 검증
-    for (const option of productData.options) {
-        if (!option.productOptionName || !option.optionDetails.length) {
-            alert('모든 옵션과 세부사항을 입력해주세요.');
+        if (!urls.length) {
+            alert("사진 등록은 필수입니다.");
             return;
         }
-        for (const detail of option.optionDetails) {
-            if (!detail.productCategory || detail.productOptionPrice == null) {
-                alert('모든 옵션 세부사항을 입력해주세요.');
+
+        // 필수 필드 검증
+        if (!productData.productName || !productData.productPrice ||
+            !urls.length || !productData.options.length || !productData.productTag) {
+            alert('모든 필드를 올바르게 입력해주세요.');
+            return;
+        }
+
+        // 옵션 검증
+        for (const option of productData.options) {
+            if (!option.productOptionName || !option.optionDetails.length) {
+                alert('모든 옵션과 세부사항을 입력해주세요.');
                 return;
             }
-        }
-    }
-
-    const requestBody: PostProductRequestDto = {
-        productName: productData.productName,
-        productIntroduce: productData.productIntroduce,
-        productPrice: productData.productPrice,
-        productToday: productData.productToday,
-        productTag: productData.productTag, // 선택된 태그
-        options: productData.options,
-        productImages: urls,
-        themes: productData.themes, // 선택된 테마
-    };
-
-    const patchRequestBody: PatchProductRequestDto = {
-        productName: productData.productName,
-        productIntroduce: productData.productIntroduce,
-        productPrice: productData.productPrice,
-        productToday: productData.productToday,
-        productTag: productData.productTag, // 선택된 태그
-        options: productData.options,
-        productImages: urls,
-        themes: productData.themes, // 선택된 테마
-    };
-
-    // function: get store number response 처리 //
-    const getStoreNumberResponse = (responseBody: GetStoreNumber | ResponseDto | null) => {
-        const message = 
-            !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : responseBody.code;
-            
-        //alert(message);
-        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
-            alert(message);
-            return;
-        }
-        const storeNum = responseBody as GetStoreNumber;
-        console.log(storeNum.storeNumber);
-        setStoreNumber(storeNum.storeNumber);
-        //return storeNum.storeNumber;
-    }
-
-    
-
-    try {
-        let response;
-        
-        const accessToken = cookies[ACCESS_TOKEN];
-        console.log("액세스 토큰: " + accessToken + ", 스토어 넘버: " + storeNumber);
-        if(!accessToken) return;
-        if (productNumber) {
-            // 수정 요청
-            response = await patchProductRequest(productNumber, patchRequestBody, accessToken); // 수정 API 호출
-        } else {
-            // 추가 요청
-            // if(signInUser) {
-            //     getStoreNumberRequest(signInUser.userId, accessToken).then(getStoreNumberResponse);
-            //     if(storeNumber) {
-            //         response = await postProductRequest(requestBody, storeNumber, accessToken); // 추가 API 호출
-            //     }
-            // }
-            if (signInUser) {
-                const storeNumberResponse = await getStoreNumberRequest(signInUser.userId, accessToken);
-                if (storeNumberResponse && storeNumberResponse.code === 'SU') {
-                    const storeNum = storeNumberResponse as GetStoreNumber;
-                    console.log("스토어 넘버:", storeNum.storeNumber);
-                    setStoreNumber(storeNum.storeNumber); // 스토어 번호 설정
-
-                    // 설정된 storeNumber를 사용해 상품 등록 API 호출
-                    response = await postProductRequest(requestBody, storeNum.storeNumber, accessToken);
-                } else {
-                    alert(storeNumberResponse?.message || '스토어 번호를 가져오는 중 문제가 발생했습니다.');
+            for (const detail of option.optionDetails) {
+                if (!detail.productCategory || detail.productOptionPrice == null) {
+                    alert('모든 옵션 세부사항을 입력해주세요.');
                     return;
                 }
             }
-            
         }
-        console.log('상품 등록/수정 성공:', response);
-        navigator('../');
-    } catch (error) {
-        console.error('상품 등록/수정 실패:', error);
-        alert('상품 등록/수정에 실패했습니다.');
-    }
-};
+
+        const requestBody: PostProductRequestDto = {
+            productName: productData.productName,
+            productIntroduce: productData.productIntroduce,
+            productPrice: productData.productPrice,
+            productToday: productData.productToday,
+            productTag: productData.productTag, // 선택된 태그
+            options: productData.options,
+            productImages: urls,
+            themes: productData.themes, // 선택된 테마
+        };
+
+        const patchRequestBody: PatchProductRequestDto = {
+            productName: productData.productName,
+            productIntroduce: productData.productIntroduce,
+            productPrice: productData.productPrice,
+            productToday: productData.productToday,
+            productTag: productData.productTag, // 선택된 태그
+            options: productData.options,
+            productImages: urls,
+            themes: productData.themes, // 선택된 테마
+        };
+
+        // function: get store number response 처리 //
+        const getStoreNumberResponse = (responseBody: GetStoreNumber | ResponseDto | null) => {
+            const message =
+                !responseBody ? '서버에 문제가 있습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : responseBody.code;
+
+            //alert(message);
+            const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+            if (!isSuccessed) {
+                alert(message);
+                return;
+            }
+            const storeNum = responseBody as GetStoreNumber;
+            console.log(storeNum.storeNumber);
+            setStoreNumber(storeNum.storeNumber);
+            //return storeNum.storeNumber;
+        }
+
+
+
+        try {
+            let response;
+
+            const accessToken = cookies[ACCESS_TOKEN];
+            console.log("액세스 토큰: " + accessToken + ", 스토어 넘버: " + storeNumber);
+            if (!accessToken) return;
+            if (productNumber) {
+                // 수정 요청
+                response = await patchProductRequest(productNumber, patchRequestBody, accessToken); // 수정 API 호출
+            } else {
+                // 추가 요청
+                // if(signInUser) {
+                //     getStoreNumberRequest(signInUser.userId, accessToken).then(getStoreNumberResponse);
+                //     if(storeNumber) {
+                //         response = await postProductRequest(requestBody, storeNumber, accessToken); // 추가 API 호출
+                //     }
+                // }
+                if (signInUser) {
+                    const storeNumberResponse = await getStoreNumberRequest(signInUser.userId, accessToken);
+                    if (storeNumberResponse && storeNumberResponse.code === 'SU') {
+                        const storeNum = storeNumberResponse as GetStoreNumber;
+                        console.log("스토어 넘버:", storeNum.storeNumber);
+                        setStoreNumber(storeNum.storeNumber); // 스토어 번호 설정
+
+                        // 설정된 storeNumber를 사용해 상품 등록 API 호출
+                        response = await postProductRequest(requestBody, storeNum.storeNumber, accessToken);
+                    } else {
+                        alert(storeNumberResponse?.message || '스토어 번호를 가져오는 중 문제가 발생했습니다.');
+                        return;
+                    }
+                }
+
+            }
+            console.log('상품 등록/수정 성공:', response);
+            navigator('../');
+        } catch (error) {
+            console.error('상품 등록/수정 실패:', error);
+            alert('상품 등록/수정에 실패했습니다.');
+        }
+    };
 
 
     return (
@@ -242,7 +242,7 @@ const Add = () => {
             <hr className='custom-hr' />
 
             <Pictures files={selectedFiles} onImagesChange={onImagesChange} onReset={onReset} />
-            
+
             <div className='product-info'>
                 <input className='product-name' placeholder='메뉴 이름' value={productData.productName} onChange={onNameChangeHandler} />
                 <textarea className='product-explain' placeholder='메뉴 설명' value={productData.productIntroduce} onChange={onExplainChangeHandler} />
@@ -393,31 +393,31 @@ const SizeOption = ({ product, onOptionsChange }: { product: PostProductRequestD
 
     return (
         <div className='option-box'>크기 <span className='option-box-in'>선택 사항이 없다면 '없음 (가격: 0원)' 카테고리를 하나 만들어주세요!</span>
-                    {showInput && (
-                        <div style={{marginTop: "10px", marginBottom:"10px"}}>
-                            <input
-                                className='cake-size'
-                                type="text"
-                                value={inputValue}
-                                onChange={handleInputChange}
-                                placeholder="크기 입력"
-                                autoFocus
-                            />
-                            <input
-                                className='cake-size-price'
-                                type="text"
-                                value={additionalPrice}
-                                onChange={onAdditionalPriceHandler}
-                                onKeyPress={handleKeyPress}
-                                placeholder="추가 금액(ex: 5000) 없으면 0, 입력 후 엔터"
-                            />
-                        </div>
-                    )}
+            {showInput && (
+                <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+                    <input
+                        className='cake-size'
+                        type="text"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        placeholder="크기 입력"
+                        autoFocus
+                    />
+                    <input
+                        className='cake-size-price'
+                        type="text"
+                        value={additionalPrice}
+                        onChange={onAdditionalPriceHandler}
+                        onKeyPress={handleKeyPress}
+                        placeholder="추가 금액(ex: 5000) 없으면 0, 입력 후 엔터"
+                    />
+                </div>
+            )}
             <div className='radio-handler'>
                 <div className='detail-text' style={{ marginTop: '10px' }}>
                     {product.options.filter(item => item.productOptionName === "크기").map((option, optionIndex) => (
                         option.optionDetails.map((detail, detailIndex) => (
-                            <div key={`${optionIndex}-${detailIndex}`} style={{ display: "flex", flexDirection: "row", padding: "5px"}}>
+                            <div key={`${optionIndex}-${detailIndex}`} style={{ display: "flex", flexDirection: "row", padding: "5px" }}>
                                 <div className='xx-sign' onClick={() => handleRemoveButtonClick(detailIndex)}>x</div>
                                 <input type="radio" id={`radio-${optionIndex}-${detailIndex}`} name="radioGroup" value={option.productOptionName} disabled />
                                 <label htmlFor={`radio-${optionIndex}-${detailIndex}`} style={{ marginLeft: "5px" }}>
@@ -568,7 +568,7 @@ const OptionList = ({ product, onOptionsChange }: { product: PostProductRequestD
     };
 
     return (
-        <div style={{width: "100%"}}>
+        <div style={{ width: "100%" }}>
             {optionComponents.map((option, index) => (
                 <NewOption
                     key={index}
@@ -653,7 +653,7 @@ const NewOption = ({ product, onOptionsChange, option, setOptionName, removeOpti
     };
 
     return (
-        <div className='option-box' style={{ marginBottom: "20px", minHeight: 'auto'}}>
+        <div className='option-box' style={{ marginBottom: "20px", minHeight: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <input
                     className='new-option-name'
@@ -663,7 +663,7 @@ const NewOption = ({ product, onOptionsChange, option, setOptionName, removeOpti
                     onKeyPress={handleKeyPressForName}
                     disabled={isNameFixed}
                 />
-                <div className='xx-sign' onClick={removeOption} style={{marginRight: "8px"}}>X</div>
+                <div className='xx-sign' onClick={removeOption} style={{ marginRight: "8px" }}>X</div>
             </div>
 
             {showInput && (
@@ -709,7 +709,7 @@ const NewOption = ({ product, onOptionsChange, option, setOptionName, removeOpti
 
 // component: ProductTags 컴포넌트 //
 const ProductTags = ({ product, onTagsChange }: { product: PostProductRequestDto, onTagsChange: (tags: string[]) => void }) => {
-    
+
     const handleTagClick = (tag: string) => {
         if (!product.themes.includes(tag) && product.themes.length < 5) {
             const updatedTags = [...product.themes, tag];
@@ -816,7 +816,7 @@ const SelectedTags = ({ content, onRemove }: { content: string; onRemove: () => 
 
 // component: ProductThema 컴포넌트 //
 const ProductThema = ({ product, onTagChange }: { product: PostProductRequestDto, onTagChange: (tag: string) => void }) => {
-    
+
     const onTagClickHandler = (tag: string) => {
         onTagChange(tag); // 상위 컴포넌트에 선택된 태그 전달
     };
