@@ -26,6 +26,8 @@ export default function Home() {
         setVisibleSections(newVisibleSections);
     };
 
+    
+
     // render: 메인 페이지 컴포넌트 렌더링 //
     return (
         <div className='home'>
