@@ -119,6 +119,33 @@
   width: 67%;
 }
 
+.request-contents {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  margin-top: 8px;
+  margin-left: 10px;
+  font-size: 15px;
+}
+
+.real-contents {
+  flex: 1;
+  max-width: calc(100% - 70px); /* 요청사항 텍스트 영역을 고려한 최대 너비 설정 */
+  word-wrap: break-word; /* 긴 문자열을 줄바꿈 */
+  word-break: break-word; /* 단어가 길 경우 줄바꿈 */
+  overflow-wrap: break-word; /* 콘텐츠가 넘칠 경우 줄바꿈 */
+}
+
+.check-image-file {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.check-image-file:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .order-details p {
   margin: 8px;
 }

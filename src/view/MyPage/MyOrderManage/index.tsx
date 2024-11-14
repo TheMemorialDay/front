@@ -33,6 +33,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     const [secondReject, setSecondReject] = useState(false);
     const [cancelCode, setCancelCode] = useState<CancelCode>('재료가 소진되었습니다.');
     const [cancelReason, setCancelReason] = useState<string>('');
+    const [telNumber, setTelNumber] = useState<string | null>(orderdetail.telNumber);
 
     const [cookies] = useCookies();
 
@@ -120,7 +121,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
             // 문자 메시지 전송
             const accessToken = cookies[ACCESS_TOKEN];
-            if (signInUser && accessToken) {
+            if (signInUser && accessToken && orderdetail.telNumber && orderdetail.name) {
                 const requestBody1: PostSendPaymentMsgRequestDto = {
                     telNumber: orderdetail.telNumber,
                     name: orderdetail.name,
@@ -378,6 +379,15 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         );
     }
 
+    // event handler: 이미지 파일 확인 클릭 핸들러 //
+    const onImageFileCheckHandler = (url: string | undefined) => {
+        if(url) window.open(url, '_blank', 'noopener,noreferrer');
+        else {
+            alert("이미지 파일이 없습니다.");
+            return;
+        }
+    }
+
     // Function: 픽업완료 클릭 핸들러 //
     const onPickUpFinishOrderStatus = () => {
         setOrderStatus('픽업 완료');
@@ -432,9 +442,14 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                         </span>
                                     ))}
                                 </div>
-                                <div>
-                                    요청사항: {orderdetail.productContents ? orderdetail.productContents : '없음'}
-                                </div>
+                                {orderdetail.photoUrl ? 
+                                    <div className='check-image-file' onClick={() => onImageFileCheckHandler(orderdetail.photoUrl)}>이미지 파일 확인</div>
+                                : ''
+                                }
+                            </div>
+                            <div className='request-contents'>
+                                <div style={{width: "65px", display: "inline-block"}}>요청사항:</div>
+                                <div className='real-contents'>{orderdetail.productContents ? orderdetail.productContents : '없음'}</div>
                             </div>
                             <p className="order-plan">픽업일시: {orderdetail.pickupTime}</p>
                             {orderStatus === '완료' ? '' :
@@ -541,7 +556,6 @@ export default function MyOrderManage() {
         const { orderManages } = responseBody as NewGetOrderManageList;
         setOrderDetailList(orderManages);
         originalList.current = orderManages;
-
     }
 
     // function: 사장님이 주문 승인 후 24시간 이내에 결제되지 않으면 자동으로 주문 취소되는 함수 //

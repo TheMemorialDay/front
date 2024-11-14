@@ -11,5 +11,6 @@ export interface PostOrderRequestDto {
     productCount: number;
     productContents: string;
     totalPrice: number;
+    photoUrl: string | null;
     options: PostOrderSelectOptionRequestDto[];
 }

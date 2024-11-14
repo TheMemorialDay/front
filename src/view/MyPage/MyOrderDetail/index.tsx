@@ -12,14 +12,15 @@ import { fileUploadRequest, getOrderDetailRequest, patchOrderStatusRequest, post
 import { ResponseDto } from '../../../apis/dto/response';
 import GetOrderDetailResponseDto from '../../../apis/dto/response/get-order-detail-response-dto';
 import GetOrderDetailListResponseDto from '../../../apis/dto/response/get-order-detail-list.response.dto';
-import { OrderDetailsProps } from '../../../types';
+import { NewOrderDetailsProps, OrderDetailsProps } from '../../../types';
 import PatchOrderStatusReqeustDto from '../../../apis/dto/request/order/patch-order-status-request.dto';
 import { Console } from 'console';
 import { PostReviewRequestDto } from '../../../apis/dto/request/review';
 
 // interface: 주문 내역 컴포넌트 Properties //
 interface OrderDetailProps {
-    orderdetail: OrderDetailsProps,
+    //orderdetail: OrderDetailsProps,
+    orderdetail: NewOrderDetailsProps,
     getOrderDetailList: () => void;
 };
 
@@ -34,9 +35,9 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     const [orderStatus, setOrderStatus] = useState<OrderStatus>(orderdetail.orderStatus as OrderStatus);
 
     const { signInUser } = useSignInUserStore();
-    const [userId, setUserId] = useState<string>('');
-    // const [userName, setUserName] = useState<string>('');
-    const [orderTime, setOrderTime] = useState<string>('');
+    // const [userId, setUserId] = useState<string>('');
+    // // const [userName, setUserName] = useState<string>('');
+    // const [orderTime, setOrderTime] = useState<string>('');
     const [cancelCode, setCancelCode] = useState<string>('');
     const [cancelReason, setCancelReason] = useState<string>('');
 
@@ -154,6 +155,15 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             orderStatus: '주문 취소'
         };
         patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
+    }
+
+    // event handler: 이미지 파일 확인 클릭 핸들러 //
+    const onImageFileCheckHandler = (url: string | undefined) => {
+        if(url) window.open(url, '_blank', 'noopener,noreferrer');
+        else {
+            alert("이미지 파일이 없습니다.");
+            return;
+        }
     }
 
     // component: 승인 대기중 //
@@ -321,6 +331,15 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             setOrderStatus("완료");
         }
 
+        // event handler: 이미지 파일 확인 클릭 핸들러 //
+        const onImageFileCheckHandler = (url: string | undefined) => {
+            if(url) window.open(url, '_blank', 'noopener,noreferrer');
+            else {
+                alert("이미지 파일이 없습니다.");
+            return;
+        }
+    }
+
         // component: 별 표기 //
 
         return (
@@ -413,9 +432,8 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                         </div>
                         <div className="order-details">
                             <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
-                            {/* <p className="order-option">{option.productCategory}</p> */}
                             <div className="order-productCategory-productContents">
-                                <div>
+                                <div>옵션: 
                                     {options.map((option, index) => (
                                         <span key={index} className="order-option">
                                             {option.productCategory ? option.productCategory : '없음'}
@@ -423,9 +441,14 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                         </span>
                                     ))}
                                 </div>
-                                <div>
-                                    요청사항: {orderdetail.productContents ? orderdetail.productContents : '없음'}
-                                </div>
+                                {orderdetail.photoUrl ? 
+                                    <div className='check-image-file' onClick={() => onImageFileCheckHandler(orderdetail.photoUrl)}>이미지 파일 확인</div>
+                                : ''
+                                }
+                            </div>
+                            <div className='request-contents'>
+                                <div style={{width: "65px", display: "inline-block"}}>요청사항:</div>
+                                <div className='real-contents'>{orderdetail.productContents ? orderdetail.productContents : '없음'}</div>
                             </div>
                             <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
                         </div>
@@ -441,20 +464,18 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                 }
             </div >
         </>
-
     );
-
 };
 
 export default function MyOrderDetail() {
 
     // state: 원본 리스트 상태 //
-    const originalList = useRef<OrderDetailsProps[]>([]);
+    const originalList = useRef<NewOrderDetailsProps[]>([]);
 
     const [userId, setUserId] = useState<string>('');
     const { signInUser } = useSignInUserStore();
     // state: 주문 정보 상태 //
-    const [orderDetailList, setOrderDetailList] = useState<OrderDetailsProps[]>([]);
+    const [orderDetailList, setOrderDetailList] = useState<NewOrderDetailsProps[]>([]);
     const [selectedYear, setSelectedYear] = useState<string | null>();
     const [selectedMonth, setSelectedMonth] = useState<string | null>();
     const [selectedStatus, setSelectedStatus] = useState<string | null>();
@@ -492,10 +513,9 @@ export default function MyOrderDetail() {
             alert(message);
             return;
         }
-        const { orders } = responseBody as GetOrderDetailListResponseDto;
-        setOrderDetailList(orders);
-        originalList.current = orders;
-
+        const { orderManages } = responseBody as GetOrderDetailListResponseDto;
+        setOrderDetailList(orderManages);
+        originalList.current = orderManages;
     }
 
     // Function: 픽업 완료 상태 업데이트 함수 //
@@ -529,7 +549,7 @@ export default function MyOrderDetail() {
         }
     };
 
-    // function: order detail list 불러오기 함수 //
+    // function: order detail list 불러오기 함수                                                가장 처음 리스트 불러오는 함수 //
     const getOrderDetailList = () => {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken || !signInUser) {
