@@ -25,7 +25,6 @@ export default function Home() {
         newVisibleSections[index] = !newVisibleSections[index];
         setVisibleSections(newVisibleSections);
     };
-
     
 
     // render: 메인 페이지 컴포넌트 렌더링 //
