@@ -99,7 +99,6 @@ export default function Home() {
 
             {/* 인기 키워드 */}
             <section ref={sectionRef}>
-                {/* <h2><span>#여자친구</span> #졸업</h2> */}
                 <KeywordCloud />
             </section>
 

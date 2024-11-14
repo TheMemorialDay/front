@@ -516,8 +516,7 @@ export default function Stores() {
     const { storeDetails } = responseBody as GetStoreListResponseDto;
     setStoreList(storeDetails);
     originalList.current = storeDetails;
-
-    setMainSearch('');
+    onStoresSearchClickHandler();
   };
   
   //* ========================================== store main address selected

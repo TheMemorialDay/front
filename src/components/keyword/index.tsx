@@ -17,6 +17,7 @@ const KeywordCloud = () => {
         // state: 인기 테마 상태 //
         const [themeState, setThemeState] = useState<ThemeComponentProps[]>([]);
 
+        // state: zustand 상태 //
         const { setMainSearch, setSelectedThemes } = useStoreSearchStore();
 
         // state: 메시지 상태 //
