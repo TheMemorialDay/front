@@ -343,6 +343,7 @@ Content-Type: application/json;charset=UTF-8
 
 ```bash
 curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-result" \
+ -d "name=홍길동"\
  -d "telNumber=01011112222" \
  -d "telAuthNumber=1234"
 ```
@@ -645,6 +646,7 @@ Content-Type: application/json;charset=UTF-8
 
 ```bash
 curl -v -X POST "http://localhost:4000/api/v1/auth/password-search-final" \
+ -d "userId=qwer1234" \
  -d "telNumber=01011112222" \
  -d "telAuthNumber=1234"
 ```
@@ -1325,7 +1327,12 @@ HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 {
   "code": "SU",
-  "message": "Success"
+  "message": "Success",
+  "password": "qwer1234",
+  "name": "홍길동",
+  "birth": "990303",
+  "gender": "남",
+  "telNumber": "01012123232"
 }
 ```
 
@@ -1876,7 +1883,7 @@ Content-Type: application/json;charset=UTF-8
 실패할 경우 실패에 대한 응답을 받습니다.      
 네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.   
 
-- method : **PATCH**  
+- method : **DELETE**  
 - URL : **/delete-user/me**  
 
 ##### Request
