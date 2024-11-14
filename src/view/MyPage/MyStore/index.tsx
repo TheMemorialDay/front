@@ -99,19 +99,18 @@ export default function MyStore() {
 
         setStoreAddress(address);
         setStoreGugun(getGuFromSigungu(sigungu));
-        setStoreDong(bname.endsWith('동') ? bname : bname1);
+        setStoreDong(bname.includes('동') ? (bname.endsWith('가') ? bname.slice(0, -2) : bname) : bname1);
+        console.log(bname);
         console.log(storeGugun);
         console.log(storeDong);
 
         // Kakao Maps API - Geocoder 사용
         const geocoder = new window.kakao.maps.services.Geocoder();
         geocoder.addressSearch(address, (result: GeocoderResult[], status: GeocoderStatus) => {
-            console.log('카카오 불러오기 성공');
             if (status === window.kakao.maps.services.Status.OK) {
                 const { y, x } = result[0]; // y: 위도, x: 경도
                 setStoreLatitude(y);
                 setStoreLongtitude(x);
-                console.log(`위도: ${storeLatitude}, 경도: ${storeLongtitude}`);
             } else {
                 console.error('좌표를 불러올 수 없습니다.');
             }
@@ -541,16 +540,25 @@ export default function MyStore() {
             <div className='title'>가게 관리</div>
 
             <div className='store-manage'>
-                <input className='inputs1' placeholder='가게 이름' value={storeName} onChange={onStoreNameChangeHandler} />
-                <input className='inputs1' placeholder='가게 연락처' value={storeTel || ''} onChange={onContactNumberChangeHandler} />
-
-                <div className='daum-address'>
-                    <input className='register-file' placeholder='가게 주소' value={storeAddress} onChange={onStoreAddressChangeHandler} />
-                    <div className='file-button' onClick={onAddressButtonClickHandler}>주소 선택</div>
+                <div>
+                    <div className='option-title'>가게 이름<span style={{ color: "red" }}>*</span></div>
+                    <input className='inputs1' placeholder='가게 이름' value={storeName} onChange={onStoreNameChangeHandler} />
                 </div>
-                <input className='inputs1' placeholder='상세 주소 입력' value={storeDetailAddress} onChange={onStoreDetailAddressChangeHandler} />
+                <div>
+                    <div className='option-title'>가게 연락처</div>
+                    <input className='inputs1' placeholder='가게 연락처' value={storeTel || ''} onChange={onContactNumberChangeHandler} />
+                </div>
+                <div><div className='option-title'>가게 주소<span style={{ color: "red" }}>*</span></div>
+                    <div className='daum-address'>
+                        <input className='register-file' placeholder='가게 주소' value={storeAddress} onChange={onStoreAddressChangeHandler} />
+                        <div className='file-button' onClick={onAddressButtonClickHandler}>주소 선택</div>
+                    </div>
+                </div>
+                <div>
+                    <div className='option-title'>가게상세 주소<span style={{ color: "red" }}>*</span></div>
+                    <input className='inputs1' placeholder='상세 주소 입력' value={storeDetailAddress} onChange={onStoreDetailAddressChangeHandler} />
+                </div>
                 <div className='file-selection'>
-
                     <label>대표 이미지 파일 선택</label>
                     <div className='file-box'>
                         <div className='profile-image' style={{ backgroundImage: `url(${previewUrl})` }} onClick={onStoreImageClickHandler}>
@@ -560,16 +568,25 @@ export default function MyStore() {
                     </div>
                 </div>
 
+                <div>
+                    <div className='option-title'>간단한 가게 소개</div>
+                    <input className='inputs1' placeholder='간단한 가게 소개' value={storeIntroduce || ''} onChange={onStoreSimpleIntroChangeHandler} />
+                </div>
+                <div>
+                    <div className='option-title'>상세 소개글</div>
+                    <textarea style={{ width: '380px', height: '100px' }} className='detailed-intro' placeholder='상세 소개글' value={storeParticular || ''} onChange={onStoreParticularChangeHandler} />
+                </div>
+                <div>
+                    <div className='option-title'>가게 유의사항</div>
+                    <textarea style={{ width: '380px', height: '100px' }} className='detailed-intro' placeholder='가게 유의사항' value={storeCaution || ''} onChange={onStoreCautionChangeHandler} />
+                </div>
 
-                <input className='inputs1' placeholder='간단한 가게 소개' value={storeIntroduce || ''} onChange={onStoreSimpleIntroChangeHandler} />
-                <textarea style={{ width: '380px', height: '300px' }} className='detailed-intro' placeholder='상세 소개글' value={storeParticular || ''} onChange={onStoreParticularChangeHandler} />
-                <textarea style={{ width: '380px', height: '300px' }} className='detailed-intro' placeholder='가게 유의사항' value={storeCaution || ''} onChange={onStoreCautionChangeHandler} />
-
-
-                <textarea style={{ width: '380px', height: '300px' }} className='detailed-intro' placeholder='문의 연락수단 등등 기재' value={storeContact || ''} onChange={onStoreContactChangeHandler} />
-
+                <div>
+                    <div className='option-title'>문의 연락 수단</div>
+                    <textarea style={{ width: '380px', height: '100px' }} className='detailed-intro' placeholder='문의 연락수단 등등 기재' value={storeContact || ''} onChange={onStoreContactChangeHandler} />
+                </div>
                 <div className='pickup-section'>
-                    <span className='pickup-title'>픽업 가능 요일</span>
+                    <span className='pickup-title'>픽업 가능 요일<span style={{ color: "red" }}>*</span></span>
                     <div className='pickup-day'>
                         <span>월요일</span>
                         <span className='time-label'>시작 시간</span>
