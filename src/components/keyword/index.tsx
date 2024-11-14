@@ -4,6 +4,9 @@ import { ResponseDto } from '../../apis/dto/response';
 import { getKeywordRequest, getThemeRequest } from '../../apis';
 import { KeywordComponentProps, ThemeComponentProps } from '../../types';
 import ReactWordcloud, { OptionsProp } from 'react-wordcloud';
+import { useStoreSearchStore } from '../../stores';
+import { ST_ABSOLUTE_PATH } from '../../constants';
+import { useNavigate } from 'react-router-dom';
 
 // component: 인기 키워드 컴포넌트 //
 const KeywordCloud = () => {
@@ -14,9 +17,14 @@ const KeywordCloud = () => {
     // state: 인기 테마 상태 //
     const [themeState, setThemeState] = useState<ThemeComponentProps[]>([]);
 
+    // state: zustand 상태 //
+    const { setMainSearch, setSelectedThemes } = useStoreSearchStore();
+
     // state: 메시지 상태 //
     const [keywordMessage, setKeywordMessage] = useState<string>('');
     const [themeMessage, setThemeMessage] = useState<string>('');
+
+    const navigator = useNavigate();
 
     // function: 인기 키워드 불러오기 response 처리 함수 //
     const getKeywordResponse = (responseBody: GetKeywordResponseDto | ResponseDto | null) => {
@@ -52,6 +60,16 @@ const KeywordCloud = () => {
         setThemeState(themas);
     };
 
+    // event handler: 인기 키워드 클릭 이벤트 핸들러 //
+    const onKeywordClickHandler = (keyword: string) => {
+        if (keyword.startsWith('#')) {
+            setSelectedThemes([keyword]);
+        } else {
+            setMainSearch(keyword);
+        }
+        navigator(ST_ABSOLUTE_PATH);
+    }
+
     //* 인기 키워드를 위한 ==============================================================
     const keywords = keywordstate.map(keyword => ({
         text: (keyword.keyword), // 'text' 속성에 단어를 할당
@@ -72,7 +90,7 @@ const KeywordCloud = () => {
     }, []);
 
     const callbacks = {
-        onWordClick: console.log,
+        onWordClick: (word: { text: any; value: number; }) => onKeywordClickHandler(word.text),
         onWordMouseOver: console.log,
         getWordTooltip: (word: { text: any; value: number; }) => `${word.text} (${word.value}) [${word.value > 50 ? "good" : "bad"}]`,
     }
@@ -98,7 +116,7 @@ const KeywordCloud = () => {
         fontStyle: 'normal',
         // fontWeight: 'normal',
         padding: 3,
-        rotations: 0, //旋转
+        rotations: 0, // 회전
         rotationAngles: [0, 10],
         scale: 'sqrt',
         spiral: 'archimedean',
