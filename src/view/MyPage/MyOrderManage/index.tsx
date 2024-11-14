@@ -597,43 +597,42 @@ export default function MyOrderManage() {
     useEffect(() => {
         let orderList = [...originalList.current];
 
+        // 연도 필터링
         if (selectedYear) {
-            orderList = originalList.current.filter(item => {
+            orderList = orderList.filter(item => {
                 const year = item.orderTime.slice(0, 4);
                 return year === selectedYear;
             });
         }
 
+        // 월 필터링
         if (selectedMonth) {
             const selectedMonthNumber = String(monthProps.options.indexOf(selectedMonth) + 1).padStart(2, '0');
-            orderList = originalList.current.filter(item => {
-                const month = item.orderTime.slice(5, 7); // "2024-09-25T00:00" 에서 5~6번째 문자 가져오기
+            orderList = orderList.filter(item => {
+                const month = item.orderTime.slice(5, 7);
                 return month === selectedMonthNumber;
             });
         }
 
-        if (selectedYear == null) {
-            setSelectedMonth(null);
-        }
-
+        // 상태 필터링
         if (selectedStatus) {
-            orderList = originalList.current.filter(item => item.orderStatus === selectedStatus);
+            orderList = orderList.filter(item => item.orderStatus === selectedStatus);
         }
 
+        // 정렬 설정
         if (selectedSort === '빠른 주문일 순') {
             orderList.sort((a, b) => new Date(a.orderTime.split("T")[0]).getTime() - new Date(b.orderTime.split("T")[0]).getTime());
         } else if (selectedSort === '늦은 주문일 순') {
             orderList.sort((a, b) => new Date(b.orderTime.split("T")[0]).getTime() - new Date(a.orderTime.split("T")[0]).getTime());
         } else if (selectedSort === '가까운 픽업일 순') {
-            orderList.sort((a, b) => new Date(a.pickupTime).getTime() - new Date(b.pickupTime).getTime()
-            );
+            orderList.sort((a, b) => new Date(a.pickupTime).getTime() - new Date(b.pickupTime).getTime());
         } else if (selectedSort === '먼 픽업일 순') {
-            orderList.sort((a, b) => new Date(b.pickupTime).getTime() - new Date(a.pickupTime).getTime()
-            );
+            orderList.sort((a, b) => new Date(b.pickupTime).getTime() - new Date(a.pickupTime).getTime());
         }
 
         setOrderDetailList(orderList);
     }, [selectedYear, selectedMonth, selectedStatus, selectedSort]);
+
 
     return (
         <div className='order-history'>
