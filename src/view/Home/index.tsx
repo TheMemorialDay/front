@@ -25,7 +25,6 @@ export default function Home() {
         newVisibleSections[index] = !newVisibleSections[index];
         setVisibleSections(newVisibleSections);
     };
-
     
 
     // render: 메인 페이지 컴포넌트 렌더링 //
@@ -99,7 +98,6 @@ export default function Home() {
 
             {/* 인기 키워드 */}
             <section ref={sectionRef}>
-                {/* <h2><span>#여자친구</span> #졸업</h2> */}
                 <KeywordCloud />
             </section>
 
