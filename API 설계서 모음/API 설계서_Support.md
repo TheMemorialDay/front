@@ -451,7 +451,17 @@ Content-Type: application/json;charset=UTF-8
   "code": "SU",
   "message": "Success."
 }
+```
 
+**응답 실패 (데이터 유효성 검사 실패)**
+```bash
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "code": "VF",
+  "message": "Validation failed."
+}
 ```
 
 **응답 : 실패 (인증 실패)**
@@ -535,16 +545,17 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (권한 없음)**
+**응답 : 실패 (존재하지 않는 QnA)**
 ```bash
-HTTP/1.1 403 Forbidden
+HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
 
 {
-  "code": "NP",
-  "message": "No permission."
+  "code": "NQ",
+  "message": "No Exist Question."
 }
 ```
+
 **응답 : 실패 (인증 실패)**
 ```bash
 HTTP/1.1 401 Unauthorized
@@ -555,6 +566,7 @@ Content-Type: application/json;charset=UTF-8
   "message": "Authentication fail."
 }
 ```
+
 **응답 실패 (데이터베이스 에러)**
 ```bash
 HTTP/1.1 500 Internal Server Error

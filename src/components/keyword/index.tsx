@@ -54,12 +54,12 @@ const KeywordCloud = () => {
 
         //* 인기 키워드를 위한 ==============================================================
         const keywords = keywordstate.map(keyword => ({
-            text: '#'+(keyword.keyword), // 'text' 속성에 단어를 할당
+            text: (keyword.keyword), // 'text' 속성에 단어를 할당
             value: (keyword.cnt)*10,    // 'value' 속성에 해당 카운트를 할당
         }));
 
         const keyworda = themeState.map(theme => ({
-            text: '#'+(theme.thema), // 'text' 속성에 단어를 할당
+            text: (theme.thema), // 'text' 속성에 단어를 할당
             value: (theme.cnt)*10,    // 'value' 속성에 해당 카운트를 할당
         }));
 
