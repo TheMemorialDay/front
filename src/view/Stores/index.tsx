@@ -1,7 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
 import { getStoreMainSearchRequest, postKeywordRequest } from '../../apis';
-import { useSignInUserStore } from '../../stores';
+import { useSignInUserStore, useStoreSearchStore } from '../../stores';
 import { GetStoreListResponseDto } from '../../apis/dto/response/stores';
 import { ResponseDto } from '../../apis/dto/response';
 import { deleteLikeStoreRequest, getStoreListRequest, postLikeStoreRequest } from '../../apis';
@@ -11,6 +11,7 @@ import { ACCESS_TOKEN, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../constants';
 import { PostLikeStoreRequestDto } from '../../apis/dto/request';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
+import { useSearchParams } from 'react-router-dom';
 
 interface CakeComponentProps {
   imageUrl: string;
@@ -255,6 +256,8 @@ export default function Stores() {
     '해운대구': ['우동', '중동', '좌동', '송정동', '반여동', '반송동', '재송동']
   }
 
+  const [searchParams] = useSearchParams();
+
   // state: 원본 리스트 상태 //
   const originalList = useRef<StoreComponentProps[]>([]);
 
@@ -270,29 +273,34 @@ export default function Stores() {
   // state: 동 셀렉터 오픈 여부 상태 //
   const [showDongSelector, setShowDongSelector] = useState<boolean>(false);
 
+  //* zustand 상태들 --------------------------------------------------------
   // state: 선택된 태그 저장하는 상태 //
-  const [selectedTag, setSelectedTag] = useState<string>('');
+  const {selectedTag, setSelectedTag} = useStoreSearchStore();
 
   // state: 선택된 테마를 저장하는 상태 //
-  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+  const {selectedThemes, setSelectedThemes} = useStoreSearchStore();
 
   // state: 선택된 요일을 저장하는 상태 //
-  const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
+  const {selectedWeekdays, setSelectedWeekdays} = useStoreSearchStore();
 
   // state: 선택된 구군 저장하는 상태 //
-  const [selectedGugun, setSelectedGugun] = useState<string>('');
+  const {selectedGugun, setSelectedGugun} = useStoreSearchStore();
 
   // state: 선택된 동 저장하는 상태 //
-  const [selectedDong, setSelectedDong] = useState<string>('');
+  const {selectedDong, setSelectedDong} = useStoreSearchStore();
 
   // state: 선택된 구에 맞는 동 리스트 //
-  const [dongList, setDongList] = useState<string[]>([]);
+  const {dongList, setDongList} = useStoreSearchStore();
 
   // state: 당일 케이크 가능 여부 상태 //
-  const [productToday, setProductToday] = useState<boolean>(false);
+  const {productToday, setProductToday} = useStoreSearchStore();
 
   // state: 메인 검색창 입력 상태 //
-  const [mainSearch, setMainSearch] = useState<string>('');
+  const {mainSearch, setMainSearch} = useStoreSearchStore();
+
+  // state: 검색 필터 상태 초기화 //
+  const {initStoreSearch} = useStoreSearchStore();
+  //* zustand 상태들 -------------------------------------------------------
 
   // state: 가게 리스트 상태 //
   const [storeList, setStoreList] = useState<StoreComponentProps[]>([]);
@@ -351,7 +359,7 @@ export default function Stores() {
   const onThemeSelectorClickHandler = () => {
     setShowThemeSelector(!showThemeSelector);
 
-    if (showPickUpSelector == true || showGuSelector == true || showDongSelector == true) {
+    if (showPickUpSelector || showGuSelector || showDongSelector) {
       setShowPickUpSelector(false);
       setShowGuSelector(false);
       setShowDongSelector(false);
@@ -362,7 +370,7 @@ export default function Stores() {
   const onPickUpSelectorClickHandler = () => {
     setShowPickUpSelector(!showPickUpSelector);
 
-    if (showThemeSelector == true || showGuSelector == true || showDongSelector == true) {
+    if (showThemeSelector || showGuSelector || showDongSelector) {
       setShowThemeSelector(false);
       setShowGuSelector(false);
       setShowDongSelector(false);
@@ -373,7 +381,7 @@ export default function Stores() {
   const onGuSelectorClickHandler = () => {
     setShowGuSelector(!showGuSelector);
 
-    if (showThemeSelector == true || showPickUpSelector == true || showDongSelector == true) {
+    if (showThemeSelector || showPickUpSelector || showDongSelector) {
       setShowThemeSelector(false);
       setShowPickUpSelector(false);
       setShowDongSelector(false);
@@ -384,7 +392,7 @@ export default function Stores() {
   const onDongSelectorClickHandler = () => {
     setShowDongSelector(!showDongSelector);
 
-    if (showThemeSelector == true || showPickUpSelector == true || showGuSelector == true) {
+    if (showThemeSelector || showPickUpSelector || showGuSelector) {
       setShowThemeSelector(false);
       setShowPickUpSelector(false);
       setShowGuSelector(false);
@@ -468,8 +476,6 @@ export default function Stores() {
     }
   };
 
-  //* ================================================================== keyword
-
   //* ======================================== store main search
   // event handler: 검색어 입력 변경 이벤트 핸들러 //
   const onMainSearchChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -483,7 +489,6 @@ export default function Stores() {
 
   // event handler: 검색어 입력 후 요청하는 이벤트 핸들러 //
   const onStoresSearchClickHandler = () => {
-
     getStoreMainSearchRequest(mainSearch).then(getStoresMainSearchResponse);
     postKeywordRequest(mainSearch).then(postKeywordResponse);
   };
@@ -514,8 +519,8 @@ export default function Stores() {
 
     setMainSearch('');
   };
-  //* ======================================== store main search
-
+  
+  //* ========================================== store main address selected
   // event handler: 선택된 구군으로 주소 불러오기 //
   const onStoresSeletedGugunHandler = (gugun: string) => {
 
@@ -554,8 +559,6 @@ export default function Stores() {
     if (sortType === value) setSortType('');
     else setSortType(value);
   };
-
-  //* ========================================== store main address selected
 
   // effect: 로드시 상점 리스트 불러오기 함수 //
   useEffect(getStoreLists, []);
@@ -665,7 +668,22 @@ export default function Stores() {
 
     setStoreList(storeList);
 
-  }, [selectedTag, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType]);
+  }, [selectedTag, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType, originalList.current]);
+
+  //* 스토어 메인 화면 벗어날 시 필터링 상태들 초기화 & 검색어 존재 시 검색 이벤트 호출
+  // todo: 실제 배포시 삭제 //
+  let flag = false;
+  useEffect(() => {
+    // todo: 실제 배포시 삭제 //
+    if (!flag) {
+      flag = true;
+      return;
+    }
+
+    if (mainSearch) onStoresSearchClickHandler();
+    
+    return () => initStoreSearch();
+  }, []);
 
   // render: 스토어 메인 컴포넌트 렌더링 //
   return (
