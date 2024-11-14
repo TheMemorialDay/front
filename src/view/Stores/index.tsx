@@ -519,8 +519,8 @@ export default function Stores() {
 
     setMainSearch('');
   };
-  //* ======================================== store main search
-
+  
+  //* ========================================== store main address selected
   // event handler: 선택된 구군으로 주소 불러오기 //
   const onStoresSeletedGugunHandler = (gugun: string) => {
 
@@ -559,8 +559,6 @@ export default function Stores() {
     if (sortType === value) setSortType('');
     else setSortType(value);
   };
-
-  //* ========================================== store main address selected
 
   // effect: 로드시 상점 리스트 불러오기 함수 //
   useEffect(getStoreLists, []);
