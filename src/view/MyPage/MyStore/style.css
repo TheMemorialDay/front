@@ -30,7 +30,6 @@
 
 #my-store .inputs1 {
     width: 380px;
-    height: 40px;
     border-radius: 6px;
     border: 1px solid darkgray;
     padding: 15px 10px;
@@ -81,11 +80,11 @@
 #my-store .detailed-intro {
     font-family: 'Pretendard';
     width: 380px;
-    height: 200px;
+    height: 100px;
     resize: none;
     border-radius: 6px;
     border: 1px solid darkgray;
-    padding: 15px 10px;
+    padding: 10px 10px;
     margin: 10px 0;
     overflow: hidden;
 }
@@ -212,4 +211,14 @@
 
     background-size: cover;
     background-position: 50% 50%;
+}
+
+#my-store .option-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-right: 40px;
+
+    display: flex;
+
+    align-items: center;
 }
