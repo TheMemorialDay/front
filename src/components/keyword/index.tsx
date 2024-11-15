@@ -7,7 +7,6 @@ import ReactWordcloud, { OptionsProp } from 'react-wordcloud';
 import { useStoreSearchStore } from '../../stores';
 import { ST_ABSOLUTE_PATH } from '../../constants';
 import { useNavigate } from 'react-router-dom';
-import { inherits } from 'util';
 
 // component: 인기 키워드 컴포넌트 //
 const KeywordCloud = () => {
