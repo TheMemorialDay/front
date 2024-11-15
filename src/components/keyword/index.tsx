@@ -4,6 +4,7 @@ import { ResponseDto } from '../../apis/dto/response';
 import { getKeywordRequest, getThemeRequest } from '../../apis';
 import { KeywordComponentProps, ThemeComponentProps } from '../../types';
 import ReactWordcloud, { OptionsProp } from 'react-wordcloud';
+import { inherits } from 'util';
 
 // component: 인기 키워드 컴포넌트 //
 const KeywordCloud = () => {
@@ -93,7 +94,7 @@ const KeywordCloud = () => {
         colors: Array.from({length: 100}, () => getRandomColor()),
         enableTooltip: false,
         deterministic: true,
-        fontFamily: 'Montserrat',
+        fontFamily: 'NanumSquare, sans-serif',
         fontSizes: [40, 130],
         fontStyle: 'normal',
         // fontWeight: 'normal',

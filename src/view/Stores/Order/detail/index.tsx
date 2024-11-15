@@ -478,7 +478,7 @@ export default function Order() {
 
         <div>
           <div className='option-title'>요청사항</div>
-          <textarea className='textarea' placeholder='자유롭게 입력하세요.' onChange={onRequestChangeHandler} />
+          <textarea className='textarea' placeholder='자유롭게 입력하세요. 레터링 문구도 이곳에 적어주세요.' onChange={onRequestChangeHandler} />
         </div>
 
         {productTag === '포토' ?
