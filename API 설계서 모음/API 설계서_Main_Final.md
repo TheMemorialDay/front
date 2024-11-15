@@ -1,4 +1,12 @@
-<h2 style='background-color: rgba(55, 55, 55, 0.2); text-align: center'>모듈 없음</h2>
+<h1 style='background-color: rgba(55, 55, 55, 0.4); text-align: center'>API 설계(명세)서_Main </h1>
+
+해당 API 명세서는 '더 메모리얼 데이 - The Memorial Day'의 REST API를 명세하고 있습니다.  
+
+- Domain : http://localhost:4000    
+
+***
+
+<h2 style='background-color: rgba(55, 55, 55, 0.2); text-align: center'>인기 키워드 모듈</h2>
 
 The Memorial Day 서비스의 인기 키워드와 관련된 REST API 모듈입니다.  
 사용자들의 인기 키워드 순위, 키워드 검색 등의 API가 포함되어 있습니다.  
@@ -20,6 +28,22 @@ The Memorial Day 서비스의 인기 키워드와 관련된 REST API 모듈입�
 
 ##### Request
 
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+
+###### Example
+
+```bash
+curl -v -X GET "http://localhost:4000/hot-keyword"
+```
+
 ##### Response
 
 ###### Header
@@ -34,7 +58,7 @@ The Memorial Day 서비스의 인기 키워드와 관련된 REST API 모듈입�
 |---|:---:|:---:|:---:|
 | code | String | 결과 코드 | O |
 | message | String | 결과 코드에 대한 설명 | O |
-| keyword[] | String[] | 인기 검색어 리스트 | O |
+| keyword | String[] | 인기 검색어 리스트 | O |
 
 ###### Example
 
@@ -42,7 +66,6 @@ The Memorial Day 서비스의 인기 키워드와 관련된 REST API 모듈입�
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success.",
@@ -56,7 +79,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -77,6 +99,22 @@ Content-Type: application/json;charset=UTF-8
 
 ##### Request
 
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
+###### Request Body
+
+| name | type | description | required |
+|---|:---:|:---:|:---:|
+
+###### Example
+
+```bash
+curl -v -X GET "http://localhost:4000/hot-theme"
+```
+
 ##### Response
 
 ###### Header
@@ -91,7 +129,7 @@ Content-Type: application/json;charset=UTF-8
 |---|:---:|:---:|:---:|
 | code | String | 결과 코드 | O |
 | message | String | 결과 코드에 대한 설명 | O |
-| theme[] | String[] | 인기 테마 리스트 | O |
+| theme | String[] | 인기 테마 리스트 | O |
 
 ###### Example
 
@@ -99,7 +137,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success.",
@@ -113,7 +150,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
