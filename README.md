@@ -4,7 +4,7 @@
 
 ## 목차
 1. [프로젝트 소개](#프로젝트-소개)
-2. [기술 스택](#기술-스택)
+2. [개발 스택](#개발-스택)
 3. [설치 및 실행](#설치-및-실행)
 4. [주요 기능](#주요-기능)
 5. [제작 기간](#제작-기간)
@@ -16,35 +16,33 @@
 
 ---
 
-## 기술 스택
+## 개발 스택
 
-### 개발 환경
+### 개발 환경 및 도구 
 
-| 항목            | 내용                              |
-| --------------- | --------------------------------- |
-| 운영체제        | Windows, macOS                    |
-| 버전 관리       | GitHub                             |
-| 패키지 매니저 | npm |
-| 빌드 툴 | webpack |
-
-### 개발 도구
-
-| 항목            | 내용                              |
-| --------------- | --------------------------------- |
-| IDE             | Visual Studio Code (VSC)          |
-
-### 개발 언어 및 프레임워크
-
-| 항목            | 내용                              |
-| --------------- | --------------------------------- |
-| 프로그래밍 언어 | TypeScript, CSS, HTML             |
-| 프레임워크      | React                             |
-
-
+<body style="font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f9f9f9;">
+    <table style="border-collapse: collapse; width: 80%; max-width: 800px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
+        <tr>
+            <td style="border: 1px solid #000; background-color: #e6f2f8; font-weight: bold; padding: 20px; width: 30%; text-align: center;">개발 환경</td>
+            <td style="border: 1px solid #000; padding: 20px;">운영체제: Windows, macOS<br>버전 관리: GitHub</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #000; background-color: #e6f2f8; font-weight: bold; padding: 20px; text-align: center;">개발도구</td>
+            <td style="border: 1px solid #000; padding: 20px;">IDE: Visual Studio Code
+        </tr>
+        <tr>
+            <td style="border: 1px solid #000; background-color: #e6f2f8; font-weight: bold; padding: 20px; text-align: center;">개발 언어 및 프레임워크</td>
+            <td style="border: 1px solid #000; padding: 20px;">프로그래밍 언어: TypeScript, CSS, HTML<br>프레임워크: React
+        </tr>
+        <tr>
+            <td style="border: 1px solid #000; background-color: #e6f2f8; font-weight: bold; padding: 20px; text-align: center;">API</td>
+            <td style="border: 1px solid #000; padding: 20px;">내부 API: API 명세서 확인 및 파일 업로드 API<br>외부 API: cool sms, oAuth2(Google, Naver, Kakao), Kakao Maps, 사업자등록정보 진위확인 및 상태 조회 서비스(공공데이터)</td>
+        </tr>
+    </table>
+</body>
 
 ### 시스템 아키텍처
-<!-- ![대체 텍스트](images/archi.jpg) -->
-<img src="./images/archi.jpg" alt="시스템 아키텍처" width="332" height="200">
+<img src="./images/archi.jpg" alt="시스템 아키텍처" width="496" height="300">
 
 ---
 
@@ -123,9 +121,29 @@ The Memorial Day 서비스 시연 영상입니다.
 
 ### Team Roles
 
-| 이름    | 작업 내용                                                                                                                                                      |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 안찬숙  | 로그인 및 회원가입, 아이디 및 비밀번호 찾기, 회원 탈퇴 및 수정, 필터링 및 검색, 인기 키워드                                                                     |
-| 송태휘  | 가게 등록 및 수정, 가게 상세 조회 페이지(가게 프로필 조회, 지도 포함), 찜 관리, 필터링 및 검색, 인기 키워드, 결제                                                |
-| 정호정  | 사업자 등록, 가게 상세 조회(상품 리스트, 리뷰 리스트), 주문서(상품 정보 조회), 리뷰 작성 및 조회, 찜 관리, 공지사항 및 QnA                                      |
-| 김도연  | 상품(테마 및 옵션 포함) 등록/수정/삭제, 주문 등록, 매출 관리, 메인 페이지(상단 Navi, footer, how, 상단 이동 버튼, Gem Ai 활용), 마이페이지 경로 설정             |
+<table style="table-layout: fixed; width: 100%;">
+  <thead>
+    <tr>
+      <th style="width: 20%;">이름</th>
+      <th style="width: 80%;">작업 내용</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">안찬숙</td>
+      <td>로그인 및 회원가입, 아이디 및 비밀번호 찾기, 회원 탈퇴 및 수정, 필터링 및 검색, 인기 키워드</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">송태휘</td>
+      <td>가게 등록 및 수정, 가게 상세 조회 페이지(가게 프로필 조회, 지도 포함), 찜 관리, 필터링 및 검색, 인기 키워드, 결제</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">정호정</td>
+      <td>사업자 등록, 가게 상세 조회(상품 리스트, 리뷰 리스트), 주문서(상품 정보 조회), 리뷰 작성 및 조회, 찜 관리, 공지사항 및 QnA</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">김도연</td>
+      <td>상품(테마 및 옵션 포함) 등록/수정/삭제, 주문 등록, 매출 관리, 메인 페이지(상단 Navi, footer, how, 상단 이동 버튼, Gem Ai 활용), 마이페이지 경로 설정</td>
+    </tr>
+  </tbody>
+</table>
