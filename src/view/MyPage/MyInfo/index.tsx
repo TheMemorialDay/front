@@ -1,11 +1,11 @@
 import React, { ChangeEvent, useState } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import { ACCESS_TOKEN, MY_PATH } from '../../../constants';
+import { ACCESS_TOKEN, MY_PATH, ROOT_ABSOLUTE_PATH } from '../../../constants';
 import useUserInfoZustand from '../../../stores/user-check-after-info.store';
 import { ResponseDto } from '../../../apis/dto/response';
 import { TelAuthCheckRequestDto, TelAuthRequestDto } from '../../../apis/dto/request/auth';
-import { patchUserInfoRequest, userInfoTelAuthCheckRequest, userInfoTelAuthReqeust } from '../../../apis';
+import { deleteUserRequest, patchUserInfoRequest, userInfoTelAuthCheckRequest, userInfoTelAuthReqeust } from '../../../apis';
 import { PatchUserInfoRequestDto } from '../../../apis/dto/request/mypage_user_info';
 import { useCookies } from 'react-cookie';
 
@@ -111,6 +111,26 @@ export default function InfoUpdate() {
 
         alert('수정이 완료되었습니다.');
         navigator(MY_PATH);
+    };
+
+    // function: 회원 탈퇴 Response 처리 함수 //
+    const deleteUserResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
+        }
+        alert('탈퇴가 완료되었습니다.');
+        navigator(ROOT_ABSOLUTE_PATH);
+    };
+    // event handler: 탈퇴 버튼 클릭 이벤트 핸들러 //
+    const onDeleteClickHandler = () => {
+        const isConfirm = window.confirm('정말로 탈퇴하시겠습니까?');
+        if (!isConfirm) return;
+        deleteUserRequest(accessToken).then(deleteUserResponse);
     };
 
     // Function: 전화번호 '-'넣는 함수 //
@@ -279,13 +299,13 @@ export default function InfoUpdate() {
                 }
 
             </div>
-                <div className='button-container' style={{ marginTop: "150px"}}>
-                    <div className='withdraw-button' onClick={() => alert('탈퇴 기능은 아직 구현되지 않았습니다')}>탈퇴</div>
-                    <div className='cancel-update-button'>
-                        <div className='cancel-button' onClick={onCancelClickHandler}>취소</div>
-                        <div className='update-button' onClick={onEditClickHandler}>수정</div>
-                    </div>
+                <div className='button-container'>
+                <div className='withdraw-button' onClick={onDeleteClickHandler}>탈퇴</div>
+                <div className='cancel-update-button'>
+                    <div className='cancel-button' onClick={onCancelClickHandler}>취소</div>
+                    <div className='update-button' onClick={onEditClickHandler}>수정</div>
                 </div>
+            </div>
         </div>
     );
 }
