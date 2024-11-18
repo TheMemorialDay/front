@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './style.css';
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { ACCESS_TOKEN, HO_ABSOLUTE_PATH, HO_PATH, JO_ABSOLUTE_PATH, JO_PATH, JO_USER_ABSOLUTE_PATH, JO_USER_PATH, LOGIN_PATH, ROOT_ABSOLUTE_PATH, ROOT_PATH, SHOPPING_CART_ABSOLUTE_PATH, SIGN_IN_ABSOLUTE_PATH, SIGN_UP_ABSOLUTE_PATH, SIGN_UP_PATH, ST_ABSOLUTE_PATH, ST_PATH, SU_ABSOLUTE_PATH, SU_PATH } from '../../constants';
 import { useSignInUserStore } from '../../stores';
@@ -24,7 +24,6 @@ function Logo() {
         navigator(path);
     };
 
-
     // render: 로고 컴포넌트 렌더링 //
     return (
         <div id='layout-logo'>
@@ -43,7 +42,6 @@ function TopNavigation() {
 
     // state: login user state //
     const { signInUser } = useSignInUserStore();
-    const [userId, setUserId] = useState<string>('');
 
     // function: 네비게이터 함수 //
     const navigator = useNavigate();
@@ -61,7 +59,6 @@ function TopNavigation() {
 
     // event handler: join page 클릭 이벤트 //
     const onJoinClickHandler = () => {
-        //alert(signInUser?.permission);
         if (signInUser?.userId && signInUser.permission === '일반') {
             navigator(JO_USER_ABSOLUTE_PATH);
         } else if (signInUser?.userId && signInUser.permission === '사장') {
@@ -133,7 +130,6 @@ function TopPersonalNavigation() {
             <div
                 className='layout-my-icon'
                 onMouseEnter={() => setIsHovered(true)}></div>
-            {/* <div className='layout-my-cart' onClick={onShoppingCartIconClickHandler}></div> */}
 
             {isHovered && (
                 <div className='menu-box'

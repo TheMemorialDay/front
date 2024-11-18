@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './style.css';
 import CompletedOrder from '../../../components/order_completed_box';
-import YearSelect from '../../../components/year_select';
-import MonthSelect from '../../../components/month_select';
 import { FullOrder } from '../../../apis/dto/response/sales/get-sales.response.dto';
 import { useSignInUserStore } from '../../../stores';
 import { useCookies } from 'react-cookie';

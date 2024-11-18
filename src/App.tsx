@@ -46,7 +46,6 @@ import NoticeDetail from './view/Support/notice_detail';
 import QaWrite from './view/Support/qa_write';
 import QaDetail from './view/Support/qa_detail';
 import OkayScreen from './view/Join/okScreen';
-import ShoppingCart from './view/shopping_cart';
 import Add from './view/MyPage/MyProduct/update';
 import Update from './view/MyPage/MyProduct/update';
 import MyPasswordCheck from './view/MyPage/MyInfo/MyPasswordCheck';
@@ -59,7 +58,6 @@ import { GetSignInRequest } from './apis';
 import { GetSignInResponseDto } from './apis/dto/response/auth';
 import { ResponseDto } from './apis/dto/response';
 import { useSignInUserStore } from './stores';
-import { KeywordComponentProps } from './types';
 
 
 // component: root path 컴포넌트 //
@@ -73,7 +71,6 @@ function Index() {
   }, []);
 
   // render: root path 컴포넌트 렌더링 //
-
   return (
     <>
       <Home />
@@ -105,8 +102,9 @@ function SnsSuccess() {
     }
     else navigator(SIGN_IN_ABSOLUTE_PATH);
   }, []);
+
   // render: Sns Success 컴포넌트 렌더링 //
-  return <></>;
+  return (<></>);
 }
 
 // component: TheMemorialDay 컴포넌트 //
@@ -118,7 +116,6 @@ export default function TheMemorialDay() {
   // state: 로그인 유저 정보 상태 //
   const { signInUser, setSignInUser } = useSignInUserStore();
 
-  const isLoggedIn = Boolean(cookies.ACCESS_TOKEN);
   const [showNotMemberModal, setShowNotMemberModal] = useState(false);
   const navigator = useNavigate();
 
@@ -162,7 +159,7 @@ export default function TheMemorialDay() {
     }
   }, [cookies[ACCESS_TOKEN]]);
 
-
+  // render: 메인 화면 렌더링 //
   return (
     <>
       <Routes>
@@ -241,7 +238,6 @@ export default function TheMemorialDay() {
         />
       )}
     </>
-
   );
-
+  
 }

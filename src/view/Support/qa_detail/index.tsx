@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import SupportNavi from '../../../components/support_navi'
 import './style.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ACCESS_TOKEN, SU_ABSOLUTE_QA_PATH } from '../../../constants';
-import { QaList } from '../../../types';
 import { GetQnADetailResponseDto } from '../../../apis/dto/response/support';
 import { ResponseDto } from '../../../apis/dto/response';
 import maskString from '../../../components/maskingString/MaskingString';
-import formatDate from '../../../components/dateChange/DateChange';
 import { useSignInUserStore } from '../../../stores';
 import { useCookies } from 'react-cookie';
 import { deleteQnARequest, getQnADetailRequest } from '../../../apis';
@@ -30,7 +27,6 @@ export default function QaDetail() {
     const [questionContents, setQuestionContents] = useState<string>('');
     const [answerContents, setAnswerContents] = useState<string | undefined>('');
     const [writeDay, setWriteDay] = useState<string>('');
-    const [questionStatus, setQuestionStatus] = useState<string>('');
 
     // state: 답변 여부 상태 //
     const [hasAnswer, setHasAnswer] = useState<boolean>(false);
@@ -117,7 +113,6 @@ export default function QaDetail() {
     // render: Q&A Detail 컴포넌트 렌더링 //
     return (
         <div id='qa-detail-wrapper' style={{marginTop: "30px"}}>
-            {/* <SupportNavi /> */}
             <div className='write-info-box' >
                 <div className='writer-box'>
                     <div className='writer-title'>WRITER</div>
@@ -155,8 +150,6 @@ export default function QaDetail() {
                 :
                 ''
             }
-
-
         </div>
     )
 }

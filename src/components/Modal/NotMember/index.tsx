@@ -22,6 +22,3 @@ export default function NotMember({ onClose, onConfirm }: NotMemberProps) {
         </div>
     );
 }
-
-
-// 쿠키 로직 작성 완료 하시면 비회원 접속 불가 모달로 사용하시면 됩나다!

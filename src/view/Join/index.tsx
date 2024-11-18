@@ -29,7 +29,6 @@ export default function Join() {
     const [fileName, setFileName] = useState<string>('');
     const pdfInputRef = useRef<HTMLInputElement | null>(null);
     const [businessFile, setBusinessFile] = useState<File | null>(null);
-    const [sendUrl, setSendUrl] = useState<string | null>('');
 
     let url: string | null = null;
 
@@ -137,12 +136,9 @@ export default function Join() {
             const formData = new FormData();
             formData.append('file', businessFile);
             url = await fileUploadRequest(formData);
-            console.log("selected file: " + url);
-            //setSendUrl(url);
         }
 
         if(signInUser && url) {
-            console.log(signInUser);
             const requestBody: BusinessCheckRequestDto = {
                 businesses: [
                     {
@@ -157,7 +153,6 @@ export default function Join() {
                     }
                 ]
             }
-            console.log(requestBody);
             const accessToken = cookies[ACCESS_TOKEN];
             if(!accessToken) return;
             checkBusinessRequest(requestBody).then(businessCheckResponse);
@@ -179,8 +174,8 @@ export default function Join() {
                     <input
                         type="file"
                         ref={pdfInputRef}
-                        style={{ display: 'none' }} // 숨김 처리
-                        accept="application/pdf" // PDF 파일만 선택 가능
+                        style={{ display: 'none' }} 
+                        accept="application/pdf" 
                         onChange={onFileChangeHandler}
                     />
                     <input

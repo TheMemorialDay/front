@@ -1,12 +1,11 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
-import { useOrderReject, useSignInUserStore } from '../../../stores';
+import { useSignInUserStore } from '../../../stores';
 import { NewOrderDetailsProps, OrderDetailsProps } from '../../../types';
 import { useCookies } from 'react-cookie';
-import GetOrderDetailListResponseDto from '../../../apis/dto/response/get-order-detail-list.response.dto';
 import { ResponseDto } from '../../../apis/dto/response';
 import { ACCESS_TOKEN } from '../../../constants';
-import { getOrderDetailRequest, getOrderManageRequest, patchOrderStatusRequest, postSendPaymentMsgRequest } from '../../../apis';
+import { getOrderManageRequest, patchOrderStatusRequest, postSendPaymentMsgRequest } from '../../../apis';
 import PatchOrderStatusReqeustDto from '../../../apis/dto/request/order/patch-order-status-request.dto';
 import { Autocomplete, TextField } from '@mui/material';
 import NewGetOrderManageList from '../../../apis/dto/response/new-get-order-manage.response.dto';
@@ -33,12 +32,10 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     const [secondReject, setSecondReject] = useState(false);
     const [cancelCode, setCancelCode] = useState<CancelCode>('재료가 소진되었습니다.');
     const [cancelReason, setCancelReason] = useState<string>('');
-    const [telNumber, setTelNumber] = useState<string | null>(orderdetail.telNumber);
 
     const [cookies] = useCookies();
 
     const { signInUser } = useSignInUserStore();
-    const [userId, setUserId] = useState<string>('');
 
     // state: order submit time //
     const [orderSubmitTime, setOrderSubmitTime] = useState<string>('');

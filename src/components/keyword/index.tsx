@@ -114,7 +114,6 @@ const KeywordCloud = () => {
         fontFamily: 'Montserrat',
         fontSizes: [40, 130],
         fontStyle: 'normal',
-        // fontWeight: 'normal',
         padding: 3,
         rotations: 0, // 회전
         rotationAngles: [0, 10],

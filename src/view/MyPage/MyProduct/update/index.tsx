@@ -12,11 +12,6 @@ import { useSignInUserStore } from '../../../../stores';
 import GetStoreNumber from '../../../../apis/dto/response/product/get-store-number-response.dto';
 import { ResponseDto } from '../../../../apis/dto/response';
 
-
-
-// variable: 기본 프로필 이미지 URL //
-const defaultImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q0oOxqQNdL6kZp0iSKLbV1/img.png';
-
 const defaultProductData: PostProductRequestDto = {
     productImages: [],
     productName: '',
@@ -31,7 +26,6 @@ const defaultProductData: PostProductRequestDto = {
 // component: Add 컴포넌트 //
 const Add = () => {
     const { productNumber } = useParams<{ productNumber?: string }>();
-    //const {storeNumber} = useParams<{storeNumber?: string}>();
     const [storeNumber, setStoreNumber] = useState<string | number>();
     const { signInUser } = useSignInUserStore();
     const [productData, setProductData] = useState<PostProductRequestDto | PatchProductRequestDto>(defaultProductData);
@@ -173,24 +167,24 @@ const Add = () => {
             themes: productData.themes, // 선택된 테마
         };
 
-        // function: get store number response 처리 //
-        const getStoreNumberResponse = (responseBody: GetStoreNumber | ResponseDto | null) => {
-            const message =
-                !responseBody ? '서버에 문제가 있습니다.' :
-                    responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-                        responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : responseBody.code;
+        // // function: get store number response 처리 //
+        // const getStoreNumberResponse = (responseBody: GetStoreNumber | ResponseDto | null) => {
+        //     const message =
+        //         !responseBody ? '서버에 문제가 있습니다.' :
+        //             responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+        //                 responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : responseBody.code;
 
-            //alert(message);
-            const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-            if (!isSuccessed) {
-                alert(message);
-                return;
-            }
-            const storeNum = responseBody as GetStoreNumber;
-            console.log(storeNum.storeNumber);
-            setStoreNumber(storeNum.storeNumber);
-            //return storeNum.storeNumber;
-        }
+        //     //alert(message);
+        //     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        //     if (!isSuccessed) {
+        //         alert(message);
+        //         return;
+        //     }
+        //     const storeNum = responseBody as GetStoreNumber;
+        //     console.log(storeNum.storeNumber);
+        //     setStoreNumber(storeNum.storeNumber);
+        //     //return storeNum.storeNumber;
+        // }
 
 
 

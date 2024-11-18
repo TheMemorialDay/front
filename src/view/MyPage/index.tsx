@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './style.css';
-import { MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_LIKE_PATH, MY_PRODUCT_PATH, MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PASSWORD_CHECK_PATH, ACCESS_TOKEN, MY_STORE_ABSOLUTE_PATH } from '../../constants';
+import { MY_INFO_PATH, MY_REVIEW_PATH, MY_ORDER_DETAIL_PATH, MY_PRODUCT_PATH, MY_ORDER_MANAGE_PATH, MY_SALES_PATH, MY_PASSWORD_CHECK_PATH, ACCESS_TOKEN, MY_STORE_ABSOLUTE_PATH } from '../../constants';
 import { useSignInUserStore } from '../../stores';
 import { useCookies } from 'react-cookie';
 
@@ -49,7 +49,7 @@ const MyPage = () => {
 
     // event handler: 가게등록 유무 핸들러 //
     const handleStoreNavigation = async () => {
-        //navigate(MY_STORE_ABSOLUTE_PATH);
+
         try {
             const token = getCookie('accessToken');
             const response = await fetch(`http://localhost:4000/mypage/store/?userId=${userId}`, {

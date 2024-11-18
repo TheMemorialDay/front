@@ -49,7 +49,6 @@ export default function StoreComponent({ storeNumber, storeImageUrl,
 						<div onClick={onHeartClickHandler} className={checked ? 'red-heart' : 'white-heart'}></div>
 					</div>
 
-
 					<p className="shop-location">{storeGugun} + {storeDong}ß</p>
 					<p className="shop-rating">별점 {reviewRating}</p>
 					<p className="shop-reviews">리뷰 {reviewCount}</p>

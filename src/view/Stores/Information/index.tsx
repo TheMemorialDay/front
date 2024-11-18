@@ -2,9 +2,7 @@ import React from 'react'
 import { useNavigate, useOutletContext } from 'react-router';
 import { ST_ABSOLUTE_CONTACT_DETAIL_PATH, ST_ABSOLUTE_INFORMATION_DETAIL_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH, ST_ABSOLUTE_REVIEW_DETAIL_PATH } from '../../../constants';
 import './style.css';
-import ShopMain from '../../../components/Shopinformation';
 import MapContainer from '../../../components/Map/map';
-import { StoreComponentProps } from '../../../types';
 import { GetStoreResponseDto } from '../../../apis/dto/response/stores';
 
 
@@ -50,7 +48,6 @@ export default function ShopInformation() {
             ))
           }
         </div>
-          {/* <div className='line'></div> */}
         <div>
         {
           store ? <MapContainer storeLatitude={store.storeLatitude} storeLongtitude={store.storeLongtitude} /> : ''
