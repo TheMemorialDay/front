@@ -2,8 +2,6 @@ import { useNavigate, useOutletContext, useParams } from 'react-router';
 import './style.css';
 import React, { useEffect, useState } from 'react'
 import { ST_ABSOLUTE_CONTACT_DETAIL_PATH, ST_ABSOLUTE_INFORMATION_DETAIL_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH, ST_ABSOLUTE_REVIEW_DETAIL_PATH, ST_PRODUCT_ORDER_ABSOLUTE_PATH } from '../../../constants';
-import ShopMain from '../../../components/Shopinformation';
-import { StoreComponentProps } from '../../../types';
 import { GetProductPreviewListResponseDto, GetStoreResponseDto } from '../../../apis/dto/response/stores';
 import { getProductPreviewListRequest } from '../../../apis';
 import { ResponseDto } from '../../../apis/dto/response';
@@ -147,8 +145,6 @@ export default function ShopOrder() {
             productToday={product.productToday}          />
         ))
       }
-        {/* <ShopComponent imageUrl="/picture1.png" title="케이크1" price="35000" hashtags='#깔끔함 #달달함 #꽃케잌' onDetailClickHandler={onProductClickHandler} /> */}
-        
       </div>
     </div>
   )

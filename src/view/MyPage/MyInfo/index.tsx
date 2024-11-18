@@ -128,8 +128,6 @@ export default function InfoUpdate() {
 
     // event handler: 새로 입력하는 전화번호 상태 변경 핸들러 //
     const onNewTelNumberHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        // const { value } = event.target;
-        // setNewTelNumber(value);
         const numbersOnly = event.target.value.replace(/\D/g, "");
         if (numbersOnly.length <= 11) {
             setNewTelNumber(numbersOnly);
@@ -281,13 +279,13 @@ export default function InfoUpdate() {
                 }
 
             </div>
-                <div className='button-container'>
+                <div className='button-container' style={{ marginTop: "150px"}}>
                     <div className='withdraw-button' onClick={() => alert('탈퇴 기능은 아직 구현되지 않았습니다')}>탈퇴</div>
-                <div className='cancel-update-button'>
-                    <div className='cancel-button' onClick={onCancelClickHandler}>취소</div>
-                    <div className='update-button' onClick={onEditClickHandler}>수정</div>
+                    <div className='cancel-update-button'>
+                        <div className='cancel-button' onClick={onCancelClickHandler}>취소</div>
+                        <div className='update-button' onClick={onEditClickHandler}>수정</div>
+                    </div>
                 </div>
-            </div>
         </div>
     );
 }

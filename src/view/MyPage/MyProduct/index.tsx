@@ -15,7 +15,6 @@ const defaultProfileImageUrl = 'https://blog.kakaocdn.net/dn/4CElL/btrQw18lZMc/Q
 // component: 기존 상품 박스 컴포넌트
 function Legacy({ product, onEdit, getProductList }: { product: Product; onEdit: (productNumber: number) => void; getProductList: () => void; }) {
 
-    
     // state: cookie 상태 //
     const [cookies] = useCookies();
 
@@ -82,7 +81,6 @@ export default function MyProduct() {
 
     const loadProducts = async () => {    
         
-
         try {
             const accessToken = cookies[ACCESS_TOKEN];
             if (!userId || !accessToken) return;
@@ -107,10 +105,6 @@ export default function MyProduct() {
     const onAddButtonClickHandler = () => {
         navigator(MY_PRODUCT_ADD_ABSOLUTE_PATH);
     };
-
-    // const onEditProduct = (productNumber: number) => {
-    //     navigator(`${MY_PRODUCT_UPDATE_ABSOLUTE_PATH}/${productNumber}`);
-    // };
 
     const onEditProduct = (productNumber: number) => {
         navigator(`${MY_PRODUCT_UPDATE_ABSOLUTE_PATH.replace(':productNumber', productNumber.toString())}`);

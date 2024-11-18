@@ -15,7 +15,6 @@ export default function ReviewComponent({ reviewRating, reviewDay, reviewContent
     // event handler: 모달 열기 //
     const onModalOpenClickHandler = () => {
         setModalOpen(true);
-        console.log(reviewPhotoUrl[0]);
     };
 
     // event handler: 모달 닫기 //
@@ -25,24 +24,16 @@ export default function ReviewComponent({ reviewRating, reviewDay, reviewContent
 
     // event handler: 이전 사진으로 이동 //
     const nextClickHandler = () => {
-        // if (currentIndex <= 0) return;
-        // setCurrentIndex(currentIndex - 1);
-        // console.log(currentIndex);
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
         }
-        console.log(currentIndex);
     };
 
     // event handler: 다음 사진으로 이동 //
     const prevClickHandler = () => {
-        // if (currentIndex >= 3) return;
-        // if (currentIndex < reviewPhotoUrl.length) setCurrentIndex(currentIndex + 1);
-        // console.log(currentIndex);
         if (currentIndex < reviewPhotoUrl.length - 1) {  // 배열 길이에 맞게 조건 설정
             setCurrentIndex(currentIndex + 1);
         }
-        console.log(currentIndex);
     };
 
     // effect: 모달창 상태에 따른 스크롤 바 상태 //

@@ -12,12 +12,8 @@ import { ACCESS_TOKEN, MY_INFO_ABSOLUTE_PATH } from '../../../../constants';
 
 export default function MyPasswordCheck() {
     // state: 비밀번호 상태 및 메시지 상태
-    // const [password, setPassword] = useState<string>('');
     const [passwordMessage, setPasswordMessage] = useState<string>('');
     const [isMatched, setIsMatched] = useState<boolean>(false);
-
-    // state: 아이디 상태 //
-    const [userId, setUserId] = useState<string>('');
 
     // state: 쿠키 상태 //
     const [cookies, setCookie] = useCookies();

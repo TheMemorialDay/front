@@ -24,9 +24,6 @@ export default function SignUp() {
     const [idMsgBool, setIdMsgBool] = useState<boolean>(false);
     const [idMessage, setIdMessage] = useState<string>('');
 
-    // state: 성별 상태 //
-    const [gender, setGender] = useState<string>('');
-
     // state: 생일 관련 변수 상태 //
     const [birth, setBirth] = useState<string>('');
     const [birthMessage, setBirthMessage] = useState<string>('');
@@ -56,7 +53,6 @@ export default function SignUp() {
     // state: 전화번호 인증 재전송 상태 //
     const [isMatched3, setIsMatched3] = useState<boolean>(false);
 
-
     // state: 입력값 검증 상태 //
     const [isCheckId, setCheckId] = useState<boolean>(false);
     const [isSend, setSend] = useState<boolean>(false);
@@ -76,9 +72,6 @@ export default function SignUp() {
     });
     const [showServiceTerms, setShowServiceTerms] = useState(false);
     const [showPrivacyTerms, setShowPrivacyTerms] = useState(false);
-
-    // variable: SNS 회원가입 여부 //
-    const isSnsSignUp = snsId !== null && joinPath !== null;
 
     // variable: 회원가입 가능 상태 확인 //
     const isPossible = name && idMsgBool && isPwMatched1 && isPwMatched2 && birthMsgBool && selectedGender
@@ -243,7 +236,6 @@ export default function SignUp() {
     // event handler: 성별 선택 이벤트 핸들러 //
     const selectedGenderClickHandler = (selectedGender: string) => {
         setSelectedGender(selectedGender);
-        console.log(selectedGender);
     }
 
     // event handler: 전화번호 변경 이벤트 핸들러 //
@@ -298,7 +290,7 @@ export default function SignUp() {
         if (isTrue) {
             setTelMessage('');
             setIsMatched3(true);
-            setTimer(10);
+            setTimer(180);
             setTelAuthNumber('');
             setAuthMessage('');
             const requestBody: TelAuthRequestDto = { telNumber };

@@ -1,8 +1,6 @@
 import React, { ChangeEvent, KeyboardEventHandler, useEffect, useRef, useState } from 'react'
 import './style.css';
-import { FaRegStar, FaStar } from 'react-icons/fa';
-import styled from "styled-components";
-import { useOrderReject, useSignInUserStore } from '../../../stores';
+import { useSignInUserStore } from '../../../stores';
 import { Autocomplete, Rating, TextField } from '@mui/material';
 import { RequestPayParams, RequestPayResponse } from '../../../types/portone';
 import { useCookies } from 'react-cookie';
@@ -10,16 +8,13 @@ import { ACCESS_TOKEN } from '../../../constants';
 import { PostPayMentRequestDto } from '../../../apis/dto/request';
 import { fileUploadRequest, getOrderDetailRequest, patchOrderStatusRequest, postPayMentRequest, postReviewRequest } from '../../../apis';
 import { ResponseDto } from '../../../apis/dto/response';
-import GetOrderDetailResponseDto from '../../../apis/dto/response/get-order-detail-response-dto';
 import GetOrderDetailListResponseDto from '../../../apis/dto/response/get-order-detail-list.response.dto';
-import { NewOrderDetailsProps, OrderDetailsProps } from '../../../types';
+import { NewOrderDetailsProps} from '../../../types';
 import PatchOrderStatusReqeustDto from '../../../apis/dto/request/order/patch-order-status-request.dto';
-import { Console } from 'console';
 import { PostReviewRequestDto } from '../../../apis/dto/request/review';
 
 // interface: 주문 내역 컴포넌트 Properties //
 interface OrderDetailProps {
-    //orderdetail: OrderDetailsProps,
     orderdetail: NewOrderDetailsProps,
     getOrderDetailList: () => void;
 };
@@ -35,9 +30,6 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     const [orderStatus, setOrderStatus] = useState<OrderStatus>(orderdetail.orderStatus as OrderStatus);
 
     const { signInUser } = useSignInUserStore();
-    // const [userId, setUserId] = useState<string>('');
-    // // const [userName, setUserName] = useState<string>('');
-    // const [orderTime, setOrderTime] = useState<string>('');
     const [cancelCode, setCancelCode] = useState<string>('');
     const [cancelReason, setCancelReason] = useState<string>('');
 

@@ -68,12 +68,9 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     if (checked) {
       await onStoreLikeDeleteButtonClickHandler();
       store.likeList = store.likeList.filter(id => id !== userId); // 좋아요 삭제
-      console.log('좋아요 삭제');
     } else if (!checked && userId !== undefined) {
       await onStoreLikeAddButtonClickHandler();
       store.likeList.push(userId); // 좋아요 추가
-      console.log('좋아요 추가');
-
     }
   };
 
@@ -86,7 +83,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
 
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) {
-      console.log('토큰 오류');
       return;
     }
 
@@ -853,16 +849,6 @@ export default function Stores() {
             storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreLists} />)
           }
         </div>
-
-        {/* <div className='store-bottom'>
-            <Pagination
-              pageList={pageList}
-              currentPage={currentPage}
-              onPageClickHandler={onPageClickHandler}
-              onPreSectionClickHandler={onPreSectionClickHandler}
-              onNextSectionClickHandler={onNextSectionClickHandler}
-            />
-          </div> */}
 
       </div>
     </div >

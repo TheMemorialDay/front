@@ -11,14 +11,10 @@ import { GetQnAListResponseDto } from '../../../apis/dto/response/support';
 import { ResponseDto } from '../../../apis/dto/response';
 import { useSignInUserStore } from '../../../stores';
 import { useCookies } from 'react-cookie';
-import { Node } from 'typescript';
 import { getQnAListRequest } from '../../../apis';
 
 // component: support qa 컴포넌트 //
 export default function Qa() {
-
-    // state: 로그인 유저 상태 //
-    const { signInUser } = useSignInUserStore();
 
     // state: 쿠키 상태 //
     const [cookies] = useCookies();
@@ -114,7 +110,6 @@ export default function Qa() {
     // 커스텀 훅 가져오기
     const {
         currentPage,
-        totalPage,
         totalCount,
         viewList,
         pageList,

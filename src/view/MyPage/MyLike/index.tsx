@@ -1,16 +1,13 @@
 import React, { MouseEvent, useEffect, useState } from 'react'
 import './style.css';
-import StoreComponent from '../../../components/storeThumbnail';
 import MyStoreLikeComponentProps from '../../../types/mypage-likelist.interface';
 import { useNavigate, useParams } from 'react-router';
 import { ACCESS_TOKEN, SIGN_UP_ABSOLUTE_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../../constants';
 import { deleteLikeStoreRequest, getMyPageLikeStoreRequest, getMypageLikeStoreReviewNRatingRequest, postLikeStoreRequest } from '../../../apis';
 import GetMyPageLikeStoreListResponseDto from '../../../apis/dto/response/like/get-mypage-likestore-list.response.dto';
 import { ResponseDto } from '../../../apis/dto/response';
-import { usePagination } from '../../../hooks';
 import { useCookies } from 'react-cookie';
 import { useSignInUserStore } from '../../../stores';
-import { PostLikeStoreRequestDto } from '../../../apis/dto/request';
 import axios from 'axios';
 import { getMypageLikeStoreReviewNRating } from '../../../apis/dto/response/like';
 import { MypageLikeStoreInfo } from '../../../types';
@@ -43,7 +40,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
         event.stopPropagation();
         if (checked) {
             await onStoreLikeDeleteButtonClickHandler();
-            // setLikeCount(likeCount - 1);
         }
     };
 
@@ -105,7 +101,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     // effect: checked 상태가 변경될 때마다 리스트 업데이트
     useEffect(() => {
         const token = getCookie('accessToken');
-        const accessToken = cookies[ACCESS_TOKEN];
 
         axios.get(`http://localhost:4000/mypage/like/${userId}/${store.storeNumber}`, {
             headers: {
@@ -177,7 +172,6 @@ export default function MyLike() {
         }
 
         const { likes } = responseBody as GetMyPageLikeStoreListResponseDto;
-        //setStoreList(likes);
 
         const newStoreList: MyStoreLikeComponentProps[] = likes.map((like) => {
             const ratingInfo = storeInfo.find(
