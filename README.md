@@ -166,7 +166,7 @@ The Memorial Day 서비스 시연 영상입니다.
     </tr>
     <tr>
       <td style="text-align: center width: 20%;">송태휘</td>
-      <td>가게 등록 및 수정, 가게 상세 조회 페이지(가게 프로필 조회, 지도 포함), 찜 관리, 필터링 및 검색, 인기 키워드, 결제</td>
+      <td>가게 등록 및 수정, 가게 상세 조회 페이지(가게 프로필 조회, 지도), 찜 관리, 필터링 및 검색, 인기 키워드, 결제</td>
     </tr>
     <tr>
       <td style="text-align: center width: 20%;">정호정</td>
@@ -174,7 +174,7 @@ The Memorial Day 서비스 시연 영상입니다.
     </tr>
     <tr>
       <td style="text-align: center width: 20%;">김도연</td>
-      <td>상품(테마 및 옵션 포함) 등록/수정/삭제, 주문 등록, 매출 관리, 메인 페이지(상단 Navi, footer, how, 상단 이동 버튼, Gem Ai 활용), 마이페이지 경로 설정</td>
+      <td>상품(테마 및 옵션 포함) CUD, 주문 등록, 매출 관리, 메인 페이지(상단 Navi, footer, how, 상단 이동 버튼, Gem Ai), 마이페이지</td>
     </tr>
   </tbody>
 </table>
