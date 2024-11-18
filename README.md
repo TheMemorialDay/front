@@ -1,50 +1,3 @@
-<!-- # Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/). -->
-
 <h1 style='background-color: rgba(55, 55, 55, 0.4); text-align: center'>The Memoridal Day</h1>
 
 해당 문서는 주문 제작 케이크 플랫폼 'The Memorial Day'의 프론트 서비스를 설명하고 있습니다.  
@@ -64,15 +17,34 @@ To learn React, check out the [React documentation](https://reactjs.org/). -->
 ---
 
 ## 기술 스택
-![대체 텍스트](images/tool.jpg)
+
+### 개발 환경
+
+| 항목            | 내용                              |
+| --------------- | --------------------------------- |
+| 운영체제        | Windows, macOS                    |
+| 버전 관리       | GitHub                             |
+| 패키지 매니저 | npm |
+| 빌드 툴 | webpack |
+
+### 개발 도구
+
+| 항목            | 내용                              |
+| --------------- | --------------------------------- |
+| IDE             | Visual Studio Code (VSC)          |
+
+### 개발 언어 및 프레임워크
+
+| 항목            | 내용                              |
+| --------------- | --------------------------------- |
+| 프로그래밍 언어 | TypeScript, CSS, HTML             |
+| 프레임워크      | React                             |
+
+
 
 ### 시스템 아키텍처
-![대체 텍스트](images/archi.jpg)
-
-<!-- - **프론트엔드:** HTML5, CSS3, TypeScript, React
-- **스타일링:** Tailwind CSS, Styled-Components 등
-- **패키지 매니저:** npm
-- **빌드 툴:** Webpack -->
+<!-- ![대체 텍스트](images/archi.jpg) -->
+<img src="./images/archi.jpg" alt="시스템 아키텍처" width="332" height="200">
 
 ---
 
@@ -150,3 +122,10 @@ The Memorial Day 서비스 시연 영상입니다.
 ![대체 텍스트](images/schedule.jpg)
 
 ### Team Roles
+
+| 이름    | 작업 내용                                                                                                                                                      |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 안찬숙  | 로그인 및 회원가입, 아이디 및 비밀번호 찾기, 회원 탈퇴 및 수정, 필터링 및 검색, 인기 키워드                                                                     |
+| 송태휘  | 가게 등록 및 수정, 가게 상세 조회 페이지(가게 프로필 조회, 지도 포함), 찜 관리, 필터링 및 검색, 인기 키워드, 결제                                                |
+| 정호정  | 사업자 등록, 가게 상세 조회(상품 리스트, 리뷰 리스트), 주문서(상품 정보 조회), 리뷰 작성 및 조회, 찜 관리, 공지사항 및 QnA                                      |
+| 김도연  | 상품(테마 및 옵션 포함) 등록/수정/삭제, 주문 등록, 매출 관리, 메인 페이지(상단 Navi, footer, how, 상단 이동 버튼, Gem Ai 활용), 마이페이지 경로 설정             |
