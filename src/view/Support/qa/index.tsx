@@ -5,11 +5,10 @@ import { QaList } from '../../../types';
 import { usePagination } from '../../../hooks';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import { ACCESS_TOKEN, SU_ABSOLUTE_QA_WRITE_PATH, SU_QA_DETAIL_PATH } from '../../../constants';
+import { ACCESS_TOKEN, LOGIN_PATH, SU_ABSOLUTE_QA_WRITE_PATH, SU_QA_DETAIL_PATH } from '../../../constants';
 import QaRow from '../../../components/qa_row';
 import { GetQnAListResponseDto } from '../../../apis/dto/response/support';
 import { ResponseDto } from '../../../apis/dto/response';
-import { useSignInUserStore } from '../../../stores';
 import { useCookies } from 'react-cookie';
 import { getQnAListRequest } from '../../../apis';
 
@@ -96,7 +95,11 @@ export default function Qa() {
     // event handler: 큐엔에이 작성 페이지 이동 //
     const onQaWriteButtonHandler = () => {
         const accessToken = cookies[ACCESS_TOKEN];
-        if (!accessToken) return;
+        if (!accessToken) {
+            alert("로그인이 필요한 서비스입니다.");
+            navigator(LOGIN_PATH);
+            return;
+        }
         navigator(SU_ABSOLUTE_QA_WRITE_PATH);
     };
 

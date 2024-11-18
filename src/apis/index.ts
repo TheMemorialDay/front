@@ -7,7 +7,7 @@ import { GetProductDetailResponseDto, GetProductPreviewListResponseDto, GetRevie
 import { PatchJoinRequestDto } from "./dto/request/join";
 import GetSignInResponseDto from "./dto/response/auth/get-sign-in-response.dto";
 import { PasswordCheckOfUserUpdateRequestDto, PatchUserInfoRequestDto } from "./dto/request/mypage_user_info";
-import { GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
+import { GetNewInfo, GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
 import { PostProductRequestDto } from './dto/request/product/post-product-request.dto';
 import { GetProductListResponseDto, GetProductResponseDto } from './dto/response/product';
 import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
@@ -66,6 +66,8 @@ const MYPAGE_PATCH_USER_INFO_TEL_AUTH_API_URL = `${MYPAGE_USER_INFO_API_URL}/tel
 const MYPAGE_PATCH_USER_INFO_TEL_AUTH_CHECK_API_URL = `${MYPAGE_USER_INFO_API_URL}/tel-auth-check`;
 // 마이페이지 최종 수정 URL
 const MYPAGE_PATCH_USER_COMPLETED_API_URL = `${MYPAGE_USER_INFO_API_URL}/patch-info`;
+const GET_NEW_USER_INFO_API_URL =  (userId: string) => `${MYPAGE_USER_INFO_API_URL}/${userId}`;
+
 const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
 
 const GET_MY_REVIEW_LIST_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/review?userId=${userId}`;
@@ -626,6 +628,14 @@ export const PostQnARequest = async (requestBody: PostQnARequestDto, accessToken
 export const deleteQnARequest = async (questionNumber: number | string, accessToken: string) => {
     const responseBody = await axios.delete(QNA_DELETE_API_URL(questionNumber), bearerAuthorization(accessToken))
         .then(responseDataHandler<ResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
+// function: 회원 정보 받기 //
+export const getNewInfo = async(accessToken: string, userId: string) => {
+    const responseBody = await axios.get(GET_NEW_USER_INFO_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetNewInfo>)
         .catch(responseErrorHandler);
     return responseBody;
 }
