@@ -5,9 +5,10 @@
 ## 목차
 1. [프로젝트 소개](#프로젝트-소개)
 2. [개발 스택](#개발-스택)
-3. [설치 및 실행](#설치-및-실행)
-4. [주요 기능](#주요-기능)
-5. [제작 기간](#제작-기간)
+3. [폴더 구조](#폴더-구조)
+4. [설치 및 실행](#설치-및-실행)
+5. [주요 기능](#주요-기능)
+6. [제작 기간](#제작-기간)
 
 ---
 
@@ -17,8 +18,6 @@
 ---
 
 ## 개발 스택
-
-### 개발 환경 및 도구 
 
 <body style="font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f9f9f9;">
     <table style="border-collapse: collapse; width: 80%; max-width: 800px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
@@ -41,8 +40,14 @@
     </table>
 </body>
 
-### 시스템 아키텍처
-<img src="./images/archi.jpg" alt="시스템 아키텍처" width="496" height="300">
+---
+
+## 폴더 구조
+
+프로젝트의 주요 폴더 구조는 다음과 같습니다:
+FRONT/ ┣ .vscode/ # VSCode 설정 파일들 ┣ API 설계서 모음/ # API 설계서 문서들이 포함된 폴더 ┣ images/ # 프로젝트에 사용될 이미지 파일들 ┣ node_modules/ # npm 종속성 모듈들이 설치된 폴더 ┣ public/ # 정적 파일이 포함된 폴더 (HTML, favicon 등) ┣ src/ # 애플리케이션의 핵심 소스 코드가 있는 폴더 ┃ ┣ apis/ # API 요청 함수들이 있는 폴더 ┃ ┣ components/ # 재사용 가능한 UI 컴포넌트들이 위치한 폴더 ┃ ┣ constants/ # 상수를 정의한 파일들이 있는 폴더 ┃ ┣ hooks/ # 커스텀 React 훅들이 포함된 폴더 ┃ ┣ layouts/ # 페이지 레이아웃 관련 컴포넌트들이 있는 폴더 ┃ ┣ stores/ # 상태 관리 관련 파일들 (예: 전역 상태 관리) ┃ ┣ types/ # TypeScript 타입 정의 파일들 ┃ ┣ util/ # 공통적으로 사용하는 유틸리티 함수들이 있는 폴더 ┃ ┗ view/ # 개별 페이지 UI를 구성하는 컴포넌트들이 포함된 폴더 ┣ App.css # 메인 앱 스타일 파일 ┣ App.tsx # 메인 React 앱 컴포넌트 ┣ index.css # 전역 스타일 정의 파일 ┣ index.tsx # 애플리케이션 진입점 파일 ┣ react-app-env.d.ts # 환경 변수에 대한 타입 선언 파일 (TypeScript 관련) ┣ .env # 환경 변수 설정 파일 ┣ .gitignore # Git에서 추적하지 않을 파일 및 폴더 목록 ┣ package-lock.json # 종속성에 대한 정확한 버전 관리 파일 ┣ package.json # 프로젝트의 종속성 및 스크립트 정의 파일 ┣ README.md # 프로젝트 개요 및 설명 파일 ┣ The Memorial Day 요구사항 명세서.md # 명세서 관련 Markdown 파일 ┣ The Memorial Day UI.pdf # UI 요구사항 설명 PDF 파일 ┗ tsconfig.json # TypeScript 설정 파일
+
+
 
 ---
 
