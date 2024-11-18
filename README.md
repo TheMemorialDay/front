@@ -27,11 +27,11 @@
             <td style="border: 1px solid #000; padding: 20px;">운영체제: Windows, macOS<br>버전 관리: GitHub</td>
         </tr>
         <tr>
-            <td style="border: 1px solid #000; background-color: #e6f2f8; font-weight: bold; padding: 20px; text-align: center;">개발도구</td>
+            <td style="border: 1px solid #000; background-color: #e6f2f8; font-weight: bold; padding: 20px; text-align: center;">개발 도구</td>
             <td style="border: 1px solid #000; padding: 20px;">IDE: Visual Studio Code
         </tr>
         <tr>
-            <td style="border: 1px solid #000; background-color: #e6f2f8; font-weight: bold; padding: 20px; text-align: center;">개발 언어 및 프레임워크</td>
+            <td style="border: 1px solid #000; background-color: #e6f2f8; font-weight: bold; padding: 20px; text-align: center;">개발 언어 <br>및 프레임워크</td>
             <td style="border: 1px solid #000; padding: 20px;">프로그래밍 언어: TypeScript, CSS, HTML<br>프레임워크: React
         </tr>
         <tr>
@@ -130,19 +130,19 @@ The Memorial Day 서비스 시연 영상입니다.
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center">안찬숙</td>
+      <td style="text-align: center; width: 20%;">안찬숙</td>
       <td>로그인 및 회원가입, 아이디 및 비밀번호 찾기, 회원 탈퇴 및 수정, 필터링 및 검색, 인기 키워드</td>
     </tr>
     <tr>
-      <td style="text-align: center">송태휘</td>
+      <td style="text-align: center width: 20%;">송태휘</td>
       <td>가게 등록 및 수정, 가게 상세 조회 페이지(가게 프로필 조회, 지도 포함), 찜 관리, 필터링 및 검색, 인기 키워드, 결제</td>
     </tr>
     <tr>
-      <td style="text-align: center">정호정</td>
+      <td style="text-align: center width: 20%;">정호정</td>
       <td>사업자 등록, 가게 상세 조회(상품 리스트, 리뷰 리스트), 주문서(상품 정보 조회), 리뷰 작성 및 조회, 찜 관리, 공지사항 및 QnA</td>
     </tr>
     <tr>
-      <td style="text-align: center">김도연</td>
+      <td style="text-align: center width: 20%;">김도연</td>
       <td>상품(테마 및 옵션 포함) 등록/수정/삭제, 주문 등록, 매출 관리, 메인 페이지(상단 Navi, footer, how, 상단 이동 버튼, Gem Ai 활용), 마이페이지 경로 설정</td>
     </tr>
   </tbody>
