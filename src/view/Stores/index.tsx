@@ -514,7 +514,7 @@ export default function Stores() {
     setStoreList(storeDetails);
     originalList.current = storeDetails;
 
-    setMainSearch('');
+    // setMainSearch('');
   };
 
   //* ========================================== store main address selected
@@ -676,6 +676,7 @@ export default function Stores() {
     }
 
     if (mainSearch) {
+      setMainSearch(mainSearch);
       onStoresSearchClickHandler();
     } else {
       getStoreLists();
