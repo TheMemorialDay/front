@@ -5,7 +5,7 @@
   /* align-items: center; */
   /* gap: 100px; */
   margin-bottom: 40px;
-  max-width: 100%;
+  width: 100%;
 }
 
 .information .line {
@@ -16,10 +16,9 @@
 
 .information .shop-locate {
   white-space: pre-line;
-  max-width: 100%;
+  width: 100%;
 
   font-size: 18px;
-  /* padding: 40px 20px; */
 }
 
 .information .shop-locate-in {
