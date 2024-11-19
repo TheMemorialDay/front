@@ -229,6 +229,10 @@ section:not(.reader) {
     cursor: pointer;
 }
 
+.home-arrow:hover {
+    text-decoration: underline;
+}
+
 .reader {
     --thick: 0px;
     outline: var(--thick) dashed var(--accent);

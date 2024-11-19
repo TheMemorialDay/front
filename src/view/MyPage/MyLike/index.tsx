@@ -1,16 +1,13 @@
 import React, { MouseEvent, useEffect, useState } from 'react'
 import './style.css';
-import StoreComponent from '../../../components/storeThumbnail';
 import MyStoreLikeComponentProps from '../../../types/mypage-likelist.interface';
 import { useNavigate, useParams } from 'react-router';
 import { ACCESS_TOKEN, SIGN_UP_ABSOLUTE_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../../constants';
 import { deleteLikeStoreRequest, getMyPageLikeStoreRequest, getMypageLikeStoreReviewNRatingRequest, postLikeStoreRequest } from '../../../apis';
 import GetMyPageLikeStoreListResponseDto from '../../../apis/dto/response/like/get-mypage-likestore-list.response.dto';
 import { ResponseDto } from '../../../apis/dto/response';
-import { usePagination } from '../../../hooks';
 import { useCookies } from 'react-cookie';
 import { useSignInUserStore } from '../../../stores';
-import { PostLikeStoreRequestDto } from '../../../apis/dto/request';
 import axios from 'axios';
 import { getMypageLikeStoreReviewNRating } from '../../../apis/dto/response/like';
 import { MypageLikeStoreInfo } from '../../../types';
@@ -21,7 +18,7 @@ interface StoreRowProps {
 }
 
 // component: 스토어 리스트 아이템 컴포넌트 //
-function StoreRow({ store, getStoreList}: StoreRowProps) {
+function StoreRow({ store, getStoreList }: StoreRowProps) {
 
     const navigator = useNavigate();
 
@@ -43,7 +40,6 @@ function StoreRow({ store, getStoreList}: StoreRowProps) {
         event.stopPropagation();
         if (checked) {
             await onStoreLikeDeleteButtonClickHandler();
-            // setLikeCount(likeCount - 1);
         }
     };
 
@@ -105,7 +101,6 @@ function StoreRow({ store, getStoreList}: StoreRowProps) {
     // effect: checked 상태가 변경될 때마다 리스트 업데이트
     useEffect(() => {
         const token = getCookie('accessToken');
-        const accessToken = cookies[ACCESS_TOKEN];
 
         axios.get(`http://localhost:4000/mypage/like/${userId}/${store.storeNumber}`, {
             headers: {
@@ -177,7 +172,6 @@ export default function MyLike() {
         }
 
         const { likes } = responseBody as GetMyPageLikeStoreListResponseDto;
-        //setStoreList(likes);
 
         const newStoreList: MyStoreLikeComponentProps[] = likes.map((like) => {
             const ratingInfo = storeInfo.find(
@@ -207,8 +201,8 @@ export default function MyLike() {
     // function: like store review count and review rating //
     const getStoreInfo = () => {
         const accessToken = cookies[ACCESS_TOKEN];
-        if(!accessToken) return;
-        if(signInUser?.userId) {
+        if (!accessToken) return;
+        if (signInUser?.userId) {
             getMypageLikeStoreReviewNRatingRequest(signInUser?.userId, accessToken).then(getLikeStoreInfoResponse);
         }
     }
@@ -217,15 +211,15 @@ export default function MyLike() {
     const getLikeStoreInfoResponse = (responseBody: null | ResponseDto | getMypageLikeStoreReviewNRating) => {
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' : responseBody;
-        
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+                    responseBody.code === 'AF' ? '잘못된 접근입니다.' : responseBody;
+
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
             return;
         }
-        const {reviewNRatings} = responseBody as getMypageLikeStoreReviewNRating;
+        const { reviewNRatings } = responseBody as getMypageLikeStoreReviewNRating;
         setStoreInfo(reviewNRatings);
     }
 
@@ -245,14 +239,14 @@ export default function MyLike() {
 
         getStoreInfo();
         getStoreList();
-    }, [userId, storeList]);
+    }, [userId]);
 
     return (
         <div id='mypage-like-wrapper'>
             <div className='title'>찜한 가게</div>
             <div className='like-main'>
                 {
-                    storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList}/>)
+                    storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreList} />)
                 }
             </div>
         </div>

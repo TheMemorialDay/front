@@ -10,12 +10,6 @@ import { Tooltip, tooltipClasses, Zoom } from '@mui/material';
 
 export default function ShopMain() {
 
-  // function: 네비게이터 함수 //
-  const navigate = useNavigate();
-
-  // state: cookie 상태 //
-  const [cookies] = useCookies();
-
   // state: 가게 번호 경로 변수 상태 //
   const { storeNumber } = useParams();
   const [store, setStore] = useState<GetStoreResponseDto | null>(null);
@@ -23,9 +17,7 @@ export default function ShopMain() {
 
   // state: 가게 정보
   const [storeName, setStoreName] = useState<string>('');
-  const [storeTel, setStoreTel] = useState<string>('');
   const [storeAddress, setStoreAddress] = useState<string>('');
-  const [storeImageUrl, setStoreImageUrl] = useState<File | null>(null);
   const [storeIntroduce, setStoreIntroduce] = useState<string | null>('');
   const [storeParticular, setStoreParticular] = useState<string | null>('');
   const [storeContact, setStoreContact] = useState<string | null>('');
@@ -151,6 +143,5 @@ export default function ShopMain() {
       <hr className='hr' />
       <Outlet context={{ store }} />
     </div >
-
   )
 }

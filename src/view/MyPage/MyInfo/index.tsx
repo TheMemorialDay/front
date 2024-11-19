@@ -1,17 +1,28 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import { ACCESS_TOKEN, MY_PATH } from '../../../constants';
+import { ACCESS_TOKEN, MY_PATH, ROOT_ABSOLUTE_PATH } from '../../../constants';
 import useUserInfoZustand from '../../../stores/user-check-after-info.store';
 import { ResponseDto } from '../../../apis/dto/response';
 import { TelAuthCheckRequestDto, TelAuthRequestDto } from '../../../apis/dto/request/auth';
-import { patchUserInfoRequest, userInfoTelAuthCheckRequest, userInfoTelAuthReqeust } from '../../../apis';
+import { deleteUserRequest, getNewInfo, patchUserInfoRequest, userInfoTelAuthCheckRequest, userInfoTelAuthReqeust } from '../../../apis';
 import { PatchUserInfoRequestDto } from '../../../apis/dto/request/mypage_user_info';
 import { useCookies } from 'react-cookie';
+import { useSignInUserStore } from '../../../stores';
+import { GetNewInfo } from '../../../apis/dto/response/mypage_user_info';
 
 // component: 마이페이지 유저 정보 수정 컴포넌트 //
 export default function InfoUpdate() {
-    
+
+    const {signInUser} = useSignInUserStore();
+
+    const [userId, setUserId] = useState<string>('');
+    const [name, setName] = useState<string>('');
+    const [telNumber, setTelNumber] = useState<string>('');
+    const [gender, setGender] = useState<string>('');
+    const [birth, setBirth] = useState<string>('');
+    const [telAuthNumber, setTelAuthNumber] = useState<string>('');
+
     // state: 메시지 상태 //
     const [telMessage, setTelMessage] = useState<string>('');
     const [authMessage, setAuthMessage] = useState<string>('');
@@ -28,19 +39,15 @@ export default function InfoUpdate() {
     const [isSend, setSend] = useState<boolean>(false);
     const [isCheckedAuthNumber, setCheckedAuthNumber] = useState<boolean>(false);
 
-    // state: zustand 가져오기 //
-    const { userId, name, birth, gender, telNumber, telAuthNumber,
-        setUserId, setName, setBirth, setGender, setTelNumber, setTelAuthNumber } 
-        = useUserInfoZustand();
-
     // state: cookie //
-    const [cookies] = useCookies();
+    const [cookies, setCookie, removeCookie] = useCookies();
 
     // state: 전화번호 변경 유무 상태 //
     const [telUpdate, setTelUpdate] = useState<boolean>(false);
 
     // state: 새로 입력할 전화번호 상태 //
     const [newTelNumber, setNewTelNumber] = useState<string>('');
+
 
     // variable: 회원 수정 가능 상태 확인 //
     const isPossibleNoAuth = name && birth && gender && telNumber;
@@ -51,6 +58,28 @@ export default function InfoUpdate() {
 
     // function: 네비게이터 //
     const navigator = useNavigate();
+
+    // function: get new info response //
+    const getNewInfoResponse = (responseBody: null | ResponseDto | GetNewInfo) => {
+        const message = 
+            !responseBody ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+            responseBody.code === 'NI' ? '잘못된 접근입니다.' : '';
+        
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if(!isSuccessed) {
+            alert(message);
+            return;
+        }
+
+        const {name, telNumber, birth, gender} = responseBody as GetNewInfo;
+        setName(name);
+        setBirth(birth);
+        setTelNumber(telNumber);
+        setGender(gender);
+        console.log(name, birth, telNumber, gender);
+    }
 
     // function: 전화번호 인증 Response 처리 함수 //
     const telAuthResponse = (responseBody: ResponseDto | null) => {
@@ -113,23 +142,43 @@ export default function InfoUpdate() {
         navigator(MY_PATH);
     };
 
-    // Function: 전화번호 '-'넣는 함수 //
-    const displayFormattedPhoneNumber = (numbers: string) => {
-        if (numbers.length <= 3) {
-            return numbers;
-        } else if (numbers.length <= 7) {
-            return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-        } else {
-            return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(
-                7
-            )}`;
+    // function: 회원 탈퇴 Response 처리 함수 //
+    const deleteUserResponse = (responseBody: ResponseDto | null) => {
+        const message =
+            !responseBody ? '서버에 문제가 있습니다.' :
+                responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccessed) {
+            alert(message);
+            return;
         }
+        alert('탈퇴가 완료되었습니다.');
+        removeCookie(ACCESS_TOKEN, { path: ROOT_ABSOLUTE_PATH });
+        navigator(ROOT_ABSOLUTE_PATH);
+    };
+
+        // Function: 전화번호 '-'넣는 함수 //
+        const displayFormattedPhoneNumber = (numbers: string) => {
+            if (numbers.length <= 3) {
+                return numbers;
+            } else if (numbers.length <= 7) {
+                return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+            } else {
+                return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(
+                    7
+                )}`;
+            }
+        };
+
+    // event handler: 탈퇴 버튼 클릭 이벤트 핸들러 //
+    const onDeleteClickHandler = () => {
+        const isConfirm = window.confirm('정말로 탈퇴하시겠습니까?');
+        if (!isConfirm) return;
+        deleteUserRequest(accessToken).then(deleteUserResponse);
     };
 
     // event handler: 새로 입력하는 전화번호 상태 변경 핸들러 //
     const onNewTelNumberHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        // const { value } = event.target;
-        // setNewTelNumber(value);
         const numbersOnly = event.target.value.replace(/\D/g, "");
         if (numbersOnly.length <= 11) {
             setNewTelNumber(numbersOnly);
@@ -228,6 +277,7 @@ export default function InfoUpdate() {
             alert('정확하게 입력해주세요.');
             return;
         }
+        
         const requestBody: PatchUserInfoRequestDto = {
             name,
             gender,
@@ -237,6 +287,18 @@ export default function InfoUpdate() {
 
         patchUserInfoRequest(requestBody, accessToken).then(userUpdateCompletedResponse);
     }
+
+    // effect: 회원 정보 받기 //
+    useEffect(() => {
+        if (signInUser) {
+            setUserId(signInUser.userId);
+        }
+        const accessToken = cookies[ACCESS_TOKEN];
+        if(!accessToken || !signInUser) {
+            return;
+        }
+        getNewInfo(accessToken, signInUser.userId).then(getNewInfoResponse);
+    }, [signInUser]);
 
     // render: 마이페이지 개인 정보 수정 페이지 렌더링 //
     return (
@@ -272,7 +334,7 @@ export default function InfoUpdate() {
 
                 {isMatched1 && 
                 <>
-                    <div className='tel-auth-box'>
+                    <div className='tel-auth-box' style={{ marginTop: "10px"}}>
                         <input className='inputs2' placeholder='인증번호 4자리' value={telAuthNumber} onChange={onAuthNumberChangeHandler} />
                         <div className='send-button' onClick={onCheckClickHandler}>인증 확인</div>
                     </div>
@@ -281,8 +343,8 @@ export default function InfoUpdate() {
                 }
 
             </div>
-                <div className='button-container'>
-                    <div className='withdraw-button' onClick={() => alert('탈퇴 기능은 아직 구현되지 않았습니다')}>탈퇴</div>
+                <div className='button-container' style={{ marginTop: "100px"}}>
+                <div className='withdraw-button' onClick={onDeleteClickHandler}>탈퇴</div>
                 <div className='cancel-update-button'>
                     <div className='cancel-button' onClick={onCancelClickHandler}>취소</div>
                     <div className='update-button' onClick={onEditClickHandler}>수정</div>

@@ -68,12 +68,9 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     if (checked) {
       await onStoreLikeDeleteButtonClickHandler();
       store.likeList = store.likeList.filter(id => id !== userId); // 좋아요 삭제
-      console.log('좋아요 삭제');
     } else if (!checked && userId !== undefined) {
       await onStoreLikeAddButtonClickHandler();
       store.likeList.push(userId); // 좋아요 추가
-      console.log('좋아요 추가');
-
     }
   };
 
@@ -86,7 +83,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
 
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) {
-      console.log('토큰 오류');
       return;
     }
 
@@ -560,9 +556,6 @@ export default function Stores() {
     else setSortType(value);
   };
 
-  // effect: 로드시 상점 리스트 불러오기 함수 //
-  useEffect(getStoreLists, []);
-
   // effect: 조건 변경시 실행할 함수 //
   useEffect(() => {
 
@@ -671,6 +664,7 @@ export default function Stores() {
   }, [selectedTag, selectedThemes, selectedWeekdays, selectedGugun, selectedDong, productToday, sortType, originalList.current]);
 
   //* 스토어 메인 화면 벗어날 시 필터링 상태들 초기화 & 검색어 존재 시 검색 이벤트 호출
+  // effect: 로드시 상점 리스트 불러오기 함수 //
   // todo: 실제 배포시 삭제 //
   let flag = false;
   useEffect(() => {
@@ -680,8 +674,12 @@ export default function Stores() {
       return;
     }
 
-    if (mainSearch) onStoresSearchClickHandler();
-    
+    if (mainSearch) {
+      onStoresSearchClickHandler();
+    } else {
+      getStoreLists();
+    }
+
     return () => initStoreSearch();
   }, []);
 
@@ -851,16 +849,6 @@ export default function Stores() {
             storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreLists} />)
           }
         </div>
-
-        {/* <div className='store-bottom'>
-            <Pagination
-              pageList={pageList}
-              currentPage={currentPage}
-              onPageClickHandler={onPageClickHandler}
-              onPreSectionClickHandler={onPreSectionClickHandler}
-              onNextSectionClickHandler={onNextSectionClickHandler}
-            />
-          </div> */}
 
       </div>
     </div >

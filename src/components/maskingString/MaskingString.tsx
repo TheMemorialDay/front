@@ -1,6 +1,5 @@
 import React from 'react';
 
-
     const maskString = (str: string): string => {
         if (str.length <= 4) return str; // 2길이가 4 이하일 때는 마스킹할 필요가 없음
         const start = str.slice(0, 2); // 앞 2글자

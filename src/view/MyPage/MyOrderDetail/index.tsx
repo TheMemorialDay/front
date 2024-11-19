@@ -1,25 +1,21 @@
 import React, { ChangeEvent, KeyboardEventHandler, useEffect, useRef, useState } from 'react'
 import './style.css';
-import { FaRegStar, FaStar } from 'react-icons/fa';
-import styled from "styled-components";
-import { useOrderReject, useSignInUserStore } from '../../../stores';
+import { useSignInUserStore } from '../../../stores';
 import { Autocomplete, Rating, TextField } from '@mui/material';
 import { RequestPayParams, RequestPayResponse } from '../../../types/portone';
 import { useCookies } from 'react-cookie';
-import { ACCESS_TOKEN } from '../../../constants';
+import { ACCESS_TOKEN, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../../constants';
 import { PostPayMentRequestDto } from '../../../apis/dto/request';
 import { fileUploadRequest, getOrderDetailRequest, patchOrderStatusRequest, postPayMentRequest, postReviewRequest } from '../../../apis';
 import { ResponseDto } from '../../../apis/dto/response';
-import GetOrderDetailResponseDto from '../../../apis/dto/response/get-order-detail-response-dto';
 import GetOrderDetailListResponseDto from '../../../apis/dto/response/get-order-detail-list.response.dto';
-import { NewOrderDetailsProps, OrderDetailsProps } from '../../../types';
+import { NewOrderDetailsProps} from '../../../types';
 import PatchOrderStatusReqeustDto from '../../../apis/dto/request/order/patch-order-status-request.dto';
-import { Console } from 'console';
 import { PostReviewRequestDto } from '../../../apis/dto/request/review';
+import { useNavigate } from 'react-router-dom';
 
 // interface: 주문 내역 컴포넌트 Properties //
 interface OrderDetailProps {
-    //orderdetail: OrderDetailsProps,
     orderdetail: NewOrderDetailsProps,
     getOrderDetailList: () => void;
 };
@@ -35,9 +31,6 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     const [orderStatus, setOrderStatus] = useState<OrderStatus>(orderdetail.orderStatus as OrderStatus);
 
     const { signInUser } = useSignInUserStore();
-    // const [userId, setUserId] = useState<string>('');
-    // // const [userName, setUserName] = useState<string>('');
-    // const [orderTime, setOrderTime] = useState<string>('');
     const [cancelCode, setCancelCode] = useState<string>('');
     const [cancelReason, setCancelReason] = useState<string>('');
 
@@ -123,6 +116,9 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         return new Intl.NumberFormat('en-US').format(number);
     }
 
+    // function: navigator //
+    const navigator = useNavigate();
+
     // function: patch orderstatus response 처리 함수 //
     const patchOrderStatusResponse = (responseBody: ResponseDto | null) => {
 
@@ -164,6 +160,11 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             alert("이미지 파일이 없습니다.");
             return;
         }
+    }
+
+    // event handler: 가게 이름 클릭 이벤트 핸들러 //
+    const onClickStoreNumber = (number: number | string) => {
+        navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH(number));
     }
 
     // component: 승인 대기중 //
@@ -341,7 +342,6 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     }
 
         // component: 별 표기 //
-
         return (
             <>
                 <div className='write-review' onClick={() => setModalOpen(true)}>리뷰 쓰기</div>
@@ -431,7 +431,10 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                             <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail.productImageUrl})` }}></div>
                         </div>
                         <div className="order-details">
-                            <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
+                            <p style={{display:"flex", flexDirection: "row", alignItems: "center", gap: "10px"}}>
+                                <div className="order-product" onClick={() => onClickStoreNumber(orderdetail.storeNumber)}>{(orderdetail.storeName).split(",")[1]}</div>
+                                <div>- {orderdetail.productName}</div> 
+                            </p>
                             <div className="order-productCategory-productContents">
                                 <div>옵션: 
                                     {options.map((option, index) => (

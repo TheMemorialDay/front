@@ -29,6 +29,11 @@ Auth 모듈은 인증 없이 요청할 수 있습니다.
 
 ##### Request
 
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
 ###### Request Body
 
 | name | type | description | required |
@@ -67,7 +72,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/sign-in" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success.",
@@ -80,7 +84,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
@@ -91,7 +94,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SF",
   "message": "Sign in failed."
@@ -102,7 +104,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "TCF",
   "message": "Token creation failed."
@@ -113,7 +114,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -136,6 +136,11 @@ Content-Type: application/json;charset=UTF-8
 
 ##### Request
 
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
 ###### Request Body
 
 | name | type | description | required |
@@ -148,7 +153,7 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-first" \
  -d "name=홍길동"\
- -d "telNumber=01011112222"\
+ -d "telNumber=01011112222"
 ```
 
 ##### Response
@@ -172,7 +177,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-first" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -183,18 +187,16 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
 }
 ```
 
-**응답 : 실패 (존재하지 않는 정보)**
+**응답 실패 (존재하지 않는 정보)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "NF",
   "message": "No exist info."
@@ -205,7 +207,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "TF",
   "message": "Auth number send failed."
@@ -216,7 +217,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -238,6 +238,11 @@ Content-Type: application/json;charset=UTF-8
 - end point : **/id-search-middle**  
 
 ##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
 
 ###### Request Body
 
@@ -275,7 +280,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-middle" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -286,18 +290,16 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
 }
 ```
 
-**응답 : 실패 (전화번호 인증 실패)**
+**응답 실패 (전화번호 인증 실패)**
 ```bash
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "TAF",
   "message": "Tel number authentication failed."
@@ -308,7 +310,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -330,6 +331,11 @@ Content-Type: application/json;charset=UTF-8
 - end point : **/id-search-result**  
 
 ##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
 
 ###### Request Body
 
@@ -372,7 +378,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/id-search-result" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -383,7 +388,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
@@ -394,7 +398,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "NF",
   "message": "No exist info."
@@ -405,7 +408,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "TAF",
   "message": "Tel number authentication failed."
@@ -416,7 +418,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -439,6 +440,11 @@ Content-Type: application/json;charset=UTF-8
 
 ##### Request
 
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
 ###### Request Body
 
 | name | type | description | required |
@@ -451,7 +457,7 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 curl -v -X POST "http://localhost:4000/api/v1/auth/password-search" \
  -d "userId=qwer1234"\
- -d "telNumber=01011112222"\
+ -d "telNumber=01011112222"
 ```
 
 ##### Response
@@ -475,7 +481,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/password-search" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -486,18 +491,16 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
 }
 ```
 
-**응답 : 실패 (존재하지 않는 정보)**
+**응답 실패 (존재하지 않는 정보)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "NI",
   "message": "No exist info."
@@ -508,7 +511,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "TF",
   "message": "Auth number send failed."
@@ -519,7 +521,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -541,6 +542,11 @@ Content-Type: application/json;charset=UTF-8
 - end point : **/password-search-tel-auth-check**  
 
 ##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
 
 ###### Request Body
 
@@ -578,7 +584,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/password-search-tel-auth-chec
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -589,18 +594,16 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
 }
 ```
 
-**응답 : 실패 (전화번호 인증 실패)**
+**응답 실패 (전화번호 인증 실패)**
 ```bash
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "TAF",
   "message": "Tel number authentication failed."
@@ -611,7 +614,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -633,6 +635,11 @@ Content-Type: application/json;charset=UTF-8
 - end point : **/password-search-final**  
 
 ##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
 
 ###### Request Body
 
@@ -672,7 +679,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/password-search-final" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -683,29 +689,26 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
 }
 ```
 
-**응답 : 실패 (전화번호 인증 실패)**
+**응답 실패 (전화번호 인증 실패)**
 ```bash
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "TAF",
   "message": "Tel number authentication failed."
 }
 ```
 
-**응답 : 실패 (존재하지 않는 정보)**
+**응답 실패 (존재하지 않는 정보)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "NI",
   "message": "No exist info."
@@ -716,7 +719,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -739,16 +741,22 @@ Content-Type: application/json;charset=UTF-8
 
 ##### Request
 
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
 ###### Request Body
 
 | name | type | description | required |
+|---|:---:|:---:|:---:|
 | password | String | 사용자의 비밀번호 (8~13자의 영문 + 숫자) | O |
 
 ###### Example
 
 ```bash
 curl -v -X PATCH "http://localhost:4000/api/v1/auth/password-resetting" \
-  -d "password=P!ssw0rd"\
+  -d "password=P!ssw0rd"
 ```
 
 ##### Response
@@ -772,7 +780,6 @@ curl -v -X PATCH "http://localhost:4000/api/v1/auth/password-resetting" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -783,7 +790,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
@@ -794,7 +800,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DP",
   "message": "Duplicated password."
@@ -805,7 +810,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -823,7 +827,12 @@ Content-Type: application/json;charset=UTF-8
 
 ##### Request
 
-###### Path Variable
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
+
+###### Request Body
 
 | name | type | description | required |
 |---|:---:|:---:|:---:|
@@ -832,7 +841,7 @@ Content-Type: application/json;charset=UTF-8
 ###### Example
 
 ```bash
-curl -X POST "http://localhost:4000/api/v1/auth/sns-sign-in/{kakao}" 
+curl -X POST "http://localhost:4000/api/v1/auth/sns-sign-in/kakao" 
 ```
 
 ##### Response
@@ -863,6 +872,11 @@ Location: http://localhost:3000/auth?snsId=${snsId}&joinPath=${joinPath}
 - end point : **/id-check**  
 
 ##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
 
 ###### Request Body
 
@@ -898,7 +912,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/id-check" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -909,18 +922,16 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
 }
 ```
 
-**응답 : 실패 (중복된 아이디)**
+**응답 실패 (중복된 아이디)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DI",
   "message": "Duplicated user id."
@@ -931,7 +942,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -953,6 +963,11 @@ Content-Type: application/json;charset=UTF-8
 - URL : **/tel-auth**  
 
 ##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
 
 ###### Request Body
 
@@ -988,7 +1003,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/tel-auth" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -999,18 +1013,16 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
 }
 ```
 
-**응답 : 실패 (중복된 전화번호)**
+**응답 실패 (중복된 전화번호)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DT",
   "message": "Duplicated user tel number."
@@ -1021,7 +1033,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "TF",
   "message": "Auth number send failed."
@@ -1032,7 +1043,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -1054,6 +1064,11 @@ Content-Type: application/json;charset=UTF-8
 - end point : **/tel-auth-check**  
 
 ##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
 
 ###### Request Body
 
@@ -1091,7 +1106,6 @@ curl -v -X POST "http://localhost:4000/api/v1/auth/tel-auth-check" \
 ```bash
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "SU",
   "message": "Success."
@@ -1102,18 +1116,16 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "VF",
   "message": "Validation failed."
 }
 ```
 
-**응답 : 실패 (전화번호 인증 실패)**
+**응답 실패 (전화번호 인증 실패)**
 ```bash
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "TAF",
   "message": "Tel number authentication failed."
@@ -1124,7 +1136,6 @@ Content-Type: application/json;charset=UTF-8
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8
-
 {
   "code": "DBE",
   "message": "Database error."
@@ -1147,6 +1158,11 @@ Content-Type: application/json;charset=UTF-8
 - URL : **/sign-up**  
 
 ##### Request
+
+###### Header
+
+| name | description | required |
+|---|:---:|:---:|
 
 ###### Request Body
 
@@ -1203,7 +1219,7 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (데이터 유효성 검사 실패)**
+**응답 실패 (데이터 유효성 검사 실패)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
@@ -1213,7 +1229,7 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (중복된 아이디)**
+**응답 실패 (중복된 아이디)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
@@ -1223,7 +1239,7 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (중복된 전화번호)**
+**응답 실패 (중복된 전화번호)**
 ```bash
 HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
@@ -1233,7 +1249,7 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (전화번호 인증 실패)**
+**응답 실패 (전화번호 인증 실패)**
 ```bash
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
@@ -1243,696 +1259,7 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-**응답 : 실패 (데이터베이스 에러)**
-```bash
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "DBE",
-  "message": "DataBase Error"
-}
-```
-
-***
-  
-<h2 style='background-color: rgba(55, 55, 55, 0.2); text-align: center'>회원 정보 수정 모듈</h2>
-
-The Memorial Day 서비스의 회원 정보 수정과 관련된 REST API 모듈입니다.  
-회원 정보 수정 모듈은 비밀번호 확인 후 수행할 수 있습니다.
-  
-- url : /mypage/userInfo
-
-***
-
-#### - (회원정보 수정화면에 진입 시) 비밀번호 확인
-  
-##### 설명
-
-클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
-사용자는 본인의 비밀번호를 입력하고 본인임을 인증해야 합니다.
-만약 비밀번호가 데이터베이스에 입력된 값과 다른 경우 원래 입력된 값과 다름에 대한 응답을 받습니다.  
-성공할 경우 개인정보를 불러옵니다.  
-네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.  
-
-- method : **POST**  
-- URL : **/password-check**  
-
-##### Request
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Authorization | Bearer 토큰 인증 헤더 | O |
-
-###### Request Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
-
-###### Example
-
-```bash
-curl -v -X POST "http://localhost:4000/api/v1/mypage/userInfo/password-check" \
- -h "Authorization=Bearer XXXX" \
- -d "password=qwer1234"
-```
-
-##### Response
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
-
-###### Response Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| code | String | 결과 코드 | O |
-| message | String | 결과 코드에 대한 설명 | O |
-| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
-| name | string | 사용자 이름 | O |
-| birth | String | 사용자의 생년월일(yyyymmdd) | O |
-| gender | String | 사용자의 성별(남/녀) | O |
-| telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
-
-###### Example
-
-**응답 성공**
-```bash
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "SU",
-  "message": "Success",
-  "password": "qwer1234",
-  "name": "홍길동",
-  "birth": "990303",
-  "gender": "남",
-  "telNumber": "01012123232"
-}
-```
-
-**응답 실패 (비밀번호 불일치)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "VF",
-  "message": "Validation failed."
-}
-```
-
-**응답 : 실패 (인증 실패)**
-```bash
-HTTP/1.1 401 Unauthorized
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "AF",
-  "message": "Authentication fail."
-}
-```
-
-**응답 : 실패 (존재하지 않는 회원)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "NU",
-  "message": "No exist user."
-}
-```
-
-**응답 : 실패 (데이터베이스 에러)**
-```bash
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "DBE",
-  "message": "DataBase Error"
-}
-```
-
-***
-
-#### - 전화번호 인증 (회원정보 수정)  
-  
-##### 설명
-
-클라이언트는 숫자로만 이루어진 11자리 전화번호를 입력하여 요청하고 이미 사용중인 전화번호인지 확인 후 4자리의 인증번호를 해당 전화번호에 문자를 전송합니다.  
-인증번호가 정상적으로 전송이 된다면 성공 응답을 받습니다.  
-만약 중복된 전화번호를 입력한다면 중복된 전화번호에 해당하는 응답을 받게됩니다.  
-네트워크 에러, 서버 에러, 데이터베이스 에러, 문자 전송 실패가 발생할 수 있습니다.  
-
-- method : **POST**  
-- URL : **/tel-auth**  
-
-##### Request
-
-###### Request Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| telNumber | String | 인증 번호를 전송할 사용자의 전화번호 (11자리 숫자) | O |
-
-###### Example
-
-```bash
-curl -v -X POST "http://localhost:4000/api/v1/mypage/userInfo/tel-auth" \
- -d "telNumber=01011112222"
-```
-
-##### Response
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
-
-###### Response Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| code | String | 결과 코드 | O |
-| message | String | 결과 코드에 대한 설명 | O |
-
-###### Example
-
-**응답 성공**
-```bash
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "SU",
-  "message": "Success."
-}
-```
-
-**응답 실패 (데이터 유효성 검사 실패)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "VF",
-  "message": "Validation failed."
-}
-```
-
-**응답 : 실패 (중복된 전화번호)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "DT",
-  "message": "Duplicated user tel number."
-}
-```
-
-**응답 실패 (인증번호 전송 실패)**
-```bash
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "TF",
-  "message": "Auth number send failed."
-}
-```
-
 **응답 실패 (데이터베이스 에러)**
-```bash
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "DBE",
-  "message": "Database error."
-}
-```
-
-***
-
-#### - 전화번호, 인증번호 확인 (회원정보 수정)  
-  
-##### 설명
-
-클라이언트는 사용자 전화번호와 인증번호를 입력하여 요청하고 해당하는 전화번호와 인증번호가 서로 일치하는지 확인합니다.  
-일치한다면 성공에 대한 응답을 받습니다.  
-만약 일치하지 않는 다면 전화번호 인증 실패에 대한 응답을 받습니다.  
-네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.  
-
-- method : **POST**  
-- end point : **/tel-auth-check**  
-
-##### Request
-
-###### Request Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| telNumber | String | 인증 번호를 확인할 사용자 전화번호 | O |
-| telAuthNumber | String | 인증 확인에 사용할 인증 번호 | O |
-
-###### Example
-
-```bash
-curl -v -X POST "http://localhost:4000/api/v1/mypage/userInfo/tel-auth-check" \
- -d "telNumber=01011112222" \
- -d "telAuthNumber=1234"
-```
-
-##### Response
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Content-Type | 반환되는 Response Body의 Content type (application/json) | O |
-
-###### Response Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| code | String | 결과 코드 | O |
-| message | String | 결과 코드에 대한 설명 | O |
-
-###### Example
-
-**응답 성공**
-```bash
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "SU",
-  "message": "Success."
-}
-```
-
-**응답 실패 (데이터 유효성 검사 실패)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "VF",
-  "message": "Validation failed."
-}
-```
-
-**응답 : 실패 (전화번호 인증 실패)**
-```bash
-HTTP/1.1 401 Unauthorized
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "TAF",
-  "message": "Tel number authentication failed."
-}
-```
-
-**응답 실패 (데이터베이스 에러)**
-```bash
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "DBE",
-  "message": "Database error."
-}
-```
-
-***
-
-#### - 개인 정보 수정 (전화번호 없이)
-  
-##### 설명
-
-클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
-이름, 생년월일, 비밀번호, 성별을 입력하여 요청하고 수정이 성공적으로 이루어지면 성공에 대한 응답을 받습니다.  
-유효하지 않은 값이나 빈 값이 있을 경우 실패에 대한 응답을 받습니다.    
-네트워크 에러, 서버 에러, 데이터베이스 에러가 발생할 수 있습니다.   
-
-- method : **PATCH**  
-- URL : **/patch-info**  
-
-##### Request
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Authorization | Bearer 토큰 인증 헤더 | O |
-
-###### Request Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
-| name | string | 사용자 이름 | O |
-| birth | String | 사용자의 생년월일(yyyymmdd) | O |
-| gender | String | 사용자의 성별(남/녀) | O |
-
-
-###### Example
-
-```bash
-curl -v -X PATCH "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
- -h "Authorization=Bearer XXXX" \
- -d "password=qwer1234" \
- -d "name=홍길동" \
- -d "birth=010101" \
- -d "gender=남" \
-```
-
-##### Response
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
-
-###### Response Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| code | String | 결과 코드 | O |
-| message | String | 결과 코드에 대한 설명 | O |
-
-###### Example
-
-**응답 성공**
-```bash
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "SU",
-  "message": "Success"
-}
-```
-
-**응답 실패 (데이터 유효성 검사 실패)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-
-{
-  "code": "VF",
-  "message": "Validation failed."
-}
-```
-
-**응답 : 실패 (데이터베이스 에러)**
-```bash
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "DBE",
-  "message": "DataBase Error"
-}
-```
-
-***
-
-#### - 개인 정보 수정 (전화번호 포함)
-  
-##### 설명
-
-클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
-이름, 생년월일, 비밀번호, 성별, 전화번호, 전화번호 인증번호를 입력하여 요청하고 수정이 성공적으로 이루어지면 성공에 대한 응답을 받습니다.  
-만약 유효하지 않은 값, 빈 값, 인증에 실패할 경우 실패에 대한 응답을 받습니다.    
-네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.   
-
-- method : **PATCH**  
-- URL : **/patch-info**  
-
-##### Request
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Authorization | Bearer 토큰 인증 헤더 | O |
-
-###### Request Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| password | string | 사용자 비밀번호(8-13자의 영문 + 숫자) | O |
-| name | string | 사용자 이름 | O |
-| birth | String | 사용자의 생년월일(yyyymmdd) | O |
-| gender | String | 사용자의 성별(남/녀) | O |
-| telNumber | String | 사용자의 전화번호(11자의 숫자) | O |
-| telAuthNumber | String | 전화번호 인증번호 | O |
-
-
-###### Example
-
-```bash
-curl -v -X PATCH "http://localhost:4000/api/v1/mypage/userInfo/qwer1234" \
- -h "Authorization=Bearer XXXX" \
- -d "password=qwer1234" \
- -d "name=홍길동" \
- -d "birth=010101" \
- -d "gender=남" \
- -d "telNumber=01012123456" \
- -d "telAuthNumber=5678"
-```
-
-##### Response
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
-
-###### Response Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| code | String | 결과 코드 | O |
-| message | String | 결과 코드에 대한 설명 | O |
-
-###### Example
-
-**응답 성공**
-```bash
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "SU",
-  "message": "Success"
-}
-```
-
-**응답 실패 (데이터 유효성 검사 실패)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-
-{
-  "code": "VF",
-  "message": "Validation failed."
-}
-```
-
-**응답 : 실패 (존재하지 않는 고객)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-
-{
-  "code": "NU",
-  "message": "No exist user."
-}
-```
-
-**응답 : 실패 (인증 실패)**
-```bash
-HTTP/1.1 401 Unauthorized
-Content-Type: application/json;charset=UTF-8
-
-{
-  "code": "AF",
-  "message": "Authentication fail."
-}
-```
-
-**응답 : 실패 (데이터베이스 에러)**
-```bash
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "DBE",
-  "message": "DataBase Error"
-}
-```
-
-<hr>
-
-#### - 로그인 유저 정보 불러오기
-  
-##### 설명
-
-클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
-로그인한 유저의 이름, 권한, 전화번호, 사장일 경우에는 가게 번호를 요청할 수 있으며 성공 시 성공에 대한 응답을 받습니다. 데이터베이스 에러가 발생할 수 있습니다.
-
-- method : **GET**  
-- URL : **/get-sign-in**  
-
-##### Request
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Authorization | Bearer 토큰 인증 헤더 | O |
-
-###### Request Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-
-
-###### Example
-
-```bash
-curl -v -X GET "http://localhost:4000/api/v1/get-sign-in" \
- -h "Authorization=Bearer XXXX" 
-```
-
-##### Response
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
-
-###### Response Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| code | String | 결과 코드 | O |
-| message | String | 결과 코드에 대한 설명 | O |
-| userId | String | 로그인한 유저의 아이디 | O |
-| name | String | 로그인한 유저의 이름 | O |
-| telNumber | String | 로그인한 유저의 전화번호 | O |
-| permission | String | 로그인한 유저의 권한 | O |
-| storeNumber | Integer | 로그인한 유저가 사장일 경우, 가게 번호 | X |
-
-###### Example
-
-**응답 성공**
-```bash
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "SU",
-  "message": "Success",
-  "userId": "qwer1234",
-  "name": "홍길동",
-  "telNumber": "01012345678",
-  "permission": "사장",
-  "storeNumber": 1
-}
-```
-
-
-**응답 : 실패 (존재하지 않는 고객)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-
-{
-  "code": "NU",
-  "message": "No exist user."
-}
-```
-
-**응답 : 실패 (인증 실패)**
-```bash
-HTTP/1.1 401 Unauthorized
-Content-Type: application/json;charset=UTF-8
-
-{
-  "code": "AF",
-  "message": "Authentication fail."
-}
-```
-
-**응답 : 실패 (데이터베이스 에러)**
-```bash
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "DBE",
-  "message": "DataBase Error"
-}
-```
-
-***
-
-#### - 회원 탈퇴
-  
-##### 설명
-
-클라이언트는 요청 헤더에 Bearer 인증 토큰을 포함해야 합니다.
-탈퇴 버튼을 눌러 탈퇴를 요청합니다.    
-요청에 성공한 경우 성공에 대한 응답을 받습니다.  
-실패할 경우 실패에 대한 응답을 받습니다.      
-네트워크 에러, 서버 에러, 인증 실패, 데이터베이스 에러가 발생할 수 있습니다.   
-
-- method : **DELETE**  
-- URL : **/delete-user/me**  
-
-##### Request
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Authorization | Bearer 토큰 인증 헤더 | O |
-
-##### Response
-
-###### Header
-
-| name | description | required |
-|---|:---:|:---:|
-| Content-Type | 반환되는 Response Body의 Content Type (application/json) | O |
-
-###### Response Body
-
-| name | type | description | required |
-|---|:---:|:---:|:---:|
-| code | String | 결과 코드 | O |
-| message | String | 결과 코드에 대한 설명 | O |
-
-###### Example
-
-**응답 성공**
-```bash
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-{
-  "code": "SU",
-  "message": "Success"
-}
-```
-
-**응답 : 실패 (존재하지 않는 고객)**
-```bash
-HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-
-{
-  "code": "NU",
-  "message": "No exist user."
-}
-```
-
-**응답 : 실패 (데이터베이스 에러)**
 ```bash
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json;charset=UTF-8

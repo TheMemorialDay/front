@@ -65,6 +65,14 @@
   margin-bottom: 3px;
 }
 
+.order-product {
+  cursor: pointer;
+}
+
+.order-product:hover {
+  text-decoration: underline;
+}
+
 .order-productCategory-productContents {
   display: flex;
   flex: row;

@@ -17,11 +17,11 @@
     align-items: center;
     flex-direction: column;
     margin-top: 20px;
-    overflow: auto;
+    /* overflow: auto;
     overflow-y: scroll;
-    max-height: 1400px;
+    max-height: 1400px; */
     width: 100%;
-    scrollbar-width: none;
+    /* scrollbar-width: none; */
 }
 
 #my-store .store-manage::-webkit-scrollbar {
@@ -30,7 +30,6 @@
 
 #my-store .inputs1 {
     width: 380px;
-    height: 40px;
     border-radius: 6px;
     border: 1px solid darkgray;
     padding: 15px 10px;
@@ -81,11 +80,11 @@
 #my-store .detailed-intro {
     font-family: 'Pretendard';
     width: 380px;
-    height: 200px;
+    height: 100px;
     resize: none;
     border-radius: 6px;
     border: 1px solid darkgray;
-    padding: 15px 10px;
+    padding: 10px 10px;
     margin: 10px 0;
     overflow: hidden;
 }
@@ -133,7 +132,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
 #my-store .cancel-button,
@@ -212,4 +211,14 @@
 
     background-size: cover;
     background-position: 50% 50%;
+}
+
+#my-store .option-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-right: 40px;
+
+    display: flex;
+
+    align-items: center;
 }

@@ -20,6 +20,14 @@
   align-self: flex-start;
 }
 
+.order-product {
+  cursor: pointer;
+}
+
+.order-product:hover {
+  text-decoration: underline;
+}
+
 .my-order-list {
   display: flex;
   flex-direction: column;

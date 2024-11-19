@@ -1,6 +1,3 @@
-// src/apis/dto/response/product/get-product-list-response.dto.ts
-
-import {Product} from "../../../../types"; // Product 인터페이스 import
 import ResponseDto from "../response.dto";
 
 export interface ProductResponse {

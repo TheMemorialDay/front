@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react'
 import './style.css';
 import ReviewComponent from '../../../components/review';
 import { useNavigate } from 'react-router-dom';
-import { ACCESS_TOKEN, LOGIN_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../../constants';
+import { ACCESS_TOKEN, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../../constants';
 import { useSignInUserStore } from '../../../stores';
 import { useCookies } from 'react-cookie';
 import { getMyReviewListRequest } from '../../../apis';
 import { ResponseDto } from '../../../apis/dto/response';
 import { GetMyReviewListResponseDto } from '../../../apis/dto/response/mypage-review';
 import MyReviews from '../../../apis/dto/response/mypage-review/my-reivew';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 
 // component: 마이페이지 리뷰 컴포넌트 //
@@ -22,7 +21,6 @@ export default function MyReview() {
     // state: 마우스 상태 //
     const [startX, setStartX] = useState(0);
     const [isDraggingLeft, setIsDraggingLeft] = useState(false);
-
     const [myReviewList, setMyReviewList] = useState<MyReviews[]>([]);
 
     // function: 네비게이터 //

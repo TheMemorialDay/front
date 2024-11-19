@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router';
 import { ST_ABSOLUTE_CONTACT_DETAIL_PATH, ST_ABSOLUTE_INFORMATION_DETAIL_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH, ST_ABSOLUTE_REVIEW_DETAIL_PATH } from '../../../constants';
 import './style.css';
-import ShopMain from '../../../components/Shopinformation';
 import ReviewComponent from '../../../components/review';
 import { GetReviewListResponseDto, GetStoreResponseDto } from '../../../apis/dto/response/stores';
 import { getReviewListRequest } from '../../../apis';
@@ -75,12 +74,10 @@ export default function ShopReview() {
   //* 커스텀 훅 가져오기
   const {
     currentPage,
-    totalPage,
     totalCount,
     viewList,
     pageList,
     setTotalList,
-    initViewList,
     onPageClickHandler,
     onPreSectionClickHandler,
     onNextSectionClickHandler,
@@ -89,10 +86,7 @@ export default function ShopReview() {
   // effect: 가게 리뷰 리스트 불러오기 //
   useEffect(getReviewList, []);
 
-//   useEffect(() => {
-//     initViewList(totalList);
-// }, [currentPage]);
-
+  // render: 가게별 리뷰 리스트 렌더링 //
   return (
     <div id='store-detail-wrapper'>
       <div className='menu-bar-review'>
