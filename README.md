@@ -45,7 +45,7 @@
 ## 폴더 구조
 
 프로젝트의 주요 폴더 구조는 다음과 같습니다:
-FRONT/ 
+FRONT/  
   ┣ .vscode/ # VSCode 설정 파일들  
   ┣ API 설계서 모음/ # API 설계서 문서들이 포함된 폴더  
   ┣ images/ # README에 사용될 이미지 파일들   
@@ -79,13 +79,11 @@ FRONT/
 
 ## 설치 및 실행
 
-### 로컬 환경에서 실행
-
-#### 필수 조건
+### 필수 조건
 - Node.js (최소 v20.16.0)
 - npm
 
-#### 설치 단계
+### 설치 단계
 1. 저장소 클론
    ```bash
    git clone https://github.com/TheMemorialDay/front.git
@@ -111,10 +109,6 @@ FRONT/
    npm run start
 
 5. 웹 브라우저에서 http://localhost:3000 열기
-
-### 로컬 아닌 환경에서 실행
-1. [ip주소] 이동
-
 
 ---
 
@@ -142,7 +136,7 @@ The Memorial Day가 제공하는 주요 기능입니다.
  4. 상점 전체 매출 확인 기능
 
 The Memorial Day 서비스 시연 영상입니다.
-[![The Memorial Day 서비스 시연 영상](/images/cat.jpg)](https://www.youtube.com/watch?v=z0FtjE9dVl0)
+[![The Memorial Day 서비스 시연 영상](/images/fullshot.JPG)](https://www.youtube.com/watch?v=z0FtjE9dVl0)
 
 ---
 
@@ -165,15 +159,15 @@ The Memorial Day 서비스 시연 영상입니다.
       <td>로그인 및 회원가입, 아이디 및 비밀번호 찾기, 회원 탈퇴 및 수정, 필터링 및 검색, 인기 키워드</td>
     </tr>
     <tr>
-      <td style="text-align: center width: 20%;">송태휘</td>
+      <td style="text-align: center; width: 20%;">송태휘</td>
       <td>가게 등록 및 수정, 가게 상세 조회 페이지(가게 프로필 조회, 지도), 찜 관리, 필터링 및 검색, 인기 키워드, 결제</td>
     </tr>
     <tr>
-      <td style="text-align: center width: 20%;">정호정</td>
+      <td style="text-align: center; width: 20%;">정호정</td>
       <td>사업자 등록, 가게 상세 조회(상품 리스트, 리뷰 리스트), 주문서(상품 정보 조회), 리뷰 작성 및 조회, 찜 관리, 공지사항 및 QnA</td>
     </tr>
     <tr>
-      <td style="text-align: center width: 20%;">김도연</td>
+      <td style="text-align: center; width: 20%;">김도연</td>
       <td>상품(테마 및 옵션 포함) CUD, 주문 등록, 매출 관리, 메인 페이지(상단 Navi, footer, how, 상단 이동 버튼, Gem Ai), 마이페이지</td>
     </tr>
   </tbody>
