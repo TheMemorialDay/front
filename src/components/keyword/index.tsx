@@ -111,10 +111,9 @@ const KeywordCloud = () => {
         colors: Array.from({ length: 100 }, () => getRandomColor()),
         enableTooltip: false,
         deterministic: true,
-        fontFamily: 'Montserrat',
+        fontFamily: '양진체',
         fontSizes: [40, 130],
         fontStyle: 'normal',
-        // fontWeight: 'normal',
         padding: 3,
         rotations: 0, // 회전
         rotationAngles: [0, 10],

@@ -18,8 +18,6 @@ export default interface OrderDetailsProps {
     cancelReason: string | null;
     optionSelect: string;
     photoUrl?: string;
-    // name: string;
-    // telNumber: string;
 
     // options 필드 추가
     options: Array<{

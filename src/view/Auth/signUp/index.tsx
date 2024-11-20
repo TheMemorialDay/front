@@ -24,9 +24,6 @@ export default function SignUp() {
     const [idMsgBool, setIdMsgBool] = useState<boolean>(false);
     const [idMessage, setIdMessage] = useState<string>('');
 
-    // state: 성별 상태 //
-    const [gender, setGender] = useState<string>('');
-
     // state: 생일 관련 변수 상태 //
     const [birth, setBirth] = useState<string>('');
     const [birthMessage, setBirthMessage] = useState<string>('');
@@ -56,7 +53,6 @@ export default function SignUp() {
     // state: 전화번호 인증 재전송 상태 //
     const [isMatched3, setIsMatched3] = useState<boolean>(false);
 
-
     // state: 입력값 검증 상태 //
     const [isCheckId, setCheckId] = useState<boolean>(false);
     const [isSend, setSend] = useState<boolean>(false);
@@ -76,9 +72,6 @@ export default function SignUp() {
     });
     const [showServiceTerms, setShowServiceTerms] = useState(false);
     const [showPrivacyTerms, setShowPrivacyTerms] = useState(false);
-
-    // variable: SNS 회원가입 여부 //
-    const isSnsSignUp = snsId !== null && joinPath !== null;
 
     // variable: 회원가입 가능 상태 확인 //
     const isPossible = name && idMsgBool && isPwMatched1 && isPwMatched2 && birthMsgBool && selectedGender
@@ -113,6 +106,9 @@ export default function SignUp() {
                                 responseBody.code === 'SU' ? '인증번호가 전송되었습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (isSuccessed) {
+            setIsMatched3(true);
+        }
         setTelMessage(message);
         setIsMatched1(isSuccessed);
         setTelNumberMessageError(isSuccessed);
@@ -243,7 +239,6 @@ export default function SignUp() {
     // event handler: 성별 선택 이벤트 핸들러 //
     const selectedGenderClickHandler = (selectedGender: string) => {
         setSelectedGender(selectedGender);
-        console.log(selectedGender);
     }
 
     // event handler: 전화번호 변경 이벤트 핸들러 //
@@ -297,8 +292,7 @@ export default function SignUp() {
 
         if (isTrue) {
             setTelMessage('');
-            setIsMatched3(true);
-            setTimer(10);
+            setTimer(180);
             setTelAuthNumber('');
             setAuthMessage('');
             const requestBody: TelAuthRequestDto = { telNumber };
@@ -454,7 +448,7 @@ export default function SignUp() {
 
                 <div className='box-test'>
                     <input className='inputs' placeholder='전화번호를 입력해주세요' value={displayFormattedPhoneNumber(telNumber)} onChange={onTelNumberChangeHandler} />
-                    <div className='send-button' onClick={onSendClickHandler}>{isMatched3 ? '재전송' : '전화번호 인증'}</div>
+                    <div className='send-button' onClick={stopTimer ? undefined : onSendClickHandler}>{isMatched3 ? '재전송' : '전화번호 인증'}</div>
                 </div>
                 <div className={isMatched1 ? 'message-true' : 'message-false'}>{telMessage}</div>
 
@@ -463,7 +457,7 @@ export default function SignUp() {
                         <div className='box-test'>
                             <div className='input-wrapper'>
                                 <input className='inputs' placeholder='인증번호 4자리' onKeyDown={handleKeyDown} value={telAuthNumber} onChange={onAuthNumberChangeHandler} readOnly={isMatched2} />
-                                <div className='timer'>{formatTime()}</div>
+                                <div className='signup-timer'>{formatTime()}</div>
                             </div>
                             <div className='send-button' onClick={onCheckClickHandler}>인증 확인</div>
                         </div>
@@ -625,7 +619,7 @@ The Memorial Day (이하 "갑")는 고객(이하 "을")의 개인정보를 중�
 본 개인정보 처리방침에 관한 문의사항은 아래를 통해 문의해주시기 바랍니다.
 
 고객센터: [010-1234-5678]
-이메일: [rpaeheh@naver.com]]
+이메일: [TheMemorialDay@email.com]]
 주소: [부산광역시 부산진구 중앙대로 668]`}</p>
                         </div>
                     )}

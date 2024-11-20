@@ -94,7 +94,6 @@ export default function Notice() {
     //* 커스텀 훅 가져오기
     const {
         currentPage,
-        totalPage,
         totalCount,
         viewList,
         pageList,

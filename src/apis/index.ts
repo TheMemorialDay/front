@@ -4,12 +4,11 @@ import { ResponseDto } from "./dto/response";
 import { IdCheckRequestDto, PasswordResettingFinalRequestDto, PasswordResettinIdTelRequestDto, PasswordSearchTelAuthCheckRequestDto, PatchPasswordRequestDto, SignInRequestDto, SignUpRequestDto, TelAuthCheckRequestDto, TelAuthRequestDto } from "./dto/request/auth";
 import { IdSearchResponseDto } from "./dto/response/auth";
 import { GetProductDetailResponseDto, GetProductPreviewListResponseDto, GetReviewListResponseDto } from "./dto/response/stores";
-import { BusinessNumCheckRequestDto, PatchJoinRequestDto } from "./dto/request/join";
-import { BusinessNumCheckResponseDto } from "./dto/response/join";
+import { PatchJoinRequestDto } from "./dto/request/join";
 import GetSignInResponseDto from "./dto/response/auth/get-sign-in-response.dto";
 import { PasswordCheckOfUserUpdateRequestDto, PatchUserInfoRequestDto } from "./dto/request/mypage_user_info";
-import { GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
-import { PostProductRequestDto } from './dto/request/product/post-product-request.dto'; // DTO import
+import { GetNewInfo, GetUserInfosResponseDto } from "./dto/response/mypage_user_info";
+import { PostProductRequestDto } from './dto/request/product/post-product-request.dto';
 import { GetProductListResponseDto, GetProductResponseDto } from './dto/response/product';
 import { GetStoreListResponseDto, GetStoreResponseDto } from "./dto/response/stores";
 import { PatchStoreRequestDto } from "./dto/request/store";
@@ -42,11 +41,6 @@ const GET_KEYWORD_API_URL = `${MEMORIALDAY_API_DOMAIN}/hot-keyword`;
 const GET_THEME_API_URL = `${MEMORIALDAY_API_DOMAIN}/hot-theme`;
 
 const PRODUCT_MODULE_URL = `${MEMORIALDAY_API_DOMAIN}/mypage/product`;
-
-const POST_PRODUCT_API_URL = `${PRODUCT_MODULE_URL}`;
-const GET_PRODUCT_LIST_API_URL = `${PRODUCT_MODULE_URL}`;
-const GET_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
-//const PATCH_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 const DELETE_PRODUCT_API_URL = (productNumber: number | string) => `${PRODUCT_MODULE_URL}/${productNumber}`;
 
 //* ========================= stores
@@ -72,6 +66,8 @@ const MYPAGE_PATCH_USER_INFO_TEL_AUTH_API_URL = `${MYPAGE_USER_INFO_API_URL}/tel
 const MYPAGE_PATCH_USER_INFO_TEL_AUTH_CHECK_API_URL = `${MYPAGE_USER_INFO_API_URL}/tel-auth-check`;
 // 마이페이지 최종 수정 URL
 const MYPAGE_PATCH_USER_COMPLETED_API_URL = `${MYPAGE_USER_INFO_API_URL}/patch-info`;
+const GET_NEW_USER_INFO_API_URL =  (userId: string) => `${MYPAGE_USER_INFO_API_URL}/${userId}`;
+
 const GET_STORE_NUMBER_API_URL = (userId: string) => `${MEMORIALDAY_API_DOMAIN}/mypage/product/add/${userId}`;
 
 const GET_MY_REVIEW_LIST_API_URL = (userId: string) => `${MYPAGE_MODULE_URL}/review?userId=${userId}`;
@@ -165,13 +161,10 @@ export const getStoreNumberRequest = async (userId: string, accessToken: string)
     return responseBody;
 }
 
-
 // function: post product 요청 함수 //                              토큰 인증 관련 지우고 임의로 진행(원래는 위와 같이 작성)
 export const postProductRequest = async (requestBody: PostProductRequestDto, storeNumber: number | string, accessToken: string) => {
     try {
-        // const response = await axios.post(POST_PRODUCT_API_URL, requestBody);
         const response = await axios.post(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${storeNumber}`, requestBody, bearerAuthorization(accessToken));
-
         return responseDataHandler<ResponseDto>(response);
     } catch (error) {
         const errorData = responseErrorHandler(error);
@@ -180,8 +173,6 @@ export const postProductRequest = async (requestBody: PostProductRequestDto, sto
 };
 
 // function: get product list 요청 함수 //                               토큰 인증 관련 지우고 임의로 진행(원래는 위와 같이(63~68) 작성)
-
-// getProductListRequest.ts
 export const getProductListRequest = async (userId: string, accessToken: string): Promise<GetProductListResponseDto | null> => {
     try {
         const response = await axios.get(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${userId}`, bearerAuthorization(accessToken));
@@ -204,7 +195,6 @@ export const getProductRequest = async (productNumber: number | string, accessTo
 };
 
 // function: patch product 요청 함수 //
-
 export const patchProductRequest = async (productNumber: number | string, data: PostProductRequestDto, accessToken: string): Promise<any> => {
     try {
         const response = await axios.patch(`${MEMORIALDAY_API_DOMAIN}/mypage/product/${productNumber}`, data, bearerAuthorization(accessToken));
@@ -229,28 +219,10 @@ const responseDataHandler2 = <T extends ApiResponseDto>(response: AxiosResponse<
     if (data.status_code !== "OK") {
         return data.status_code;
     }
-
-    // data 배열 내의 각 항목에 대해 valid 값 체크
     for (const item of data.data) {
         return item.valid;
     }
-
-    // 위 조건에 해당하지 않는 경우 빈 문자열 반환
-    return null; // string, null
-};
-
-// function: response data 처리 함수 status //
-const responseDataHandler3 = <T extends BusinessNumCheckResponseDto>(response: AxiosResponse<T, any>) => {
-    const { data } = response;
-    if (data.status_code === 'OK') {
-        const b_stt_cd = data.data[0].b_stt_cd;
-        if (b_stt_cd == null) {
-            const message = data.data[0].tax_type;
-            console.log("메시지: " + message);
-            return message;
-        } else return b_stt_cd;
-    } else return null;
-    //return data.status_code;
+    return null; 
 };
 
 // function: response error 처리 함수 //
@@ -579,10 +551,9 @@ export const getMyReviewListRequest = async (userId: string, accessToken: string
 }
 
 // API 요청 URL 및 serviceKey 설정
-const serviceKey = '9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==';
+//const serviceKey = '9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==';
+const serviceKey = process.env.REACT_APP_BUSINESS_API_SERVICE_KEY as string;
 const validateURL = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
-const statusURL = "http://api.odcloud.kr/api/nts-businessman/v1/status";
-
 
 
 // function: 사업자 등록증 진위 확인 api 요청 함수 validate //
@@ -592,17 +563,6 @@ export const checkBusinessRequest = async (requestBody: BusinessCheckRequestDto)
             'Content-Type': 'application/json'
         }
     }).then(responseDataHandler2<ApiResponseDto>)
-        .catch(responseErrorHandler);
-    return responseBody;
-}
-
-// function: 사업자 등록증 진위 확인 api 요청 함수 status //
-export const checkBusinessNumRequest = async (requestBody: BusinessNumCheckRequestDto) => {
-    const responseBody = await axios.post(`${statusURL}?serviceKey=${serviceKey}`, requestBody, {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(responseDataHandler3<BusinessNumCheckResponseDto>)
         .catch(responseErrorHandler);
     return responseBody;
 }
@@ -673,6 +633,14 @@ export const deleteQnARequest = async (questionNumber: number | string, accessTo
     return responseBody;
 }
 
+// function: 회원 정보 받기 //
+export const getNewInfo = async(accessToken: string, userId: string) => {
+    const responseBody = await axios.get(GET_NEW_USER_INFO_API_URL(userId), bearerAuthorization(accessToken))
+        .then(responseDataHandler<GetNewInfo>)
+        .catch(responseErrorHandler);
+    return responseBody;
+}
+
 //* 회원 탈퇴
 // function: delete user 요청 함수 //
 export const deleteUserRequest = async (accessToken: string) => {
@@ -690,4 +658,3 @@ export const postKeywordRequest = async (keyword: string) => {
         .catch(responseErrorHandler);
     return responseBody;
 };
-

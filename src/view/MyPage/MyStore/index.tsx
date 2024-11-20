@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ACCESS_TOKEN, MY_ABSOLUTE_PATH, MY_PATH, MY_STORE_ABSOLUTE_PATH } from '../../../constants';
+import { ACCESS_TOKEN, MY_PATH, MY_STORE_ABSOLUTE_PATH } from '../../../constants';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 import { useCookies } from 'react-cookie';
 import { PatchStoreRequestDto, PostStoreRequestDto } from '../../../apis/dto/request/store';
@@ -130,7 +130,7 @@ export default function MyStore() {
             alert(message);
             return;
         }
-        // if (!storeNumber) return;
+
         if (signInUser) {
             setUserId(signInUser.userId);
         }
@@ -208,7 +208,6 @@ export default function MyStore() {
         setFriday({ start: fridayOpen, end: fridayLast });
         setSaturday({ start: saturdayOpen, end: saturdayLast });
         setSunday({ start: sundayOpen, end: sundayLast });
-
     };
 
 

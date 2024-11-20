@@ -113,7 +113,6 @@ export default function Order() {
   const [cakeCount, setCakeCount] = useState<number>(1);
   const [request, setRequest] = useState<string>('');
   const [isChecked, setIsChecked] = useState<boolean>(false);
-  const [userId, setUserId] = useState<string>('');
 
   // state: 선택 옵션 리스트 상태 //
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptionInterface[]>([]);
@@ -332,7 +331,6 @@ export default function Order() {
     fileReader.readAsDataURL(file);
     fileReader.onloadend = () => {
         setPreviewUrl(fileReader.result as string);
-        //console.log(fileReader.result as string);
     }
   };
 

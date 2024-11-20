@@ -19,6 +19,7 @@ export default function QaWrite() {
 
     // state: 제목 상태 //
     const [questionTitle, setSubjact] = useState<string>('');
+
     // state: 내용 상태 //
     const [questionContents, setquestionContents] = useState<string>('');
 
@@ -66,6 +67,11 @@ export default function QaWrite() {
 
         if (!questionTitle || !questionContents) {
             alert("모두 입력해주세요.");
+            return;
+        }
+
+        if(questionContents.length < 15) {
+            alert("본문 내용 최소 15자 이상이어야 합니다.");
             return;
         }
 

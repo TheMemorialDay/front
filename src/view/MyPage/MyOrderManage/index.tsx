@@ -1,16 +1,16 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
-import { useOrderReject, useSignInUserStore } from '../../../stores';
+import { useSignInUserStore } from '../../../stores';
 import { NewOrderDetailsProps, OrderDetailsProps } from '../../../types';
 import { useCookies } from 'react-cookie';
-import GetOrderDetailListResponseDto from '../../../apis/dto/response/get-order-detail-list.response.dto';
 import { ResponseDto } from '../../../apis/dto/response';
-import { ACCESS_TOKEN } from '../../../constants';
-import { getOrderDetailRequest, getOrderManageRequest, patchOrderStatusRequest, postSendPaymentMsgRequest } from '../../../apis';
+import { ACCESS_TOKEN, ST_ABSOLUTE_ORDER_DETAIL_PATH } from '../../../constants';
+import { getOrderManageRequest, patchOrderStatusRequest, postSendPaymentMsgRequest } from '../../../apis';
 import PatchOrderStatusReqeustDto from '../../../apis/dto/request/order/patch-order-status-request.dto';
 import { Autocomplete, TextField } from '@mui/material';
 import NewGetOrderManageList from '../../../apis/dto/response/new-get-order-manage.response.dto';
 import { PostSendPaymentMsgRequestDto } from '../../../apis/dto/request/order';
+import { useNavigate } from 'react-router-dom';
 
 // interface: 주문 내역 컴포넌트 Properties //
 interface OrderDetailProps {
@@ -33,12 +33,10 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     const [secondReject, setSecondReject] = useState(false);
     const [cancelCode, setCancelCode] = useState<CancelCode>('재료가 소진되었습니다.');
     const [cancelReason, setCancelReason] = useState<string>('');
-    const [telNumber, setTelNumber] = useState<string | null>(orderdetail.telNumber);
 
     const [cookies] = useCookies();
 
     const { signInUser } = useSignInUserStore();
-    const [userId, setUserId] = useState<string>('');
 
     // state: order submit time //
     const [orderSubmitTime, setOrderSubmitTime] = useState<string>('');
@@ -58,6 +56,9 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             return;
         }
     }
+
+    // function: navigator //
+    const navigator = useNavigate();
 
     // function: 숫자 쉼표 찍어주는 함수 //
     function formatNumberWithCommas(number: number): string {
@@ -388,6 +389,11 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         }
     }
 
+    // event handler: 가게 이름 클릭 이벤트 핸들러 //
+    const onClickStoreNumber = (number: number | string) => {
+        navigator(ST_ABSOLUTE_ORDER_DETAIL_PATH(number));
+    }
+
     // Function: 픽업완료 클릭 핸들러 //
     const onPickUpFinishOrderStatus = () => {
         setOrderStatus('픽업 완료');
@@ -432,7 +438,10 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                             <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail.productImageUrl})` }}></div>
                         </div>
                         <div className="order-details">
-                            <p className="order-product">{(orderdetail.storeName).split(",")[1]} - {orderdetail.productName}</p>
+                            <p style={{display:"flex", flexDirection: "row", alignItems: "center", gap: "10px"}}>
+                                <div className="order-product" onClick={() => onClickStoreNumber(orderdetail.storeNumber)}>{(orderdetail.storeName).split(",")[1]}</div>
+                                <div>- {orderdetail.productName}</div> 
+                            </p>
                             <div className="order-productCategory-productContents">
                                 <div>옵션:
                                     {options.map((option, index) => (

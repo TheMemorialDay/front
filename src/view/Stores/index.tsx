@@ -68,12 +68,9 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     if (checked) {
       await onStoreLikeDeleteButtonClickHandler();
       store.likeList = store.likeList.filter(id => id !== userId); // 좋아요 삭제
-      console.log('좋아요 삭제');
     } else if (!checked && userId !== undefined) {
       await onStoreLikeAddButtonClickHandler();
       store.likeList.push(userId); // 좋아요 추가
-      console.log('좋아요 추가');
-
     }
   };
 
@@ -86,7 +83,6 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
 
     const accessToken = cookies[ACCESS_TOKEN];
     if (!accessToken) {
-      console.log('토큰 오류');
       return;
     }
 
@@ -275,31 +271,31 @@ export default function Stores() {
 
   //* zustand 상태들 --------------------------------------------------------
   // state: 선택된 태그 저장하는 상태 //
-  const {selectedTag, setSelectedTag} = useStoreSearchStore();
+  const { selectedTag, setSelectedTag } = useStoreSearchStore();
 
   // state: 선택된 테마를 저장하는 상태 //
-  const {selectedThemes, setSelectedThemes} = useStoreSearchStore();
+  const { selectedThemes, setSelectedThemes } = useStoreSearchStore();
 
   // state: 선택된 요일을 저장하는 상태 //
-  const {selectedWeekdays, setSelectedWeekdays} = useStoreSearchStore();
+  const { selectedWeekdays, setSelectedWeekdays } = useStoreSearchStore();
 
   // state: 선택된 구군 저장하는 상태 //
-  const {selectedGugun, setSelectedGugun} = useStoreSearchStore();
+  const { selectedGugun, setSelectedGugun } = useStoreSearchStore();
 
   // state: 선택된 동 저장하는 상태 //
-  const {selectedDong, setSelectedDong} = useStoreSearchStore();
+  const { selectedDong, setSelectedDong } = useStoreSearchStore();
 
   // state: 선택된 구에 맞는 동 리스트 //
-  const {dongList, setDongList} = useStoreSearchStore();
+  const { dongList, setDongList } = useStoreSearchStore();
 
   // state: 당일 케이크 가능 여부 상태 //
-  const {productToday, setProductToday} = useStoreSearchStore();
+  const { productToday, setProductToday } = useStoreSearchStore();
 
   // state: 메인 검색창 입력 상태 //
-  const {mainSearch, setMainSearch} = useStoreSearchStore();
+  const { mainSearch, setMainSearch } = useStoreSearchStore();
 
   // state: 검색 필터 상태 초기화 //
-  const {initStoreSearch} = useStoreSearchStore();
+  const { initStoreSearch } = useStoreSearchStore();
   //* zustand 상태들 -------------------------------------------------------
 
   // state: 가게 리스트 상태 //
@@ -455,6 +451,7 @@ export default function Stores() {
     }
 
     const { storeDetails } = responseBody as GetStoreListResponseDto;
+    console.log(storeDetails);
     setStoreList(storeDetails);
     originalList.current = storeDetails;
   }
@@ -465,8 +462,8 @@ export default function Stores() {
   const postKeywordResponse = (responseBody: ResponseDto | null) => {
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+        responseBody.code === 'VF' ? '입력값을 확인해주세요.' :
+          responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
 
     const isSuccessed = responseBody != null && responseBody.code === 'SU';
 
@@ -517,9 +514,9 @@ export default function Stores() {
     setStoreList(storeDetails);
     originalList.current = storeDetails;
 
-    setMainSearch('');
+    // setMainSearch('');
   };
-  
+
   //* ========================================== store main address selected
   // event handler: 선택된 구군으로 주소 불러오기 //
   const onStoresSeletedGugunHandler = (gugun: string) => {
@@ -679,6 +676,7 @@ export default function Stores() {
     }
 
     if (mainSearch) {
+      setMainSearch(mainSearch);
       onStoresSearchClickHandler();
     } else {
       getStoreLists();
@@ -849,20 +847,9 @@ export default function Stores() {
           <button className="reset-button" onClick={onResetClickHandler}>초기화 ↻</button>
         </div>
         <div className='shop-list'>
-          {
-            storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreLists} />)
-          }
+          {storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreLists} />)}
         </div>
 
-        {/* <div className='store-bottom'>
-            <Pagination
-              pageList={pageList}
-              currentPage={currentPage}
-              onPageClickHandler={onPageClickHandler}
-              onPreSectionClickHandler={onPreSectionClickHandler}
-              onNextSectionClickHandler={onNextSectionClickHandler}
-            />
-          </div> */}
 
       </div>
     </div >

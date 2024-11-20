@@ -2,8 +2,6 @@ import React from 'react'
 import { useNavigate, useOutletContext } from 'react-router';
 import { ST_ABSOLUTE_CONTACT_DETAIL_PATH, ST_ABSOLUTE_INFORMATION_DETAIL_PATH, ST_ABSOLUTE_ORDER_DETAIL_PATH, ST_ABSOLUTE_REVIEW_DETAIL_PATH } from '../../../constants';
 import './style.css';
-import ShopMain from '../../../components/Shopinformation';
-import { StoreComponentProps } from '../../../types';
 import { GetStoreResponseDto } from '../../../apis/dto/response/stores';
 
 
@@ -52,15 +50,16 @@ export default function ShopContact() {
           - 주문 번호, 특정 제품 정보 등을 포함해 주시면 더욱 빠른 안내가 가능합니다.<br />
           - 가게 별 연락 수단이 다르니, 하단의 연락 수단을 반드시 참고하시길 바랍니다.<br /><br />
           * 시스템에 관한 문의사항이 있다면 상단의 SUPPORT 카테고리를 참고해주시면 감사하겠습니다.
-        </p><br />
+        <br /><br />
           <strong><br />연락 수단</strong><br />
           <div className='contact-in'>
         {
           store?.storeContact?.split('\\n').map((line, index) => (
-            <span className='contact-in' key={index}>{line}</span>
+            <span className='contact-in' key={index}>{line}<br /></span>
           ))
         }
         </div>
+        </p>
       </div>
     </div>
   );

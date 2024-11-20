@@ -5,7 +5,6 @@ import { ResponseDto } from '../../../apis/dto/response';
 import { GetNoticeDetailResponseDto } from '../../../apis/dto/response/support';
 import formatDate from '../../../components/dateChange/DateChange';
 import { getNoticeDetailRequest } from '../../../apis';
-import SupportNavi from '../../../components/support_navi';
 
 // component: NoticeDetail 컴포넌트 //
 export default function NoticeDetail() {
@@ -52,7 +51,6 @@ export default function NoticeDetail() {
     // render: NoticeDetail 컴포넌트 렌더링 //
     return (
         <div id='notice-detail-wrapper'>
-            {/* <SupportNavi /> */}
             <div className='top' style={{display: "flex", flexDirection: "column", marginTop: "30px"}}>
                 <div className='detail-title'>
                     <div className='detail-title-main'>TILTE</div>
