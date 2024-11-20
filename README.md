@@ -10,6 +10,7 @@
 5. [설치 및 실행](#설치-및-실행)
 6. [주요 기능](#주요-기능)
 7. [제작 기간](#제작-기간)
+8. [라이선스](#라이선스)
 
 ---
 
@@ -177,3 +178,35 @@ The Memorial Day 서비스 시연 영상입니다.  아래 이미지를 클릭�
     </tr>
   </tbody>
 </table>
+
+#### Contributors
+<table style="table-layout: fixed; width: 100%;">
+  <thead>
+    <tr>
+      <th style="width: 20%;">이름</th>
+      <th style="width: 80%;">GitHub Link</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center; width: 20%;">안찬숙</td>
+      <td>https://github.com/Anchansook</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; width: 20%;">송태휘</td>
+      <td>https://github.com/Song-Tae-Hwi</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; width: 20%;">정호정</td>
+      <td>https://github.com/ristukaJJang</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; width: 20%;">김도연</td>
+      <td>https://github.com/pdu08075</td>
+    </tr>
+  </tbody>
+</table>
+
+## 라이선스
+    GPL License
+    Copyright (c) 2024 [ThememorialDay]
