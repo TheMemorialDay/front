@@ -170,7 +170,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
   // effect: 찜 상태 들고오기 //
   useEffect(() => {
     if (userId != null) {
-      axios.get(`http://localhost:4000/stores/like?userId=${userId}`)
+      axios.get(`${process.env.REACT_APP_API_URL}/stores/like?userId=${userId}`)
         .then(response => {
           const likedStores = response.data.likes.map((store: { storeNumber: any; }) => store.storeNumber);
           if (likedStores.includes(store.storeNumber)) {
@@ -666,14 +666,7 @@ export default function Stores() {
 
   //* 스토어 메인 화면 벗어날 시 필터링 상태들 초기화 & 검색어 존재 시 검색 이벤트 호출
   // effect: 로드시 상점 리스트 불러오기 함수 //
-  // todo: 실제 배포시 삭제 //
-  let flag = false;
   useEffect(() => {
-    // todo: 실제 배포시 삭제 //
-    if (!flag) {
-      flag = true;
-      return;
-    }
 
     if (mainSearch) {
       setMainSearch(mainSearch);
