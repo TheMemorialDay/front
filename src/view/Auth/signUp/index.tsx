@@ -106,6 +106,9 @@ export default function SignUp() {
                                 responseBody.code === 'SU' ? '인증번호가 전송되었습니다.' : '';
 
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
+        if (isSuccessed) {
+            setIsMatched3(true);
+        }
         setTelMessage(message);
         setIsMatched1(isSuccessed);
         setTelNumberMessageError(isSuccessed);
@@ -289,7 +292,6 @@ export default function SignUp() {
 
         if (isTrue) {
             setTelMessage('');
-            setIsMatched3(true);
             setTimer(180);
             setTelAuthNumber('');
             setAuthMessage('');
@@ -446,7 +448,7 @@ export default function SignUp() {
 
                 <div className='box-test'>
                     <input className='inputs' placeholder='전화번호를 입력해주세요' value={displayFormattedPhoneNumber(telNumber)} onChange={onTelNumberChangeHandler} />
-                    <div className='send-button' onClick={onSendClickHandler}>{isMatched3 ? '재전송' : '전화번호 인증'}</div>
+                    <div className='send-button' onClick={stopTimer ? undefined : onSendClickHandler}>{isMatched3 ? '재전송' : '전화번호 인증'}</div>
                 </div>
                 <div className={isMatched1 ? 'message-true' : 'message-false'}>{telMessage}</div>
 
