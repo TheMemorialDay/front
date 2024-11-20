@@ -551,7 +551,8 @@ export const getMyReviewListRequest = async (userId: string, accessToken: string
 }
 
 // API 요청 URL 및 serviceKey 설정
-const serviceKey = '9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==';
+//const serviceKey = '9tvM0W192uuqj1Wn7OdBwQLLdPvkYJNS450lJnvILRCNGbQoDXcihyDyQ/d/tx4Q78ii38jdMbWMeKB8ikiSVw==';
+const serviceKey = process.env.REACT_APP_BUSINESS_API_SERVICE_KEY as string;
 const validateURL = "http://api.odcloud.kr/api/nts-businessman/v1/validate";
 
 

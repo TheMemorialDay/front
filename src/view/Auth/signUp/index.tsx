@@ -455,7 +455,7 @@ export default function SignUp() {
                         <div className='box-test'>
                             <div className='input-wrapper'>
                                 <input className='inputs' placeholder='인증번호 4자리' onKeyDown={handleKeyDown} value={telAuthNumber} onChange={onAuthNumberChangeHandler} readOnly={isMatched2} />
-                                <div className='timer'>{formatTime()}</div>
+                                <div className='signup-timer'>{formatTime()}</div>
                             </div>
                             <div className='send-button' onClick={onCheckClickHandler}>인증 확인</div>
                         </div>

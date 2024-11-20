@@ -377,7 +377,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
                     <input className='tel-number' placeholder='전화번호를 입력해주세요.' value={displayFormattedPhoneNumber(telNumber)} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
                     <div className='send-button' onClick={onSendClickHandler}>{isMatched1 ? '재전송' : '전송'}</div>
                 </div>
-                <div className={`message ${isTelMessageError ? 'false' : 'true'}`}>{telMessage}</div>
+                <div className={`message ${isTelMessageError ? 'true' : 'false'}`}>{telMessage}</div>
                 {isSend &&
                     <div>
                         <div className='tel' style={{ marginTop: '20px' }}>
@@ -746,6 +746,11 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
         if (!isSuccessed) {
             setPasswordMessage(message);
             setIsMatched1(isSuccessed);
+                if(responseBody !== null && responseBody.code === 'VF') {
+                    setNewPassword("");
+                    setPasswordCheck("");
+                }
+
             return;
         }
 
