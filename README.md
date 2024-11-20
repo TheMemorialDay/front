@@ -5,10 +5,11 @@
 ## 목차
 1. [프로젝트 소개](#프로젝트-소개)
 2. [개발 스택](#개발-스택)
-3. [폴더 구조](#폴더-구조)
-4. [설치 및 실행](#설치-및-실행)
-5. [주요 기능](#주요-기능)
-6. [제작 기간](#제작-기간)
+3. [API 명세](#API-명세)
+4. [폴더 구조](#폴더-구조)
+5. [설치 및 실행](#설치-및-실행)
+6. [주요 기능](#주요-기능)
+7. [제작 기간](#제작-기간)
 
 ---
 
@@ -42,6 +43,11 @@
 
 ---
 
+## API 명세
+프로젝트의 API 엔드포인트에 대한 명세서가 'API 설계서 모음' 폴더 내에 제공되어 있습니다. Postman을 사용한 작업 수행도 가능합니다.
+
+---
+
 ## 폴더 구조
 
 프로젝트의 주요 폴더 구조는 다음과 같습니다:
@@ -71,8 +77,7 @@ FRONT/
   ┣ package-lock.json # 종속성에 대한 정확한 버전 관리 파일  
   ┣ package.json # 프로젝트의 종속성 및 스크립트 정의 파일  
   ┣ README.md # 프로젝트 개요 및 설명 파일  
-  ┣ The Memorial Day 요구사항 명세서.md # 명세서 관련 Markdown 파일  
-  ┣ The Memorial Day UI.pdf # UI 요구사항 설명 PDF 파일  
+  ┣ The Memorial Day 요구사항 명세서.md # 명세서 관련 Markdown 파일   
   ┗ tsconfig.json # TypeScript 설정 파일 
 
 ---
@@ -135,7 +140,7 @@ The Memorial Day가 제공하는 주요 기능입니다.
  3. 상점으로 들어온 주문 관리 기능
  4. 상점 전체 매출 확인 기능
 
-The Memorial Day 서비스 시연 영상입니다.
+The Memorial Day 서비스 시연 영상입니다.  아래 이미지를 클릭하면 유튜브로 이동합니다.
 [![The Memorial Day 서비스 시연 영상](/images/fullshot.JPG)](https://www.youtube.com/watch?v=z0FtjE9dVl0)
 
 ---

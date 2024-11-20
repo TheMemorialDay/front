@@ -27,15 +27,15 @@
 }
 
 #info-update .update-box::-webkit-scrollbar-thumb {
-    background: lightgray; 
+    background: lightgray;
     border-radius: 6px;
-    
+
 }
 
 #info-update .update-box::-webkit-scrollbar-thumb:hover {
-    background: darkgray; 
+    background: darkgray;
     border-radius: 6px;
-    
+
 }
 
 #info-update .inputs1 {
@@ -58,7 +58,7 @@
 
 #info-update .inputs3 {
     width: 380px;
-    
+
     height: 25px;
     border-radius: 6px;
     border: 1px solid darkgray;
@@ -132,8 +132,8 @@
     color: white;
     font-size: 14px;
     font-weight: 400;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     /* margin-top: 10px; */
 }
@@ -149,8 +149,8 @@
     color: white;
     font-size: 14px;
     font-weight: 400;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
 }
 
@@ -160,9 +160,9 @@
 
 #info-update .withdraw-button {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    width: 100px; 
+    justify-content: center;
+    align-items: center;
+    width: 100px;
     height: 25px;
     color: black;
     background-color: white;
@@ -177,9 +177,9 @@
 
 #info-update .cancel-button {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    width: 100px; 
+    justify-content: center;
+    align-items: center;
+    width: 100px;
     height: 25px;
     color: black;
     background-color: white;
@@ -189,20 +189,20 @@
     font-weight: 500;
     cursor: pointer;
     padding: 10px;
-    
+
     border: 1px solid;
 }
 
 #info-update .change-button {
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
     /* width: 100px;  */
     height: 25px;
     background-color: black;
     color: white;
     border-radius: 6px;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 500;
     cursor: pointer;
     padding: 10px;
@@ -211,9 +211,9 @@
 #info-update .update-button,
 #info-update .send-button {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    width: 100px; 
+    justify-content: center;
+    align-items: center;
+    width: 100px;
     height: 25px;
     background-color: black;
     color: white;
@@ -227,9 +227,9 @@
 
 #info-update .update-send-button {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    width: 100px; 
+    justify-content: center;
+    align-items: center;
+    width: 100px;
     height: 25px;
     background-color: black;
     color: white;
@@ -268,8 +268,8 @@
 
 #info-update .change-button,
 #info-update .update-send-button {
-    width: 160px;
-    
+    width: 125px;
+
 }
 
 #info-update .tel-number-box,
@@ -292,5 +292,26 @@
     margin-top: 10px;
 }
 
+#info-update .input-wrapper {
+    position: relative;
+    display: inline-block;
+    padding: 10px 0;
+}
 
+#info-update .inputs {
+    width: 250px;
+    height: 25px;
+    border-radius: 6px;
+    border: 1px solid darkgray;
+    padding: 10px;
+}
 
+#info-update .timer {
+    position: absolute;
+    right: 15px;
+    top: 49%;
+    transform: translateY(-50%);
+    color: rgba(64, 64, 64, 1);
+    font-weight: 500;
+    font-size: 15px;
+}
