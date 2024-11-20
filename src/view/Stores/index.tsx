@@ -847,10 +847,9 @@ export default function Stores() {
           <button className="reset-button" onClick={onResetClickHandler}>초기화 ↻</button>
         </div>
         <div className='shop-list'>
-          {
-            storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreLists} />)
-          }
+          {storeList.map((store) => <StoreRow key={store.storeNumber} store={store} getStoreList={getStoreLists} />)}
         </div>
+
 
       </div>
     </div >

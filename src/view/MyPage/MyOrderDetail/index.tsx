@@ -41,7 +41,8 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
         if (!window.IMP) return;
         /* 1. 가맹점 식별하기 */
         const { IMP } = window;
-        IMP.init("imp84260646"); // 가맹점 식별코드
+        const Apikey = process.env.REACT_APP_PAYMENT_API_KEY as string;
+        IMP.init(Apikey); // 가맹점 식별코드
 
         // user이름 등록
 

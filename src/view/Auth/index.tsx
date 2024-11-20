@@ -752,6 +752,11 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
         if (!isSuccessed) {
             setPasswordMessage(message);
             setIsMatched1(isSuccessed);
+                if(responseBody !== null && responseBody.code === 'VF') {
+                    setNewPassword("");
+                    setPasswordCheck("");
+                }
+
             return;
         }
 
