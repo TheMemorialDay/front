@@ -167,6 +167,10 @@ function FindId({ onPathChange }: AuthComponentProps) {
                             responseBody.code === 'SU' ? '정보가 확인되었습니다.' : '';
 
         const isSuccessed = responseBody != null && responseBody.code === 'SU';
+        if (isSuccessed) {
+            setTelMessageError(true);
+            setIsMatched1(true);
+        }
         setTelMessage(message);
         setSend(isSuccessed);
 
@@ -270,7 +274,6 @@ function FindId({ onPathChange }: AuthComponentProps) {
             setTimer(180);
             setTelAuthNumber('');
             setAuthMessage('');
-            setIsMatched1(true);
             const requestBody: IdSearchNameTelNumberRequestDto = { name, telNumber };
             idSearchNameTelNumberRequest(requestBody).then(idSearchNameTelNumberResponse);
         } else {
@@ -375,7 +378,7 @@ function FindId({ onPathChange }: AuthComponentProps) {
                 </div>
                 <div className='tel'>
                     <input className='tel-number' placeholder='전화번호를 입력해주세요.' value={displayFormattedPhoneNumber(telNumber)} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
-                    <div className='send-button' onClick={onSendClickHandler}>{isMatched1 ? '재전송' : '전송'}</div>
+                    <div className='send-button' onClick={stopTimer ? undefined : onSendClickHandler}>{isMatched1 ? '재전송' : '전송'}</div>
                 </div>
                 <div className={`message ${isTelMessageError ? 'true' : 'false'}`}>{telMessage}</div>
                 {isSend &&
@@ -489,6 +492,10 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
         setTelMessage(message);
         setSend(isSuccessed);
+        if (isSuccessed) {
+            setTelMessageError(true);
+            setIsMatched1(true);
+        }
 
         setIsUserIdCheck(isSuccessed);
         setIsTelNumberCheck(isSuccessed);
@@ -595,7 +602,6 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
             setTimer(180);
             setTelAuthNumber('');
             setAuthMessage('');
-            setIsMatched1(true);
             const requestBody: PasswordResettinIdTelRequestDto = { userId, telNumber: zusTelNumber };
             passwordResettingIdTelRequest(requestBody).then(passwordSearchResponse);
         } else {
@@ -692,9 +698,9 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
                 <input className='input-id' placeholder='아이디' value={userId} onChange={onIdChangeHandler} />
                 <div className='tel'>
                     <input className='tel-number' placeholder='전화번호를 입력해주세요.' value={displayFormattedPhoneNumber(zusTelNumber)} onChange={onTelNumberChangeHandler} onKeyDown={handleKeyDown1} />
-                    <div className='send-button' onClick={onSendClickHandler}>{isMatched1 ? '재전송' : '전송'}</div>
+                    <div className='send-button' onClick={stopTimer ? undefined : onSendClickHandler}>{isMatched1 ? '재전송' : '전송'}</div>
                 </div>
-                <div className={`message ${isTelMessageError ? 'false' : 'true'}`}>{telMessage}</div>
+                <div className={`message ${isTelMessageError ? 'true' : 'false'}`}>{telMessage}</div>
                 {isSend &&
                     <div>
                         <div className='tel' style={{ marginTop: '20px' }}>
