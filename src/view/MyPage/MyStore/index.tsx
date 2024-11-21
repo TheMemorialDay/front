@@ -134,8 +134,8 @@ export default function MyStore() {
         if (signInUser) {
             setUserId(signInUser.userId);
         }
+        alert('가게등록이 완료되었습니다');
         navigate(MY_PATH);
-        console.log(userId);
     }
 
     // function: patch store response 처리 함수 //
@@ -152,8 +152,8 @@ export default function MyStore() {
             return;
         }
         if (!storeNumber) return;
+        alert('상점 수정이 완료되었습니다');
         navigate(MY_PATH);
-        console.log('상점 수정이 완료되었습니다');
     }
 
     // function: get store response 처리 함수 //

@@ -222,6 +222,7 @@ const Add = () => {
 
             }
             console.log('상품 등록/수정 성공:', response);
+            alert('완료되었습니다');
             navigator('../');
         } catch (error) {
             console.error('상품 등록/수정 실패:', error);

@@ -102,7 +102,7 @@ function StoreRow({ store, getStoreList }: StoreRowProps) {
     useEffect(() => {
         const token = getCookie('accessToken');
 
-        axios.get(`http://localhost:4000/mypage/like/${userId}/${store.storeNumber}`, {
+        axios.get(`${process.env.REACT_APP_API_URL}/mypage/like/${userId}/${store.storeNumber}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
