@@ -83,6 +83,8 @@ export default function QaDetail() {
             alert(message);
             return;
         }
+        navigator(SU_ABSOLUTE_QA_PATH);
+        window.location.reload();
     }
 
     // event handler: 삭제 버튼 //
@@ -99,7 +101,6 @@ export default function QaDetail() {
         }
 
         deleteQnARequest(questionNumber, accessToken).then(deleteQnAResponse);
-        navigator(SU_ABSOLUTE_QA_PATH);
     };
 
     // variable: 로그인 유저 상태 //
@@ -112,7 +113,7 @@ export default function QaDetail() {
 
     // render: Q&A Detail 컴포넌트 렌더링 //
     return (
-        <div id='qa-detail-wrapper' style={{marginTop: "30px"}}>
+        <div id='qa-detail-wrapper' style={{ marginTop: "30px" }}>
             <div className='write-info-box' >
                 <div className='writer-box'>
                     <div className='writer-title'>WRITER</div>

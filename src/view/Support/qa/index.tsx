@@ -123,7 +123,7 @@ export default function Qa() {
         onNextSectionClickHandler,
     } = usePagination<QaList>();
 
-    // effect: 컴포넌트 로드시 용품 리스트 불러오기 함수 //
+    // effect: 컴포넌트 로드시 찜 리스트 불러오기 함수 //
     useEffect(getQnAList, []);
 
     // render: support qa 컴포넌트 렌더링 //
