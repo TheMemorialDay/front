@@ -17,7 +17,7 @@ export default function Join() {
     const [cookies] = useCookies();
 
     // state: 로그인 유저 상태 //
-    const {signInUser} = useSignInUserStore();
+    const { signInUser } = useSignInUserStore();
 
     // state: 상태 변수 //
     const [businessNumber, setbusinessNumber] = useState<string>('');
@@ -37,42 +37,39 @@ export default function Join() {
 
     // function: business check response 함수 //
     const businessCheckResponse = (responseBody: string | null | ResponseDto) => {
-        const message = 
+        const message =
             !responseBody ? "서버에 문제가 있습니다." :
-            responseBody === "01" ? "인증 완료" :
-            responseBody === "02" ? "유효하지 않은 정보입니다." : responseBody;
-        
+                responseBody === "01" ? "인증 완료" :
+                    responseBody === "02" ? "유효하지 않은 정보입니다." : responseBody;
+
         const isSuccessed = responseBody !== null && responseBody === "01";
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
             return;
         }
 
         const accessToken = cookies[ACCESS_TOKEN];
-        if(!accessToken) return;
-
-        console.log("send file: " + url);
-        if(signInUser?.userId && url) {
+        if (!accessToken) return;
+        if (signInUser?.userId && url) {
             const requestBody: PatchJoinRequestDto = {
                 businessNumber,
                 businessOpendate: openDate,
                 permission: "사장",
                 businessUrl: url
             };
-            console.log(requestBody);
             patchJoinRequest(requestBody, signInUser.userId, accessToken).then(patchJoinResponse);
         }
     }
 
     // function: patch join response 처리 함수 //
     const patchJoinResponse = (responseBody: ResponseDto | null) => {
-        const message = 
+        const message =
             !responseBody ? '서버에 문제가 있습니다.12' :
-            responseBody.code === 'AF' ? '잘못된 접근입니다.' :
-            responseBody.code === 'DBE' ? '서버에 문제가 있습니다.': '';
-        
+                responseBody.code === 'AF' ? '잘못된 접근입니다.' :
+                    responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
+
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-        if(!isSuccessed) {
+        if (!isSuccessed) {
             alert(message);
             return;
         }
@@ -81,7 +78,7 @@ export default function Join() {
 
     // event handler: 사업자 등록 번호 변경 이벤트 핸들러 //
     const onbusinessNumber = (event: ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
+        const { value } = event.target;
 
         const pattern = /^[0-9]{10}$/;
         const isTrue = pattern.test(value);
@@ -91,8 +88,8 @@ export default function Join() {
 
     // event handler: 파일 선택 버튼 클릭 이벤트 핸들러 //
     const onUploadButtonClickHandler = () => {
-        const {current} = pdfInputRef;
-        if(!current) return;
+        const { current } = pdfInputRef;
+        if (!current) return;
         current.click();
     }
 
@@ -102,13 +99,13 @@ export default function Join() {
         if (file?.type === "application/pdf") {
             setFileName(file.name); // 파일 이름 상태 업데이트
             setBusinessFile(file);
-        }else return;
-        
+        } else return;
+
     };
 
     // event handler: 개업일자 변경 이벤트 핸들러 //
     const onOpenDateChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const {value} = event.target;
+        const { value } = event.target;
         const pattern = /^[0-9]{8}$/;
         const isTrue = pattern.test(value);
         setIsMatched2(isTrue);
@@ -118,27 +115,27 @@ export default function Join() {
     // event handler: 취소 버튼 클릭 이벤트 핸들러 //
     const onCancleButtonClickHandler = () => {
         navigator(ROOT_ABSOLUTE_PATH);
-        
+
     }
 
     // event handler: 등록 버튼 클릭 이벤트 핸들러 //
-    const onResigterButtonClickHandler = async() => {
-        if(!businessNumber  || !openDate || !fileName) {
+    const onResigterButtonClickHandler = async () => {
+        if (!businessNumber || !openDate || !fileName) {
             alert('모두 입력해주세요.');
             return;
-        } else if(!isMatched || !isMatched2) {
+        } else if (!isMatched || !isMatched2) {
             alert('정확하게 입력해주세요.');
             return;
         }
 
-        
-        if(businessFile) {
+
+        if (businessFile) {
             const formData = new FormData();
             formData.append('file', businessFile);
             url = await fileUploadRequest(formData);
         }
 
-        if(signInUser && url) {
+        if (signInUser && url) {
             const requestBody: BusinessCheckRequestDto = {
                 businesses: [
                     {
@@ -154,7 +151,7 @@ export default function Join() {
                 ]
             }
             const accessToken = cookies[ACCESS_TOKEN];
-            if(!accessToken) return;
+            if (!accessToken) return;
             checkBusinessRequest(requestBody).then(businessCheckResponse);
         }
     }
@@ -163,19 +160,19 @@ export default function Join() {
     return (
         <div id='join'>
             <div className='top'>
-                <div style={{marginBottom:"2px"}}>사장님의 소중한</div>
+                <div style={{ marginBottom: "2px" }}>사장님의 소중한</div>
                 <div>가게를 등록해주세요!</div>
             </div>
 
             <div className='business'>
-                <input className='register-number' placeholder='사업자 등록 번호' maxLength={10} value={businessNumber} onChange={onbusinessNumber}/>
+                <input className='register-number' placeholder='사업자 등록 번호' maxLength={10} value={businessNumber} onChange={onbusinessNumber} />
                 <div className='file-box'>
 
                     <input
                         type="file"
                         ref={pdfInputRef}
-                        style={{ display: 'none' }} 
-                        accept="application/pdf" 
+                        style={{ display: 'none' }}
+                        accept="application/pdf"
                         onChange={onFileChangeHandler}
                     />
                     <input
@@ -186,7 +183,7 @@ export default function Join() {
                     />
                     <div className='file-button' onClick={onUploadButtonClickHandler}>파일 선택</div>
                 </div>
-                <input className='open-date' placeholder='개업 일자(YYYYMMDD)' maxLength={8} value={openDate} onChange={onOpenDateChangeHandler}/>
+                <input className='open-date' placeholder='개업 일자(YYYYMMDD)' maxLength={8} value={openDate} onChange={onOpenDateChangeHandler} />
             </div>
 
             <div className='button-box'>

@@ -26,7 +26,6 @@ export default function NoticeDetail() {
 
     // function: get notice detail response 처리 함수 //
     const getNoticeDetailResponse = (responseBody: GetNoticeDetailResponseDto | ResponseDto | null) => {
-        console.log('Response received:', responseBody);
         const message =
             !responseBody ? '서버에 문제가 있습니다.' :
                 responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : '';
@@ -44,14 +43,13 @@ export default function NoticeDetail() {
 
     // effect: 공지 사항 불러오기 이펙트 //
     useEffect(() => {
-        console.log('useEffect called with noticeNumber:', noticeNumber);
         getNoticeDetail();
     }, [noticeNumber]);
 
     // render: NoticeDetail 컴포넌트 렌더링 //
     return (
         <div id='notice-detail-wrapper'>
-            <div className='top' style={{display: "flex", flexDirection: "column", marginTop: "30px"}}>
+            <div className='top' style={{ display: "flex", flexDirection: "column", marginTop: "30px" }}>
                 <div className='detail-title'>
                     <div className='detail-title-main'>TILTE</div>
                     <div className='detail-title-content'>{title}</div>

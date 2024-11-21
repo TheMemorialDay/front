@@ -173,29 +173,28 @@ export default function MyLike() {
 
         const { likes } = responseBody as GetMyPageLikeStoreListResponseDto;
 
-        const newStoreList: MyStoreLikeComponentProps[] = likes.map((like) => {
-            const ratingInfo = storeInfo.find(
-                (rating) => rating.storeNumber === like.storeNumber
-            );
+        const newStoreList = likes.map((like) => {
+            const matchingInfo = storeInfo.find((info) => info.storeNumber === like.storeNumber);
 
             return {
                 ...like,
-                reviewRating: ratingInfo ? ratingInfo.reviewRating : 0,
-                reviewCount: ratingInfo ? ratingInfo.reviewCount : 0,
+                reviewRating: matchingInfo ? matchingInfo.reviewRating : 0,
+                reviewCount: matchingInfo ? matchingInfo.reviewCount : 0,
             };
+        });
 
-        })
         setStoreList(newStoreList);
-    }
+    };
+
 
     // function: like store list를 서버에서 불러오는 함수 //
     const getStoreList = () => {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('접근 권한이 없습니다.');
+            alert('접근 권한이 없습니다.');
             return;
         }
-        getMyPageLikeStoreRequest(userId ?? '', accessToken).then(getMyPageStoreListResponse);
+        getMyPageLikeStoreRequest(userId ?? '', accessToken).then(getMyPageStoreListResponse).then(getStoreInfo);
     };
 
     // function: like store review count and review rating //
@@ -226,20 +225,29 @@ export default function MyLike() {
     // effect: 가게 정보 불러오기 함수 //
     useEffect(() => {
         if (!userId) {
-            console.log('존재하지 않는 아이디입니다. 회원가입 페이지로 이동합니다.');
+            alert('존재하지 않는 아이디입니다. 회원가입 페이지로 이동합니다.');
             navigate(SIGN_UP_ABSOLUTE_PATH);
             return;
         }
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('접근 권한이 없습니다.');
+            alert('접근 권한이 없습니다.');
             return;
         }
 
-        getStoreInfo();
-        getStoreList();
-    }, [userId]);
+        // storeInfo와 storeList가 업데이트 될 때 병합된 데이터 설정했습니다
+        if (storeInfo.length > 0) {
+            getMyPageStoreListResponse({
+                code: 'SU',
+                likes: storeList,
+            } as GetMyPageLikeStoreListResponseDto);
+        } else {
+            getStoreList();
+            getStoreInfo();
+        }
+    }, [userId, storeInfo]);
+
 
     return (
         <div id='mypage-like-wrapper'>

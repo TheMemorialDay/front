@@ -312,7 +312,6 @@ function FindId({ onPathChange }: AuthComponentProps) {
     // event handler: 최종 아이디 찾기 버튼 클릭 //
     const onIdSearchClickHandler = () => {
         if (!isIdSearchPossible) {
-            console.log(name, telNumber, telAuthNumber, isSend, isCheckedTelAuthNumber)
             alert('정확하게 입력해주세요.');
             setName('');
             setTelNumber('');
@@ -634,8 +633,6 @@ function FindPassword({ onPathChange }: AuthComponentProps) {
 
         const requestBody: PasswordResettingFinalRequestDto = { userId, telNumber: zusTelNumber, telAuthNumber };
         passwordResettingFinalCheckRequest(requestBody).then(passwordFinalCheckResponse);
-
-        console.log(isUserIdCheck, isTelNumberCheck, isAuthNumberCheck, isSend)
     };
 
     // event handler: 엔터키로 전송 버튼 동작 //
@@ -752,10 +749,10 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
         if (!isSuccessed) {
             setPasswordMessage(message);
             setIsMatched1(isSuccessed);
-                if(responseBody !== null && responseBody.code === 'VF') {
-                    setNewPassword("");
-                    setPasswordCheck("");
-                }
+            if (responseBody !== null && responseBody.code === 'VF') {
+                setNewPassword("");
+                setPasswordCheck("");
+            }
 
             return;
         }
@@ -772,7 +769,6 @@ function ChangePassword({ onPathChange }: AuthComponentProps) {
 
         const pattern = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,13}$/;
         let isTrue = pattern.test(value);
-        console.log(isTrue);
         setIsMatched1(isTrue);
 
         if (!isTrue) setPasswordMessage('영문, 숫자를 혼용하여 8~13자 입력해주세요.');

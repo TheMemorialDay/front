@@ -100,9 +100,6 @@ export default function MyStore() {
         setStoreAddress(address);
         setStoreGugun(getGuFromSigungu(sigungu));
         setStoreDong(bname.includes('동') ? (bname.endsWith('가') ? bname.slice(0, -2) : bname) : bname1);
-        console.log(bname);
-        console.log(storeGugun);
-        console.log(storeDong);
 
         // Kakao Maps API - Geocoder 사용
         const geocoder = new window.kakao.maps.services.Geocoder();
@@ -112,7 +109,7 @@ export default function MyStore() {
                 setStoreLatitude(y);
                 setStoreLongtitude(x);
             } else {
-                console.error('좌표를 불러올 수 없습니다.');
+                alert('좌표를 불러올 수 없습니다.');
             }
         });
     }
@@ -315,7 +312,7 @@ export default function MyStore() {
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('토큰 오류');
+            alert('토큰 오류');
             return;
         }
 
@@ -397,7 +394,7 @@ export default function MyStore() {
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('토큰 오류');
+            alert('토큰 오류');
             return;
         }
 
@@ -518,14 +515,14 @@ export default function MyStore() {
         }
 
         if (!storeNumber) {
-            console.log('가게 번호가 없습니다. 등록페이지로 이동합니다.');
+            alert('가게 번호가 없습니다. 등록페이지로 이동합니다.');
             navigate(MY_STORE_ABSOLUTE_PATH);
             return;
         }
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('접근 권한이 없습니다.');
+            alert('접근 권한이 없습니다.');
             return;
         }
 

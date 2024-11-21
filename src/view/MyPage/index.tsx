@@ -32,7 +32,7 @@ const MyPage = () => {
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('접근 권한이 없습니다.');
+            alert('접근 권한이 없습니다.');
             return;
         }
     }, [signInUser, storeNumber, userId]);
@@ -61,11 +61,10 @@ const MyPage = () => {
                 },
             });
             if (response.status === 401) {
-                console.error('인증 오류: 액세스 토큰이 유효하지 않음');
-                console.log(token);
+                alert('인증 오류: 액세스 토큰이 유효하지 않음');
                 return;
             } else if (response.status === 404) {
-                console.error('해당 userId를 찾을 수 없습니다.');
+                alert('해당 userId를 찾을 수 없습니다.');
                 return;
             } else if (!response.ok) {
                 navigate(MY_STORE_ABSOLUTE_PATH);
@@ -97,11 +96,10 @@ const MyPage = () => {
                 },
             });
             if (response.status === 401) {
-                console.error('인증 오류: 액세스 토큰이 유효하지 않음');
-                console.log(token);
+                alert('인증 오류: 액세스 토큰이 유효하지 않음');
                 return;
             } else if (response.status === 404) {
-                console.error('해당 userId를 찾을 수 없습니다.');
+                alert('해당 userId를 찾을 수 없습니다.');
                 return;
             } else if (!response.ok) {
                 console.error('서버 오류:', response.status);
@@ -111,9 +109,6 @@ const MyPage = () => {
             const data = await response.json();
             if (userId) {
                 navigate(`/mypage/like/${userId}`);
-            } else {
-                console.log(data.userId);
-                console.log(userId);
             }
         } catch (error) {
             console.error('API 요청 실패:', error);

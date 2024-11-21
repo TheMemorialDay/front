@@ -19,8 +19,7 @@ export default function ShopOrder() {
   const [productList, setProductList] = useState<ShopComponentProps[]>([]);
 
   const onProductClickHandler = (productNumber: number | string) => {
-    if(storeNumber) {
-      console.log(ST_PRODUCT_ORDER_ABSOLUTE_PATH(storeNumber, productNumber));
+    if (storeNumber) {
       navigator(ST_PRODUCT_ORDER_ABSOLUTE_PATH(storeNumber, productNumber));
     }
   }
@@ -52,17 +51,17 @@ export default function ShopOrder() {
 
   // function: get product list preview respone 처리 //
   const getProductListPreviewResponse = (responseBody: ResponseDto | null | GetProductPreviewListResponseDto) => {
-    const message = 
+    const message =
       !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'DBE' ? "서버에 문제가 있습니다." :
-      responseBody.code === 'NP' ? '존재하지 않는 상품입니다.' : '';
+        responseBody.code === 'DBE' ? "서버에 문제가 있습니다." :
+          responseBody.code === 'NP' ? '존재하지 않는 상품입니다.' : '';
 
     const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-    if(!isSuccessed) {
+    if (!isSuccessed) {
       alert(message);
       return;
     }
-    const {previewProducts} = responseBody as GetProductPreviewListResponseDto;
+    const { previewProducts } = responseBody as GetProductPreviewListResponseDto;
 
     const formattedProducts = previewProducts.map(product => ({
       productNumber: product.productNumber,
@@ -73,19 +72,19 @@ export default function ShopOrder() {
       onDetailClickHandler: () => onProductClickHandler(product.productNumber),
       productToday: product.productToday
     }));
-  
+
     setProductList(formattedProducts);
   }
 
   // function: store list 불러오기 함수 //
   const getProductList = () => {
-    if(storeNumber) {
+    if (storeNumber) {
       getProductPreviewListRequest(storeNumber).then(getProductListPreviewResponse);
     }
   }
 
   // Effect: 가게 상품 리스트 불러오기 //
-  useEffect(() =>{
+  useEffect(() => {
     getProductList();
   }, [storeNumber]);
 
@@ -99,21 +98,21 @@ export default function ShopOrder() {
     productToday: boolean;
   };
 
-  function ShopComponent({productNumber, imageUrl, title, price, hashtags, onDetailClickHandler, productToday }: ShopComponentProps) {
+  function ShopComponent({ productNumber, imageUrl, title, price, hashtags, onDetailClickHandler, productToday }: ShopComponentProps) {
 
     const [hover, setHover] = useState(false);
 
     return (
-      <div className="cake-item" 
-          onMouseEnter={() => setHover(true)} 
-          onMouseLeave={() => setHover(false)} 
-          style={{ backgroundImage: `url(${imageUrl})` }}
-          key={productNumber}
+      <div className="cake-item"
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        style={{ backgroundImage: `url(${imageUrl})` }}
+        key={productNumber}
       >
         {hover && (
           <div className="cake-overlay" onClick={() => onDetailClickHandler(productNumber)}>
             <h2>{title}</h2>
-            <p className='hashtags' style={{fontSize:"13px", fontWeight: "400"}}>{hashtags}</p>
+            <p className='hashtags' style={{ fontSize: "13px", fontWeight: "400" }}>{hashtags}</p>
             <p className='price'>{formatNumberWithCommas(price)}원</p>
             {productToday ? <p>당일 케이크 가능</p> : ''}
           </div>
@@ -132,19 +131,19 @@ export default function ShopOrder() {
         <div className='shop-review' onClick={onReviewButtonClickHandler}>리뷰</div>
       </div>
       <div className='product'>
-      {
-        productList.map((product, index) => (
-          <ShopComponent 
-            key={product.productNumber}
-            productNumber={product.productNumber}
-            imageUrl={product.imageUrl}
-            title={product.title}
-            price={product.price}
-            hashtags={product.hashtags}
-            onDetailClickHandler={product.onDetailClickHandler} 
-            productToday={product.productToday}          />
-        ))
-      }
+        {
+          productList.map((product, index) => (
+            <ShopComponent
+              key={product.productNumber}
+              productNumber={product.productNumber}
+              imageUrl={product.imageUrl}
+              title={product.title}
+              price={product.price}
+              hashtags={product.hashtags}
+              onDetailClickHandler={product.onDetailClickHandler}
+              productToday={product.productToday} />
+          ))
+        }
       </div>
     </div>
   )

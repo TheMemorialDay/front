@@ -62,9 +62,13 @@ export default function ArrowToTop() {
             text = text.replaceAll('#', '').replaceAll('*', '').replace(/\s?(\d\.)/g, (_match: any, p1: any, offset: number) => (offset === 0 ? p1 : `<br /><br />${p1}`));
             setRecommendedText(text);
             setChatMessages([...chatMessages, { text, sender: "bot" }]);
-        } catch (error) {
+        } catch (error: any) {
+            if (error.response?.status === 503) {
+                alert("사용량이 많아 답변 생성이 지연되고 있습니다. 잠시 후 다시 시도해주세요.");
+            } else {
+                alert("예상치 못한 오류가 발생했습니다. 관리자에게 문의하세요.");
+            }
             setRecommendedText("추천 문구 생성 오류");
-            console.error("Gemini API 오류:", error);
         } finally {
             setLoading(false);
         }
@@ -84,7 +88,7 @@ export default function ArrowToTop() {
             setChatMessages([
                 ...chatMessages,
                 { text: selectedTopic, sender: "user" },
-                { text: "레터링 추천 문구가 생성되었습니다.", sender: "bot" }
+                // { text: "레터링 추천 문구가 생성되었습니다.", sender: "bot" }
             ]);
         } else {
             // 다른 주제는 타겟 선택이 필요하도록 메시지 추가

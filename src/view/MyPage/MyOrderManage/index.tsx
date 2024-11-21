@@ -73,7 +73,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
     function FinishedPay() {
         return (
             <div className='my-order-status-pickup'>
-                <div className='pickup-complete' onClick={() => { console.log('작동 오류'); onPickUpFinishOrderStatus(); }}>픽업 완료</div>
+                <div className='pickup-complete' onClick={() => { onPickUpFinishOrderStatus(); }}>픽업 완료</div>
             </div>
         );
     }
@@ -135,16 +135,14 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
             setOrderStatus('결제 대기중');
 
             if (!accessToken) {
-                console.log('토큰 오류');
+                alert('토큰 오류');
                 return;
             }
-            console.log(orderStatus);
 
             const requestBody: PatchOrderStatusReqeustDto = {
                 orderCode: orderdetail.orderCode,
                 orderStatus: '결제 대기중'
             };
-            console.log('작동');
             setSecondReject(true);
             patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
         }
@@ -155,7 +153,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
             const accessToken = cookies[ACCESS_TOKEN];
             if (!accessToken) {
-                console.log('토큰 오류');
+                alert('토큰 오류');
                 return;
             }
 
@@ -187,7 +185,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                     !secondReject ?
                         <div className='my-order-payed-status'>
                             <div className='go-payed' onClick={onAcccpetUpdateOrderStatus}>승인</div>
-                            <div className='order-payed-cancle' onClick={() => { console.log('거부 클릭됨'); setModalOpen(true); }}>거부</div>
+                            <div className='order-payed-cancle' onClick={() => { setModalOpen(true); }}>거부</div>
                         </div > :
                         <div className='my-order-status-reject'>
                             <div className='go-payed' onClick={() => { setModalOpen(true); }} >거부</div>
@@ -283,7 +281,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
             const accessToken = cookies[ACCESS_TOKEN];
             if (!accessToken) {
-                console.log('토큰 오류');
+                alert('토큰 오류');
                 return;
             }
 
@@ -382,7 +380,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
     // event handler: 이미지 파일 확인 클릭 핸들러 //
     const onImageFileCheckHandler = (url: string | undefined) => {
-        if(url) window.open(url, '_blank', 'noopener,noreferrer');
+        if (url) window.open(url, '_blank', 'noopener,noreferrer');
         else {
             alert("이미지 파일이 없습니다.");
             return;
@@ -400,7 +398,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('토큰 오류');
+            alert('토큰 오류');
             return;
         }
 
@@ -438,9 +436,9 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                             <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail.productImageUrl})` }}></div>
                         </div>
                         <div className="order-details">
-                            <p style={{display:"flex", flexDirection: "row", alignItems: "center", gap: "10px"}}>
+                            <p style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "10px" }}>
                                 <div className="order-product" onClick={() => onClickStoreNumber(orderdetail.storeNumber)}>{(orderdetail.storeName).split(",")[1]}</div>
-                                <div>- {orderdetail.productName}</div> 
+                                <div>- {orderdetail.productName}</div>
                             </p>
                             <div className="order-productCategory-productContents">
                                 <div>옵션:
@@ -451,13 +449,13 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                         </span>
                                     ))}
                                 </div>
-                                {orderdetail.photoUrl ? 
+                                {orderdetail.photoUrl ?
                                     <div className='check-image-file' onClick={() => onImageFileCheckHandler(orderdetail.photoUrl)}>이미지 파일 확인</div>
-                                : ''
+                                    : ''
                                 }
                             </div>
                             <div className='request-contents'>
-                                <div style={{width: "65px", display: "inline-block"}}>요청사항:</div>
+                                <div style={{ width: "65px", display: "inline-block" }}>요청사항:</div>
                                 <div className='real-contents'>{orderdetail.productContents ? orderdetail.productContents : '없음'}</div>
                             </div>
                             <p className="order-plan">픽업일시: {orderdetail.pickupTime}</p>
@@ -522,7 +520,7 @@ export default function MyOrderManage() {
     const updateCompletedPickups = async () => {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('토큰 오류');
+            alert('토큰 오류');
             return;
         }
 
@@ -539,7 +537,6 @@ export default function MyOrderManage() {
                 orderCode: order.orderCode,
                 orderStatus: '픽업 완료',
             };
-            console.log('로딩 완료');
 
             try {
                 await patchOrderStatusRequest(requestBody, order.orderCode, accessToken);
@@ -579,8 +576,7 @@ export default function MyOrderManage() {
     const getOrderDetailList = () => {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken || !signInUser || !signInUser.storeNumber) {
-            console.log('접근 권한이 없습니다.');
-            console.log(signInUser);
+            alert('접근 권한이 없습니다.');
             return;
         }
         getOrderManageRequest(signInUser.storeNumber, accessToken).then(getOrderDetailResponse).then(updateCompletedPickups);
@@ -595,7 +591,7 @@ export default function MyOrderManage() {
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('접근 권한이 없습니다.');
+            alert('접근 권한이 없습니다.');
             return;
         }
         getOrderDetailList();

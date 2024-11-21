@@ -9,7 +9,7 @@ import { PostPayMentRequestDto } from '../../../apis/dto/request';
 import { fileUploadRequest, getOrderDetailRequest, patchOrderStatusRequest, postPayMentRequest, postReviewRequest } from '../../../apis';
 import { ResponseDto } from '../../../apis/dto/response';
 import GetOrderDetailListResponseDto from '../../../apis/dto/response/get-order-detail-list.response.dto';
-import { NewOrderDetailsProps} from '../../../types';
+import { NewOrderDetailsProps } from '../../../types';
 import PatchOrderStatusReqeustDto from '../../../apis/dto/request/order/patch-order-status-request.dto';
 import { PostReviewRequestDto } from '../../../apis/dto/request/review';
 import { useNavigate } from 'react-router-dom';
@@ -142,10 +142,9 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('토큰 오류');
+            alert('토큰 오류');
             return;
         }
-        console.log(orderStatus);
 
         const requestBody: PatchOrderStatusReqeustDto = {
             orderCode: orderdetail.orderCode,
@@ -156,7 +155,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
     // event handler: 이미지 파일 확인 클릭 핸들러 //
     const onImageFileCheckHandler = (url: string | undefined) => {
-        if(url) window.open(url, '_blank', 'noopener,noreferrer');
+        if (url) window.open(url, '_blank', 'noopener,noreferrer');
         else {
             alert("이미지 파일이 없습니다.");
             return;
@@ -283,7 +282,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                             responseBody.code === 'VF' ? '잘못된 값입니다.' : '';
 
             const isSuccessed = responseBody !== null && responseBody.code === 'SU';
-            if (isSuccessed) {
+            if (!isSuccessed) {
                 alert(message);
                 return;
             }
@@ -306,9 +305,7 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                     const formData = new FormData();
                     formData.append('file', file);
                     let url = await fileUploadRequest(formData);
-                    console.log(url);
                     if (url) urls.push(url);
-                    console.log(urls);
                 }
 
                 const requestBody: PostReviewRequestDto = {
@@ -321,7 +318,6 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                     userId: userId,
                     imageUrls: urls
                 };
-                console.log(requestBody);
                 postReviewRequest(requestBody, accessToken).then(postReviewResponse);
 
                 const requestBodys: PatchOrderStatusReqeustDto = {
@@ -335,12 +331,12 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
 
         // event handler: 이미지 파일 확인 클릭 핸들러 //
         const onImageFileCheckHandler = (url: string | undefined) => {
-            if(url) window.open(url, '_blank', 'noopener,noreferrer');
+            if (url) window.open(url, '_blank', 'noopener,noreferrer');
             else {
                 alert("이미지 파일이 없습니다.");
-            return;
+                return;
+            }
         }
-    }
 
         // component: 별 표기 //
         return (
@@ -432,12 +428,12 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                             <div className='order-image-list' style={{ backgroundImage: `url(${orderdetail.productImageUrl})` }}></div>
                         </div>
                         <div className="order-details">
-                            <p style={{display:"flex", flexDirection: "row", alignItems: "center", gap: "10px"}}>
+                            <p style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "10px" }}>
                                 <div className="order-product" onClick={() => onClickStoreNumber(orderdetail.storeNumber)}>{(orderdetail.storeName).split(",")[1]}</div>
-                                <div>- {orderdetail.productName}</div> 
+                                <div>- {orderdetail.productName}</div>
                             </p>
                             <div className="order-productCategory-productContents">
-                                <div>옵션: 
+                                <div>옵션:
                                     {options.map((option, index) => (
                                         <span key={index} className="order-option">
                                             {option.productCategory ? option.productCategory : '없음'}
@@ -445,13 +441,13 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                                         </span>
                                     ))}
                                 </div>
-                                {orderdetail.photoUrl ? 
+                                {orderdetail.photoUrl ?
                                     <div className='check-image-file' onClick={() => onImageFileCheckHandler(orderdetail.photoUrl)}>이미지 파일 확인</div>
-                                : ''
+                                    : ''
                                 }
                             </div>
                             <div className='request-contents'>
-                                <div style={{width: "65px", display: "inline-block"}}>요청사항:</div>
+                                <div style={{ width: "65px", display: "inline-block" }}>요청사항:</div>
                                 <div className='real-contents'>{orderdetail.productContents ? orderdetail.productContents : '없음'}</div>
                             </div>
                             <p className="order-plan">픽업일시 {orderdetail.pickupTime}</p>
@@ -526,7 +522,7 @@ export default function MyOrderDetail() {
     const updateCompletedPickups = async () => {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('토큰 오류');
+            alert('토큰 오류');
             return;
         }
 
@@ -543,8 +539,6 @@ export default function MyOrderDetail() {
                 orderCode: order.orderCode,
                 orderStatus: '픽업 완료',
             };
-            console.log('로딩 완료');
-
             try {
                 await patchOrderStatusRequest(requestBody, order.orderCode, accessToken);
             } catch (error) {
@@ -557,7 +551,7 @@ export default function MyOrderDetail() {
     const getOrderDetailList = () => {
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken || !signInUser) {
-            console.log('접근 권한이 없습니다.');
+            alert('접근 권한이 없습니다.');
             return;
         }
         getOrderDetailRequest(signInUser.userId, accessToken).then(getOrderDetailResponse).then(updateCompletedPickups);
@@ -571,7 +565,7 @@ export default function MyOrderDetail() {
 
         const accessToken = cookies[ACCESS_TOKEN];
         if (!accessToken) {
-            console.log('접근 권한이 없습니다.');
+            alert('접근 권한이 없습니다.');
             return;
         }
         getOrderDetailList();
