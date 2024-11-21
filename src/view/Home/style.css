@@ -21,13 +21,13 @@ body {
 }
 
 #home-background {
-    width: 100vw; 
-    height: 100vh; 
+    width: 100vw;
+    height: 100vh;
     background-image: url('/public/images/cake/cake100.jpg');
     background-size: cover;
     background-position: center;
     position: sticky;
-    background-repeat: no-repeat; 
+    background-repeat: no-repeat;
     top: 0;
 }
 
@@ -220,9 +220,9 @@ section:not(.reader) {
     align-items: center;
     text-align: center;
     z-index: 100;
-    
+
     user-select: none;
-    -webkit-user-select:none;
+    -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
 
@@ -254,6 +254,7 @@ section:not(.reader) {
     background: canvas;
     z-index: 2;
 }
+
 :where(.x-link, .bear-link):is(:hover, :focus-visible) {
     opacity: 1;
 }
@@ -339,6 +340,11 @@ h2 span {
         animation-timeline: view();
         animation-range: exit-crossing;
         view-timeline: --header;
+    }
+
+    #header-image {
+        width: 100%;
+        animation-timeline: view();
     }
 
     @keyframes scale-down {

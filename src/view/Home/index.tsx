@@ -30,7 +30,7 @@ export default function Home() {
     // render: 메인 페이지 컴포넌트 렌더링 //
     return (
         <div className='home'>
-            <header>
+            <header id='header-image'>
                 <div id='home-background'></div>
                 <section>
                     <h1 className='home-title'>

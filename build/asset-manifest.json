@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.8561ee23.css",
-    "main.js": "/static/js/main.cf1273d7.js",
+    "main.css": "/static/css/main.ccb31f9a.css",
+    "main.js": "/static/js/main.a13b8064.js",
     "static/media/ricecake_final.png": "/static/media/ricecake_final.c0c8afc342456c0b695a.png",
     "static/media/cake100.jpg": "/static/media/cake100.e090082af51ccb993174.jpg",
     "static/media/font8.otf": "/static/media/font8.cc4e35d3922ef4187e19.otf",
@@ -11,11 +11,11 @@
     "static/media/piece.png": "/static/media/piece.9de6ecbcd363f72a1b73.png",
     "static/media/blackheart.png": "/static/media/blackheart.f4a910d1224c2048b676.png",
     "index.html": "/index.html",
-    "main.8561ee23.css.map": "/static/css/main.8561ee23.css.map",
-    "main.cf1273d7.js.map": "/static/js/main.cf1273d7.js.map"
+    "main.ccb31f9a.css.map": "/static/css/main.ccb31f9a.css.map",
+    "main.a13b8064.js.map": "/static/js/main.a13b8064.js.map"
   },
   "entrypoints": [
-    "static/css/main.8561ee23.css",
-    "static/js/main.cf1273d7.js"
+    "static/css/main.ccb31f9a.css",
+    "static/js/main.a13b8064.js"
   ]
 }
