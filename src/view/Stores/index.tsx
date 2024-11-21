@@ -704,8 +704,8 @@ export default function Stores() {
         <div className='filter-box'>
           <div className='store-filter' style={{ marginBottom: "30px" }}>
             <div className='filter-box'>
-              <CakeComponent imageUrl="/photo.png" context="포토" isSelected={selectedTag === "포토"} onClick={() => onTagClickHandler("포토")} />
-              <CakeComponent imageUrl="/abc.png" context="레터링" isSelected={selectedTag === "레터링"} onClick={() => onTagClickHandler("레터링")} />
+              <CakeComponent imageUrl="/photo.png" context="포토 케이크" isSelected={selectedTag === "포토"} onClick={() => onTagClickHandler("포토")} />
+              <CakeComponent imageUrl="/abc.png" context="레터링 케이크" isSelected={selectedTag === "레터링"} onClick={() => onTagClickHandler("레터링")} />
               <CakeComponent imageUrl="/piece.png" context="한입 케이크" isSelected={selectedTag === "한입 케이크"} onClick={() => onTagClickHandler("한입 케이크")} />
               <CakeComponent imageUrl="/box.png" context="도시락 케이크" isSelected={selectedTag === "도시락 케이크"} onClick={() => onTagClickHandler("도시락 케이크")} />
               <CakeComponent imageUrl="/level.png" context="이단 케이크" isSelected={selectedTag === "이단 케이크"} onClick={() => onTagClickHandler("이단 케이크")} />

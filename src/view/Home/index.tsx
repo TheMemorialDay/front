@@ -25,7 +25,7 @@ export default function Home() {
         newVisibleSections[index] = !newVisibleSections[index];
         setVisibleSections(newVisibleSections);
     };
-    
+
 
     // render: 메인 페이지 컴포넌트 렌더링 //
     return (
@@ -37,18 +37,18 @@ export default function Home() {
                         <span>Since 2024</span>
                         <span style={{ fontFamily: 'Logofont' }}>The Memorial Day</span>
                     </h1>
-            <div className='home-arrow' onClick={scrollToSection}>현재 인기 키워드 바로 확인하기</div>
+                    <div className='home-arrow' onClick={scrollToSection}>현재 인기 키워드 바로 확인하기</div>
                 </section>
             </header>
 
             <section ref={readerRef} className="reader" id="read">
                 <div className="content">
                     <div data-split aria-hidden="true">
-                        <h1  style={{fontSize: '50px'}} className='reader-content-comment'>
+                        <h1 style={{ fontSize: '50px' }} className='reader-content-comment'>
                             당신의 특별한 일상이 더욱 특별해지길
                         </h1>
                     </div>
-                    <div style={{fontSize: '18px'}}>생일, 연인 기념일, 브라이덜 샤워, 팔순 잔치 등
+                    <div style={{ fontSize: '18px' }}>생일, 연인 기념일, 브라이덜 샤워, 팔순 잔치 등
                         소중한 사람들과 보내는 시간을 더욱 특별하게 만들어 보세요 :)</div>
                     <div className='how-question'>
                         <div className='how-question-a'>
@@ -87,7 +87,7 @@ export default function Home() {
                             {visibleSections[2] && (
                                 <div className='how-answer'>
                                     <div>첫째. 상단의 SUPPORT 카테고리에 들어가주세요.</div>
-                                    <div>둘째. 이미 안내되어 있는 질문일 수 있으니, NOTICE를 확인해주세요</div>
+                                    <div>둘째. 이미 안내되어 있는 질문일 수 있으니, NOTICE를 확인해주세요.</div>
                                     <div>셋째. 기타 질문이 있으시다면 Q&A를 통해 언제든지 질문을 남겨주세요.</div>
                                 </div>
                             )}

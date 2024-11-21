@@ -161,9 +161,9 @@ export default function Order() {
     // open과 last가 null인 경우 날짜 선택을 제한
     if (open === null || last === null) {
       return false;
-  }
-  return true;
-};
+    }
+    return true;
+  };
 
   // function: 시간 제한 함수 //
   const filterTime = (time: Date) => {
@@ -179,10 +179,10 @@ export default function Order() {
       if (
         selectedDate.toDateString() === now.toDateString() && (time < now || time < twoHoursLater)
       ) {
-          return false;
+        return false;
       }
 
-       // 당일 케이크가 불가하면 당일은 선택하지 못하도록 함
+      // 당일 케이크가 불가하면 당일은 선택하지 못하도록 함
       if (!cakeToday && selectedDate.toDateString() === now.toDateString()) {
         return false;
       }
@@ -317,7 +317,7 @@ export default function Order() {
     const { current } = storeUrlInputRef;
     if (!current) return;
     current.click();
-};
+  };
 
   // event handler: 대표 이미지 파일 선택 //
   const onStoreUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -330,7 +330,7 @@ export default function Order() {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
     fileReader.onloadend = () => {
-        setPreviewUrl(fileReader.result as string);
+      setPreviewUrl(fileReader.result as string);
     }
   };
 
@@ -361,7 +361,7 @@ export default function Order() {
       formData.append('file', storeImageUrl);
       url = await fileUploadRequest(formData);
     }
-    if(productTag == "포토" && (!url)) {
+    if (productTag == "포토" && (!url)) {
       alert("이미지 파일을 선택해주세요!");
       return;
     }
@@ -456,7 +456,8 @@ export default function Order() {
             placeholderText="날짜와 시간을 선택하세요"
             filterTime={filterTime}
             filterDate={filterDate}
-            dayClassName={(date) => 
+            minDate={new Date()}
+            dayClassName={(date) =>
               dayjs(date).isSame(dayjs(), 'day') ? '' : 'non-highlighted'
             }
           />
@@ -480,7 +481,7 @@ export default function Order() {
         </div>
 
         {productTag === '포토' ?
-          <div style={{marginTop: "20px", display: "flex", flexDirection: "column"}}>
+          <div style={{ marginTop: "20px", display: "flex", flexDirection: "column" }}>
             <div className='option-title'>사진 첨부<span style={{ color: "red" }}>*</span></div>
             <div className='cake-photo-zone'>
               <div className='cake-photo-pre' style={{ backgroundImage: `url(${previewUrl})` }}>
@@ -489,8 +490,8 @@ export default function Order() {
               <div className='cake-photo-file-pick' onClick={onStoreImageClickHandler}>파일 선택</div>
             </div>
           </div>
-        : ''}
-        
+          : ''}
+
 
         <div style={{ display: "flex", flexDirection: "column", marginTop: "20px" }}>
           <div className='option-title'>유의사항 확인<span style={{ color: "red" }}>*</span></div>

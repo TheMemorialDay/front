@@ -35,7 +35,7 @@ export default function MySales() {
 
     const fetchSalesData = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/mypage/sales?userId=${userId}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/mypage/sales?userId=${userId}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
