@@ -16,6 +16,8 @@ export default function MyReview() {
 
     // state: 로그인 한 유저 //
     const { signInUser } = useSignInUserStore();
+    const userId = signInUser?.userId;
+
     const [cookies] = useCookies();
 
     // state: 마우스 상태 //
@@ -30,7 +32,7 @@ export default function MyReview() {
     const getMyReviewList = () => {
         const accessToken = cookies[ACCESS_TOKEN];
 
-        if (!accessToken || !signInUser) {
+        if (!accessToken || !userId) {
             alert('error');
             return;
         } else {
@@ -76,11 +78,6 @@ export default function MyReview() {
     };
 
     const handleDragEnd = () => {
-        if (isDraggingLeft) {
-            // 왼쪽으로 드래그된 경우에만 특별 이벤트 발생
-            // onDeleteReview(myReview.id);
-            console.log('이벤트 발생');
-        }
         setIsDraggingLeft(false); // 드래그 종료 후 상태 초기화
     };
 
@@ -93,7 +90,11 @@ export default function MyReview() {
     };
 
     // effect: my review list 불러오기 //
-    useEffect(getMyReviewList, [])
+    useEffect(() => {
+        if (userId) {
+            getMyReviewList();
+        }
+    }, [userId]);
 
     // render: 마이페이지 리뷰 컴포넌트 렌더링 //
     return (

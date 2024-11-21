@@ -24,7 +24,7 @@ export default function Qa() {
     // state: 검색어 입력 종류 상태 //
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string>('선택');
-    const options = ['제목', '작성자'];
+    const options = ['TITLE', 'WRITER'];
 
     // state: 원본 리스트 상태 //
     const [originalList, setOriginalList] = useState<QaList[]>([]);
@@ -78,11 +78,11 @@ export default function Qa() {
 
     // event handler: 큐엔에이 검색 버튼 //
     const onSearchButtonHandler = () => {
-        if (selectedOption === '제목') {
+        if (selectedOption === 'TITLE') {
             const searchedList = originalList.filter(qnas => (qnas.questionTitle).includes(searchWords));
             setTotalList(searchedList);
             initViewList(searchedList);
-        } else if (selectedOption === '작성자') {
+        } else if (selectedOption === 'WRITER') {
             const searchedList = originalList.filter(qnas => (qnas.userId).includes(searchWords));
             setTotalList(searchedList);
             initViewList(searchedList);
@@ -133,7 +133,7 @@ export default function Qa() {
 
             <div className="top">
                 <div className="top-text">전체 {totalCount}건</div>
-                <div className="button write-button" onClick={onQaWriteButtonHandler} style={{marginTop: "30px"}}>작성</div>
+                <div className="button write-button" onClick={onQaWriteButtonHandler} style={{ marginTop: "30px" }}>작성</div>
             </div>
 
             <div className="main">

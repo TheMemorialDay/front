@@ -180,7 +180,6 @@ export default function SignUp() {
 
         const pattern = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,13}$/;
         let isTrue = pattern.test(value);
-        console.log(isTrue);
         setIsPwMatched1(isTrue);
 
         if (!isTrue) setPasswordMessage('영문, 숫자를 혼용하여 8~13자 입력해주세요.');

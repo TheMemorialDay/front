@@ -83,7 +83,7 @@ export default function ShopMain() {
   // effect: 가게 정보 불러오기 함수 //
   useEffect(() => {
     if (!storeNumber) {
-      console.log('가게 번호가 없습니다. 등록페이지로 이동합니다.');
+      alert('가게 번호가 없습니다. 등록페이지로 이동합니다.');
       return;
     }
 

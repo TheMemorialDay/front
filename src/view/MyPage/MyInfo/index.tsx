@@ -84,7 +84,6 @@ export default function InfoUpdate() {
         setBirth(birth);
         setTelNumber(telNumber);
         setGender(gender);
-        console.log(name, birth, telNumber, gender);
     }
 
     // function: 전화번호 인증 Response 처리 함수 //
@@ -119,7 +118,6 @@ export default function InfoUpdate() {
         const isSuccessed = responseBody !== null && responseBody.code === 'SU';
 
         if (!accessToken) return;
-        console.log(message);
         setAuthMessage(message);
         setTelAuthCheckMessageError(!isSuccessed);
         setCheckedAuthNumber(isSuccessed);

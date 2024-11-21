@@ -107,16 +107,13 @@ const Add = () => {
 
     // 상품 등록 핸들러 수정
     const onRegisterClickHandler = async () => {
-        console.log('입력된 데이터:', productData);
 
         let urls: string[] = [];
         for (const file of selectedFiles) {
             const formData = new FormData();
             formData.append('file', file);
             let url = await fileUploadRequest(formData);
-            console.log(url);
             if (url) urls.push(url);
-            console.log(urls);
         }
 
         if (!urls.length) {
@@ -192,7 +189,6 @@ const Add = () => {
             let response;
 
             const accessToken = cookies[ACCESS_TOKEN];
-            console.log("액세스 토큰: " + accessToken + ", 스토어 넘버: " + storeNumber);
             if (!accessToken) return;
             if (productNumber) {
                 // 수정 요청
@@ -209,7 +205,6 @@ const Add = () => {
                     const storeNumberResponse = await getStoreNumberRequest(signInUser.userId, accessToken);
                     if (storeNumberResponse && storeNumberResponse.code === 'SU') {
                         const storeNum = storeNumberResponse as GetStoreNumber;
-                        console.log("스토어 넘버:", storeNum.storeNumber);
                         setStoreNumber(storeNum.storeNumber); // 스토어 번호 설정
 
                         // 설정된 storeNumber를 사용해 상품 등록 API 호출
@@ -221,7 +216,6 @@ const Add = () => {
                 }
 
             }
-            console.log('상품 등록/수정 성공:', response);
             alert('완료되었습니다');
             navigator('../');
         } catch (error) {

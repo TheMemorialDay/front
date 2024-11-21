@@ -40,6 +40,7 @@ export default function QaWrite() {
             return;
         }
         alert('등록이 완료되었습니다.');
+        window.location.reload();
         navigator(SU_ABSOLUTE_QA_PATH);
     };
 
@@ -70,7 +71,7 @@ export default function QaWrite() {
             return;
         }
 
-        if(questionContents.length < 15) {
+        if (questionContents.length < 15) {
             alert("본문 내용 최소 15자 이상이어야 합니다.");
             return;
         }

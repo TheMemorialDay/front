@@ -52,11 +52,9 @@ export default function MySales() {
                 setSalesData(data.fullOrders);
                 originalList.current = data.fullOrders;
             } else {
-                console.error('서버 응답에 fullOrders가 없음:', data);
                 setSalesData([]); // 빈 배열로 설정
             }
         } catch (error) {
-            console.error("매출 데이터 가져오기 오류:", error);
             setSalesData([]); // 오류 발생 시 빈 배열로 설정
         }
     };
