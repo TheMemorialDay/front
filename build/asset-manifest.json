@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.c9d88117.css",
-    "main.js": "/static/js/main.07daafcd.js",
+    "main.js": "/static/js/main.648a00ad.js",
     "static/media/ricecake_final.png": "/static/media/ricecake_final.c0c8afc342456c0b695a.png",
     "static/media/cake100.jpg": "/static/media/cake100.e090082af51ccb993174.jpg",
     "static/media/font8.otf": "/static/media/font8.cc4e35d3922ef4187e19.otf",
@@ -12,10 +12,10 @@
     "static/media/blackheart.png": "/static/media/blackheart.f4a910d1224c2048b676.png",
     "index.html": "/index.html",
     "main.c9d88117.css.map": "/static/css/main.c9d88117.css.map",
-    "main.07daafcd.js.map": "/static/js/main.07daafcd.js.map"
+    "main.648a00ad.js.map": "/static/js/main.648a00ad.js.map"
   },
   "entrypoints": [
     "static/css/main.c9d88117.css",
-    "static/js/main.07daafcd.js"
+    "static/js/main.648a00ad.js"
   ]
 }
