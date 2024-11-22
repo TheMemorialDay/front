@@ -361,7 +361,7 @@ export default function Order() {
       formData.append('file', storeImageUrl);
       url = await fileUploadRequest(formData);
     }
-    if (productTag == "포토 케이크" && (!url)) {
+    if (productTag == "포토" && (!url)) {
       alert("이미지 파일을 선택해주세요!");
       return;
     }
@@ -425,8 +425,8 @@ export default function Order() {
           <hr className='custom-hr' />
           <div style={{ display: "flex", flexDirection: "row", gap: "12px" }}>
             <div className={
-              productTag === '포토 케이크' ? 'productTag-icon-photo' :
-                productTag === '레터링 케이크' ? 'productTag-icon-letter' :
+              productTag === '포토' ? 'productTag-icon-photo' :
+                productTag === '레터링' ? 'productTag-icon-letter' :
                   productTag === '한입 케이크' ? 'productTag-icon-oneBite' :
                     productTag === '도시락 케이크' ? 'productTag-icon-obento' :
                       productTag === '2단 케이크' ? 'productTag-icon-twoFloor' :
@@ -479,7 +479,7 @@ export default function Order() {
           <textarea className='textarea' placeholder='자유롭게 입력하세요. 레터링 문구도 이곳에 적어주세요.' onChange={onRequestChangeHandler} />
         </div>
 
-        {productTag === '포토 케이크' ?
+        {productTag === '포토' ?
           <div style={{ marginTop: "20px", display: "flex", flexDirection: "column" }}>
             <div className='option-title'>사진 첨부<span style={{ color: "red" }}>*</span></div>
             <div className='cake-photo-zone'>
