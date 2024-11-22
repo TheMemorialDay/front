@@ -157,25 +157,25 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                 return;
             }
 
-            if (cancelCode && !cancelReason) {
-                const requestBody: PatchOrderStatusReqeustDto = {
-                    orderCode: orderdetail.orderCode,
-                    orderStatus: '주문 거부',
-                    cancelCode: cancelCode,
-                };
-                patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
-            }
+            // if (cancelCode && !cancelReason) {
+            //     const requestBody: PatchOrderStatusReqeustDto = {
+            //         orderCode: orderdetail.orderCode,
+            //         orderStatus: '주문 거부',
+            //         cancelCode: cancelCode,
+            //     };
+            //     patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
+            // }
 
-            if (cancelCode && cancelReason) {
-                const requestBody: PatchOrderStatusReqeustDto = {
-                    orderCode: orderdetail.orderCode,
-                    orderStatus: '주문 거부',
-                    cancelCode: cancelCode,
-                    cancelReason: inputReason
-                };
-                patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
+            const requestBody: PatchOrderStatusReqeustDto = {
+                orderCode: orderdetail.orderCode,
+                orderStatus: '주문 거부',
+                cancelCode: cancelCode,
+                cancelReason: inputReason
+            };
+            console.log(cancelReason);
+            patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
 
-            }
+
         }
 
         // component: 모달창 //
@@ -285,14 +285,14 @@ function MyOrderDetailComponent({ orderdetail, getOrderDetailList }: OrderDetail
                 return;
             }
 
-            if (cancelCode && !cancelReason) {
-                const requestBody: PatchOrderStatusReqeustDto = {
-                    orderCode: orderdetail.orderCode,
-                    orderStatus: '주문 거부',
-                    cancelCode: cancelCode,
-                };
-                patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
-            }
+            // if (cancelCode && !cancelReason) {
+            //     const requestBody: PatchOrderStatusReqeustDto = {
+            //         orderCode: orderdetail.orderCode,
+            //         orderStatus: '주문 거부',
+            //         cancelCode: cancelCode,
+            //     };
+            //     patchOrderStatusRequest(requestBody, orderdetail.orderCode, accessToken).then(patchOrderStatusResponse).then(getOrderDetailList);
+            // }
 
             if (cancelCode && cancelReason) {
                 const requestBody: PatchOrderStatusReqeustDto = {
