@@ -73,6 +73,9 @@ export default function SignUp() {
     const [showServiceTerms, setShowServiceTerms] = useState(false);
     const [showPrivacyTerms, setShowPrivacyTerms] = useState(false);
 
+    // variable: SNS 회원가입 여부 //
+    const isSnsSignUp = snsId !== null && joinPath !== null;
+
     // variable: 회원가입 가능 상태 확인 //
     const isPossible = name && idMsgBool && isPwMatched1 && isPwMatched2 && birthMsgBool && selectedGender
         && isMatched1 && isMatched2 && isSend && isCheckedAuthNumber && isCheckId && allChecked;
@@ -411,8 +414,14 @@ export default function SignUp() {
         <div id='sign-up' style={{ width: "450px" }}>
             <div className='auth-title'>회원가입</div>
 
-            <div className='sub-title'>SNS 회원가입</div>
-            <SnsContainer />
+            {
+                !isSnsSignUp &&
+                <>
+                    <div className='sub-title'>SNS 회원가입</div>
+                    <SnsContainer />
+                </>
+            }
+
             <hr className='hr-custom-two' />
 
             <div className='login-box'>
