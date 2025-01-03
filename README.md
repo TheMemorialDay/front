@@ -141,7 +141,8 @@ The Memorial Day가 제공하는 주요 기능입니다.
  3. 상점으로 들어온 주문 관리 기능
  4. 상점 전체 매출 확인 기능
 
-The Memorial Day 서비스 시연 영상입니다.  아래 이미지를 클릭하면 유튜브로 이동합니다.
+The Memorial Day 서비스 시연 영상입니다.  아래 이미지를 클릭하면 유튜브로 이동합니다.  
+
 [![The Memorial Day 서비스 시연 영상](/images/fullshot.JPG)](https://www.youtube.com/@TheMemorialDay/playlists)
 
 ---
