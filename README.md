@@ -190,19 +190,19 @@ The Memorial Day 서비스 시연 영상입니다.  아래 이미지를 클릭�
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center; width: 20%;">안찬숙</td>
+      <td style="text-align: center; width: 30%;">안찬숙</td>
       <td>https://github.com/Anchansook</td>
     </tr>
     <tr>
-      <td style="text-align: center; width: 20%;">송태휘</td>
+      <td style="text-align: center; width: 30%;">송태휘</td>
       <td>https://github.com/Song-Tae-Hwi</td>
     </tr>
     <tr>
-      <td style="text-align: center; width: 20%;">정호정</td>
+      <td style="text-align: center; width: 30%;">정호정</td>
       <td>https://github.com/ristukaJJang</td>
     </tr>
     <tr>
-      <td style="text-align: center; width: 20%;">김도연</td>
+      <td style="text-align: center; width: 30%;">김도연</td>
       <td>https://github.com/pdu08075</td>
     </tr>
   </tbody>
